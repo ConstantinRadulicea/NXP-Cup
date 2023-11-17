@@ -1,0 +1,98 @@
+#ifndef _STEERINGWHEEL_H_
+#define _STEERINGWHEEL_H_
+
+#include "SlowServo.h"
+
+#define STEERING_WHEEL_MAX_ANGLE_SPAN 360
+
+class SteeringWheel : public SlowServo
+{
+private:
+    int ServoMaxLeftAngle;
+    int ServoMiddleAngle;
+    int ServoMaxRightAngle;
+    int ServoAngleSpan;
+
+    float SteeringWheelAngle;
+    float ServoAngleSpan_per_SteeringWheelAngle;
+    float SteeringWheel_MaxLeftAngle;
+    float SteeringWheel_MaxRightAngle;
+    /* data */
+public:
+    //                                              130                                    90                                       40
+    SteeringWheel(unsigned int servo_max_left_angle = 0, unsigned int servo_middle_angle = 90, unsigned int servo_max_right_angle = 180) : SlowServo(){
+        this->SteeringWheelAngle = 0;
+        this->ServoMaxLeftAngle = (int) servo_max_left_angle;
+        this->ServoMiddleAngle = (int) servo_middle_angle;
+        this->ServoMaxRightAngle = (int) servo_max_right_angle;
+        this->ServoAngleSpan = abs((int)servo_max_right_angle - (int)servo_max_left_angle);
+        this->ServoAngleSpan_per_SteeringWheelAngle = abs((float)this->ServoAngleSpan / (float)STEERING_WHEEL_MAX_ANGLE_SPAN);
+
+        this->SteeringWheel_MaxRightAngle = -(float)((float)abs((int)servo_max_right_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringWheelAngle);
+        this->SteeringWheel_MaxLeftAngle = (float)((float)abs((int)servo_max_left_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringWheelAngle);
+    }
+    ~SteeringWheel(){}
+
+    void setSteeringAngle(float steering_angle){
+        int new_servo_angle = 90;
+        if(steering_angle < 0){ // going right
+            steering_angle = std::max(steering_angle, this->SteeringWheel_MaxRightAngle);
+            this->SteeringWheelAngle = steering_angle;
+
+            steering_angle = -steering_angle;
+            
+
+            if(this->ServoMaxRightAngle > this->ServoMiddleAngle){
+                new_servo_angle = (this->ServoMiddleAngle) + (int)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle);
+            }
+            else{
+                new_servo_angle = (this->ServoMiddleAngle) - (int)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle);
+            }
+        }
+        else if(steering_angle > 0){    // going left
+            steering_angle = std::min(steering_angle, this->SteeringWheel_MaxLeftAngle);
+            this->SteeringWheelAngle = steering_angle;
+
+            if(this->ServoMaxLeftAngle < this->ServoMiddleAngle){
+                new_servo_angle = (this->ServoMiddleAngle) - (int)((float)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle));
+            }
+            else{
+                new_servo_angle = (this->ServoMiddleAngle) + (int)((float)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle));
+            }
+        }
+        else{   // going middle
+            this->SteeringWheelAngle = 0;
+            new_servo_angle = this->ServoMiddleAngle;
+        }
+        this->SlowWrite(new_servo_angle);
+    }
+
+    float getSteeringAngle(){
+        return this->SteeringWheelAngle;
+    }
+
+    float getSteeringWheel_MaxLeftAngle(){
+        return SteeringWheel_MaxLeftAngle;
+    }
+
+    float getSteering_MaxRightAngle(){
+        return SteeringWheel_MaxRightAngle;
+    }
+
+    float getServoAngleSpan_per_SteeringWheelAngle(){
+        return ServoAngleSpan_per_SteeringWheelAngle;
+    }
+
+    float getWheelAngle(){
+        if(ServoMaxRightAngle > ServoMiddleAngle){  // going right
+            return ServoMiddleAngle - this->getTempAngle();
+        }
+        else{                                       // going left
+            return this->getTempAngle() - ServoMiddleAngle;
+        }
+        
+    }
+};
+
+
+#endif
