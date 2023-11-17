@@ -5,15 +5,24 @@
 #include <math.h>
 #include <vector>
 
-typedef struct PixelRowBlackLine{
+typedef struct PixelRowBlackLine {
     unsigned int beginIndex;
     unsigned int endIndex;  // last pixel index + 1
+    int colorTreshold;
 }PixelRowBlackLine;
+
+typedef struct laneLines {
+    PixelRowBlackLine leftLine;
+    PixelRowBlackLine rightLine;
+}laneLines;
 
 class PixelGreyscaleRow
 {
 private:
     std::vector<uint8_t> PixelLine;
+    std::vector<PixelRowBlackLine> LinesFound;
+    bool allLinesFound = false;
+    uint8_t thresholdFoundLines;
 
 public:
     PixelGreyscaleRow(){
@@ -37,6 +46,7 @@ public:
     }
 
     void addPixelGreyscale(uint8_t greyscale){
+        this->allLinesFound = false;
         this->PixelLine.push_back(greyscale);
     }
 
@@ -47,6 +57,7 @@ public:
 
         line.beginIndex = 0;
         line.endIndex = 0;
+        line.colorTreshold = (int)treshold;
 
         for (i = pixelIndex; i < this->PixelLine.size(); i++)
         {
@@ -74,13 +85,48 @@ public:
         return line;
     }
 
-    PixelRowBlackLine getFirstBlackLine(uint8_t treshold, unsigned int linePixelsMinlen){
+    std::vector<PixelRowBlackLine>& getAllBlackLines(uint8_t treshold){
+        PixelRowBlackLine line;
+        unsigned int nextPixelIndex = 0;
+
+        if (this->allLinesFound && this->thresholdFoundLines == treshold) {
+            return this->LinesFound;
+        }
+
+        this->allLinesFound = false;
+        
+        while (nextPixelIndex < this->size())
+        {
+            line = this->getNextBlackLine(nextPixelIndex, treshold);
+            if (! lineIsValid(line)) {
+                break;
+            }
+            this->LinesFound.push_back(line);
+            nextPixelIndex = line.endIndex;
+        }
+        this->thresholdFoundLines = treshold;
+        this->allLinesFound = true;
+
+        return this->LinesFound;
+    }
+
+    static bool lineIsValid(PixelRowBlackLine& line){
+        if (line.beginIndex == line.endIndex) return false;
+        else                                  return true;
+    }
+    
+    static unsigned int lineWidth(PixelRowBlackLine& line){
+        return line.endIndex - line.beginIndex;
+    }
+    
+    PixelRowBlackLine getFirstBlackLine_old(uint8_t treshold, unsigned int linePixelsMinlen){
         PixelRowBlackLine line;
         unsigned int nextPixelIndex = 0;
 
         if (linePixelsMinlen == 0) {
             line.beginIndex = 0;
             line.endIndex = 0;
+            line.colorTreshold = -1;
             return line;
         }
         
@@ -103,13 +149,25 @@ public:
         return line;
     }
 
-    PixelRowBlackLine getLastBlackLine(uint8_t treshold, unsigned int linePixelsMinlen){
+    PixelRowBlackLine getFirstBlackLine(uint8_t treshold, unsigned int linePixelsMinlen){
+        std::vector<PixelRowBlackLine>& lines = this->getAllBlackLines(treshold);
+        for (int i = 0; i < lines.size(); i++)
+        {
+            if (lineWidth(lines[i]) >= linePixelsMinlen){
+                return lines[i];
+            }
+        }
+        return PixelRowBlackLine{.beginIndex = 0, .endIndex = 0, .colorTreshold = -1};
+    }
+
+    PixelRowBlackLine getLastBlackLine_old(uint8_t treshold, unsigned int linePixelsMinlen){
         PixelRowBlackLine lastValidLine;
         PixelRowBlackLine line;
         unsigned int nextPixelIndex = 0;
 
         lastValidLine.beginIndex = 0;
         lastValidLine.endIndex = 0;
+        lastValidLine.colorTreshold = -1;
 
         if (linePixelsMinlen == 0) {
             return lastValidLine;
@@ -133,15 +191,34 @@ public:
         return lastValidLine;
     }
 
+    PixelRowBlackLine getLastBlackLine(uint8_t treshold, unsigned int linePixelsMinlen){
+        std::vector<PixelRowBlackLine>& lines = this->getAllBlackLines(treshold);
+        for (int i = lines.size()-1; i >= 0; i--)
+        {
+            if (lineWidth(lines[i]) >= linePixelsMinlen){
+                return lines[i];
+            }
+        }
+        return PixelRowBlackLine{.beginIndex = 0, .endIndex = 0, .colorTreshold = -1};
+    }
+
+
+    laneLines getLaneLines(uint8_t treshold, unsigned int linePixelsMinWidth){
+
+    }
+
+
     void clear(){
         this->PixelLine.clear();
+        this->allLinesFound = false;
+        this->LinesFound.clear();
     }
 
     std::size_t size(){
         return this->PixelLine.size();
     }
 
-        static std::vector<uint8_t> simpleMovingAverage_int(std::vector<uint8_t>& row, unsigned int meanSamples) {
+    static std::vector<uint8_t> simpleMovingAverage_uint8_t(std::vector<uint8_t>& row, unsigned int meanSamples) {
         std::vector<uint8_t> movingAverage;
         int localSamplesSum = 0;
         unsigned int localSamplesCount = 0;
@@ -178,7 +255,7 @@ public:
 
     void applySmaFilter(unsigned meanSamples = 3){
         std::vector<uint8_t> movingAverage;
-        movingAverage = this->simpleMovingAverage_int(this->PixelLine, meanSamples);
+        movingAverage = this->simpleMovingAverage_uint8_t(this->PixelLine, meanSamples);
         this->PixelLine = movingAverage;
     }
 };
