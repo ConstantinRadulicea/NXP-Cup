@@ -93,7 +93,9 @@ public:
             return this->LinesFound;
         }
 
+        this->LinesFound.clear();
         this->allLinesFound = false;
+        this->thresholdFoundLines = -1;
         
         while (nextPixelIndex < this->size())
         {
@@ -211,6 +213,7 @@ public:
     void clear(){
         this->PixelLine.clear();
         this->allLinesFound = false;
+        this->thresholdFoundLines = -1;
         this->LinesFound.clear();
     }
 
