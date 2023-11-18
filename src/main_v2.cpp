@@ -57,6 +57,7 @@ void setup() {
 }
 
 
+// used to find the lane width
 void autoCalibrateLaneLength(){
   int j, i;
   int laneWidth = 0;
@@ -97,6 +98,7 @@ void loop() {
   autoCalibrateLaneLength();
   while (1)
   {
+    // reading a row of pixels pixel by pixel from the camera
     for (i = 0; i < pixy.frameWidth; i++)   // read a row of pixels from camera
       {
         if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
@@ -110,6 +112,7 @@ void loop() {
         Serial.print(String((int)greyscale) + ";");
       }
 
+      // do calculations to find the lane center
       trackLane.applySmaFilter(4);
       laneCenter = trackLane.getLaneCenter();
       leftLine = trackLane.getLeftEdge();
@@ -120,6 +123,7 @@ void loop() {
       //Serial.println(",;;");
       Serial.println("," + String(leftLine.beginIndex) + ";" +  String(leftLine.endIndex) + ";" + String(rightLine.beginIndex) + ";" +  String(rightLine.endIndex));
 
+      // compute PID_input using the deviation of the lane center from the camera center
       PID_input = (double)(laneCenter - ((int)SCREEN_CENTER_X)); // positive input: have to go right;    negative input: have to go left;    
       myPID.Compute();
       

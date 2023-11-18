@@ -101,6 +101,7 @@ public:
         }
     }
 
+    // returns the lane center regarding the image
     int getLaneCenter(){
         int laneCenter = 0;
         PixelRowBlackLine rightEdge;
@@ -129,6 +130,9 @@ public:
         return laneCenter;
     }
 
+
+    // finds by himself the width of the lane.
+    // in order to find the lane width, only and only 2 lines must be detected
     unsigned int autocalibrateLaneWidth(){
         PixelRowBlackLine rightEdge;
         PixelRowBlackLine leftEdge;
@@ -137,7 +141,6 @@ public:
         rightEdge = this->getFirstBlackLine(this->BlackColorTreshold, this->LineWidth);
 
         if (lineIsValid(leftEdge) && lineIsValid(rightEdge)) {
-            this->LaneWidth = (int)(leftEdge.endIndex) - (int)(rightEdge.beginIndex);
             return this->LaneWidth;
         }
         else{

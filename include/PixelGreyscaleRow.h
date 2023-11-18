@@ -43,7 +43,6 @@ public:
         return PixelLine;
     }
 
-
     // NTSC formula: 0.299 ∙ Red + 0.587 ∙ Green + 0.114 ∙ Blue
     static uint8_t RGBtoGreyscale(uint8_t red, uint8_t green, uint8_t blue){
     return (uint8_t)(0.299 * red +  0.587 * green + 0.114 * blue);
@@ -159,10 +158,12 @@ public:
         return (int)lineAbsoluteCenter(line) - (int)middlePixelRow;
     }
 
+    // returns the center of the line regarding the whole image
     static unsigned int lineAbsoluteCenter(PixelRowBlackLine& line){
         return (int)line.beginIndex + ((float)lineWidth(line) / (float)2);
     }
 
+    // returns the center of the lane regarding the whole image
     static unsigned int laneAbsoluteCenter(PixelRowBlackLine leftLine, PixelRowBlackLine rightLine){
         PixelRowBlackLine line;
         if (leftLine.beginIndex > rightLine.beginIndex)
@@ -228,10 +229,11 @@ public:
         return line;
     }
 
+    // get the first left black line
     PixelRowBlackLine getFirstBlackLine(uint8_t treshold, unsigned int linePixelsMinlen){
         PixelRowBlackLine line;
         std::vector<PixelRowBlackLine> lines = this->getAllBlackLines(treshold);
-        for (int i = 0; i < lines.size(); i++)
+        for (int i = 0; i < (int)lines.size(); i++)
         {
             if (lineWidth(lines[i]) >= linePixelsMinlen){
                 return lines[i];
@@ -273,6 +275,7 @@ public:
         return lastValidLine;
     }
 
+    // get the further right black line
     PixelRowBlackLine getLastBlackLine(uint8_t treshold, unsigned int linePixelsMinlen){
         PixelRowBlackLine line;
         std::vector<PixelRowBlackLine> lines = this->getAllBlackLines(treshold);
@@ -287,6 +290,8 @@ public:
         return line;
     }
 
+    // builds a lane using only one line, the other line will be an invalid one.
+    // this function is used to determine if this line is the rightLine of the leftLine
     LaneLines buildLaneFromLine(PixelRowBlackLine line, unsigned int laneWidth_){
         LaneLines laneLines;
         unsigned int middlePixelRow = (unsigned int)((float)this->size() / (float)2);
@@ -303,6 +308,8 @@ public:
         return laneLines;
     }
 
+    // builds a lane structure from 2 lines regarding lane width.
+    // if lane width condition is not met, the lane will contein only one line
     LaneLines buildLaneFromLines(PixelRowBlackLine leftLine, PixelRowBlackLine rightLine, unsigned int laneWidth_, unsigned int laneWidthTolerance){
         PixelRowBlackLine line;
         LaneLines laneLines;
@@ -348,14 +355,11 @@ public:
         else if(lineIsValid(rightLine)){
             laneLines = buildLaneFromLine(rightLine, laneWidth_);
         }
-
         return laneLines;
     }
-
+    // returns the best 2 lane lines regardig lanewidth and line width
     LaneLines getLaneLines(uint8_t treshold, unsigned int linePixelsMinWidth, unsigned int laneWidth_, unsigned int laneWidthTolerance){
         LaneLines laneLines, tempLaneLines;
-
-        unsigned int middlePixelRow = (unsigned int)((float)this->size() / (float)2);
         std::vector<PixelRowBlackLine> lines = this->getAllBlackLines(treshold, linePixelsMinWidth);
 
         memset(&laneLines, 0, sizeof(LaneLines));
@@ -414,6 +418,7 @@ public:
         return this->PixelLine.size();
     }
 
+    // filter used to eliminate high frequency spikes in pixel color change
     static std::vector<uint8_t> simpleMovingAverage_uint8_t(std::vector<uint8_t>& row, unsigned int meanSamples) {
         std::vector<uint8_t> movingAverage;
         int localSamplesSum = 0;
