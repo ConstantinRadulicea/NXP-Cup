@@ -12,6 +12,7 @@
 #define SCREEN_CENTER_X 158
 #define LINE_WIDTH_PIXELS 2
 #define LANE_WIDTH_PIXELS 200
+#define LANE_WIDTH_TOLERANCE_PIXELS 30
 #define BLACK_COLOR_TRESHOLD 180
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
@@ -27,7 +28,7 @@ SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_
 PWMServo driverMotor;
 Pixy2 pixy;
 int8_t res;
-TrackLane trackLane(BLACK_COLOR_TRESHOLD, SCREEN_CENTER_X, LANE_WIDTH_PIXELS);
+TrackLane trackLane(BLACK_COLOR_TRESHOLD, SCREEN_CENTER_X, LINE_WIDTH_PIXELS, LANE_WIDTH_PIXELS, LANE_WIDTH_TOLERANCE_PIXELS);
 
 double PID_input, PID_output, PID_setpoint = 0.0;
 double PID_Kp=9.0, PID_Ki=0.01, PID_Kd=0;
@@ -55,6 +56,35 @@ void setup() {
     delay(10000);
 }
 
+
+void autoCalibrateLaneLength(){
+  int j, i;
+  int laneWidth = 0;
+  uint8_t greyscale, r, g, b;
+
+  for (j = 0; j < 10; j++)
+  {
+      for (i = 0; i < pixy.frameWidth; i++)   // read a row of pixels from camera
+      {
+        if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
+        {
+          greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
+        }
+        else{
+          greyscale = 255;
+        }
+        trackLane.addPixelGreyscale(greyscale);
+      }
+
+      trackLane.applySmaFilter(4);
+      laneWidth += trackLane.autocalibrateLaneWidth();
+      trackLane.clear();
+  }
+
+  laneWidth = (int)((float)laneWidth / (float)(j-1));
+  trackLane.setLaneWidth(laneWidth);
+}
+
 uint8_t r, g, b;
 uint8_t greyscale;
 PixelRowBlackLine leftLine, rightLine;
@@ -63,42 +93,46 @@ int i;
 
 void loop() {
 
+  
+  autoCalibrateLaneLength();
+  while (1)
+  {
     for (i = 0; i < pixy.frameWidth; i++)   // read a row of pixels from camera
-    {
-      if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
       {
-        greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
+        if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
+        {
+          greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
+        }
+        else{
+          greyscale = 255;
+        }
+        trackLane.addPixelGreyscale(greyscale);
+        Serial.print(String((int)greyscale) + ";");
       }
-      else{
-        greyscale = 255;
-      }
-      trackLane.addPixelGreyscale(greyscale);
-      Serial.print(String((int)greyscale) + ";");
-    }
-    
 
-    trackLane.applySmaFilter(4);
-    laneCenter = trackLane.getLaneCenter();
-    leftLine = trackLane.getLeftEdge();
-    rightLine = trackLane.getRightEdge();
-    trackLane.clear();
-    
+      trackLane.applySmaFilter(4);
+      laneCenter = trackLane.getLaneCenter();
+      leftLine = trackLane.getLeftEdge();
+      rightLine = trackLane.getRightEdge();
+      trackLane.clear();
+      
 
-    //Serial.println(",;;");
-    Serial.println("," + String(leftLine.beginIndex) + ";" +  String(leftLine.endIndex) + ";" + String(rightLine.beginIndex) + ";" +  String(rightLine.endIndex));
+      //Serial.println(",;;");
+      Serial.println("," + String(leftLine.beginIndex) + ";" +  String(leftLine.endIndex) + ";" + String(rightLine.beginIndex) + ";" +  String(rightLine.endIndex));
 
-    PID_input = (double)(laneCenter - ((int)SCREEN_CENTER_X)); // positive input: have to go right;    negative input: have to go left;    
-    myPID.Compute();
-    
-    steeringWheel.setSteeringAngle((float)PID_output);
-    driverMotor.write(100);
+      PID_input = (double)(laneCenter - ((int)SCREEN_CENTER_X)); // positive input: have to go right;    negative input: have to go left;    
+      myPID.Compute();
+      
+      steeringWheel.setSteeringAngle((float)PID_output);
+      driverMotor.write(100);
 
-    /*
-    Serial.print("laneCenter: " + String(laneCenter));
-    Serial.print("\tPID_input: " + String(PID_input));
-    Serial.print("\tPID_output: " + String(PID_output));
-    Serial.print("\t" + String(leftLine.beginIndex) + ";" + String(leftLine.endIndex) + ";" + String(rightLine.beginIndex) + ";" + String(rightLine.endIndex));
-    Serial.println();
-    */
+      /*
+      Serial.print("laneCenter: " + String(laneCenter));
+      Serial.print("\tPID_input: " + String(PID_input));
+      Serial.print("\tPID_output: " + String(PID_output));
+      Serial.print("\t" + String(leftLine.beginIndex) + ";" + String(leftLine.endIndex) + ";" + String(rightLine.beginIndex) + ";" + String(rightLine.endIndex));
+      Serial.println();
+      */
+  }
 }
 

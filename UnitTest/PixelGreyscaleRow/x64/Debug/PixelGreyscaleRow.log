@@ -1,0 +1,7 @@
+﻿  main.cpp
+C:\OneDrive\OneDrive - Universitatea Politehnica Timisoara\Programming\arduino\NXP-Cup-2024\include\PixelGreyscaleRow.h(101,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\OneDrive\OneDrive - Universitatea Politehnica Timisoara\Programming\arduino\NXP-Cup-2024\include\PixelGreyscaleRow.h(120,1): warning C4267: 'return': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\OneDrive\OneDrive - Universitatea Politehnica Timisoara\Programming\arduino\NXP-Cup-2024\include\PixelGreyscaleRow.h(163,37): warning C4244: 'return': conversion from 'float' to 'unsigned int', possible loss of data
+C:\OneDrive\OneDrive - Universitatea Politehnica Timisoara\Programming\arduino\NXP-Cup-2024\include\PixelGreyscaleRow.h(174,39): warning C4244: 'return': conversion from 'float' to 'unsigned int', possible loss of data
+C:\OneDrive\OneDrive - Universitatea Politehnica Timisoara\Programming\arduino\NXP-Cup-2024\include\PixelGreyscaleRow.h(279,1): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  PixelGreyscaleRow.vcxproj -> C:\OneDrive\OneDrive - Universitatea Politehnica Timisoara\Programming\arduino\NXP-Cup-2024\UnitTest\PixelGreyscaleRow\x64\Debug\PixelGreyscaleRow.exe
