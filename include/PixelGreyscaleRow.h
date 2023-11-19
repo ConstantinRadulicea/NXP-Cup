@@ -1,3 +1,5 @@
+//transform a row of pixels in grey format + fiding lines, construct lines + SMA filter
+
 #ifndef _PIXELGREYSCALEROW_H_
 #define _PIXELGREYSCALEROW_H_
 
@@ -30,7 +32,7 @@ private:
     std::vector<uint8_t> PixelLine;
     std::vector<PixelRowBlackLine> LinesFound;
     bool allLinesFound = false;
-    uint8_t thresholdFoundLines;
+    uint8_t thresholdFoundLines; // contains the value of the pixel which is found black 
 
 public:
     PixelGreyscaleRow(){
@@ -44,11 +46,11 @@ public:
     }
 
     // NTSC formula: 0.299 ∙ Red + 0.587 ∙ Green + 0.114 ∙ Blue
-    static uint8_t RGBtoGreyscale(uint8_t red, uint8_t green, uint8_t blue){
+    static uint8_t RGBtoGreyscale(uint8_t red, uint8_t green, uint8_t blue){// convert RGB to grey scale with the NTSC formula which assigns different weights to the RGB components
     return (uint8_t)(0.299 * red +  0.587 * green + 0.114 * blue);
     }
 
-    void addPixelRGB(uint8_t red, uint8_t green, uint8_t blue){
+    void addPixelRGB(uint8_t red, uint8_t green, uint8_t blue){// add the converted pixels to the row
         this->addPixelGreyscale(this->RGBtoGreyscale(red, green, blue));
     }
 
@@ -57,7 +59,7 @@ public:
         this->PixelLine.push_back(greyscale);
     }
 
-    PixelRowBlackLine getNextBlackLine(unsigned int pixelIndex, uint8_t treshold){
+    PixelRowBlackLine getNextBlackLine(unsigned int pixelIndex, uint8_t treshold){// finding the next black line, treshold = used to determine when a pixel is considered black
         PixelRowBlackLine line;
         unsigned int linePixels = 0;
         unsigned int i = 0;
@@ -92,7 +94,7 @@ public:
         return line;
     }
 
-    unsigned int findAllBlackLines(uint8_t treshold){
+    unsigned int findAllBlackLines(uint8_t treshold){ 
         PixelRowBlackLine line;
         unsigned int nextPixelIndex = 0;
 

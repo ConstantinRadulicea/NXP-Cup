@@ -3,7 +3,7 @@
 
 #include "PixelGreyscaleRow.h"
 
-class TrackLane : public PixelGreyscaleRow
+class TrackLane : public PixelGreyscaleRow // inheritance of the PixelGreyscaleRow => it will contain the PixelGreyscaleRow public methods
 {
 private:
     uint8_t BlackColorTreshold;
@@ -19,6 +19,8 @@ private:
     
 
 public:
+    // base class constructor => this->PixelLine.clear(); this->allLinesFound = false; this->thresholdFoundLines = -1; this->LinesFound.clear();
+    
     TrackLane(uint8_t _BlackColorTreshold, unsigned int screenCenter_x, unsigned int lineWidth, unsigned int LaneWidth, unsigned int laneWidthTolerance) : PixelGreyscaleRow() {
         this->clear();
         this->BlackColorTreshold = _BlackColorTreshold;

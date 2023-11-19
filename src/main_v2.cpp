@@ -36,8 +36,11 @@ PID myPID(&PID_input, &PID_output, &PID_setpoint, PID_Kp, PID_Ki, PID_Kd, DIRECT
 
 
 void setup() {
+    // serial init
     Serial.begin(115200);
     delay(100);
+
+    // Initialization and attachment of the servo and motor
     steeringWheel.attach(STEERING_SERVO_PIN);
     driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
     driverMotor.write(90);
@@ -50,6 +53,7 @@ void setup() {
     res = pixy.changeProg("video");
     Serial.println("% pixy.changeProg(video) = " + String(res));
 
+    //Configure PID
     myPID.SetMode(AUTOMATIC);
     myPID.SetSampleTime(5);
     myPID.SetOutputLimits(-200.0, 200.0);
@@ -58,6 +62,9 @@ void setup() {
 
 
 // used to find the lane width
+// calibrate the lane width based on values read from the Pixy2 camera. 
+// It adds multiple rows of pixels to the trackLane object, applies a Simple Moving Average (SMA) filter, 
+// and determines the average width of the detected lane.
 void autoCalibrateLaneLength(){
   int j, i;
   int laneWidth = 0;
@@ -67,7 +74,7 @@ void autoCalibrateLaneLength(){
   {
       for (i = 0; i < pixy.frameWidth; i++)   // read a row of pixels from camera
       {
-        if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
+        if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
         {
           greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
         }
@@ -77,7 +84,7 @@ void autoCalibrateLaneLength(){
         trackLane.addPixelGreyscale(greyscale);
       }
 
-      trackLane.applySmaFilter(4);
+      trackLane.applySmaFilter(4);// SMA with the last 4 pixels value (grey scale)
       laneWidth += trackLane.autocalibrateLaneWidth();
       trackLane.clear();
   }
@@ -93,7 +100,6 @@ int laneCenter = 0;
 int i;
 
 void loop() {
-
   
   autoCalibrateLaneLength();
   while (1)
