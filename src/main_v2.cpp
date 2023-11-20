@@ -60,6 +60,13 @@ void setup() {
     delay(10000);
 }
 
+void printToSerialPixelRow()
+{
+    std::vector<uint8_t>& pixelRow = trackLane.getRow();
+    for(int i = 0; i < pixelRow.size(); i++){
+        Serial.print(String((int)pixelRow[i]) + ";");
+    }
+}
 
 // used to find the lane width
 // calibrate the lane width based on values read from the Pixy2 camera. 
@@ -115,7 +122,6 @@ void loop() {
           greyscale = 255;
         }
         trackLane.addPixelGreyscale(greyscale);
-        Serial.print(String((int)greyscale) + ";");
       }
 
       // do calculations to find the lane center
@@ -123,10 +129,9 @@ void loop() {
       laneCenter = trackLane.getLaneCenter();
       leftLine = trackLane.getLeftEdge();
       rightLine = trackLane.getRightEdge();
+      printToSerialPixelRow();
       trackLane.clear();
-      
 
-      //Serial.println(",;;");
       Serial.println("," + String(leftLine.beginIndex) + ";" +  String(leftLine.endIndex) + ";" + String(rightLine.beginIndex) + ";" +  String(rightLine.endIndex));
 
       // compute PID_input using the deviation of the lane center from the camera center
