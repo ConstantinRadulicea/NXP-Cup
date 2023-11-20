@@ -21,6 +21,8 @@ function read_callback_simulate_process(src, ~)
     x2 = 1:length(data2);
     plot(x', data);
     hold on;
-    plot(data2, x2, 'o');
+    plot(data2(1:2), 2, 'o', 'MarkerEdgeColor','b');
+    hold on;
+    plot(data2(3:4), 2, 'o', 'MarkerEdgeColor','r');
     hold off;
 end

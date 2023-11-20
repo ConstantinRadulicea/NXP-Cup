@@ -63,7 +63,7 @@ void setup() {
 void printToSerialPixelRow()
 {
     std::vector<uint8_t>& pixelRow = trackLane.getRow();
-    for(int i = 0; i < pixelRow.size(); i++){
+    for(int i = 0; i < (int)pixelRow.size(); i++){
         Serial.print(String((int)pixelRow[i]) + ";");
     }
 }
@@ -72,14 +72,17 @@ void printToSerialPixelRow()
 // calibrate the lane width based on values read from the Pixy2 camera. 
 // It adds multiple rows of pixels to the trackLane object, applies a Simple Moving Average (SMA) filter, 
 // and determines the average width of the detected lane.
-void autoCalibrateLaneLength(){
+int autoCalibrateLaneLength(){
+  int validCalibrations = 0;
   int j, i;
-  int laneWidth = 0;
+  int laneWidth = 0, temp_laneWidth = 0;
   uint8_t greyscale, r, g, b;
-
-  for (j = 0; j < 10; j++)
+  while (validCalibrations < 5)
   {
-      for (i = 0; i < pixy.frameWidth; i++)   // read a row of pixels from camera
+    validCalibrations = 0;
+    for (j = 0; j < 10; j++)
+    {
+      for (i = 0; i < (int)pixy.frameWidth; i++)   // read a row of pixels from camera
       {
         if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
         {
@@ -90,14 +93,20 @@ void autoCalibrateLaneLength(){
         }
         trackLane.addPixelGreyscale(greyscale);
       }
-
       trackLane.applySmaFilter(4);// SMA with the last 4 pixels value (grey scale)
-      laneWidth += trackLane.autocalibrateLaneWidth();
+      temp_laneWidth = trackLane.autocalibrateLaneWidth();
+      laneWidth += temp_laneWidth;
       trackLane.clear();
+      if (temp_laneWidth > 0)
+      {
+        validCalibrations++;
+      }
+    }
+    
   }
-
   laneWidth = (int)((float)laneWidth / (float)(j-1));
   trackLane.setLaneWidth(laneWidth);
+  return laneWidth;
 }
 
 uint8_t r, g, b;
@@ -107,8 +116,8 @@ int laneCenter = 0;
 int i;
 
 void loop() {
-  
-  autoCalibrateLaneLength();
+  //Serial.println("Calibrated lane width: " + String(autoCalibrateLaneLength()));
+
   while (1)
   {
     // reading a row of pixels pixel by pixel from the camera

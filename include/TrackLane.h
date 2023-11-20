@@ -133,6 +133,7 @@ public:
     }
 
 
+    // ToDo: read all black lines on oly the first and last one
     // finds by himself the width of the lane.
     // in order to find the lane width, only and only 2 lines must be detected
     unsigned int autocalibrateLaneWidth(){
@@ -140,10 +141,10 @@ public:
         PixelRowBlackLine leftEdge;
 
         leftEdge = this->getFirstBlackLine(this->BlackColorTreshold, this->LineWidth);
-        rightEdge = this->getFirstBlackLine(this->BlackColorTreshold, this->LineWidth);
+        rightEdge = this->getLastBlackLine(this->BlackColorTreshold, this->LineWidth);
 
         if (lineIsValid(leftEdge) && lineIsValid(rightEdge)) {
-            return this->LaneWidth;
+            return this->laneWidth(leftEdge, rightEdge);
         }
         else{
             return 0;
