@@ -36,7 +36,7 @@ PID myPID(&PID_input, &PID_output, &PID_setpoint, PID_Kp, PID_Ki, PID_Kd, DIRECT
 
 
 void setup() {
-    // serial init
+    // serial Initialization
     Serial.begin(115200);
     delay(100);
 
