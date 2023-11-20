@@ -360,6 +360,9 @@ public:
         return laneLines;
     }
     // returns the best 2 lane lines regardig lanewidth and line width
+    // If multiple lines are detected, it will choose the lines which forms a lane of the closest width laneWidth_ with an error of laneWidthTolerance.
+    // If none of the lines can form a lane regarding the parameters laneWidth_ and laneWidthTolerance, the line closest to the center will be chosen 
+    // and whether this line is on the right or on the left from the center, it will be the leftLine or rightLine
     LaneLines getLaneLines(uint8_t treshold, unsigned int linePixelsMinWidth, unsigned int laneWidth_, unsigned int laneWidthTolerance){
         LaneLines laneLines, tempLaneLines;
         std::vector<PixelRowBlackLine> lines = this->getAllBlackLines(treshold, linePixelsMinWidth);
