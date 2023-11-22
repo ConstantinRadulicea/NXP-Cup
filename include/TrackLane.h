@@ -133,12 +133,17 @@ public:
     }
 
 
-    // ToDo: read all black lines on oly the first and last one
     // finds by himself the width of the lane.
     // in order to find the lane width, only and only 2 lines must be detected
     unsigned int autocalibrateLaneWidth(){
         PixelRowBlackLine rightEdge;
         PixelRowBlackLine leftEdge;
+        
+        std::vector<PixelRowBlackLine> lines = this->getAllBlackLines(this->BlackColorTreshold, this->LineWidth);
+        
+        if(lines.size() != 2){
+            return 0;
+        }
 
         leftEdge = this->getFirstBlackLine(this->BlackColorTreshold, this->LineWidth);
         rightEdge = this->getLastBlackLine(this->BlackColorTreshold, this->LineWidth);
