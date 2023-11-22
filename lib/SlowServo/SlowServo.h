@@ -5,9 +5,9 @@
 #include "PWMServo.h"
 #include <map>
 
-#define CALLBACK_TIMER 1000*30
+#define CALLBACK_TIMER 1000*15
 #define DEFAULT_ANGLE_INCRESE 4
-#define DEFAULT_UPDATE_TIMEOUT 25
+#define DEFAULT_UPDATE_TIMEOUT 10
 
 class SlowServo : public PWMServo
 {
