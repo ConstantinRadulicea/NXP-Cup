@@ -3,7 +3,7 @@
 #ifndef _STEERINGWHEEL_H_
 #define _STEERINGWHEEL_H_
 
-#include "SlowServo.h"
+#include "SlowServo.h" // smoother control over the servo
 
 #define STEERING_WHEEL_MAX_ANGLE_SPAN 360
 
@@ -30,21 +30,20 @@ public:
         this->ServoAngleSpan = abs((int)servo_max_right_angle - (int)servo_max_left_angle);
         this->ServoAngleSpan_per_SteeringWheelAngle = abs((float)this->ServoAngleSpan / (float)STEERING_WHEEL_MAX_ANGLE_SPAN);
         
-        // computing the maximum right/left angle of the steering wheel in terms of servo motor angles.
-        // establish a mapping between the angles of the steering wheel and the corresponding angles of the servo motor, considering the specified angular spans.
         this->SteeringWheel_MaxRightAngle = -(float)((float)abs((int)servo_max_right_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringWheelAngle);
         this->SteeringWheel_MaxLeftAngle = (float)((float)abs((int)servo_max_left_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringWheelAngle);
     }
     ~SteeringWheel(){}
 
+
     void setSteeringAngle(float steering_angle){// It interprets the received value as the steering wheel angle and converts it to the corresponding angle for the servo motor
         int new_servo_angle = 90;
+
         if(steering_angle < 0){ // going right
             steering_angle = std::max(steering_angle, this->SteeringWheel_MaxRightAngle);
             this->SteeringWheelAngle = steering_angle;
 
             steering_angle = -steering_angle;
-            
 
             if(this->ServoMaxRightAngle > this->ServoMiddleAngle){
                 new_servo_angle = (this->ServoMiddleAngle) + (int)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle);
@@ -53,6 +52,7 @@ public:
                 new_servo_angle = (this->ServoMiddleAngle) - (int)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle);
             }
         }
+
         else if(steering_angle > 0){    // going left
             steering_angle = std::min(steering_angle, this->SteeringWheel_MaxLeftAngle);
             this->SteeringWheelAngle = steering_angle;
@@ -64,6 +64,7 @@ public:
                 new_servo_angle = (this->ServoMiddleAngle) + (int)((float)(steering_angle * this->ServoAngleSpan_per_SteeringWheelAngle));
             }
         }
+
         else{   // going middle
             this->SteeringWheelAngle = 0;
             new_servo_angle = this->ServoMiddleAngle;
@@ -71,21 +72,26 @@ public:
         this->SlowWrite(new_servo_angle);
     }
 
+
     float getSteeringAngle(){
         return this->SteeringWheelAngle;
     }
+
 
     float getSteeringWheel_MaxLeftAngle(){
         return SteeringWheel_MaxLeftAngle;
     }
 
+
     float getSteering_MaxRightAngle(){
         return SteeringWheel_MaxRightAngle;
     }
 
+
     float getServoAngleSpan_per_SteeringWheelAngle(){
         return ServoAngleSpan_per_SteeringWheelAngle;
     }
+
 
     float getWheelAngle(){
         if(ServoMaxRightAngle > ServoMiddleAngle){  // going right

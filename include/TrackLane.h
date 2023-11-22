@@ -21,8 +21,15 @@ private:
 public:
     // base class constructor => this->PixelLine.clear(); this->allLinesFound = false; this->thresholdFoundLines = -1; this->LinesFound.clear();
     
+    void clear(){
+        PixelGreyscaleRow::clear();
+        isSet_LeftEdge = false;
+        isSet_RightEdge = false;
+        isSet_Lane = false;
+    }
+
     TrackLane(uint8_t _BlackColorTreshold, unsigned int screenCenter_x, unsigned int lineWidth, unsigned int LaneWidth, unsigned int laneWidthTolerance) : PixelGreyscaleRow() {
-        this->clear();
+        this->clear(); 
         this->BlackColorTreshold = _BlackColorTreshold;
         this->ScreenCenter_x = screenCenter_x;
         this->LaneWidth = LaneWidth;
@@ -33,12 +40,15 @@ public:
 
     }
 
+    //setter
     void setLaneWidth(unsigned int width){
         this->LaneWidth = width;
     }
 
-    PixelRowBlackLine getRightEdge(){
-        LaneLines lane;
+
+    PixelRowBlackLine getRightEdge(){ // right edge of one line
+        LaneLines lane; // not a line!
+
         if (this->isSet_Lane && this->isSet_RightEdge) {
             return this->RightEdge;
         }
@@ -58,8 +68,9 @@ public:
         return this->RightEdge;
     }
 
-    PixelRowBlackLine getLeftEdge(){
-        LaneLines lane;
+    PixelRowBlackLine getLeftEdge(){ // left edge of one line
+        LaneLines lane; // not a line!
+
         if (this->isSet_Lane && this->isSet_LeftEdge) {
             return this->LeftEdge;
         }
@@ -155,17 +166,6 @@ public:
             return 0;
         }
     }
-
-    void clear(){
-        PixelGreyscaleRow::clear();
-        isSet_LeftEdge = false;
-        isSet_RightEdge = false;
-        isSet_Lane = false;
-    }
-
-
-
-
 
     
 };
