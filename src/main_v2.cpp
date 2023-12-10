@@ -9,7 +9,6 @@
 // #include <stdio.h>
 // #include <stdint.h>
 
-
 #define SCREEN_CENTER_X 158
 #define LINE_WIDTH_PIXELS 2
 #define LANE_WIDTH_PIXELS 200
@@ -88,7 +87,7 @@ int autoCalibrateLaneLength(){
       {
         if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
         {
-          greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
+          greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
         }
         else{
           greyscale = 255;
@@ -131,7 +130,7 @@ void loop() {
       {
         if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
         {
-          greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
+          greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
         }
         else{
           greyscale = 255;
