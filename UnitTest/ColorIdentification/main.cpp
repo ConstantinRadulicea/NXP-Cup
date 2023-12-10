@@ -4,6 +4,7 @@
 #include <math.h>
 #include <cstdint>
 
+// https://colorizer.org/
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -77,7 +78,7 @@ CIELABcolor rgb2lab(RGBcolor rgbColor) {
 	Y = r * 0.2126 + g * 0.7152 + b * 0.0722;
 	Z = r * 0.0193 + g * 0.1192 + b * 0.9505;
 
-	// Observer= 2°, Illuminant= D65
+	// Observer= 2ï¿½, Illuminant= D65
 	X = rgb2lab_normalizeXyzChannel(X / 95.0470);	// ref_X = 95.047
 	Y = rgb2lab_normalizeXyzChannel(Y / 100.0);		// ref_Y = 100.000
 	Z = rgb2lab_normalizeXyzChannel(Z / 108.883);	// ref_Z = 108.883
@@ -90,8 +91,8 @@ CIELABcolor rgb2lab(RGBcolor rgbColor) {
 }
 
 HSVcolor rgb2hsv(RGBcolor rgbColor) {
-	//R, G and B input range = 0 ÷ 255
-	//H, S and V output range = 0 ÷ 1.0
+	//R, G and B input range = 0 ï¿½ 255
+	//H, S and V output range = 0 ï¿½ 1.0
 	HSVcolor hsvColor;
 	float del_R, del_G, del_B;
 
