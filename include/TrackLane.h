@@ -6,7 +6,7 @@
 class TrackLane : public PixelGreyscaleRow // inheritance of the PixelGreyscaleRow => it will contain the PixelGreyscaleRow public methods
 {
 private:
-    uint8_t BlackColorTreshold;
+    float BlackColorTreshold;
     unsigned int ScreenCenter_x;
     unsigned int LaneWidth;
     unsigned int LaneWidthTolerance;
@@ -28,7 +28,7 @@ public:
         isSet_Lane = false;
     }
 
-    TrackLane(uint8_t _BlackColorTreshold, unsigned int screenCenter_x, unsigned int lineWidth, unsigned int LaneWidth, unsigned int laneWidthTolerance) : PixelGreyscaleRow() {
+    TrackLane(float _BlackColorTreshold, unsigned int screenCenter_x, unsigned int lineWidth, unsigned int LaneWidth, unsigned int laneWidthTolerance) : PixelGreyscaleRow() {
         this->clear(); 
         this->BlackColorTreshold = _BlackColorTreshold;
         this->ScreenCenter_x = screenCenter_x;

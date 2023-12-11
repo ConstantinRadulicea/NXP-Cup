@@ -14,8 +14,10 @@
 #define SCREEN_CENTER_X 158
 #define LINE_WIDTH_PIXELS 2
 #define LANE_WIDTH_PIXELS 200
-#define LANE_WIDTH_TOLERANCE_PIXELS 30
-#define BLACK_COLOR_TRESHOLD 10
+#define LANE_WIDTH_TOLERANCE_PIXELS 10
+#define BLACK_COLOR_TRESHOLD 0.1 // 0=black, 1=white
+#define WHITE 1.0
+#define BLACK 0.0
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  42    // 38 max right
@@ -25,7 +27,7 @@
 #define DRIVER_MOTOR_PIN  9
 
 unsigned int lineMinPixelsLength = LINE_WIDTH_PIXELS; //minimum width for the black line (pixels)
-uint8_t lineColorTreshold = BLACK_COLOR_TRESHOLD; // 0=black, 255=white
+float lineColorTreshold = BLACK_COLOR_TRESHOLD;
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
 PWMServo driverMotor;
 Pixy2 pixy;
@@ -67,9 +69,9 @@ void setup() {
 
 void printToSerialPixelRow()
 {
-    std::vector<uint8_t>& pixelRow = trackLane.getRow(); // the vector of the grayscaled pixels (see "PixelGreyscaleRow.h")
+    std::vector<float>& pixelRow = trackLane.getRow(); // the vector of the grayscaled pixels (see "PixelGreyscaleRow.h")
     for(int i = 0; i < (int)pixelRow.size(); i++){
-        Serial.print(String((int)pixelRow[i]) + ";"); //greyscaled values
+        Serial.print(String((float)pixelRow[i], 3) + ";"); //greyscaled values
     }
 }
 
@@ -78,7 +80,8 @@ int autoCalibrateLaneLength(){
   int validCalibrations = 0;
   int j, i;
   int laneWidth = 0, temp_laneWidth = 0;
-  uint8_t greyscale, r, g, b;
+  uint8_t r, g, b;
+  float greyscale;
 
   while (validCalibrations < 5)
   {
@@ -92,7 +95,7 @@ int autoCalibrateLaneLength(){
           greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
         }
         else{
-          greyscale = 255;
+          greyscale = WHITE;
         }
         trackLane.addPixelGreyscale(greyscale);
       }
@@ -117,7 +120,7 @@ int autoCalibrateLaneLength(){
 }
 
 uint8_t r, g, b;
-uint8_t greyscale;
+float greyscale;
 PixelRowBlackLine leftLine, rightLine;
 int laneCenter = 0;
 int i;
@@ -135,7 +138,7 @@ void loop() {
           greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
         }
         else{
-          greyscale = 255;
+          greyscale = WHITE;
         }
         trackLane.addPixelGreyscale(greyscale);
       }
