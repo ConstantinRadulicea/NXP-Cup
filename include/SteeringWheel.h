@@ -5,7 +5,7 @@
 
 #include "SlowServo.h" // smoother control over the servo
 
-#define STEERING_WHEEL_MAX_ANGLE_SPAN 360
+#define STEERING_WHEEL_MAX_ANGLE_SPAN 90
 
 class SteeringWheel : public SlowServo
 {

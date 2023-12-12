@@ -62,7 +62,7 @@ void setup() {
     //Configure PID
     myPID.SetMode(AUTOMATIC);
     myPID.SetSampleTime(5);
-    myPID.SetOutputLimits(-200.0, 200.0);
+    myPID.SetOutputLimits(-45.0, 45.0);
     delay(10000);
 }
 
