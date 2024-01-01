@@ -1,0 +1,27 @@
+clc;
+clear;
+close all;
+% delete(arduinoObj)
+
+frameWidth = 320;
+frameHeight = 200;
+
+arduinoObj = serialport("COM2",115200);
+flush(arduinoObj);
+
+x = uint16(2);
+y = uint16(3);
+
+
+for x = 0:(frameWidth-1)
+    for y = 1:(frameHeight-1)
+        arduinoObj.write(x, "uint16");
+        arduinoObj.write(y, "uint16");
+    end
+end
+
+
+
+
+
+

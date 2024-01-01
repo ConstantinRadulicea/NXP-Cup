@@ -20,7 +20,8 @@
 #include "TPixy2.h"
 #include "SPI.h"
 
-#define PIXY_SPI_CLOCKRATE       2000000
+//#define PIXY_SPI_CLOCKRATE       2000000
+#define PIXY_SPI_CLOCKRATE       4000000
 
 class Link2SPI
 {

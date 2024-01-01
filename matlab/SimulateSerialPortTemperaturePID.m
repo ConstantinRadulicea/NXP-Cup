@@ -13,4 +13,3 @@ flush(arduinoObj);
 configureCallback(arduinoObj,"terminator",@read_callback_simulate_process);
 
 
-
