@@ -15,9 +15,9 @@
 #define LINE_WIDTH_PIXELS 2
 #define LANE_WIDTH_PIXELS 200
 #define LANE_WIDTH_TOLERANCE_PIXELS 10
-#define BLACK_COLOR_TRESHOLD 0.1 // 0=black, 1=white
-#define WHITE 1.0
-#define BLACK 0.0
+#define BLACK_COLOR_TRESHOLD 0.1f // 0=black, 1=white
+#define WHITE 1.0f
+#define BLACK 0.0f
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  42    // 38 max right
@@ -58,6 +58,7 @@ void setup() {
     // Getting the RGB pixel values requires the 'video' program
     res = pixy.changeProg("video");
     Serial.println("% pixy.changeProg(video) = " + String(res));
+    pixy.setCameraBrightness((uint8_t)50);
 
     //Configure PID
     myPID.SetMode(AUTOMATIC);
@@ -71,7 +72,8 @@ void printToSerialPixelRow()
 {
     std::vector<float>& pixelRow = trackLane.getRow(); // the vector of the grayscaled pixels (see "PixelGreyscaleRow.h")
     for(int i = 0; i < (int)pixelRow.size(); i++){
-        Serial.print(String((float)pixelRow[i], 3) + ";"); //greyscaled values
+        //Serial.print(String(pixelRow[i], (unsigned char)3U) + ";"); //greyscaled values
+        Serial.print(String(pixelRow[i]) + ";"); //greyscaled values
     }
 }
 
@@ -90,9 +92,10 @@ int autoCalibrateLaneLength(){
     {
       for (i = 0; i < (int)pixy.frameWidth; i++)   // read a row of pixels from camera
       {
-        if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
+        if (pixy.video.getRGB(i, (int)(pixy.frameHeight/2), &r, &g, &b)==0) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
         {
           greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
+          //greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
         }
         else{
           greyscale = WHITE;
@@ -133,13 +136,15 @@ void loop() {
     // reading a row of pixels pixel by pixel from the camera
     for (i = 0; i < pixy.frameWidth; i++)   // read a row of pixels from camera
       {
-        if (pixy.video.getRGB(i, (int)(pixy.frameHeight-5), &r, &g, &b)==0)
+        if (pixy.video.getRGB((uint16_t)i, (uint16_t)(pixy.frameHeight - (uint16_t)5), &r, &g, &b, false)==0)
         {
           greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
+          //greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
         }
         else{
           greyscale = WHITE;
         }
+        //Serial.println(greyscale);
         trackLane.addPixelGreyscale(greyscale);
       }
 

@@ -73,7 +73,7 @@ public:
 
     // NTSC formula: 0.299 ∙ Red + 0.587 ∙ Green + 0.114 ∙ Blue
     static float RGBtoGreyscale(uint8_t red, uint8_t green, uint8_t blue){// convert RGB to grey scale with the NTSC formula which assigns different weights to the RGB components
-    return (float)(0.299 * red +  0.587 * green + 0.114 * blue);
+    return (float)(0.299f * (float)red +  0.587f * (float)green + 0.114f * (float)blue);
     }
 
 
@@ -83,36 +83,48 @@ public:
 	HSVcolor hsvColor;
 	float del_R, del_G, del_B;
 
-	float var_R = ((float)rgbColor.R / 255.0);
-	float var_G = ((float)rgbColor.G / 255.0);
-	float var_B = ((float)rgbColor.B / 255.0);
+	float var_R = ((float)rgbColor.R / 255.0f);
+	float var_G = ((float)rgbColor.G / 255.0f);
+	float var_B = ((float)rgbColor.B / 255.0f);
 
 	float var_Min = MIN(MIN(var_R, var_G), var_B);    //Min. value of RGB
 	float var_Max = MAX(MAX(var_R, var_G), var_B);    //Max. value of RGB
 	float del_Max = var_Max - var_Min;             //Delta RGB value
 
-	hsvColor.V = var_Max;
+/*
+    Serial.println(rgbColor.R);
+    Serial.println(rgbColor.G);
+    Serial.println(rgbColor.B);
+    Serial.println(var_R);
+    Serial.println(var_G);
+    Serial.println(var_B);
+    Serial.println();
+    */
 
-		if (del_Max == 0)                     //This is a gray, no chroma...
+	hsvColor.V = var_Max;
+    //Serial.println(hsvColor.V);
+
+		if (del_Max == 0.0f)                     //This is a gray, no chroma...
 		{
-			hsvColor.H = 0;
-			hsvColor.S = 0;
+			hsvColor.H = 0.0f;
+			hsvColor.S = 0.0f;
 		}
 		else                                    //Chromatic data...
 		{
 			hsvColor.S = del_Max / var_Max;
 
-			del_R = (((var_Max - var_R) / 6.0) + (del_Max / 2)) / del_Max;
-			del_G = (((var_Max - var_G) / 6.0) + (del_Max / 2)) / del_Max;
-			del_B = (((var_Max - var_B) / 6.0) + (del_Max / 2)) / del_Max;
+			del_R = (((var_Max - var_R) / 6.0f) + (del_Max / 2.0f)) / del_Max;
+			del_G = (((var_Max - var_G) / 6.0f) + (del_Max / 2.0f)) / del_Max;
+			del_B = (((var_Max - var_B) / 6.0f) + (del_Max / 2.0f)) / del_Max;
 
 			if (var_R == var_Max) hsvColor.H = del_B - del_G;
-			else if (var_G == var_Max) hsvColor.H = (1.0 / 3.0) + del_R - del_B;
-			else if (var_B == var_Max) hsvColor.H = (2.0 / 3.0) + del_G - del_R;
+			else if (var_G == var_Max) hsvColor.H = (1.0f / 3.0f) + del_R - del_B;
+			else if (var_B == var_Max) hsvColor.H = (2.0f / 3.0f) + del_G - del_R;
 
-			if (hsvColor.H < 0.0) hsvColor.H += 1.0;
-			if (hsvColor.H > 1.0) hsvColor.H -= 1.0;
+			if (hsvColor.H < 0.0f) hsvColor.H += 1.0f;
+			if (hsvColor.H > 1.0f) hsvColor.H -= 1.0f;
 		}
+        
 		return hsvColor;
 }
 
@@ -304,7 +316,7 @@ public:
         if (linePixelsMinlen == 0) {
             line.beginIndex = 0;
             line.endIndex = 0;
-            line.colorTreshold = -1;
+            line.colorTreshold = -1.0f;
             return line;
         }
         
@@ -340,7 +352,7 @@ public:
         }
 
         memset(&line, 0, sizeof(PixelRowBlackLine)); // set all bytes of &line to 0.
-        line.colorTreshold = -1;
+        line.colorTreshold = -1.0f;
         return line;
     }
 
@@ -353,7 +365,7 @@ public:
 
         lastValidLine.beginIndex = 0;
         lastValidLine.endIndex = 0;
-        lastValidLine.colorTreshold = -1;
+        lastValidLine.colorTreshold = -1.0f;
 
         if (linePixelsMinlen == 0) {
             return lastValidLine;
@@ -390,7 +402,7 @@ public:
         }
 
         memset(&line, 0, sizeof(PixelRowBlackLine));
-        line.colorTreshold = -1;
+        line.colorTreshold = -1.0f;
         return line;
     }
 
@@ -519,7 +531,7 @@ public:
     // filter used to eliminate high frequency spikes in pixel color change
     static std::vector<float> simpleMovingAverage_uint8_t(std::vector<float>& row, unsigned int meanSamples) {
         std::vector<float> movingAverage;
-        int localSamplesSum = 0;
+        float localSamplesSum = 0.0f;
         unsigned int localSamplesCount = 0;
         float localAverage = 0.0;
 
@@ -539,8 +551,8 @@ public:
                 localSamplesSum -= row[i - meanSamples];
             }
             
-            if (localSamplesSum == 0) {
-                localAverage = 0;
+            if (localSamplesSum <= 0.001) {
+                localAverage = 00.f;
             }
             else{
                 localAverage = (float)localSamplesSum / (float)localSamplesCount;
