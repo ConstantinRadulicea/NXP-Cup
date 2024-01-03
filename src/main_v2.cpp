@@ -92,7 +92,7 @@ int autoCalibrateLaneLength(){
     {
       for (i = 0; i < (int)pixy.frameWidth; i++)   // read a row of pixels from camera
       {
-        if (pixy.video.getRGB(i, (int)(pixy.frameHeight/2), &r, &g, &b)==0) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
+        if (pixy.video.getRGB(i, (int)(pixy.frameHeight/2), &r, &g, &b)==0, false) // pixy.frameHeight-5 = bottom up, 5 pixels above the bottom edge of the Pixy2 image.
         {
           greyscale = PixelGreyscaleRow::rgb2hsv(RGBcolor{r, g, b}).V;
           //greyscale = PixelGreyscaleRow::RGBtoGreyscale(r, g, b);
