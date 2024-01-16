@@ -3,8 +3,8 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include "SteeringWheel.h"
-#include "ParseNum.h"
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h"
+#include "PurePursuitGeometry.h"
 
 #define SCREEN_CENTER_X 158
 #define LINE_WIDTH_PIXELS 2
@@ -41,7 +41,7 @@ void setup() {
     // Getting the RGB pixel values requires the 'video' program
     res = pixy.changeProg("line");
     Serial.println("% pixy.changeProg(line) = " + String(res));
-    delay(10000);
+    //delay(10000);
 }
 
 void loop() {
