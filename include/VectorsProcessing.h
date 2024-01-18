@@ -54,9 +54,32 @@ private:
     /* data */
 public:
 
-    VectorsProcessing(Point2D carPosition, float laneWidth, float minXaxeAngle){
+    VectorsProcessing(float carPositionX, float carPositionY, float laneWidth, float minXaxeAngle){
+        this->carPosition.x = carPositionX;
+        this->carPosition.y = carPositionY;
         this->minXaxeAngle = minXaxeAngle;
-        this->carPosition = carPosition;
+        this->laneWidth = laneWidth;
+        this->clear();
+    }
+
+    VectorsProcessing(){
+        this->minXaxeAngle = 0.0f;
+        this->carPosition.x = 0;
+        this->carPosition.y = 0;
+        this->laneWidth =  0.0f;
+        this->clear();
+    }
+    
+    void setMinXaxisAngle(float minXaxeAngle){
+         this->minXaxeAngle = minXaxeAngle;
+    }
+
+    void setCarPosition(float x, float y){
+        this->carPosition.x = x;
+        this->carPosition.y = y;
+    }
+
+    void setLaneWidth(float laneWidth){
         this->laneWidth = laneWidth;
     }
 

@@ -5,6 +5,7 @@
 #include "SteeringWheel.h"
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h"
 #include "PurePursuitGeometry.h"
+#include "VectorsProcessing.h"
 
 #define SCREEN_CENTER_X 158
 #define LINE_WIDTH_PIXELS 2
@@ -20,6 +21,7 @@
 
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
 PWMServo driverMotor;
+VectorsProcessing vectorsProcessing;
 Pixy2 pixy;
 int8_t res;
 
@@ -46,6 +48,10 @@ void setup() {
 
 void loop() {
   uint8_t i;
+  LineABC laneMiddleLine;
+  vectorsProcessing.setCarPosition(SCREEN_CENTER_X, 0);
+  vectorsProcessing.setLaneWidth(LANE_WIDTH_PIXELS);
+  vectorsProcessing.setMinXaxisAngle(15.0f * (180.0f / M_PI));
   while (1)
   {
     
@@ -56,18 +62,24 @@ void loop() {
     // print all vectors
     for (i=0; i<pixy.line.numVectors; i++)
     {
+      /*
       sprintf(buf, "line %d: ", i);
       Serial.print(buf);
       pixy.line.vectors[i].print();
+      */
+      vectorsProcessing.addVector(pixy.line.vectors[i]);
     }
-    
+    laneMiddleLine = vectorsProcessing.getMiddleLine();
+    Serial.println("(" + String(laneMiddleLine.Ax, 3) + ")x + " + "(" + String(laneMiddleLine.By, 3) + ")y + " + "(" + String(laneMiddleLine.C, 3) + ") = 0");
+    vectorsProcessing.clear();
+    /*
     // print all intersections
     for (i=0; i<pixy.line.numIntersections; i++)
     {
       sprintf(buf, "intersection %d: ", i);
       Serial.print(buf);
       pixy.line.intersections[i].print();
-    }
+    }*/
   }
 }
 
