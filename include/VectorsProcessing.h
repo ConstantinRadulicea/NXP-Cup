@@ -87,7 +87,10 @@ public:
         if (this->vectorAngleWithXaxis(vec) < this->minXaxeAngle) {
             return;
         }
-        
+        /*
+        vec.print();
+        Serial.println("Carposition: " + String(carPosition.x));
+        */
         if (vec.m_x0 >= carPosition.x && vectorMagnitude(vec) > vectorMagnitude(rightVector)) {
             rightVector = vec;
         }
@@ -109,7 +112,7 @@ public:
         LineABC leftLine, rightLine, middleLine_;
         leftVector_ = this->getLeftVector();
         rightVector_ = this->getRightVector();
-
+        middleLine_ = yAxisABC();
 
         if (!this->isVectorValid(leftVector_) && !this->isVectorValid(rightVector_)){
             return yAxisABC();
@@ -130,8 +133,14 @@ public:
 
         if (!this->isVectorValid(leftVector_)) {
             leftLine = rightLine;
-            leftLine.C -= this->laneWidth;
+            leftLine.C += this->laneWidth;
         }
+
+        leftVector_.print();
+        rightVector_.print();
+
+        Serial.println("(" + String(leftLine.Ax) + ")x + " + "(" + String(leftLine.By) + ")y + " + "(" + String(leftLine.C) + ") = 0");
+        Serial.println("(" + String(rightLine.Ax) + ")x + " + "(" + String(rightLine.By) + ")y + " + "(" + String(rightLine.C) + ") = 0");
 
         middleLine_ = middleLineABC(leftLine, rightLine);
         

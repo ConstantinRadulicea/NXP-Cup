@@ -7,10 +7,10 @@
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 
-#define SCREEN_CENTER_X 158
+#define SCREEN_CENTER_X (int)(78.0f / 2.0f)
 #define LINE_WIDTH_PIXELS 2
-#define LANE_WIDTH_PIXELS 200
-#define LANE_WIDTH_TOLERANCE_PIXELS 10
+#define LANE_WIDTH_PIXELS 20
+#define LANE_WIDTH_TOLERANCE_PIXELS 3
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  42    // 38 max right
@@ -47,31 +47,35 @@ void setup() {
 }
 
 void loop() {
-  uint8_t i;
+  int i;
   LineABC laneMiddleLine;
   vectorsProcessing.setCarPosition(SCREEN_CENTER_X, 0);
   vectorsProcessing.setLaneWidth(LANE_WIDTH_PIXELS);
-  vectorsProcessing.setMinXaxisAngle(15.0f * (180.0f / M_PI));
+  vectorsProcessing.setMinXaxisAngle((15.0f / 180.0f) * M_PI);
   while (1)
   {
     
     char buf[128];
-  
     pixy.line.getAllFeatures();
-
+    Serial.println("Tot lines: " + String((int)pixy.line.numVectors));
     // print all vectors
-    for (i=0; i<pixy.line.numVectors; i++)
+    for (i=0; i < pixy.line.numVectors; i++)
     {
       /*
       sprintf(buf, "line %d: ", i);
       Serial.print(buf);
       pixy.line.vectors[i].print();
       */
+      //pixy.line.vectors[i].print();
       vectorsProcessing.addVector(pixy.line.vectors[i]);
     }
+
     laneMiddleLine = vectorsProcessing.getMiddleLine();
-    Serial.println("(" + String(laneMiddleLine.Ax, 3) + ")x + " + "(" + String(laneMiddleLine.By, 3) + ")y + " + "(" + String(laneMiddleLine.C, 3) + ") = 0");
+    Serial.println("(" + String(laneMiddleLine.Ax) + ")x + " + "(" + String(laneMiddleLine.By) + ")y + " + "(" + String(laneMiddleLine.C) + ") = 0");
+    
+    
     vectorsProcessing.clear();
+    
     /*
     // print all intersections
     for (i=0; i<pixy.line.numIntersections; i++)
