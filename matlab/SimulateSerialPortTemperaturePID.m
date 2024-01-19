@@ -1,7 +1,8 @@
+% delete(arduinoObj)
 clc;
 clear;
 close all;
-% delete(arduinoObj)
+
 
 arduinoObj = serialport("COM6",115200);
 arduinoObj.UserData.time_1 = tic;

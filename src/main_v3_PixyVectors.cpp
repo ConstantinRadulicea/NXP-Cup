@@ -69,16 +69,16 @@ void loop() {
   Point2D carPosition;
   float carLength, laneWidth, lookAheadDistance;
 
-  carPosition.x = SCREEN_CENTER_X;
-  carPosition.y = 0;
+  carPosition.x = (float)SCREEN_CENTER_X;
+  carPosition.y = 0.0f;
 
-  carLength = 10;
-  laneWidth = LANE_WIDTH_PIXELS;
-  lookAheadDistance = 30;
+  carLength = 10.0f;
+  laneWidth = (float)LANE_WIDTH_PIXELS;
+  lookAheadDistance = 30.0f;
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle((15.0f / 180.0f) * M_PI);
+  vectorsProcessing.setMinXaxisAngle((1.0f / 180.0f) * M_PI);
   while (1)
   {
     pixy.line.getAllFeatures();

@@ -56,8 +56,8 @@ public:
 
     VectorsProcessing(){
         this->minXaxeAngle = 0.0f;
-        this->carPosition.x = 0;
-        this->carPosition.y = 0;
+        this->carPosition.x = 0.0f;
+        this->carPosition.y = 0.0f;
         this->laneWidth =  0.0f;
         this->clear();
     }
@@ -108,10 +108,12 @@ public:
         LineABC leftLine, rightLine, middleLine_;
         leftVector_ = this->getLeftVector();
         rightVector_ = this->getRightVector();
-        middleLine_ = yAxisABC();
+        
 
         if (!this->isVectorValid(leftVector_) && !this->isVectorValid(rightVector_)){
-            return yAxisABC();
+            middleLine_ = yAxisABC();
+            middleLine_.C = -this->carPosition.x;
+            return middleLine_;
         }
 
         if (this->isVectorValid(leftVector_)) {
