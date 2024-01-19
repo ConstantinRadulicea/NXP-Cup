@@ -38,19 +38,7 @@ private:
         }
         return true;
     }
-    LineABC vectorToLineABC(Vector vec){
-        LineABC line2;
-        Point2D point1, point2;
 
-        point1.x = (float)vec.m_x0;
-        point1.y = (float)vec.m_y0;
-
-        point2.x = (float)vec.m_x1;
-        point2.y = (float)vec.m_y1;
-
-        line2 = points2lineABC(point1, point2);
-        return line2;
-    }
     /* data */
 public:
 
@@ -60,6 +48,10 @@ public:
         this->minXaxeAngle = minXaxeAngle;
         this->laneWidth = laneWidth;
         this->clear();
+    }
+
+    VectorsProcessing(Point2D carPos, float laneWidth, float minXaxeAngle){
+        VectorsProcessing(carPos.x, carPos.y, laneWidth, minXaxeAngle);
     }
 
     VectorsProcessing(){
@@ -77,6 +69,10 @@ public:
     void setCarPosition(float x, float y){
         this->carPosition.x = x;
         this->carPosition.y = y;
+    }
+
+    void setCarPosition(Point2D carPos){
+        this->carPosition = carPos;
     }
 
     void setLaneWidth(float laneWidth){
@@ -135,13 +131,13 @@ public:
             leftLine = rightLine;
             leftLine.C += this->laneWidth;
         }
-
+/*
         leftVector_.print();
         rightVector_.print();
 
         Serial.println("(" + String(leftLine.Ax) + ")x + " + "(" + String(leftLine.By) + ")y + " + "(" + String(leftLine.C) + ") = 0");
         Serial.println("(" + String(rightLine.Ax) + ")x + " + "(" + String(rightLine.By) + ")y + " + "(" + String(rightLine.C) + ") = 0");
-
+*/
         middleLine_ = middleLineABC(leftLine, rightLine);
         
         return middleLine_;
@@ -151,9 +147,34 @@ public:
         memset(&leftVector, 0, sizeof(leftVector));
         memset(&rightVector, 0, sizeof(rightVector));
     }
+
+    static LineABC vectorToLineABC(Vector vec){
+        LineABC line2;
+        Point2D point1, point2;
+
+        point1.x = (float)vec.m_x0;
+        point1.y = (float)vec.m_y0;
+
+        point2.x = (float)vec.m_x1;
+        point2.y = (float)vec.m_y1;
+
+        line2 = points2lineABC(point1, point2);
+        return line2;
+    }
     
     
     ~VectorsProcessing(){}
+
+    static Vector vectorInvert(Vector vec){
+        Vector vec2;
+        vec2 = vec;
+        vec2.m_x0 = vec.m_x1;
+        vec2.m_y0 = vec.m_y1;
+        vec2.m_x1 = vec.m_x0;
+        vec2.m_y1 = vec.m_y0;
+
+        return vec2;
+    }
 };
 
 

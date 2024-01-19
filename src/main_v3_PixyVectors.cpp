@@ -9,7 +9,7 @@
 
 #define SCREEN_CENTER_X (int)(78.0f / 2.0f)
 #define LINE_WIDTH_PIXELS 2
-#define LANE_WIDTH_PIXELS 20
+#define LANE_WIDTH_PIXELS 25
 #define LANE_WIDTH_TOLERANCE_PIXELS 3
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
@@ -46,44 +46,59 @@ void setup() {
     //delay(10000);
 }
 
+void printDataToSerial(LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo){
+  Serial.print(String(leftLine.Ax) + ',' + String(leftLine.By) + ',' + String(leftLine.C));
+  Serial.print(';');
+  Serial.print(String(rightLine.Ax) + ',' + String(rightLine.By) + ',' + String(rightLine.C));
+  Serial.print(';');
+  Serial.print(String(laneMiddleLine.Ax) + ',' + String(laneMiddleLine.By) + ',' + String(laneMiddleLine.C));
+  Serial.print(';');
+  Serial.print(String(purePersuitInfo.carPos.x) + ',' + String(purePersuitInfo.carPos.y));
+  Serial.print(';');
+  Serial.print(String(purePersuitInfo.nextWayPoint.x) + ',' + String(purePersuitInfo.nextWayPoint.y));
+  Serial.print(';');
+  Serial.print(String(purePersuitInfo.steeringAngle));
+  Serial.println();
+}
+
 void loop() {
   int i;
   LineABC laneMiddleLine;
-  vectorsProcessing.setCarPosition(SCREEN_CENTER_X, 0);
-  vectorsProcessing.setLaneWidth(LANE_WIDTH_PIXELS);
+  Vector vec;
+  PurePersuitInfo purePersuitInfo;
+  Point2D carPosition;
+  float carLength, laneWidth, lookAheadDistance;
+
+  carPosition.x = SCREEN_CENTER_X;
+  carPosition.y = 0;
+
+  carLength = 10;
+  laneWidth = LANE_WIDTH_PIXELS;
+  lookAheadDistance = 30;
+  
+  vectorsProcessing.setCarPosition(carPosition);
+  vectorsProcessing.setLaneWidth(laneWidth);
   vectorsProcessing.setMinXaxisAngle((15.0f / 180.0f) * M_PI);
   while (1)
   {
-    
-    char buf[128];
     pixy.line.getAllFeatures();
-    Serial.println("Tot lines: " + String((int)pixy.line.numVectors));
-    // print all vectors
+    //Serial.println("Tot lines: " + String((int)pixy.line.numVectors));
+
     for (i=0; i < pixy.line.numVectors; i++)
     {
-      /*
-      sprintf(buf, "line %d: ", i);
-      Serial.print(buf);
-      pixy.line.vectors[i].print();
-      */
-      //pixy.line.vectors[i].print();
-      vectorsProcessing.addVector(pixy.line.vectors[i]);
+      vec = pixy.line.vectors[i];
+      vec = VectorsProcessing::vectorInvert(vec);
+      vectorsProcessing.addVector(vec);
     }
 
     laneMiddleLine = vectorsProcessing.getMiddleLine();
-    Serial.println("(" + String(laneMiddleLine.Ax) + ")x + " + "(" + String(laneMiddleLine.By) + ")y + " + "(" + String(laneMiddleLine.C) + ") = 0");
-    
+    //Serial.println("(" + String(laneMiddleLine.Ax) + ")x + " + "(" + String(laneMiddleLine.By) + ")y + " + "(" + String(laneMiddleLine.C) + ") = 0");
+    purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
+
+    printDataToSerial(VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo);
     
     vectorsProcessing.clear();
     
-    /*
-    // print all intersections
-    for (i=0; i<pixy.line.numIntersections; i++)
-    {
-      sprintf(buf, "intersection %d: ", i);
-      Serial.print(buf);
-      pixy.line.intersections[i].print();
-    }*/
   }
 }
 
