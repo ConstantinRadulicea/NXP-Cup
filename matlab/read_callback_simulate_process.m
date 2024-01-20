@@ -7,13 +7,17 @@ function read_callback_simulate_process(src, ~)
         return;
     end
     raw_data = split(raw_data, ";");
-    leftLine_str = split(raw_data(1,1), ",");
-    rightLine_str = split(raw_data(2,1), ",");
-    middleLaneLine_str = split(raw_data(3,1), ",");
-    carPosition_str = split(raw_data(4,1), ",");
-    newWayPointPosition_str = split(raw_data(5,1), ",");
-    steeringWheelAngle = str2double(raw_data(6,1));
+    leftVector_str = split(raw_data(1,1), ",");
+    rightVector_str = split(raw_data(2,1), ",");
+    leftLine_str = split(raw_data(3,1), ",");
+    rightLine_str = split(raw_data(4,1), ",");
+    middleLaneLine_str = split(raw_data(5,1), ",");
+    carPosition_str = split(raw_data(6,1), ",");
+    newWayPointPosition_str = split(raw_data(7,1), ",");
+    steeringWheelAngle = str2double(raw_data(8,1));
 
+    leftVector = str2double(leftVector_str(:, 1))';
+    rightVector = str2double(rightVector_str(:, 1))';
     leftLine = str2double(leftLine_str(:, 1))';
     rightLine = str2double(rightLine_str(:, 1))';
     middleLaneLine = str2double(middleLaneLine_str(:, 1))';
@@ -27,12 +31,12 @@ function read_callback_simulate_process(src, ~)
     xmin = 0;
     xmax = 80;
 
-    [x1, y1] = plotLineABC(leftLine, xmin, xmax, xmin, xmax);
-    [x2, y2] = plotLineABC(rightLine, xmin, xmax, xmin, xmax);
+%     [x1, y1] = plotLineABC(leftLine, xmin, xmax, xmin, xmax);
+%     [x2, y2] = plotLineABC(rightLine, xmin, xmax, xmin, xmax);
     [x3, y3] = plotLineABC(middleLaneLine, xmin, xmax, xmin, xmax);
 
-    plot(x1, y1, x2, y2, x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
-
+%     plot(x1, y1, x2, y2, x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
+    plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
     xlim([xmin xmax])
     ylim([xmin xmax])
 

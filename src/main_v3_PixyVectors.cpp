@@ -8,6 +8,8 @@
 #include "VectorsProcessing.h"
 
 #define SCREEN_CENTER_X (int)(78.0f / 2.0f)
+#define IMAGE_MAX_X 78
+#define IMAGE_MAX_Y 51
 #define LINE_WIDTH_PIXELS 2
 #define LANE_WIDTH_PIXELS 25
 #define LANE_WIDTH_TOLERANCE_PIXELS 3
@@ -46,7 +48,11 @@ void setup() {
     //delay(10000);
 }
 
-void printDataToSerial(LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo){
+void printDataToSerial(Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo){
+  Serial.print(String(leftVector.m_x0) + ',' + String(leftVector.m_y0) + ',' + String(leftVector.m_x1) + ',' + String(leftVector.m_y1));
+  Serial.print(';');
+  Serial.print(String(rightVector.m_x0) + ',' + String(rightVector.m_y0) + ',' + String(rightVector.m_x1) + ',' + String(rightVector.m_y1));
+  Serial.print(';');
   Serial.print(String(leftLine.Ax) + ',' + String(leftLine.By) + ',' + String(leftLine.C));
   Serial.print(';');
   Serial.print(String(rightLine.Ax) + ',' + String(rightLine.By) + ',' + String(rightLine.C));
@@ -63,11 +69,14 @@ void printDataToSerial(LineABC leftLine, LineABC rightLine, LineABC laneMiddleLi
 
 void loop() {
   int i;
-  LineABC laneMiddleLine;
+  LineABC laneMiddleLine, mirrorLine;
   Vector vec;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
   float carLength, laneWidth, lookAheadDistance;
+
+  mirrorLine = xAxisABC();
+  mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
 
   carPosition.x = (float)SCREEN_CENTER_X;
   carPosition.y = 0.0f;
@@ -87,7 +96,7 @@ void loop() {
     for (i=0; i < pixy.line.numVectors; i++)
     {
       vec = pixy.line.vectors[i];
-      vec = VectorsProcessing::vectorInvert(vec);
+      vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
       vectorsProcessing.addVector(vec);
     }
 
@@ -95,7 +104,7 @@ void loop() {
     //Serial.println("(" + String(laneMiddleLine.Ax) + ")x + " + "(" + String(laneMiddleLine.By) + ")y + " + "(" + String(laneMiddleLine.C) + ") = 0");
     purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
-    printDataToSerial(VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo);
+    printDataToSerial(vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo);
     
     vectorsProcessing.clear();
     

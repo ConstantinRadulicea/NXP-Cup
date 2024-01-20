@@ -125,13 +125,11 @@ public:
         }
 
         if (!this->isVectorValid(rightVector_)) {
-            rightLine = leftLine;
-            rightLine.C -= this->laneWidth;
+            rightLine = parallelLineAtDistance(leftLine, this->laneWidth, 1);
         }
 
         if (!this->isVectorValid(leftVector_)) {
-            leftLine = rightLine;
-            leftLine.C += this->laneWidth;
+            leftLine = parallelLineAtDistance(rightLine, this->laneWidth, 0);
         }
 /*
         leftVector_.print();
@@ -176,6 +174,26 @@ public:
         vec2.m_y1 = vec.m_y0;
 
         return vec2;
+    }
+
+    static Vector mirrorVector(LineABC line, Vector vec){
+        Point2D point1, point2;
+
+        point1.x = (float)vec.m_x0;
+        point1.y = (float)vec.m_y0;
+
+        point2.x = (float)vec.m_x1;
+        point2.y = (float)vec.m_y1;
+
+        point1 = mirrorImage(line, point1);
+        point2 = mirrorImage(line, point2);
+
+        vec.m_x0 = (uint8_t)point1.x;
+        vec.m_y0 = (uint8_t)point1.y;
+
+        vec.m_x1 = (uint8_t)point2.x;
+        vec.m_y1 = (uint8_t)point2.y;
+        return vec;
     }
 };
 
