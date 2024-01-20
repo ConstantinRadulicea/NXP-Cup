@@ -90,7 +90,7 @@ public:
         if (vec.m_x0 >= carPosition.x && vectorMagnitude(vec) > vectorMagnitude(rightVector)) {
             rightVector = vec;
         }
-        else if(vectorMagnitude(vec) > vectorMagnitude(leftVector)){
+        else if(vec.m_x0 < carPosition.x && vectorMagnitude(vec) > vectorMagnitude(leftVector)){
             leftVector = vec;
         }
     }
@@ -138,7 +138,7 @@ public:
         Serial.println("(" + String(leftLine.Ax) + ")x + " + "(" + String(leftLine.By) + ")y + " + "(" + String(leftLine.C) + ") = 0");
         Serial.println("(" + String(rightLine.Ax) + ")x + " + "(" + String(rightLine.By) + ")y + " + "(" + String(rightLine.C) + ") = 0");
 */
-        middleLine_ = middleLineABC(leftLine, rightLine);
+        bisectorsOfTwoLines(leftLine, rightLine, &middleLine_, NULL);
         
         return middleLine_;
     }
