@@ -88,9 +88,9 @@ void loop() {
   vectorsProcessing.setMinXaxisAngle((1.0f / 180.0f) * M_PI);
   while (1)
   {
+    vectorsProcessing.clear();
     pixy.line.getAllFeatures();
     //Serial.println("Tot lines: " + String((int)pixy.line.numVectors));
-
     for (i=0; i < pixy.line.numVectors; i++)
     {
       vec = pixy.line.vectors[i];
@@ -103,7 +103,7 @@ void loop() {
 
     printDataToSerial(vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo);
     
-    vectorsProcessing.clear();
+    
     
     steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
     driverMotor.write(100);
