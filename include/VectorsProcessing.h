@@ -103,6 +103,14 @@ public:
         return rightVector;
     }
 
+    void setLeftVector(Vector vec){
+        this->leftVector = vec;
+    }
+
+    void setRightVector(Vector vec){
+        this->rightVector = vec;
+    }
+
     LineABC getMiddleLine(){
         Vector leftVector_, rightVector_;
         LineABC leftLine, rightLine, middleLine_;
