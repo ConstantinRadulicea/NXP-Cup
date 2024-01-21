@@ -1,4 +1,4 @@
-function [X Y] = plotLineABC(line, xmin, xmax, ymin, ymax)
+function [X, Y] = plotLineABC(line, xmin, xmax, ymin, ymax)
 %PLOTLINEABC Summary of this function goes here
 %   Detailed explanation goes here
     a = line(1);

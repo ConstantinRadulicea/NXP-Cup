@@ -5,8 +5,6 @@
 
 #include "SlowServo.h" // smoother control over the servo
 
-#define STEERING_WHEEL_MAX_ANGLE_SPAN 90
-
 class SteeringWheel : public SlowServo
 {
 private:
@@ -28,7 +26,7 @@ public:
         this->ServoMiddleAngle = (int) servo_middle_angle;
         this->ServoMaxRightAngle = (int) servo_max_right_angle;
         this->ServoAngleSpan = abs((int)servo_max_right_angle - (int)servo_max_left_angle);
-        this->ServoAngleSpan_per_SteeringWheelAngle = abs((float)this->ServoAngleSpan / (float)STEERING_WHEEL_MAX_ANGLE_SPAN);
+        this->ServoAngleSpan_per_SteeringWheelAngle = abs((float)this->ServoAngleSpan / (float)abs(((int)servo_max_right_angle - (int)servo_max_left_angle)));
         
         this->SteeringWheel_MaxRightAngle = -(float)((float)abs((int)servo_max_right_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringWheelAngle);
         this->SteeringWheel_MaxLeftAngle = (float)((float)abs((int)servo_max_left_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringWheelAngle);
@@ -36,7 +34,7 @@ public:
     ~SteeringWheel(){}
 
 
-    void setSteeringAngle(float steering_angle){// It interprets the received value as the steering wheel angle and converts it to the corresponding angle for the servo motor
+    void setSteeringAngleDeg(float steering_angle){// It interprets the received value as the steering wheel angle and converts it to the corresponding angle for the servo motor
         int new_servo_angle = 90;
 
         if(steering_angle < 0){ // going right

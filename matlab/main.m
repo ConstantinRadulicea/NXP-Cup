@@ -1,0 +1,12 @@
+% delete(arduinoObj)
+clc;
+clear;
+close all;
+
+
+arduinoObj = serialport("COM6",115200);
+configureTerminator(arduinoObj,"CR/LF");
+flush(arduinoObj);
+configureCallback(arduinoObj,"terminator",@read_callback_serialport);
+
+

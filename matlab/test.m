@@ -10,5 +10,10 @@ plotLineABC(leftLine, xmin, xmax, xmin, xmax);
 
 
 
-    xlim([xmin xmax])
-    ylim([xmin xmax])
+xlim([xmin xmax])
+ylim([xmin xmax])
+
+
+theNumber = 10;
+myText = sprintf('The number is %.2f', theNumber);
+text(10, 10, myText);

@@ -1,5 +1,4 @@
-function read_callback_simulate_process(src, ~)
-    time_2 = toc(src.UserData.time_1);
+function read_callback_serialport(src, ~)
     
     raw_data = readline(src);
     raw_data_chars = convertStringsToChars(raw_data);
@@ -33,10 +32,14 @@ function read_callback_simulate_process(src, ~)
 
 %     [x1, y1] = plotLineABC(leftLine, xmin, xmax, xmin, xmax);
 %     [x2, y2] = plotLineABC(rightLine, xmin, xmax, xmin, xmax);
+    
     [x3, y3] = plotLineABC(middleLaneLine, xmin, xmax, xmin, xmax);
 
 %     plot(x1, y1, x2, y2, x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
+
     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
+    myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
+    text(xmin, xmax-2, myText);
     xlim([xmin xmax])
     ylim([xmin xmax])
 

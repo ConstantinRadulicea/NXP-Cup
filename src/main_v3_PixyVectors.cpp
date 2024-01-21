@@ -10,9 +10,7 @@
 #define SCREEN_CENTER_X (int)(78.0f / 2.0f)
 #define IMAGE_MAX_X 78
 #define IMAGE_MAX_Y 51
-#define LINE_WIDTH_PIXELS 2
-#define LANE_WIDTH_PIXELS 25
-#define LANE_WIDTH_TOLERANCE_PIXELS 3
+#define LANE_WIDTH_PIXELS 45
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  42    // 38 max right
@@ -37,7 +35,7 @@ void setup() {
     steeringWheel.attach(STEERING_SERVO_PIN);
     driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
     driverMotor.write(90);
-    steeringWheel.setSteeringAngle(0);
+    steeringWheel.setSteeringAngleDeg(0);
     
     // we must initialize the pixy object
     res = pixy.init();
@@ -45,7 +43,7 @@ void setup() {
     // Getting the RGB pixel values requires the 'video' program
     res = pixy.changeProg("line");
     Serial.println("% pixy.changeProg(line) = " + String(res));
-    //delay(10000);
+    delay(10000);
 }
 
 void printDataToSerial(Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo){
@@ -101,13 +99,14 @@ void loop() {
     }
 
     laneMiddleLine = vectorsProcessing.getMiddleLine();
-    //Serial.println("(" + String(laneMiddleLine.Ax) + ")x + " + "(" + String(laneMiddleLine.By) + ")y + " + "(" + String(laneMiddleLine.C) + ") = 0");
     purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
     printDataToSerial(vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo);
     
     vectorsProcessing.clear();
     
+    steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
+    driverMotor.write(100);
   }
 }
 
