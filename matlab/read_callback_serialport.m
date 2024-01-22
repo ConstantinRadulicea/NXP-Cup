@@ -42,7 +42,7 @@ function read_callback_serialport(src, ~)
     myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
     text(xmin, xmax-2, myText);
     myText = sprintf('Gas: %.2f%', carAcceleration * 100);
-    text(xmin, xmax-2, myText);
+    text(xmin, xmax-4, myText);
     xlim([xmin xmax])
     ylim([xmin xmax])
 
