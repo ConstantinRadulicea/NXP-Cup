@@ -7,14 +7,20 @@
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+#define MIN_SPEED (int)100
+#define MAX_SPEED (int)150
 #define SCREEN_CENTER_X (int)(78.0f / 2.0f)
 #define IMAGE_MAX_X 78
 #define IMAGE_MAX_Y 51
-#define LANE_WIDTH_PIXELS 45
+#define LANE_WIDTH_PIXELS 50
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
-#define STEERING_SERVO_ANGLE_MAX_RIGHT  42    // 38 max right
-#define STEERING_SERVO_ANGLE_MAX_LEFT   130   // 135 max left
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right
+#define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
+#define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
 #define STEERING_SERVO_PIN  3
 #define DRIVER_MOTOR_PIN  9
@@ -71,7 +77,7 @@ void loop() {
   Vector vec;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
-  float carLength, laneWidth, lookAheadDistance;
+  float carLength, laneWidth, lookAheadDistance, carSpeed;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
@@ -79,9 +85,10 @@ void loop() {
   carPosition.x = (float)SCREEN_CENTER_X;
   carPosition.y = 0.0f;
 
-  carLength = 10.0f;
   laneWidth = (float)LANE_WIDTH_PIXELS;
-  lookAheadDistance = 30.0f;
+  carLength = (17.5f / 53.5f) * laneWidth;
+  
+  lookAheadDistance = (30.0f / 53.5f) * laneWidth;
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
@@ -104,7 +111,10 @@ void loop() {
     printDataToSerial(vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo);
     
     steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
-    driverMotor.write(100);
+
+    carSpeed = abs(MIN((((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle)) / (float)STEERING_SERVO_MAX_ANGLE) * MAX_SPEED, MAX_SPEED));
+    carSpeed = MAX((int)carSpeed, MIN_SPEED);
+    driverMotor.write((int)carSpeed);
   }
 }
 

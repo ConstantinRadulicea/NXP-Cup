@@ -80,9 +80,11 @@ public:
     }
 
     void addVector(Vector vec){
+        /*
         if (this->vectorAngleWithXaxis(vec) < this->minXaxeAngle) {
             return;
         }
+        */
         /*
         vec.print();
         Serial.println("Carposition: " + String(carPosition.x));
