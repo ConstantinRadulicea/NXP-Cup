@@ -5,9 +5,9 @@
 #include "PWMServo.h"
 #include <map>
 
-#define CALLBACK_TIMER 1000*15
 #define DEFAULT_ANGLE_INCRESE 4
-#define DEFAULT_UPDATE_TIMEOUT 10
+#define DEFAULT_UPDATE_TIMEOUT_MS 10
+#define CALLBACK_TIMER_CLOCKS (1000 * DEFAULT_UPDATE_TIMEOUT_MS)
 
 class SlowServo : public PWMServo
 {
@@ -63,7 +63,7 @@ public:
         this->finalAngle = 90;
         this->tempAngle = 90;
         this->angleIncrease = DEFAULT_ANGLE_INCRESE;
-        this->UpdateTimeout_ms = DEFAULT_UPDATE_TIMEOUT;
+        this->UpdateTimeout_ms = DEFAULT_UPDATE_TIMEOUT_MS;
         this->LastUpdateTime_ms = 0;
     }
 
@@ -101,7 +101,7 @@ public:
         nrInstances = SlowServo::instances.size();
         SlowServo::instances[InstanceID] = this;
         if (nrInstances <= 0) {
-            SlowServo::timer.begin(SlowServo::SlowWriteCallback, CALLBACK_TIMER);
+            SlowServo::timer.begin(SlowServo::SlowWriteCallback, CALLBACK_TIMER_CLOCKS);
         }
     }
     void setUpdateTimeout_ms(unsigned int milliseconds){

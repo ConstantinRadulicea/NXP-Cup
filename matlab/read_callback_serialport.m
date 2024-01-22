@@ -14,6 +14,7 @@ function read_callback_serialport(src, ~)
     carPosition_str = split(raw_data(6,1), ",");
     newWayPointPosition_str = split(raw_data(7,1), ",");
     steeringWheelAngle = str2double(raw_data(8,1));
+    carAcceleration = str2double(raw_data(9,1));
 
     leftVector = str2double(leftVector_str(:, 1))';
     rightVector = str2double(rightVector_str(:, 1))';
@@ -39,6 +40,8 @@ function read_callback_serialport(src, ~)
 
     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
     myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
+    text(xmin, xmax-2, myText);
+    myText = sprintf('Gas: %.2f%', carAcceleration * 100);
     text(xmin, xmax-2, myText);
     xlim([xmin xmax])
     ylim([xmin xmax])

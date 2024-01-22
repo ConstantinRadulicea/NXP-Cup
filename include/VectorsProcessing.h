@@ -80,29 +80,29 @@ public:
     }
 
     void addVector(Vector vec){
-        /*
+        
         if (this->vectorAngleWithXaxis(vec) < this->minXaxeAngle) {
             return;
         }
-        */
+        
         /*
         vec.print();
         Serial.println("Carposition: " + String(carPosition.x));
         */
-        if (vec.m_x0 >= carPosition.x && vectorMagnitude(vec) > vectorMagnitude(rightVector)) {
-            rightVector = vec;
+        if (((float)vec.m_x0 >= carPosition.x) && (vectorMagnitude(vec) > vectorMagnitude(this->rightVector))) {
+            this->rightVector = vec;
         }
-        else if(vec.m_x0 < carPosition.x && vectorMagnitude(vec) > vectorMagnitude(leftVector)){
-            leftVector = vec;
+        else if(((float)vec.m_x0 < carPosition.x) && (vectorMagnitude(vec) > vectorMagnitude(this->leftVector))){
+            this->leftVector = vec;
         }
     }
 
     Vector getLeftVector(){
-        return leftVector;
+        return this->leftVector;
     }
     
     Vector getRightVector(){
-        return rightVector;
+        return this->rightVector;
     }
 
     void setLeftVector(Vector vec){
