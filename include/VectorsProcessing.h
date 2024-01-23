@@ -32,8 +32,8 @@ private:
     }
     bool isVectorValid(Vector &vec){
         Vector invalidVector;
-        memset(&invalidVector, 0, sizeof(invalidVector));
-        if (memcmp(&vec, &invalidVector, sizeof(vec)) == 0){
+        if (vec.m_x0 == vec.m_x1 && vec.m_y0 == vec.m_y1)
+        {
             return false;
         }
         return true;

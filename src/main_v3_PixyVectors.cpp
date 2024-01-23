@@ -69,7 +69,7 @@ void printDataToSerial(Vector leftVector, Vector rightVector, LineABC leftLine, 
   Serial.print(';');
   Serial.print(String(purePersuitInfo.steeringAngle));
   Serial.print(';');
-  Serial.print(String(carAcceleration, 4));
+  Serial.print(String(carAcceleration));
   Serial.println();
 }
 
@@ -97,28 +97,31 @@ void loop() {
   vectorsProcessing.setMinXaxisAngle((1.0f / 180.0f) * M_PI);
   while (1)
   {
+    Serial.println("% Read lines");
     vectorsProcessing.clear();
-    if(pixy.line.getAllFeatures(LINE_VECTOR) < (int8_t)0){
-      continue;
+    if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
+      for (i=0; i < pixy.line.numVectors; i++)
+      {
+        vec = pixy.line.vectors[i];
+        vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
+        Serial.print('%');
+        vec.print();
+        vectorsProcessing.addVector(vec);
+      }
+      Serial.println("%Iteration");
     }
-    //Serial.println("Tot lines: " + String((int)pixy.line.numVectors));
-    for (i=0; i < pixy.line.numVectors; i++)
-    {
-      vec = pixy.line.vectors[i];
-      vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-      vectorsProcessing.addVector(vec);
-    }
-
+    Serial.println("% Get middle line");
     laneMiddleLine = vectorsProcessing.getMiddleLine();
+    Serial.println("% Get Steering angle");
     purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
-    carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle)) / (float)STEERING_SERVO_MAX_ANGLE) * MAX_SPEED, (float)MAX_SPEED);
-    carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
-
-    printDataToSerial(vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f)/90.0f);
-    
+	  carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
+	  carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
+    Serial.println("% Print data to matlab");
+    printDataToSerial(vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
+    Serial.println("% Steering wheel");
     steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
-
+    Serial.println("% gas");
     driverMotor.write((int)carSpeed);
   }
 }
