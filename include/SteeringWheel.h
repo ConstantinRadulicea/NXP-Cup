@@ -20,7 +20,8 @@ private:
     /* data */
 public:
     //                                              130                                    90                                       40
-    SteeringWheel(unsigned int servo_max_left_angle = 0, unsigned int servo_middle_angle = 90, unsigned int servo_max_right_angle = 180) : SlowServo(){
+    SteeringWheel(unsigned int servo_max_left_angle = 0, unsigned int servo_middle_angle = 90, unsigned int servo_max_right_angle = 180, unsigned int milliseconds = 0) : SlowServo(){
+        this->setUpdateTimeout_ms(milliseconds);
         this->SteeringWheelAngle = 0;
         this->ServoMaxLeftAngle = (int) servo_max_left_angle;
         this->ServoMiddleAngle = (int) servo_middle_angle;

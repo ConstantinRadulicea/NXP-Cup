@@ -6,7 +6,8 @@
 #include <map>
 
 #define DEFAULT_ANGLE_INCRESE 4
-#define DEFAULT_UPDATE_TIMEOUT_MS 10
+#define MIN_UPDATE_TIMEOUT_MS 10
+#define DEFAULT_UPDATE_TIMEOUT_MS MIN_UPDATE_TIMEOUT_MS
 #define CALLBACK_TIMER_CLOCKS (1000 * DEFAULT_UPDATE_TIMEOUT_MS)
 
 class SlowServo : public PWMServo
@@ -86,7 +87,13 @@ public:
     }
 
     void SlowWrite(int angleArg, unsigned int milliseconds, unsigned int angleIncrease){
-        if (angleArg == this->tempAngle) {
+        if(milliseconds < MIN_UPDATE_TIMEOUT_MS){
+            this->tempAngle = angleArg;
+            this->finalAngle = angleArg;
+            this->write(angleArg);
+            return;
+        }
+        else if (angleArg == this->tempAngle) {
             this->finalAngle = this->tempAngle;
             return;
         }
