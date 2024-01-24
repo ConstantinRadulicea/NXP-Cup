@@ -6,6 +6,9 @@
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h"
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
+#include "aproximatePixyVector.h"
+
+#define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -16,7 +19,7 @@
 #define IMAGE_MAX_X 78
 #define IMAGE_MAX_Y 51
 #define LANE_WIDTH_PIXELS 50
-#define BLACK_COLOR_TRESHOLD 0.1f // 0=black, 1=white
+#define BLACK_COLOR_TRESHOLD 0.25f // 0=black, 1=white
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right
@@ -37,6 +40,8 @@ void setup() {
     // serial Initialization
     Serial.begin(115200);
     delay(100);
+    //while (!Serial) delay(100);
+    
 
     // Initialization and attachment of the servo and motor
     steeringWheel.attach(STEERING_SERVO_PIN);
@@ -112,33 +117,36 @@ void loop() {
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vectorsProcessing.addVector(vec);
       }
-      if (pixy.line.numVectors > 0){
-        while (pixy.changeProg("video") != PIXY_RESULT_OK);
-        delay(25);
+      leftVectorOld = vectorsProcessing.getLeftVector();
+      rightVectorOld = vectorsProcessing.getRightVector();
 
-        vec = vectorsProcessing.getLeftVector();
-        leftVectorOld = vec;
-        vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-        aproximateVector(pixy, vec, BLACK_COLOR_TRESHOLD);
+      #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
+      if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
+        while (pixy.changeProg("video") != PIXY_RESULT_OK);
+        delay(30);
+
+        vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
+        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD);
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vectorsProcessing.setLeftVector(vec);
 
-        vec = vectorsProcessing.getRightVector();
-        rightVectorOld = vec;
-        vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-        aproximateVector(pixy, vec, BLACK_COLOR_TRESHOLD);
+        vec = VectorsProcessing::mirrorVector(mirrorLine, rightVectorOld);
+        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD);
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vectorsProcessing.setRightVector(vec);
         
         while (pixy.changeProg("line") != PIXY_RESULT_OK);
       }
+      #endif
     }
     laneMiddleLine = vectorsProcessing.getMiddleLine();
     purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
 	  carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
 	  carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
+    
     printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
+    
     steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
     driverMotor.write((int)carSpeed);
     Serial.println("%" + String(millis() - timeStart));
