@@ -99,9 +99,9 @@ void loop() {
   carPosition.y = 0.0f;
 
   laneWidth = (float)LANE_WIDTH_PIXELS;
-  carLength = (17.5f / 53.5f) * laneWidth;
+  carLength = (17.5f / 55.0f) * laneWidth;
   
-  lookAheadDistance = (30.0f / 53.5f) * laneWidth;
+  lookAheadDistance = (30.0f / 55.0f) * laneWidth;
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
