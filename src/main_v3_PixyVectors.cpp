@@ -149,7 +149,8 @@ void loop() {
     
     steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
     driverMotor.write((int)carSpeed);
-    Serial.println("%" + String(millis() - timeStart));
+
+    Serial.println("% LoopTime: " + String(millis() - timeStart) + " ms");
   }
 }
 
