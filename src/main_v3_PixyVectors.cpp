@@ -19,7 +19,7 @@
 #define IMAGE_MAX_X 78
 #define IMAGE_MAX_Y 51
 #define LANE_WIDTH_PIXELS 50
-#define BLACK_COLOR_TRESHOLD 0.25f // 0=black, 1=white
+#define BLACK_COLOR_TRESHOLD 0.15f // 0=black, 1=white
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right

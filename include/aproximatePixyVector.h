@@ -23,8 +23,8 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
 
     minX = 5;
     minY = 5;
-	maxX = pixy.frameWidth;     // 315
-	maxY = pixy.frameHeight;    // 207
+	maxX = ((int)pixy.frameWidth);     // 315
+	maxY = ((int)pixy.frameHeight);    // 207
 	vectorMaxX = 78;
 	vectorMaxY = 51;
 
