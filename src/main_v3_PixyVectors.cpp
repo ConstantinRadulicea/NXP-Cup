@@ -21,7 +21,7 @@
 #define LANE_WIDTH_PIXELS 50
 #define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
 
-#define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
+#define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
@@ -38,8 +38,8 @@ int8_t res;
 
 void setup() {
     // serial Initialization
-    // Serial.begin(115200);
-    delay(100);
+    //Serial.begin(115200);
+    //delay(100);
     //while (!Serial) delay(100);
     
 
@@ -105,7 +105,7 @@ void loop() {
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle((5.0f / 180.0f) * M_PI);
+  vectorsProcessing.setMinXaxisAngle((2.0f / 180.0f) * M_PI);
   while (1)
   {
     timeStart = millis();
