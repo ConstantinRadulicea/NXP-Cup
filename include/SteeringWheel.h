@@ -39,7 +39,7 @@ public:
         int new_servo_angle = 90;
 
         if(steering_angle < 0){ // going right
-            steering_angle = std::max(steering_angle, this->SteeringWheel_MaxRightAngle);
+            steering_angle = MAX(steering_angle, this->SteeringWheel_MaxRightAngle);
             this->SteeringWheelAngle = steering_angle;
 
             steering_angle = -steering_angle;
@@ -53,7 +53,7 @@ public:
         }
 
         else if(steering_angle > 0){    // going left
-            steering_angle = std::min(steering_angle, this->SteeringWheel_MaxLeftAngle);
+            steering_angle = MIN(steering_angle, this->SteeringWheel_MaxLeftAngle);
             this->SteeringWheelAngle = steering_angle;
 
             if(this->ServoMaxLeftAngle < this->ServoMiddleAngle){

@@ -4,7 +4,7 @@ clear;
 close all;
 
 
-arduinoObj = serialport("COM6",115200);
+arduinoObj = serialport("COM4",115200);
 arduinoObj.UserData.Debug = ["ciao"];
 configureTerminator(arduinoObj,"CR/LF");
 flush(arduinoObj);

@@ -3,7 +3,10 @@
 
 #include "Arduino.h"
 #include "PWMServo.h"
-#include <map>
+//#include <map>
+
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#define MAX(a,b) ((a)>(b)?(a):(b))
 
 #define DEFAULT_ANGLE_INCRESE 4
 #define MIN_UPDATE_TIMEOUT_MS 10
@@ -14,8 +17,8 @@ class SlowServo : public PWMServo
 {
 private:
     static unsigned int curID;
-    static std::map<unsigned int, SlowServo*> instances;
-    static IntervalTimer timer;
+    //static std::map<unsigned int, SlowServo*> instances;
+    //static IntervalTimer timer;
 
     unsigned int InstanceID;
     int finalAngle;
@@ -24,7 +27,7 @@ private:
     unsigned int UpdateTimeout_ms;
     int angleIncrease;
 
-
+/*
     static void SlowWriteCallback(){
         //Serial.println("Callback: " + String(millis()));
         auto instances_ = SlowServo::GetMapOfActiveObjects();
@@ -37,6 +40,7 @@ private:
             SlowServo::GetTimer().end();
         }
     }
+    
     void UpdateTempAngle(){
         if((millis() - LastUpdateTime_ms) >= UpdateTimeout_ms){
             if (finalAngle != tempAngle)
@@ -58,6 +62,7 @@ private:
             }
         }
     }
+    */
 public:
     SlowServo() : PWMServo() {
         this->InstanceID = curID++;
@@ -69,11 +74,13 @@ public:
     }
 
     ~SlowServo(){
+        /*
         if (SlowServo::instances.find(InstanceID) != SlowServo::instances.end()) {
             SlowServo::instances.erase(InstanceID);
         }
+        */
     }
-
+/*
     static std::map<unsigned int, SlowServo*>& GetMapOfActiveObjects() { 
         return instances;
     }
@@ -81,7 +88,7 @@ public:
     static IntervalTimer& GetTimer(){
         return timer;
     }
-
+*/
     void SlowWrite(int angleArg){
         this->SlowWrite(angleArg, this->UpdateTimeout_ms, this->angleIncrease);
     }
@@ -105,11 +112,13 @@ public:
         this->finalAngle = angleArg;
         this->UpdateTimeout_ms = milliseconds;
         this->angleIncrease = angleIncrease;
-        nrInstances = SlowServo::instances.size();
-        SlowServo::instances[InstanceID] = this;
+        //nrInstances = SlowServo::instances.size();
+        //SlowServo::instances[InstanceID] = this;
+        /*
         if (nrInstances <= 0) {
             SlowServo::timer.begin(SlowServo::SlowWriteCallback, CALLBACK_TIMER_CLOCKS);
         }
+        */
     }
     void setUpdateTimeout_ms(unsigned int milliseconds){
         this->UpdateTimeout_ms = milliseconds;
@@ -136,7 +145,7 @@ public:
 };
 
 unsigned int SlowServo::curID = 0;
-std::map<unsigned int, SlowServo*> SlowServo::instances;
-IntervalTimer SlowServo::timer;
+//std::map<unsigned int, SlowServo*> SlowServo::instances;
+//IntervalTimer SlowServo::timer;
 
 #endif

@@ -7,6 +7,7 @@
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
+#include <PWMServo.h>
 
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 
@@ -14,7 +15,7 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 #define MIN_SPEED (int)100
-#define MAX_SPEED (int)105
+#define MAX_SPEED (int)150
 #define SCREEN_CENTER_X (int)(78.0f / 2.0f)
 #define IMAGE_MAX_X 78
 #define IMAGE_MAX_Y 51
@@ -38,10 +39,10 @@ int8_t res;
 
 void setup() {
     // serial Initialization
-    //Serial.begin(115200);
-    //delay(100);
-    //while (!Serial) delay(100);
-    
+    do{
+      Serial.begin(115200);
+      delay(100);
+    }while (!Serial);
 
     // Initialization and attachment of the servo and motor
     steeringWheel.attach(STEERING_SERVO_PIN);
@@ -99,13 +100,13 @@ void loop() {
   carPosition.y = 0.0f;
 
   laneWidth = (float)LANE_WIDTH_PIXELS;
-  carLength = (17.5f / 55.0f) * laneWidth;
+  carLength = (17.5f / 53.5f) * laneWidth;
   
-  lookAheadDistance = (30.0f / 55.0f) * laneWidth;
+  lookAheadDistance = (20.0f / 53.5f) * laneWidth;
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle((5.0f / 180.0f) * M_PI);
+  vectorsProcessing.setMinXaxisAngle((1.0f / 180.0f) * M_PI);
   while (1)
   {
     timeStart = millis();
