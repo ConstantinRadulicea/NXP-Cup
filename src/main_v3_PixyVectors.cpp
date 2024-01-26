@@ -14,12 +14,12 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 #define MIN_SPEED (int)100
-#define MAX_SPEED (int)150
+#define MAX_SPEED (int)105
 #define SCREEN_CENTER_X (int)(78.0f / 2.0f)
 #define IMAGE_MAX_X 78
 #define IMAGE_MAX_Y 51
 #define LANE_WIDTH_PIXELS 50
-#define BLACK_COLOR_TRESHOLD 0.15f // 0=black, 1=white
+#define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
 
 #define STEERING_SERVO_ANGLE_MIDDLE     85    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right
@@ -38,7 +38,7 @@ int8_t res;
 
 void setup() {
     // serial Initialization
-    Serial.begin(115200);
+    // Serial.begin(115200);
     delay(100);
     //while (!Serial) delay(100);
     
@@ -136,6 +136,7 @@ void loop() {
         vectorsProcessing.setRightVector(vec);
         
         while (pixy.changeProg("line") != PIXY_RESULT_OK);
+        delay(10);
       }
       #endif
     }

@@ -3,7 +3,7 @@ function read_callback_serialport(src, ~)
     raw_data = readline(src);
     raw_data_chars = convertStringsToChars(raw_data);
     if(raw_data_chars(1) == '%')
-%         raw_data
+         raw_data
 %         src.UserData.Debug = [raw_data; src.UserData.Debug];
 %         src.UserData.Debug = src.UserData.Debug(1:min(end, 50), 1);
         return;
