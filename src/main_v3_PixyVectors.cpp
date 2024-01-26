@@ -105,7 +105,7 @@ void loop() {
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle((2.0f / 180.0f) * M_PI);
+  vectorsProcessing.setMinXaxisAngle((5.0f / 180.0f) * M_PI);
   while (1)
   {
     timeStart = millis();
