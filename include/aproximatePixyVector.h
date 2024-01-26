@@ -16,8 +16,7 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
 	int minX, minY, maxX, maxY, vectorMaxX, vectorMaxY;
 	int xRight, xLeft, yUp, yDown, xFound, yFound;
 
-    if (!VectorsProcessing::isVectorValid(vec))
-    {
+    if (!VectorsProcessing::isVectorValid(vec)) {
         return 0;
     }
 
@@ -35,8 +34,7 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
 	vectorLine = VectorsProcessing::vectorToLineABC(vec);
 	perpendicularLine = perpendicularToLinePassingThroughPointABC(vectorLine, midPoint_);
 
-	if (!isLineParallelToYaxis(perpendicularLine))
-	{
+	if (!isLineParallelToYaxis(perpendicularLine)) {
 		xRight = (int)roundf(midPoint_.x);
 		xLeft = (int)roundf(midPoint_.x-1.0f);
 		while (xRight <= maxX || xLeft >= minX) {

@@ -40,9 +40,11 @@ int8_t res;
 void setup() {
     // serial Initialization
     Serial.begin(115200);
+    /*
     while (!Serial){
       delay(100);
     }
+    */
 
     // Initialization and attachment of the servo and motor
     steeringWheel.attach(STEERING_SERVO_PIN);
