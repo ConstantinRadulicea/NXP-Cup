@@ -9,6 +9,7 @@
 #include "aproximatePixyVector.h"
 #include <PWMServo.h>
 
+#define ENABLE_SERIAL_PRINT 0
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -39,10 +40,12 @@ int8_t res;
 
 void setup() {
     // serial Initialization
-    Serial.begin(115200);
-    while (!Serial){
-      delay(100);
-    }
+    #if ENABLE_SERIAL_PRINT == 1
+      Serial.begin(115200);
+      while (!Serial){
+        delay(100);
+      }
+    #endif
 
     // Initialization and attachment of the servo and motor
     steeringWheel.attach(STEERING_SERVO_PIN);
@@ -52,10 +55,15 @@ void setup() {
     
     // we must initialize the pixy object
     res = pixy.init();
-    Serial.println("% pixy.init() = " + String(res));
+    #if ENABLE_SERIAL_PRINT == 1
+      Serial.println("% pixy.init() = " + String(res));
+    #endif
+    
     // Getting the RGB pixel values requires the 'video' program
     res = pixy.changeProg("line");
-    Serial.println("% pixy.changeProg(line) = " + String(res));
+    #if ENABLE_SERIAL_PRINT == 1
+      Serial.println("% pixy.changeProg(line) = " + String(res));
+    #endif
     delay(10000);
 }
 
@@ -86,7 +94,8 @@ void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftV
 
 void loop() {
   int i;
-  unsigned int timeStart;
+  
+  uint32_t timeStart;
   LineABC laneMiddleLine, mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
   PurePersuitInfo purePersuitInfo;
@@ -147,12 +156,16 @@ void loop() {
 	  carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
 	  carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
     
-    printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
+    #if ENABLE_SERIAL_PRINT == 1
+        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
+    #endif
     
     steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
     driverMotor.write((int)carSpeed);
 
-    Serial.println("% LoopTime: " + String(millis() - timeStart) + " ms");
+    #if ENABLE_SERIAL_PRINT == 1
+      Serial.println("% LoopTime: " + String(millis() - timeStart) + " ms");
+    #endif
   }
 }
 
