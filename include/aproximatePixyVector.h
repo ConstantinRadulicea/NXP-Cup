@@ -6,12 +6,50 @@
 #include "PurePursuitGeometry.h"
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h"
 
+static Vector vectorApproximationSelectionLogic(Vector vec, Point2D approximatedPointFound, Point2D carPosition) {
+	Point2D startVector, endVector, newVectorStart, newVectorEnd;
+	float distanceStartVector, distanceEndVector, distanceApproximatedPointFound;
+	Vector newVector;
+
+
+	memset(&newVector, 0, sizeof(newVector));
+
+	startVector.x = (float)vec.m_x0;
+	startVector.y = (float)vec.m_y0;
+
+	endVector.x = (float)vec.m_x1;
+	endVector.y = (float)vec.m_y1;
+
+	distanceStartVector = euclidianDistance(carPosition, startVector);
+	distanceEndVector = euclidianDistance(carPosition, endVector);
+	distanceApproximatedPointFound = euclidianDistance(carPosition, approximatedPointFound);
+
+	if (distanceStartVector < distanceEndVector && distanceStartVector < distanceApproximatedPointFound){
+		newVectorStart = startVector;
+		newVectorEnd = approximatedPointFound;
+	}
+	else if (distanceEndVector < distanceStartVector && distanceEndVector < distanceApproximatedPointFound){
+		newVectorStart = endVector;
+		newVectorEnd = approximatedPointFound;
+	}
+	else{
+		newVectorStart = approximatedPointFound;
+		newVectorEnd = endVector;
+	}
+
+	newVector.m_x0 = newVectorStart.x;
+	newVector.m_y0 = newVectorStart.y;
+	newVector.m_x1 = newVectorEnd.x;
+	newVector.m_y1 = newVectorEnd.y;
+
+	return newVector;
+}
 
 // return 0 on success
-static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTreshold) {
+static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTreshold, Point2D carPosition) {
 	int8_t res;
     RGBcolor pixel;
-	Point2D midPoint_;
+	Point2D midPoint_, pointFound;
 	LineABC perpendicularLine, vectorLine;
 	int minX, minY, maxX, maxY, vectorMaxX, vectorMaxY;
 	int xRight, xLeft, yUp, yDown, xFound, yFound;
@@ -51,8 +89,9 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
                 // read pixel and do calculations
                 if (pixy.video.getRGB((uint16_t)xFound, (uint16_t)yFound, &(pixel.R), &(pixel.G), &(pixel.B), false) == 0)                {
                     if(rgb2hsv(pixel).V <= blackTreshold){
-                        vec.m_x1 = (uint8_t)((xFound / (float)maxX) * (float)vectorMaxX);
-                        vec.m_y1 = (uint8_t)((yFound / (float)maxY) * (float)vectorMaxY);
+						pointFound.x = ((xFound / (float)maxX) * (float)vectorMaxX);
+						pointFound.y = ((yFound / (float)maxY) * (float)vectorMaxY);
+						vec = vectorApproximationSelectionLogic(vec, pointFound, carPosition);
                         break;
                     }
                 }else{
@@ -74,8 +113,9 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
 				if (pixy.video.getRGB((uint16_t)xFound, (uint16_t)yFound, &(pixel.R), &(pixel.G), &(pixel.B), false) == 0)
                 {
                     if(rgb2hsv(pixel).V <= blackTreshold){
-                        vec.m_x1 = (uint8_t)((xFound / (float)maxX) * (float)vectorMaxX);
-                        vec.m_y1 = (uint8_t)((yFound / (float)maxY) * (float)vectorMaxY);
+						pointFound.x = ((xFound / (float)maxX) * (float)vectorMaxX);
+						pointFound.y = ((yFound / (float)maxY) * (float)vectorMaxY);
+						vec = vectorApproximationSelectionLogic(vec, pointFound, carPosition);
                         break;
                     }
                 }else{
@@ -98,8 +138,9 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
                 // read pixel and do calculations
                 if (pixy.video.getRGB((uint16_t)xFound, (uint16_t)yFound, &(pixel.R), &(pixel.G), &(pixel.B), false) == 0)                {
                     if(rgb2hsv(pixel).V <= blackTreshold){
-                        vec.m_x1 = (uint8_t)((xFound / (float)maxX) * (float)vectorMaxX);
-                        vec.m_y1 = (uint8_t)((yFound / (float)maxY) * (float)vectorMaxY);
+						pointFound.x = ((xFound / (float)maxX) * (float)vectorMaxX);
+						pointFound.y = ((yFound / (float)maxY) * (float)vectorMaxY);
+						vec = vectorApproximationSelectionLogic(vec, pointFound, carPosition);
                         break;
                     }
                 }else{
@@ -115,8 +156,9 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
                 // read pixel and do calculations
                 if (pixy.video.getRGB((uint16_t)xFound, (uint16_t)yFound, &(pixel.R), &(pixel.G), &(pixel.B), false) == 0)                {
                     if(rgb2hsv(pixel).V <= blackTreshold){
-                        vec.m_x1 = (uint8_t)((xFound / (float)maxX) * (float)vectorMaxX);
-                        vec.m_y1 = (uint8_t)((yFound / (float)maxY) * (float)vectorMaxY);
+						pointFound.x = ((xFound / (float)maxX) * (float)vectorMaxX);
+						pointFound.y = ((yFound / (float)maxY) * (float)vectorMaxY);
+						vec = vectorApproximationSelectionLogic(vec, pointFound, carPosition);
                         break;
                     }
                 }else{

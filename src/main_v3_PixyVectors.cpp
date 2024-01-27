@@ -40,11 +40,9 @@ int8_t res;
 void setup() {
     // serial Initialization
     Serial.begin(115200);
-    /*
     while (!Serial){
       delay(100);
     }
-    */
 
     // Initialization and attachment of the servo and motor
     steeringWheel.attach(STEERING_SERVO_PIN);
@@ -129,12 +127,12 @@ void loop() {
         delay(30);
 
         vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
-        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD);
+        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vectorsProcessing.setLeftVector(vec);
 
         vec = VectorsProcessing::mirrorVector(mirrorLine, rightVectorOld);
-        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD);
+        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vectorsProcessing.setRightVector(vec);
         
