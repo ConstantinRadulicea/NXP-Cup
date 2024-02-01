@@ -11,6 +11,11 @@
 
 #define ENABLE_SERIAL_PRINT 0
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
+#define DEBUG_MODE 0
+
+#if DEBUG_MODE == 1
+  #define ENABLE_SERIAL_PRINT 1
+#endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -23,7 +28,7 @@
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
-#define LANE_WIDTH_VECTOR_UNIT 50.0f
+#define LANE_WIDTH_VECTOR_UNIT 53.0f
 #define LOOKAHEAD_MIN_DISTANCE_CM 15.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
 #define CAR_LENGTH_CM 17.5
@@ -37,8 +42,8 @@
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)100
-#define MAX_SPEED (int)150
+#define MIN_SPEED (int)95
+#define MAX_SPEED (int)108
 
 
 
@@ -75,7 +80,9 @@ void setup() {
     #if ENABLE_SERIAL_PRINT == 1
       Serial.println("% pixy.changeProg(line) = " + String(res));
     #endif
-    delay(10000);
+    #if DEBUG_MODE == 0
+      delay(10000);
+    #endif
 }
 
 void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration){
@@ -104,7 +111,7 @@ void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftV
 }
 
 void loop() {
-  int i;
+  int i, loop_iter_timeout_vector = 0;
   
   uint32_t timeStart;
   LineABC laneMiddleLine, mirrorLine;
@@ -132,6 +139,7 @@ void loop() {
     timeStart = millis();
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
+      loop_iter_timeout_vector = 0;
       for (i=0; i < pixy.line.numVectors; i++)
       {
         vec = pixy.line.vectors[i];
@@ -144,8 +152,22 @@ void loop() {
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
         carSpeed = (float)MIN_SPEED;
-        while (pixy.changeProg("video") != PIXY_RESULT_OK);
-        delay(30);
+        i=0;
+        while (pixy.changeProg("video") != PIXY_RESULT_OK)
+        {
+          i++;
+          #if ENABLE_SERIAL_PRINT == 1
+            Serial.println("% " + String(i) + " ERROR: pixy.changeProg(\"video\")");
+          #endif
+          if (i >= 5)
+          {
+            #if DEBUG_MODE == 0
+              driverMotor.write(90);
+              carSpeed = 90.0f;
+            #endif
+          }
+        }
+        delay(40);
 
         vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
         approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
@@ -157,24 +179,52 @@ void loop() {
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vectorsProcessing.setRightVector(vec);
         
-        while (pixy.changeProg("line") != PIXY_RESULT_OK);
-        delay(10);
+        while (pixy.changeProg("line") != PIXY_RESULT_OK) {
+          i++;
+          #if ENABLE_SERIAL_PRINT == 1
+            Serial.println("% " + String(i) + " ERROR: pixy.changeProg(\"line\")");
+          #endif
+          if (i >= 5)
+          {
+            #if DEBUG_MODE == 0
+              driverMotor.write(90);
+              carSpeed = 90.0f;
+            #endif
+          }
+        }
+        delay(40);
       }
       #endif
-    }
-    laneMiddleLine = vectorsProcessing.getMiddleLine();
-    purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
-	  carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
-	  carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
-    
+      laneMiddleLine = vectorsProcessing.getMiddleLine();
+      purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
+
+      carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
+      carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
+    }
+    else{
+      loop_iter_timeout_vector++;
+      #if ENABLE_SERIAL_PRINT == 1
+        Serial.println("% " + String(loop_iter_timeout_vector) + " ERROR: pixy.line.getAllFeatures(LINE_VECTOR)");
+      #endif
+      if (loop_iter_timeout_vector >= 5)
+      {
+        #if DEBUG_MODE == 0
+          driverMotor.write(90);
+          carSpeed = 90.0f;
+        #endif
+      }
+    }
+
     #if ENABLE_SERIAL_PRINT == 1
         printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
     #endif
     
-    steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
-    driverMotor.write((int)carSpeed);
-
+    #if DEBUG_MODE == 0
+      steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
+      driverMotor.write((int)carSpeed);
+    #endif
+    
     #if ENABLE_SERIAL_PRINT == 1
       Serial.println("% LoopTime: " + String(millis() - timeStart) + " ms");
     #endif
