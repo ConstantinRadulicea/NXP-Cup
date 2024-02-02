@@ -69,8 +69,8 @@
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)120
-#define MAX_SPEED (int)121
+#define MIN_SPEED (int) 90
+#define MAX_SPEED (int)180
 
 
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
@@ -105,7 +105,6 @@ void setup() {
     #endif
 
     #if ENABLE_DRIVERMOTOR == 1
-      driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
       #if ENABLE_ARDUINO == 1
         driverMotor.attach(DRIVER_MOTOR_PIN);
         driverMotor.writeMicroseconds(900);
