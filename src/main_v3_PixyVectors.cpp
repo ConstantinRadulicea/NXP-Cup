@@ -8,7 +8,6 @@
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
 #include <PWMServo.h>
-#include <SimpleKalmanFilter.h>
 
 #define ENABLE_SERIAL_PRINT 0
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
@@ -86,6 +85,12 @@ void setup() {
     #endif
 }
 
+void pixyErrorRecovery(){
+  while (pixy.init() != PIXY_RESULT_OK) {
+    delay(10);
+  }
+}
+
 void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration){
   Serial.print(String(leftVectorOld.m_x0) + ',' + String(leftVectorOld.m_y0) + ',' + String(leftVectorOld.m_x1) + ',' + String(leftVectorOld.m_y1));
   Serial.print(';');
@@ -113,7 +118,7 @@ void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftV
 
 void loop() {
   int i, loop_iter_timeout_vector = 0;
-  uint32_t timeStart;
+  uint32_t timeStart, noVectorDetectedIterationCount;;
   LineABC laneMiddleLine, mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
   PurePersuitInfo purePersuitInfo;
@@ -122,6 +127,7 @@ void loop() {
   
   carSpeed = 0.0f;
   timeStart = 0;
+  noVectorDetectedIterationCount = 0;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
@@ -142,7 +148,14 @@ void loop() {
     timeStart = millis();
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
-      loop_iter_timeout_vector = 0;
+      
+      if (pixy.line.numVectors > 0){
+        loop_iter_timeout_vector = 0;
+      }
+      else{
+        loop_iter_timeout_vector++;
+      }
+      
       for (i=0; i < pixy.line.numVectors; i++)
       {
         vec = pixy.line.vectors[i];
@@ -166,8 +179,9 @@ void loop() {
           {
             #if DEBUG_MODE == 0
               driverMotor.write(90);
-              carSpeed = 90.0f;
             #endif
+            carSpeed = 90.0f;
+            pixyErrorRecovery();
           }
         }
         delay(40);
@@ -191,8 +205,9 @@ void loop() {
           {
             #if DEBUG_MODE == 0
               driverMotor.write(90);
-              carSpeed = 90.0f;
             #endif
+            carSpeed = 90.0f;
+            pixyErrorRecovery();
           }
         }
         delay(40);
@@ -202,8 +217,19 @@ void loop() {
       laneMiddleLine = vectorsProcessing.getMiddleLine();
       purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
-      carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
-      carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
+      if (noVectorDetectedIterationCount > 15)
+      {
+        carSpeed = (float)MIN_SPEED;
+        #if DEBUG_MODE == 0
+          driverMotor.write(carSpeed);
+        #endif
+      }
+      else{
+        carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
+        carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
+      }
+      
+
     }
     else{
       loop_iter_timeout_vector++;
@@ -214,8 +240,9 @@ void loop() {
       {
         #if DEBUG_MODE == 0
           driverMotor.write(90);
-          carSpeed = 90.0f;
         #endif
+        carSpeed = 90.0f;
+        pixyErrorRecovery();
       }
     }
     
