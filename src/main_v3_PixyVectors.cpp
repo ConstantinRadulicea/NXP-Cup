@@ -10,11 +10,26 @@
 #include <PWMServo.h>
 
 #define ENABLE_SERIAL_PRINT 0
+#define ENABLE_STEERING_SERVO 1
+#define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
-#define DEBUG_MODE 0
 
-#if DEBUG_MODE == 1
+#define DEBUG_MODE_STANDSTILL 0
+#define DEBUG_MODE_IN_MOTION 0
+
+
+
+
+#if DEBUG_MODE_IN_MOTION == 1
   #define ENABLE_SERIAL_PRINT 1
+  #define ENABLE_STEERING_SERVO 1
+  #define ENABLE_DRIVERMOTOR 1
+#endif
+
+#if DEBUG_MODE_STANDSTILL == 1
+  #define ENABLE_SERIAL_PRINT 1
+  #define ENABLE_STEERING_SERVO 0
+  #define ENABLE_DRIVERMOTOR 0
 #endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -64,10 +79,16 @@ void setup() {
     #endif
 
     // Initialization and attachment of the servo and motor
-    steeringWheel.attach(STEERING_SERVO_PIN);
-    driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
-    driverMotor.write(90);
-    steeringWheel.setSteeringAngleDeg(0);
+    
+    #if ENABLE_STEERING_SERVO == 1
+      steeringWheel.attach(STEERING_SERVO_PIN);
+      steeringWheel.setSteeringAngleDeg(0);
+    #endif
+
+    #if ENABLE_DRIVERMOTOR == 1
+      driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+      driverMotor.write(90);
+    #endif
     
     // we must initialize the pixy object
     res = pixy.init();
@@ -80,7 +101,7 @@ void setup() {
     #if ENABLE_SERIAL_PRINT == 1
       Serial.println("% pixy.changeProg(line) = " + String(res));
     #endif
-    #if DEBUG_MODE == 0
+    #if ENABLE_DRIVERMOTOR == 1
       delay(10000);
     #endif
 }
@@ -177,7 +198,7 @@ void loop() {
           #endif
           if (i >= 5)
           {
-            #if DEBUG_MODE == 0
+            #if ENABLE_DRIVERMOTOR == 1
               driverMotor.write(90);
             #endif
             carSpeed = 90.0f;
@@ -203,7 +224,7 @@ void loop() {
           #endif
           if (i >= 5)
           {
-            #if DEBUG_MODE == 0
+            #if ENABLE_DRIVERMOTOR == 1
               driverMotor.write(90);
             #endif
             carSpeed = 90.0f;
@@ -220,7 +241,7 @@ void loop() {
       if (noVectorDetectedIterationCount > 15)
       {
         carSpeed = (float)MIN_SPEED;
-        #if DEBUG_MODE == 0
+        #if ENABLE_DRIVERMOTOR == 1
           driverMotor.write(carSpeed);
         #endif
       }
@@ -238,7 +259,7 @@ void loop() {
       #endif
       if (loop_iter_timeout_vector >= 5)
       {
-        #if DEBUG_MODE == 0
+        #if ENABLE_DRIVERMOTOR == 1
           driverMotor.write(90);
         #endif
         carSpeed = 90.0f;
@@ -251,8 +272,11 @@ void loop() {
     #endif
     
     
-    #if DEBUG_MODE == 0
+    #if ENABLE_STEERING_SERVO == 1
       steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
+    #endif
+
+    #if ENABLE_DRIVERMOTOR == 1
       driverMotor.write((int)carSpeed);
     #endif
     
