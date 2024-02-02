@@ -2,7 +2,13 @@
 #define _SLOWSERVO_H_
 
 #include "Arduino.h"
-#include "PWMServo.h"
+
+#if ENABLE_ARDUINO == 1
+  #include <Servo.h>
+#else
+  #include <PWMServo.h>
+#endif
+
 //#include <map>
 
 #define MIN(a,b) ((a)<(b)?(a):(b))
@@ -13,7 +19,11 @@
 #define DEFAULT_UPDATE_TIMEOUT_MS MIN_UPDATE_TIMEOUT_MS
 #define CALLBACK_TIMER_CLOCKS (1000 * DEFAULT_UPDATE_TIMEOUT_MS)
 
-class SlowServo : public PWMServo
+#if ENABLE_ARDUINO == 1
+  class SlowServo : public Servo
+#else
+  class SlowServo : public PWMServo
+#endif
 {
 private:
     static unsigned int curID;
@@ -64,7 +74,11 @@ private:
     }
     */
 public:
-    SlowServo() : PWMServo() {
+#if ENABLE_ARDUINO == 1
+  SlowServo() : Servo() {
+#else
+  SlowServo() : PWMServo() {
+#endif
         this->InstanceID = curID++;
         this->finalAngle = 90;
         this->tempAngle = 90;

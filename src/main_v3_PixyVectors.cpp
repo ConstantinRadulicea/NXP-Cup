@@ -1,5 +1,7 @@
 // https://colorizer.org/
 
+#define ENABLE_ARDUINO 0
+
 #include <Arduino.h>
 #include <SPI.h>
 #include "SteeringWheel.h"
@@ -7,7 +9,15 @@
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
-#include <PWMServo.h>
+
+#if ENABLE_ARDUINO == 1
+  #include <Servo.h>
+#else
+  #include <PWMServo.h>
+#endif
+
+
+
 
 #define ENABLE_SERIAL_PRINT 0
 #define ENABLE_STEERING_SERVO 1
@@ -43,26 +53,36 @@
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
-#define LANE_WIDTH_VECTOR_UNIT 52.0f
-#define LOOKAHEAD_MIN_DISTANCE_CM 20.0f
+#define LANE_WIDTH_VECTOR_UNIT_REAL 52.0f
+#define LANE_WIDTH_VECTOR_UNIT (LANE_WIDTH_VECTOR_UNIT_REAL + (5.0f*2.0f))
+
+#define LOOKAHEAD_MIN_DISTANCE_CM 15.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
 #define CAR_LENGTH_CM 17.5
 #define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
 
-#define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
-#define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT)   // VECTOR_UNIT_PER_CM * CM = CM
+#define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
+#define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT_REAL)   // VECTOR_UNIT_PER_CM * CM = CM
 
 #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)100
-#define MAX_SPEED (int)101
+#define MIN_SPEED (int)120
+#define MAX_SPEED (int)121
 
 
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
-PWMServo driverMotor;
+
+
+#if ENABLE_ARDUINO == 1
+  Servo driverMotor;
+#else
+  PWMServo driverMotor;
+#endif
+
+
 VectorsProcessing vectorsProcessing;
 Pixy2 pixy;
 int8_t res;
@@ -86,6 +106,13 @@ void setup() {
 
     #if ENABLE_DRIVERMOTOR == 1
       driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+      #if ENABLE_ARDUINO == 1
+        driverMotor.attach(DRIVER_MOTOR_PIN);
+        driverMotor.writeMicroseconds(900);
+      #else
+        driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+      #endif
+      
       driverMotor.write(90);
     #endif
     
