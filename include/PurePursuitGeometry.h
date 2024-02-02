@@ -7,7 +7,6 @@
 #include <math.h>
 #include <string.h>
 #include <math.h>
-// #include <corecrt_math_defines.h>
 
 typedef struct LineMQ {
 	float m;
@@ -104,7 +103,7 @@ static LineABC normalizeLineABC2MQ(LineABC line) {
 		line.By = 1.0f;
 		return line;
 	}
-	if (line.By == 0.0f)
+	if (line.By == 0.0f && line.Ax != 0.0f)
 	{
 		line.C = line.C / line.Ax;
 		line.Ax = 1.0f;

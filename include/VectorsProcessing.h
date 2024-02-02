@@ -107,7 +107,7 @@ public:
 
     LineABC getMiddleLine(){
         Vector leftVector_, rightVector_;
-        LineABC leftLine, rightLine, middleLine_;
+        LineABC leftLine, rightLine, middleLine_, acuteAngleBisector, ottuseAngleBisector;
         leftVector_ = this->getLeftVector();
         rightVector_ = this->getRightVector();
         
@@ -140,7 +140,18 @@ public:
         Serial.println("(" + String(leftLine.Ax) + ")x + " + "(" + String(leftLine.By) + ")y + " + "(" + String(leftLine.C) + ") = 0");
         Serial.println("(" + String(rightLine.Ax) + ")x + " + "(" + String(rightLine.By) + ")y + " + "(" + String(rightLine.C) + ") = 0");
 */
-        bisectorsOfTwoLines(leftLine, rightLine, &middleLine_, NULL);
+        bisectorsOfTwoLines(leftLine, rightLine, &acuteAngleBisector, &ottuseAngleBisector);
+        if (ottuseAngleBisector.Ax == 0.0f && ottuseAngleBisector.By == 0.0f)
+        {
+           middleLine_ = acuteAngleBisector;
+        }
+        else if (angleBetweenLinesABC(yAxisABC(), acuteAngleBisector) < angleBetweenLinesABC(yAxisABC(), ottuseAngleBisector))
+        {
+            middleLine_ = acuteAngleBisector;
+        }
+        else{
+            middleLine_ = ottuseAngleBisector;
+        }
         
         return middleLine_;
     }
