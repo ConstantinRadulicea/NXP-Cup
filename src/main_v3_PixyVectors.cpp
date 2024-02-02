@@ -44,7 +44,7 @@
 
 #define LANE_WIDTH_CM 53.5f
 #define LANE_WIDTH_VECTOR_UNIT 52.0f
-#define LOOKAHEAD_MIN_DISTANCE_CM 15.0f
+#define LOOKAHEAD_MIN_DISTANCE_CM 20.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
 #define CAR_LENGTH_CM 17.5
 #define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
@@ -57,8 +57,8 @@
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)95
-#define MAX_SPEED (int)110
+#define MIN_SPEED (int)100
+#define MAX_SPEED (int)101
 
 
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
@@ -162,7 +162,7 @@ void loop() {
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle((1.0f / 180.0f) * M_PI);
+  vectorsProcessing.setMinXaxisAngle((3.0f / 180.0f) * M_PI);
   while (1)
   {
     timeStart = millis();
