@@ -8,6 +8,7 @@
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
 #include <PWMServo.h>
+#include <SimpleKalmanFilter.h>
 
 #define ENABLE_SERIAL_PRINT 0
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
@@ -52,7 +53,7 @@ PWMServo driverMotor;
 VectorsProcessing vectorsProcessing;
 Pixy2 pixy;
 int8_t res;
-
+  
 
 void setup() {
     // serial Initialization
@@ -112,13 +113,15 @@ void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftV
 
 void loop() {
   int i, loop_iter_timeout_vector = 0;
-  
   uint32_t timeStart;
   LineABC laneMiddleLine, mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
   float carLength, laneWidth, lookAheadDistance, carSpeed;
+  
+  carSpeed = 0.0f;
+  timeStart = 0;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
@@ -215,10 +218,11 @@ void loop() {
         #endif
       }
     }
-
+    
     #if ENABLE_SERIAL_PRINT == 1
         printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
     #endif
+    
     
     #if DEBUG_MODE == 0
       steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * (180.0f / M_PI));
