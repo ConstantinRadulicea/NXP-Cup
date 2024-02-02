@@ -43,8 +43,8 @@
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
-#define LANE_WIDTH_VECTOR_UNIT 54.0f
-#define LOOKAHEAD_MIN_DISTANCE_CM 20.0f
+#define LANE_WIDTH_VECTOR_UNIT 52.0f
+#define LOOKAHEAD_MIN_DISTANCE_CM 15.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
 #define CAR_LENGTH_CM 17.5
 #define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
@@ -58,7 +58,7 @@
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
 #define MIN_SPEED (int)95
-#define MAX_SPEED (int)105
+#define MAX_SPEED (int)110
 
 
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
@@ -168,12 +168,12 @@ void loop() {
     timeStart = millis();
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
-      
+      loop_iter_timeout_vector = 0;
       if (pixy.line.numVectors > 0){
-        loop_iter_timeout_vector = 0;
+        noVectorDetectedIterationCount = 0;
       }
       else{
-        loop_iter_timeout_vector++;
+        noVectorDetectedIterationCount++;
       }
       
       for (i=0; i < pixy.line.numVectors; i++)
