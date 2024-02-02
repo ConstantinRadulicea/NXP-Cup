@@ -14,7 +14,7 @@
 #define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 
-#define DEBUG_MODE_STANDSTILL 1
+#define DEBUG_MODE_STANDSTILL 0
 #define DEBUG_MODE_IN_MOTION 0
 
 
@@ -181,6 +181,7 @@ void loop() {
       {
         vec = pixy.line.vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
+        vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
         vectorsProcessing.addVector(vec);
       }
       leftVectorOld = vectorsProcessing.getLeftVector();
@@ -206,7 +207,6 @@ void loop() {
           }
         }
         delay(40);
-
         vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
         approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);

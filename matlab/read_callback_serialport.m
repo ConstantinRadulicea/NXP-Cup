@@ -45,11 +45,15 @@ function read_callback_serialport(src, ~)
     [x3, y3] = plotLineABC(middleLaneLine, xmin, xmax, xmin, xmax);
 
 %     plot(x1, y1, x2, y2, x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
-    plot([leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--or");
+    plot([leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o");
     hold on;
-    plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--or");
+    plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
     hold on;
     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
+    text(leftVector(1), leftVector(2), "1");
+    text(leftVector(3), leftVector(4), "2");
+    text(rightVector(1), rightVector(2), "1");
+    text(rightVector(3), rightVector(4), "2");
     hold off;
     myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
     text(xmin, xmax-2, myText);

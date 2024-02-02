@@ -226,6 +226,71 @@ public:
         }
         return true;
     }
+
+    static Vector reComputeVectorStartEnd_basedOnproximityToPoint(Vector vec, Point2D point){
+        float distanceStartVector, distanceEndVector;
+        Point2D startVector, endVector, newVectorStart, newVectorEnd;
+        Vector newVector;
+        
+        startVector.x = (float)vec.m_x0;
+        startVector.y = (float)vec.m_y0;
+
+        endVector.x = (float)vec.m_x1;
+        endVector.y = (float)vec.m_y1;
+
+        distanceStartVector = euclidianDistance(point, startVector);
+	    distanceEndVector = euclidianDistance(point, endVector);
+
+        if (distanceStartVector < distanceEndVector) {
+			newVectorStart = startVector;
+			newVectorEnd = endVector;
+		}
+		else{
+			newVectorStart = endVector;
+			newVectorEnd = startVector;
+		}
+
+
+        newVector.m_x0 = newVectorStart.x;
+        newVector.m_y0 = newVectorStart.y;
+        newVector.m_x1 = newVectorEnd.x;
+        newVector.m_y1 = newVectorEnd.y;
+        return newVector;
+    }
+    static Vector reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(Vector vec, Point2D point){
+        LineABC pointXaxis;
+        float distanceStartVector, distanceEndVector;
+        Point2D startVector, endVector, newVectorStart, newVectorEnd;
+        Vector newVector;
+
+        pointXaxis = xAxisABC();
+        pointXaxis.C -= point.y;
+
+        
+        startVector.x = (float)vec.m_x0;
+        startVector.y = (float)vec.m_y0;
+
+        endVector.x = (float)vec.m_x1;
+        endVector.y = (float)vec.m_y1;
+
+        distanceStartVector = distance2lineABC(startVector, pointXaxis);
+        distanceEndVector = distance2lineABC(endVector, pointXaxis);
+
+        if (distanceStartVector < distanceEndVector) {
+			newVectorStart = startVector;
+			newVectorEnd = endVector;
+		}
+		else{
+			newVectorStart = endVector;
+			newVectorEnd = startVector;
+		}
+
+        newVector.m_x0 = newVectorStart.x;
+        newVector.m_y0 = newVectorStart.y;
+        newVector.m_x1 = newVectorEnd.x;
+        newVector.m_y1 = newVectorEnd.y;
+        return newVector;
+    }
 };
 
 
