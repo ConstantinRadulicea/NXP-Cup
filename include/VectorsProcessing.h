@@ -47,7 +47,7 @@ public:
     }
 
     VectorsProcessing(){
-        this->minXaxeAngle = 0.0f;
+        this->minXaxeAngle = -1.0f;
         this->carPosition.x = 0.0f;
         this->carPosition.y = 0.0f;
         this->laneWidth =  0.0f;
@@ -73,7 +73,7 @@ public:
 
     void addVector(Vector vec){
         
-        if (this->vectorAngleWithXaxis(vec) < this->minXaxeAngle) {
+        if (this->minXaxeAngle >= 0.0f && this->vectorAngleWithXaxis(vec) < this->minXaxeAngle) {
             return;
         }
         
