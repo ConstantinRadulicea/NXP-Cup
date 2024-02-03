@@ -23,11 +23,12 @@
 #define ENABLE_STEERING_SERVO 1
 #define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
+#define ENABLE_WIRELESS_DEBUG 0
 
-#define DEBUG_MODE_STANDSTILL 0
+#define DEBUG_MODE_STANDSTILL 1
 #define DEBUG_MODE_IN_MOTION 0
 
-
+#define DEBUG_HOST_IPADDRESS "192.168.0.227"
 
 
 #if DEBUG_MODE_IN_MOTION == 1
@@ -41,6 +42,9 @@
   #define ENABLE_STEERING_SERVO 0
   #define ENABLE_DRIVERMOTOR 0
 #endif
+
+
+
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -73,8 +77,8 @@
 #define MAX_SPEED (int)180
 
 
-SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
 
+SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
 
 #if ENABLE_ARDUINO == 1
   Servo driverMotor;
@@ -92,9 +96,14 @@ void setup() {
     // serial Initialization
     #if ENABLE_SERIAL_PRINT == 1
       Serial.begin(115200);
+      delay(50);
       while (!Serial){
         delay(100);
       }
+    #endif
+
+    #if ENABLE_WIRELESS_DEBUG == 1
+      Serial.println(DEBUG_HOST_IPADDRESS);
     #endif
 
     // Initialization and attachment of the servo and motor
@@ -107,9 +116,9 @@ void setup() {
     #if ENABLE_DRIVERMOTOR == 1
       #if ENABLE_ARDUINO == 1
         driverMotor.attach(DRIVER_MOTOR_PIN);
-        driverMotor.writeMicroseconds(900);
+        driverMotor.writeMicroseconds(1500);
       #else
-        driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+        driverMotor.attach(DRIVER_MOTOR_PIN, 1500, 2000);
       #endif
       
       driverMotor.write(90);
