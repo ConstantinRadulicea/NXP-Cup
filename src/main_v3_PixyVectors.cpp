@@ -28,7 +28,10 @@
 #define DEBUG_MODE_STANDSTILL 1
 #define DEBUG_MODE_IN_MOTION 0
 
+#define DEBUG_WIFI_SSID "Off Limits"
+#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 #define DEBUG_HOST_IPADDRESS "192.168.0.227"
+#define DEBUG_HOST_PORT 6789
 
 
 #if DEBUG_MODE_IN_MOTION == 1
@@ -73,8 +76,8 @@
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int) 90
-#define MAX_SPEED (int)180
+#define MIN_SPEED (int)90
+#define MAX_SPEED (int)100
 
 
 
@@ -94,12 +97,19 @@ int8_t res;
 
 void setup() {
     // serial Initialization
-    #if ENABLE_SERIAL_PRINT == 1
+    #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
       Serial.begin(115200);
       delay(50);
       while (!Serial){
         delay(100);
       }
+    #endif
+
+    #if ENABLE_WIRELESS_DEBUG == 1
+      Serial.println('%' + String(DEBUG_WIFI_SSID));
+      Serial.println('%' + String(DEBUG_WIFI_PASSWORD));
+      Serial.println('%' + String(DEBUG_HOST_IPADDRESS));
+      Serial.println('%' + String(DEBUG_HOST_PORT));
     #endif
 
     #if ENABLE_WIRELESS_DEBUG == 1
