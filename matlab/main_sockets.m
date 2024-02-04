@@ -2,7 +2,7 @@ clc;
 clear;
 close all;
 
-server = tcpserver("localhost",6789,"ConnectionChangedFcn",@newClientCallBack)
+server = tcpserver(6789,"ConnectionChangedFcn",@newClientCallBack)
 server.flush("input");
 server.flush("output");
 server.configureTerminator("CR/LF");
