@@ -23,7 +23,7 @@
 #define ENABLE_STEERING_SERVO 1
 #define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
-#define ENABLE_WIRELESS_DEBUG 0
+#define ENABLE_WIRELESS_DEBUG 1
 
 #define DEBUG_MODE_STANDSTILL 1
 #define DEBUG_MODE_IN_MOTION 0
@@ -32,6 +32,8 @@
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 #define DEBUG_HOST_IPADDRESS "192.168.0.227"
 #define DEBUG_HOST_PORT 6789
+#define DEBUG_WIFI_INIT_SEQUENCE "SERIAL2WIFI\r\n"
+#define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
 
 
 #if DEBUG_MODE_IN_MOTION == 1
@@ -99,17 +101,18 @@ void setup() {
     // serial Initialization
     #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
       Serial.begin(115200);
-      delay(50);
       while (!Serial){
         delay(100);
       }
     #endif
 
     #if ENABLE_WIRELESS_DEBUG == 1
-      Serial.println('%' + String(DEBUG_WIFI_SSID));
-      Serial.println('%' + String(DEBUG_WIFI_PASSWORD));
-      Serial.println('%' + String(DEBUG_HOST_IPADDRESS));
-      Serial.println('%' + String(DEBUG_HOST_PORT));
+      delay(1000);
+      Serial.print(DEBUG_WIFI_INIT_SEQUENCE);
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_WIFI_SSID));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_WIFI_PASSWORD));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_HOST_IPADDRESS));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_HOST_PORT));
     #endif
 
     #if ENABLE_WIRELESS_DEBUG == 1
@@ -137,13 +140,13 @@ void setup() {
     // we must initialize the pixy object
     res = pixy.init();
     #if ENABLE_SERIAL_PRINT == 1
-      Serial.println("% pixy.init() = " + String(res));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + "pixy.init() = " + String(res));
     #endif
     
     // Getting the RGB pixel values requires the 'video' program
     res = pixy.changeProg("line");
     #if ENABLE_SERIAL_PRINT == 1
-      Serial.println("% pixy.changeProg(line) = " + String(res));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + "pixy.changeProg(line) = " + String(res));
     #endif
     #if ENABLE_DRIVERMOTOR == 1
       delay(10000);
@@ -239,7 +242,7 @@ void loop() {
         {
           i++;
           #if ENABLE_SERIAL_PRINT == 1
-            Serial.println("% " + String(i) + " ERROR: pixy.changeProg(\"video\")");
+            Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " " + String(i) + " ERROR: pixy.changeProg(\"video\")");
           #endif
           if (i >= 5)
           {
@@ -264,7 +267,7 @@ void loop() {
         while (pixy.changeProg("line") != PIXY_RESULT_OK) {
           i++;
           #if ENABLE_SERIAL_PRINT == 1
-            Serial.println("% " + String(i) + " ERROR: pixy.changeProg(\"line\")");
+            Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " " + String(i) + " ERROR: pixy.changeProg(\"line\")");
           #endif
           if (i >= 5)
           {
@@ -299,7 +302,7 @@ void loop() {
     else{
       loop_iter_timeout_vector++;
       #if ENABLE_SERIAL_PRINT == 1
-        Serial.println("% " + String(loop_iter_timeout_vector) + " ERROR: pixy.line.getAllFeatures(LINE_VECTOR)");
+        Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " " + String(loop_iter_timeout_vector) + " ERROR: pixy.line.getAllFeatures(LINE_VECTOR)");
       #endif
       if (loop_iter_timeout_vector >= 5)
       {
@@ -325,7 +328,7 @@ void loop() {
     #endif
     
     #if ENABLE_SERIAL_PRINT == 1
-      Serial.println("% LoopTime: " + String(millis() - timeStart) + " ms");
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " LoopTime: " + String(millis() - timeStart) + " ms");
     #endif
   }
 }
