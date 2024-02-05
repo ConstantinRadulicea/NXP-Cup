@@ -19,22 +19,29 @@
 
 
 
-#define ENABLE_SERIAL_PRINT 0
+#define ENABLE_SERIAL_PRINT 1
 #define ENABLE_STEERING_SERVO 1
 #define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #define ENABLE_WIRELESS_DEBUG 1
 
-#define DEBUG_MODE_STANDSTILL 1
-#define DEBUG_MODE_IN_MOTION 0
+#define DEBUG_MODE_STANDSTILL 0
+#define DEBUG_MODE_IN_MOTION 1
 
-#define DEBUG_WIFI_SSID "Off Limits"
+#define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-#define DEBUG_HOST_IPADDRESS "192.168.0.227"
+#define DEBUG_HOST_IPADDRESS "192.168.79.243"
 #define DEBUG_HOST_PORT 6789
-#define DEBUG_WIFI_INIT_SEQUENCE "SERIAL2WIFI\r\n"
+#define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
 
+
+
+#if ENABLE_WIRELESS_DEBUG == 1
+  #define SERIAL Serial1
+#else
+  #define SERIAL Serial
+#endif
 
 #if DEBUG_MODE_IN_MOTION == 1
   #define ENABLE_SERIAL_PRINT 1
@@ -62,7 +69,7 @@
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
-#define LANE_WIDTH_VECTOR_UNIT_REAL 52.0f
+#define LANE_WIDTH_VECTOR_UNIT_REAL 39.0f
 
 #define LOOKAHEAD_MIN_DISTANCE_CM 15.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
@@ -79,8 +86,9 @@
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)90
+#define MIN_SPEED (int)95
 #define MAX_SPEED (int)100
+#define STANDSTILL_SPEED (int)90
 
 
 
@@ -101,23 +109,22 @@ int8_t res;
 void setup() {
     // serial Initialization
     #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-      Serial.begin(115200);
-      while (!Serial){
+      SERIAL.begin(115200);
+      while (!SERIAL){
         delay(100);
       }
     #endif
 
     #if ENABLE_WIRELESS_DEBUG == 1
-      delay(1000);
-      Serial.print(DEBUG_WIFI_INIT_SEQUENCE);
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_WIFI_SSID));
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_WIFI_PASSWORD));
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_HOST_IPADDRESS));
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(DEBUG_HOST_PORT));
+      SERIAL.print(DEBUG_WIFI_INIT_SEQUENCE);
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(DEBUG_WIFI_SSID));
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(DEBUG_WIFI_PASSWORD));
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(DEBUG_HOST_IPADDRESS));
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(DEBUG_HOST_PORT));
     #endif
 
     #if ENABLE_WIRELESS_DEBUG == 1
-      Serial.println(DEBUG_HOST_IPADDRESS);
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(DEBUG_HOST_IPADDRESS));
     #endif
 
     // Initialization and attachment of the servo and motor
@@ -132,25 +139,27 @@ void setup() {
         driverMotor.attach(DRIVER_MOTOR_PIN);
         driverMotor.writeMicroseconds(1500);
       #else
-        driverMotor.attach(DRIVER_MOTOR_PIN, 1500, 2000);
-      #endif
-      
-      driverMotor.write(90);
+        driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+      #endif      
+      driverMotor.write(STANDSTILL_SPEED);
     #endif
     
     // we must initialize the pixy object
     res = pixy.init();
     #if ENABLE_SERIAL_PRINT == 1
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + "pixy.init() = " + String(res));
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.init() = ") + String(res));
     #endif
     
     // Getting the RGB pixel values requires the 'video' program
     res = pixy.changeProg("line");
     #if ENABLE_SERIAL_PRINT == 1
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + "pixy.changeProg(line) = " + String(res));
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.changeProg(line) = ") + String(res));
     #endif
     #if ENABLE_DRIVERMOTOR == 1
-      delay(10000);
+      delay(3000);
+    #endif
+    #if ENABLE_SERIAL_PRINT == 1
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
     #endif
 }
 
@@ -161,28 +170,28 @@ void pixyErrorRecovery(){
 }
 
 void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration){
-  Serial.print(String(leftVectorOld.m_x0) + ',' + String(leftVectorOld.m_y0) + ',' + String(leftVectorOld.m_x1) + ',' + String(leftVectorOld.m_y1));
-  Serial.print(';');
-  Serial.print(String(rightVectorOld.m_x0) + ',' + String(rightVectorOld.m_y0) + ',' + String(rightVectorOld.m_x1) + ',' + String(rightVectorOld.m_y1));
-  Serial.print(';');
-  Serial.print(String(leftVector.m_x0) + ',' + String(leftVector.m_y0) + ',' + String(leftVector.m_x1) + ',' + String(leftVector.m_y1));
-  Serial.print(';');
-  Serial.print(String(rightVector.m_x0) + ',' + String(rightVector.m_y0) + ',' + String(rightVector.m_x1) + ',' + String(rightVector.m_y1));
-  Serial.print(';');
-  Serial.print(String(leftLine.Ax) + ',' + String(leftLine.By) + ',' + String(leftLine.C));
-  Serial.print(';');
-  Serial.print(String(rightLine.Ax) + ',' + String(rightLine.By) + ',' + String(rightLine.C));
-  Serial.print(';');
-  Serial.print(String(laneMiddleLine.Ax) + ',' + String(laneMiddleLine.By) + ',' + String(laneMiddleLine.C));
-  Serial.print(';');
-  Serial.print(String(purePersuitInfo.carPos.x) + ',' + String(purePersuitInfo.carPos.y));
-  Serial.print(';');
-  Serial.print(String(purePersuitInfo.nextWayPoint.x) + ',' + String(purePersuitInfo.nextWayPoint.y));
-  Serial.print(';');
-  Serial.print(String(purePersuitInfo.steeringAngle));
-  Serial.print(';');
-  Serial.print(String(carAcceleration));
-  Serial.println();
+  SERIAL.print(String(leftVectorOld.m_x0) + String(',') + String(leftVectorOld.m_y0) + String(',') + String(leftVectorOld.m_x1) + String(',') + String(leftVectorOld.m_y1));
+  SERIAL.print(';');
+  SERIAL.print(String(rightVectorOld.m_x0) + String(',') + String(rightVectorOld.m_y0) + String(',') + String(rightVectorOld.m_x1) + String(',') + String(rightVectorOld.m_y1));
+  SERIAL.print(';');
+  SERIAL.print(String(leftVector.m_x0) + String(',') + String(leftVector.m_y0) + String(',') + String(leftVector.m_x1) + String(',') + String(leftVector.m_y1));
+  SERIAL.print(';');
+  SERIAL.print(String(rightVector.m_x0) + String(',') + String(rightVector.m_y0) + String(',') + String(rightVector.m_x1) + String(',') + String(rightVector.m_y1));
+  SERIAL.print(';');
+  SERIAL.print(String(leftLine.Ax) + String(',') + String(leftLine.By) + String(',') + String(leftLine.C));
+  SERIAL.print(';');
+  SERIAL.print(String(rightLine.Ax) + String(',') + String(rightLine.By) + String(',') + String(rightLine.C));
+  SERIAL.print(';');
+  SERIAL.print(String(laneMiddleLine.Ax) + String(',') + String(laneMiddleLine.By) + String(',') + String(laneMiddleLine.C));
+  SERIAL.print(';');
+  SERIAL.print(String(purePersuitInfo.carPos.x) + String(',') + String(purePersuitInfo.carPos.y));
+  SERIAL.print(';');
+  SERIAL.print(String(purePersuitInfo.nextWayPoint.x) + String(',') + String(purePersuitInfo.nextWayPoint.y));
+  SERIAL.print(';');
+  SERIAL.print(String(purePersuitInfo.steeringAngle));
+  SERIAL.print(';');
+  SERIAL.print(String(carAcceleration));
+  SERIAL.println();
 }
 
 void loop() {
@@ -243,14 +252,14 @@ void loop() {
         {
           i++;
           #if ENABLE_SERIAL_PRINT == 1
-            Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " " + String(i) + " ERROR: pixy.changeProg(\"video\")");
+            SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(" ") + String(i) + String(" ERROR: pixy.changeProg(\"video\")"));
           #endif
           if (i >= 5)
           {
             #if ENABLE_DRIVERMOTOR == 1
-              driverMotor.write(90);
+              driverMotor.write(STANDSTILL_SPEED);
             #endif
-            carSpeed = 90.0f;
+            carSpeed = (float)STANDSTILL_SPEED;
             pixyErrorRecovery();
           }
         }
@@ -268,14 +277,14 @@ void loop() {
         while (pixy.changeProg("line") != PIXY_RESULT_OK) {
           i++;
           #if ENABLE_SERIAL_PRINT == 1
-            Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " " + String(i) + " ERROR: pixy.changeProg(\"line\")");
+            SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(" ") + String(i) + String(" ERROR: pixy.changeProg(\"line\")"));
           #endif
           if (i >= 5)
           {
             #if ENABLE_DRIVERMOTOR == 1
-              driverMotor.write(90);
+              driverMotor.write(STANDSTILL_SPEED);
             #endif
-            carSpeed = 90.0f;
+            carSpeed = (float)STANDSTILL_SPEED;
             pixyErrorRecovery();
           }
         }
@@ -294,7 +303,7 @@ void loop() {
         #endif
       }
       else{
-        carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - 90), (float)MAX_SPEED) + 90.0f;
+        carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * (180.0f / M_PI))) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - STANDSTILL_SPEED), (float)MAX_SPEED) + (float)STANDSTILL_SPEED;
         carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
       }
       
@@ -303,20 +312,20 @@ void loop() {
     else{
       loop_iter_timeout_vector++;
       #if ENABLE_SERIAL_PRINT == 1
-        Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " " + String(loop_iter_timeout_vector) + " ERROR: pixy.line.getAllFeatures(LINE_VECTOR)");
+        SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(" ") + String(loop_iter_timeout_vector) + String(" ERROR: pixy.line.getAllFeatures(LINE_VECTOR)"));
       #endif
       if (loop_iter_timeout_vector >= 5)
       {
         #if ENABLE_DRIVERMOTOR == 1
-          driverMotor.write(90);
+          driverMotor.write(STANDSTILL_SPEED);
         #endif
-        carSpeed = 90.0f;
+        carSpeed = (float)STANDSTILL_SPEED;
         pixyErrorRecovery();
       }
     }
     
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - 90.0f) / (float)(MAX_SPEED - 90));
+        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED));
     #endif
     
     
@@ -329,7 +338,7 @@ void loop() {
     #endif
     
     #if ENABLE_SERIAL_PRINT == 1
-      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + " LoopTime: " + String(millis() - timeStart) + " ms");
+      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String(" LoopTime: ") + String(millis() - timeStart) + String(" ms"));
     #endif
   }
 }

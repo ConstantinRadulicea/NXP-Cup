@@ -1,9 +1,9 @@
 function read_callback_serialport(src, ~)
-    
-    raw_data = readline(src);
-    raw_data_chars = convertStringsToChars(raw_data);
+    raw_data = src.readline();
+    raw_data_chars = char(raw_data);
+
     if(raw_data_chars(1) == '%')
-         raw_data
+         %raw_data
 %         src.UserData.Debug = [raw_data; src.UserData.Debug];
 %         src.UserData.Debug = src.UserData.Debug(1:min(end, 50), 1);
         return;
@@ -44,17 +44,16 @@ function read_callback_serialport(src, ~)
     
     [x3, y3] = plotLineABC(middleLaneLine, xmin, xmax, xmin, xmax);
 
-%     plot(x1, y1, x2, y2, x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
-    plot([leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o");
-    hold on;
-    plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
-    hold on;
-    plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
+%     plot([leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o");
+%     hold on;
+%     plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
+%     hold on;
+%     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
+    plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*", [leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o", [rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
     text(leftVector(1), leftVector(2), "1");
     text(leftVector(3), leftVector(4), "2");
     text(rightVector(1), rightVector(2), "1");
     text(rightVector(3), rightVector(4), "2");
-    hold off;
     myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
     text(xmin, xmax-2, myText);
     myText = sprintf("Gas: %.2f%%", carAcceleration * 100);
