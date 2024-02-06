@@ -93,6 +93,8 @@ void setup() {
   #endif
 }
 
+/*==============================================================================*/
+
 float getFrontObstacleDistance_cm(){
   float duration;
   float distance;
@@ -109,6 +111,43 @@ float getFrontObstacleDistance_cm(){
   distance = duration * 0.034321f / 2.0f;
 
   return distance;
+}
+
+/*==============================================================================*/
+
+static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle) {
+	float newCarSpeed, speedSpan;
+
+	speedSpan = maxSpeed - minSpeed;
+	maxSteeringWheelAngle = fabsf(maxSteeringWheelAngle);
+	steeringWheelAngle = fabsf(steeringWheelAngle);
+	steeringWheelAngle = MIN(steeringWheelAngle, maxSteeringWheelAngle);
+	
+	newCarSpeed = minSpeed + (((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan);
+
+	newCarSpeed = MAX(newCarSpeed, minSpeed);
+	newCarSpeed = MIN(newCarSpeed, maxSpeed);
+
+	return newCarSpeed;
+}
+
+/*==============================================================================*/
+
+static float calculateLookAheadDistance_noPID(float minDistance, float maxDistance, LineABC laneMiddleLine) {
+	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
+	LineABC currentTrajectory;
+	distanceSpan = maxDistance - minDistance;
+
+	currentTrajectory = yAxisABC();
+
+	angleCurrentTrajectoryAndMiddleLane = angleBetweenLinesABC(currentTrajectory, laneMiddleLine);
+
+	newLookAheadDistance = minDistance + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * distanceSpan);
+
+	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
+	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
+
+	return newLookAheadDistance;
 }
 
 /*====================================================================================================================================*/
@@ -149,7 +188,8 @@ void loop() {
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
     while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
-      driverMotor.write(STANDSTILL_SPEED);
+      carSpeed = (float)STANDSTILL_SPEED;
+      driverMotor.write((int)carSpeed);
       delay(100);
       frontObstacleDistance = getFrontObstacleDistance_cm();
       #if ENABLE_SERIAL_PRINT == 1
@@ -213,6 +253,7 @@ void loop() {
       #endif
 
       laneMiddleLine = vectorsProcessing.getMiddleLine();
+      lookAheadDistance = calculateLookAheadDistance_noPID(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine);
       purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
       if (loopIterationsCountNoVectorDetected > 15)
@@ -223,8 +264,7 @@ void loop() {
         #endif
       }
       else{
-        carSpeed = MIN((abs((float)STEERING_SERVO_MAX_ANGLE - (float)abs(purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN)) / (float)STEERING_SERVO_MAX_ANGLE) * (float)(MAX_SPEED - STANDSTILL_SPEED), (float)MAX_SPEED) + (float)STANDSTILL_SPEED;
-        carSpeed = MAX((float)carSpeed, (float)MIN_SPEED);
+        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN);
       }
     }
     else{
