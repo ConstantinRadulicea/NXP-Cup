@@ -106,7 +106,7 @@ float getFrontObstacleDistance_cm(){
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = (float)(pulseIn(DISTANCE_SENSOR_ECHO_PIN, HIGH));
   // Calculating the distance
-  distance = duration * 0.034 / 2.0f;
+  distance = duration * 0.034321f / 2.0f;
 
   return distance;
 }
@@ -144,16 +144,20 @@ void loop() {
   vectorsProcessing.setMinXaxisAngle(3.0f * RADIANS_PER_DEGREE);
   while (1)
   {
+    timeStart = millis();
+
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
     while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
       driverMotor.write(STANDSTILL_SPEED);
       delay(100);
       frontObstacleDistance = getFrontObstacleDistance_cm();
+      #if ENABLE_SERIAL_PRINT == 1
+        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
+      #endif
     }
     #endif
 
-    timeStart = millis();
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
       loopIterationsCountVectorRetriveError = 0;
