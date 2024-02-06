@@ -143,6 +143,9 @@ void loop() {
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
         carSpeed = (float)MIN_SPEED;
+        #if ENABLE_DRIVERMOTOR == 1
+          driverMotor.write((int)carSpeed);
+        #endif
 
         loopIterationsCountPixyChangeProgramError=0;
         while (pixy.changeProg("video") != PIXY_RESULT_OK)
