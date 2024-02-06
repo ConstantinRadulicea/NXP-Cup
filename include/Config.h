@@ -43,12 +43,12 @@
 
 #if ENABLE_WIRELESS_DEBUG == 1
   #if ENABLE_ARDUINO == 1
-    #define SERIAL Serial
+    #define SERIAL_PORT Serial
   #else
-    #define SERIAL Serial1
+    #define SERIAL_PORT Serial1
   #endif
 #else
-  #define SERIAL Serial
+  #define SERIAL_PORT Serial
 #endif
 
 #if DEBUG_MODE_IN_MOTION == 1
@@ -106,30 +106,30 @@
 /*====================================================================================================================================*/
 
 static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance){
-  SERIAL.print(String(leftVectorOld.m_x0) + String(',') + String(leftVectorOld.m_y0) + String(',') + String(leftVectorOld.m_x1) + String(',') + String(leftVectorOld.m_y1));
-  SERIAL.print(';');
-  SERIAL.print(String(rightVectorOld.m_x0) + String(',') + String(rightVectorOld.m_y0) + String(',') + String(rightVectorOld.m_x1) + String(',') + String(rightVectorOld.m_y1));
-  SERIAL.print(';');
-  SERIAL.print(String(leftVector.m_x0) + String(',') + String(leftVector.m_y0) + String(',') + String(leftVector.m_x1) + String(',') + String(leftVector.m_y1));
-  SERIAL.print(';');
-  SERIAL.print(String(rightVector.m_x0) + String(',') + String(rightVector.m_y0) + String(',') + String(rightVector.m_x1) + String(',') + String(rightVector.m_y1));
-  SERIAL.print(';');
-  SERIAL.print(String(leftLine.Ax) + String(',') + String(leftLine.By) + String(',') + String(leftLine.C));
-  SERIAL.print(';');
-  SERIAL.print(String(rightLine.Ax) + String(',') + String(rightLine.By) + String(',') + String(rightLine.C));
-  SERIAL.print(';');
-  SERIAL.print(String(laneMiddleLine.Ax) + String(',') + String(laneMiddleLine.By) + String(',') + String(laneMiddleLine.C));
-  SERIAL.print(';');
-  SERIAL.print(String(purePersuitInfo.carPos.x) + String(',') + String(purePersuitInfo.carPos.y));
-  SERIAL.print(';');
-  SERIAL.print(String(purePersuitInfo.nextWayPoint.x) + String(',') + String(purePersuitInfo.nextWayPoint.y));
-  SERIAL.print(';');
-  SERIAL.print(String(purePersuitInfo.steeringAngle));
-  SERIAL.print(';');
-  SERIAL.print(String(carAcceleration));
-  SERIAL.print(';');
-  SERIAL.print(String(frontObstacleDistance));
-  SERIAL.println();
+  SERIAL_PORT.print(String(leftVectorOld.m_x0) + String(',') + String(leftVectorOld.m_y0) + String(',') + String(leftVectorOld.m_x1) + String(',') + String(leftVectorOld.m_y1));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(rightVectorOld.m_x0) + String(',') + String(rightVectorOld.m_y0) + String(',') + String(rightVectorOld.m_x1) + String(',') + String(rightVectorOld.m_y1));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(leftVector.m_x0) + String(',') + String(leftVector.m_y0) + String(',') + String(leftVector.m_x1) + String(',') + String(leftVector.m_y1));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(rightVector.m_x0) + String(',') + String(rightVector.m_y0) + String(',') + String(rightVector.m_x1) + String(',') + String(rightVector.m_y1));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(leftLine.Ax) + String(',') + String(leftLine.By) + String(',') + String(leftLine.C));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(rightLine.Ax) + String(',') + String(rightLine.By) + String(',') + String(rightLine.C));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(laneMiddleLine.Ax) + String(',') + String(laneMiddleLine.By) + String(',') + String(laneMiddleLine.C));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(purePersuitInfo.carPos.x) + String(',') + String(purePersuitInfo.carPos.y));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(purePersuitInfo.nextWayPoint.x) + String(',') + String(purePersuitInfo.nextWayPoint.y));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(purePersuitInfo.steeringAngle));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(carAcceleration));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(frontObstacleDistance));
+  SERIAL_PORT.println();
 }
 
 /*==============================================================================*/
@@ -147,11 +147,11 @@ static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, 
 
 static void printSerial2WifiInfo(String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-  SERIAL.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);
-  SERIAL.println(commentChar + String("SSID: ") + wifiSsid);
-  SERIAL.println(commentChar + String("PASSWORD: ") + wifiPassword);
-  SERIAL.println(commentChar + String("HOSTNAME: ") + hostname);
-  SERIAL.println(commentChar + String("PORT: ") + String(port));
+  SERIAL_PORT.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);
+  SERIAL_PORT.println(commentChar + String("SSID: ") + wifiSsid);
+  SERIAL_PORT.println(commentChar + String("PASSWORD: ") + wifiPassword);
+  SERIAL_PORT.println(commentChar + String("HOSTNAME: ") + hostname);
+  SERIAL_PORT.println(commentChar + String("PORT: ") + String(port));
 }
 
 #endif

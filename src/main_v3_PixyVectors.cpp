@@ -19,7 +19,7 @@ Pixy2 pixy;
 
 void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText, float &carSpeed){
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] " + errorText));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] " + errorText));
   #endif
   if (iteration >= 5){  
     #if ENABLE_DRIVERMOTOR == 1
@@ -39,8 +39,8 @@ void setup() {
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-    SERIAL.begin(115200);
-    while (!SERIAL){
+    SERIAL_PORT.begin(115200);
+    while (!SERIAL_PORT){
       delay(100);
     }
   #endif
@@ -51,7 +51,7 @@ void setup() {
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1
-    serial2WifiConnect(SERIAL, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
+    serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1 && ENABLE_SERIAL_PRINT == 1
@@ -77,19 +77,19 @@ void setup() {
   // we must initialize the pixy object
   pixyResult = pixy.init();
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.init() = ") + String(pixyResult));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.init() = ") + String(pixyResult));
   #endif
     
   // Getting the RGB pixel values requires the 'video' program
   pixyResult = pixy.changeProg("line");
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.changeProg(line) = ") + String(pixyResult));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.changeProg(line) = ") + String(pixyResult));
   #endif
   #if ENABLE_DRIVERMOTOR == 1
     delay(3000);
   #endif
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
   #endif
 }
 
@@ -245,7 +245,7 @@ void loop() {
     #endif
     
     #if ENABLE_SERIAL_PRINT == 1
-      SERIAL.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(millis() - timeStart) + String(" ms"));
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(millis() - timeStart) + String(" ms"));
     #endif
   }
 }
