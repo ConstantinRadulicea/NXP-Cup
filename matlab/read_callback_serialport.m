@@ -3,7 +3,7 @@ function read_callback_serialport(src, ~)
     raw_data_chars = char(raw_data);
 
     if(raw_data_chars(1) == '%')
-         %raw_data
+         raw_data
 %         src.UserData.Debug = [raw_data; src.UserData.Debug];
 %         src.UserData.Debug = src.UserData.Debug(1:min(end, 50), 1);
         return;
@@ -20,6 +20,7 @@ function read_callback_serialport(src, ~)
     newWayPointPosition_str = split(raw_data(9,1), ",");
     steeringWheelAngle = str2double(raw_data(10,1));
     carAcceleration = str2double(raw_data(11,1));
+    frontObstacleDistance = str2double(raw_data(12,1));
     
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
@@ -58,6 +59,8 @@ function read_callback_serialport(src, ~)
     text(xmin, xmax-2, myText);
     myText = sprintf("Gas: %.2f%%", carAcceleration * 100);
     text(xmin, xmax-5, myText);
+    myText = sprintf("Obstacle distance [cm]: %.2f%", frontObstacleDistance);
+    text(xmin, xmax-8, myText);
     xlim([xmin xmax])
     ylim([xmin xmax])
 

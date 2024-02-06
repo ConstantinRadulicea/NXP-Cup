@@ -45,6 +45,11 @@ void setup() {
     }
   #endif
 
+  #if ENABLE_EMERGENCY_BREAKING == 1
+   pinMode(DISTANCE_SENSOR_TRIG_PIN, OUTPUT); 
+   pinMode(DISTANCE_SENSOR_ECHO_PIN, INPUT); 
+  #endif
+
   #if ENABLE_WIRELESS_DEBUG == 1
     serial2WifiConnect(SERIAL, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
@@ -88,6 +93,24 @@ void setup() {
   #endif
 }
 
+float getFrontObstacleDistance_cm(){
+  float duration;
+  float distance;
+
+  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, HIGH);
+  delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = (float)(pulseIn(DISTANCE_SENSOR_ECHO_PIN, HIGH));
+  // Calculating the distance
+  distance = duration * 0.034 / 2.0f;
+
+  return distance;
+}
+
 /*====================================================================================================================================*/
 void loop() {
   int i;
@@ -96,12 +119,14 @@ void loop() {
   Vector vec, leftVectorOld, rightVectorOld;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
-  float carLength, laneWidth, lookAheadDistance, carSpeed;
+  float carLength, laneWidth, lookAheadDistance, carSpeed, frontObstacleDistance;
   
   carSpeed = 0.0f;
   timeStart = 0;
   loopIterationsCountNoVectorDetected = 0;
   loopIterationsCountVectorRetriveError = 0;
+
+  frontObstacleDistance = 0.0f;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
@@ -119,6 +144,15 @@ void loop() {
   vectorsProcessing.setMinXaxisAngle(3.0f * RADIANS_PER_DEGREE);
   while (1)
   {
+    #if ENABLE_EMERGENCY_BREAKING == 1
+    frontObstacleDistance = getFrontObstacleDistance_cm();
+    while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
+      driverMotor.write(STANDSTILL_SPEED);
+      delay(100);
+      frontObstacleDistance = getFrontObstacleDistance_cm();
+    }
+    #endif
+
     timeStart = millis();
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
@@ -195,7 +229,7 @@ void loop() {
     }
     
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED));
+        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
     #endif
     
     #if ENABLE_STEERING_SERVO == 1
