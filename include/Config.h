@@ -55,7 +55,11 @@ Test rapid{
 //#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
+<<<<<<< HEAD
 #define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex laptop
+=======
+#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
+>>>>>>> 447af5e6e0330b0221d7c17307993f4a21ed9a8a
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
