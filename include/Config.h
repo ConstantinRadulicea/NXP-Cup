@@ -52,10 +52,10 @@ Test rapid{
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-//#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
-#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
+//#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
@@ -121,8 +121,8 @@ Test rapid{
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)97
-#define MAX_SPEED (int)107
+#define MIN_SPEED (int)96
+#define MAX_SPEED (int)112
 #define STANDSTILL_SPEED (int)90
 
 /*====================================================================================================================================*/
@@ -176,6 +176,11 @@ static void printSerial2WifiInfo(String initSequence, String wifiSsid, String wi
   SERIAL_PORT.println(commentChar + String("PASSWORD: ") + wifiPassword);
   SERIAL_PORT.println(commentChar + String("HOSTNAME: ") + hostname);
   SERIAL_PORT.println(commentChar + String("PORT: ") + String(port));
+}
+
+static void HardwareReset(){
+  delay(100);
+  SCB_AIRCR = 0x05FA0004;
 }
 
 #endif

@@ -37,6 +37,8 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText, float &car
 
 void setup() {
   int8_t pixyResult;
+  int loopIterationsCountPixyChangeProgramError;
+  float temp_float;
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
@@ -77,6 +79,7 @@ void setup() {
     
   // we must initialize the pixy object
   pixyResult = pixy.init();
+  
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.init() = ") + String(pixyResult));
   #endif
@@ -116,20 +119,29 @@ float getFrontObstacleDistance_cm(){
 
 /*==============================================================================*/
 
-static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle) {
-	float newCarSpeed, speedSpan;
+static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine) {
+	float newCarSpeed_bySteeringAngle, speedSpan, angleCurrentTrajectoryAndMiddleLane, newCarSpeed_byTrajectoryAngle;
+  LineABC currentTrajectory;
 
 	speedSpan = maxSpeed - minSpeed;
 	maxSteeringWheelAngle = fabsf(maxSteeringWheelAngle);
 	steeringWheelAngle = fabsf(steeringWheelAngle);
 	steeringWheelAngle = MIN(steeringWheelAngle, maxSteeringWheelAngle);
+
+  currentTrajectory = yAxisABC();
+	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
+
+  newCarSpeed_byTrajectoryAngle = minSpeed + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * speedSpan);
+
+	newCarSpeed_byTrajectoryAngle = MAX(newCarSpeed_byTrajectoryAngle, minSpeed);
+	newCarSpeed_byTrajectoryAngle = MIN(newCarSpeed_byTrajectoryAngle, maxSpeed);
 	
-	newCarSpeed = minSpeed + (((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan);
+	newCarSpeed_bySteeringAngle = minSpeed + (((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan);
 
-	newCarSpeed = MAX(newCarSpeed, minSpeed);
-	newCarSpeed = MIN(newCarSpeed, maxSpeed);
+	newCarSpeed_bySteeringAngle = MAX(newCarSpeed_bySteeringAngle, minSpeed);
+	newCarSpeed_bySteeringAngle = MIN(newCarSpeed_bySteeringAngle, maxSpeed);
 
-	return newCarSpeed;
+	return (float)MIN(newCarSpeed_bySteeringAngle, newCarSpeed_byTrajectoryAngle);
 }
 
 /*==============================================================================*/
@@ -140,7 +152,6 @@ static float calculateLookAheadDistance_noPID(float minDistance, float maxDistan
 	distanceSpan = maxDistance - minDistance;
 
 	currentTrajectory = yAxisABC();
-
 	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
 
 	newLookAheadDistance = minDistance + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * distanceSpan);
@@ -183,6 +194,7 @@ static float calculateLookAheadDistancePID(PID pid, float minDistance, float max
 /*====================================================================================================================================*/
 void loop() {
   int i;
+  int8_t pixyResult;
   uint32_t timeStart, loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
   LineABC laneMiddleLine, mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
@@ -202,6 +214,8 @@ void loop() {
 
   carPosition.x = (float)SCREEN_CENTER_X;
   carPosition.y = 0.0f;
+
+  laneMiddleLine = yAxisABC();
 
   laneWidth = (float)LANE_WIDTH_VECTOR_UNIT;
   carLength = (float)CAR_LENGTH_CM * (float)VECTOR_UNIT_PER_CM;
@@ -256,7 +270,7 @@ void loop() {
         #endif
 
         loopIterationsCountPixyChangeProgramError=0;
-        while (pixy.changeProg("video") != PIXY_RESULT_OK)
+        while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK)
         {
           loopIterationsCountPixyChangeProgramError++;
           FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")",carSpeed);
@@ -274,11 +288,11 @@ void loop() {
         vectorsProcessing.setRightVector(vec);
         
         loopIterationsCountPixyChangeProgramError = 0;
-        while (pixy.changeProg("line") != PIXY_RESULT_OK) {
+        while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
           loopIterationsCountPixyChangeProgramError++;
           FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")",carSpeed);
         }
-        delay(40);
+        //delay(40);
       }
       #endif
 
@@ -294,7 +308,7 @@ void loop() {
         #endif
       }
       else{
-        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN);
+        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, laneMiddleLine);
       }
     }
     else{
