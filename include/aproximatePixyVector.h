@@ -25,16 +25,16 @@ static Vector vectorApproximationSelectionLogic(Vector vec, Point2D approximated
 	distanceEndVector = euclidianDistance(carPosition, endVector);
 	distanceApproximatedPointFound = euclidianDistance(carPosition, approximatedPointFound);
 
-	angleBwCurTrajectoryAnd_startMiddleVectorLine = angleBetweenLinesABC(yAxisABC(), points2lineABC(startVector, approximatedPointFound));
-	angleBwCurTrajectoryAnd_middleEndVectorLine = angleBetweenLinesABC(yAxisABC(), points2lineABC(approximatedPointFound, endVector));
+	angleBwCurTrajectoryAnd_startMiddleVectorLine = fabs(angleBetweenLinesABC(yAxisABC(), points2lineABC(startVector, approximatedPointFound)));
+	angleBwCurTrajectoryAnd_middleEndVectorLine = fabs(angleBetweenLinesABC(yAxisABC(), points2lineABC(approximatedPointFound, endVector)));
 	
 	/*
-	Serial.println("% distanceStartVector: " + String(distanceStartVector) + "    " + "distanceEndVector: " + String(distanceEndVector) + "    " + "distanceApproximatedPointFound: " + String(distanceApproximatedPointFound));
-	Serial.println("% angleBwCurTrajectoryAnd_startMiddleVectorLine: " + String(angleBwCurTrajectoryAnd_startMiddleVectorLine) + "    " + "angleBwCurTrajectoryAnd_middleEndVectorLine: " + String(angleBwCurTrajectoryAnd_middleEndVectorLine));
-	Serial.println("% CarposX: " + String(carPosition.x) + "    " + "CarposY: " + String(carPosition.y));
-	Serial.println("% startVectorX: " + String(startVector.x) + "    " + "startVectorY: " + String(startVector.y));
-	Serial.println("% endVectorX: " + String(endVector.x) + "    " + "endVectorY: " + String(endVector.y));
-	Serial.println("% approximatedPointFoundX: " + String(approximatedPointFound.x) + "    " + "approximatedPointFoundY: " + String(approximatedPointFound.y));
+	SERIAL.println("% distanceStartVector: " + String(distanceStartVector) + "    " + "distanceEndVector: " + String(distanceEndVector) + "    " + "distanceApproximatedPointFound: " + String(distanceApproximatedPointFound));
+	SERIAL.println("% angleBwCurTrajectoryAnd_startMiddleVectorLine: " + String(angleBwCurTrajectoryAnd_startMiddleVectorLine) + "    " + "angleBwCurTrajectoryAnd_middleEndVectorLine: " + String(angleBwCurTrajectoryAnd_middleEndVectorLine));
+	SERIAL.println("% CarposX: " + String(carPosition.x) + "    " + "CarposY: " + String(carPosition.y));
+	SERIAL.println("% startVectorX: " + String(startVector.x) + "    " + "startVectorY: " + String(startVector.y));
+	SERIAL.println("% endVectorX: " + String(endVector.x) + "    " + "endVectorY: " + String(endVector.y));
+	SERIAL.println("% approximatedPointFoundX: " + String(approximatedPointFound.x) + "    " + "approximatedPointFoundY: " + String(approximatedPointFound.y));
 	*/
 	if (angleBwCurTrajectoryAnd_startMiddleVectorLine < angleBwCurTrajectoryAnd_middleEndVectorLine)
 	{
@@ -58,25 +58,6 @@ static Vector vectorApproximationSelectionLogic(Vector vec, Point2D approximated
 			newVectorEnd = endVector;
 		}
 	}
-	
-	/*
-	distanceStartVector = euclidianDistance(carPosition, startVector);
-	distanceEndVector = euclidianDistance(carPosition, endVector);
-	distanceApproximatedPointFound = euclidianDistance(carPosition, approximatedPointFound);
-
-	if (distanceStartVector < distanceEndVector && distanceStartVector < distanceApproximatedPointFound){
-		newVectorStart = startVector;
-		newVectorEnd = approximatedPointFound;
-	}
-	else if (distanceEndVector < distanceStartVector && distanceEndVector < distanceApproximatedPointFound){
-		newVectorStart = endVector;
-		newVectorEnd = approximatedPointFound;
-	}
-	else{
-		newVectorStart = approximatedPointFound;
-		newVectorEnd = endVector;
-	}
-	*/
 
 	newVector.m_x0 = newVectorStart.x;
 	newVector.m_y0 = newVectorStart.y;

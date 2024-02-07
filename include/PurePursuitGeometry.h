@@ -648,7 +648,7 @@ static PurePersuitInfo purePursuitComputeABC(Point2D carPos, LineABC wayPoints, 
 	temp = distance2lineABC(carPos, wayPoints);
 	info.distanceToWayPoints = temp;
 	if (temp >= lookAheadDistance) {
-		lookAheadDistance = temp + (temp * 0.25f);
+		lookAheadDistance = temp + (temp * 0.1f);
 	}
 
 	intersectionPoints = intersectionLineCircleABC(carPos, lookAheadDistance, wayPoints);

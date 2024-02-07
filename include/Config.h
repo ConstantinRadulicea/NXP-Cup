@@ -12,6 +12,7 @@
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
+#include <PID_v1.h>
 
 #if ENABLE_ARDUINO == 1
   #include <Servo.h>
@@ -28,13 +29,14 @@
 #define ENABLE_WIRELESS_DEBUG 1
 #define ENABLE_EMERGENCY_BREAKING 1
 
-#define DEBUG_MODE_STANDSTILL 0
-#define DEBUG_MODE_IN_MOTION 1
+#define DEBUG_MODE_STANDSTILL 1
+#define DEBUG_MODE_IN_MOTION 0
 
-#define DEBUG_WIFI_SSID "Off Limits2"
+#define DEBUG_WIFI_SSID "Off Limits"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-//#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin
-#define DEBUG_HOST_IPADDRESS "192.168.79.122"     // Daniel
+//#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
+//#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
@@ -83,6 +85,7 @@
 
 #define LOOKAHEAD_MIN_DISTANCE_CM 5.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
+#define LOOKAHEAD_PID_KP 4.0f
 #define CAR_LENGTH_CM 17.5
 #define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
 #define EMERGENCY_BREAK_DISTANCE_CM 50.0f
@@ -129,6 +132,8 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
   SERIAL_PORT.print(String(carAcceleration));
   SERIAL_PORT.print(';');
   SERIAL_PORT.print(String(frontObstacleDistance));
+  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(String(purePersuitInfo.lookAheadDistance * CM_PER_VECTOR_UNIT));
   SERIAL_PORT.println();
 }
 

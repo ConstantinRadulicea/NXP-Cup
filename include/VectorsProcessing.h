@@ -73,7 +73,7 @@ public:
 
     void addVector(Vector vec){
         
-        if (this->minXaxeAngle >= 0.0f && this->vectorAngleWithXaxis(vec) < this->minXaxeAngle) {
+        if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
             return;
         }
         
@@ -145,7 +145,7 @@ public:
         {
            middleLine_ = acuteAngleBisector;
         }
-        else if (angleBetweenLinesABC(yAxisABC(), acuteAngleBisector) < angleBetweenLinesABC(yAxisABC(), ottuseAngleBisector))
+        else if (fabsf(angleBetweenLinesABC(leftLine, acuteAngleBisector)) < fabsf(angleBetweenLinesABC(leftLine, ottuseAngleBisector)))
         {
             middleLine_ = acuteAngleBisector;
         }

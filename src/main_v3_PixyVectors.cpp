@@ -14,6 +14,7 @@ SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_
 
 VectorsProcessing vectorsProcessing;
 Pixy2 pixy;
+//PID lookAheadDistancePID;
 
 /*====================================================================================================================================*/
 
@@ -133,16 +134,45 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
 /*==============================================================================*/
 
-static float calculateLookAheadDistance_noPID(float minDistance, float maxDistance, LineABC laneMiddleLine) {
+static float calculateLookAheadDistance_noPID(float minDistance, float maxDistance, LineABC laneMiddleLine, float Kp) {
 	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
 	LineABC currentTrajectory;
 	distanceSpan = maxDistance - minDistance;
 
 	currentTrajectory = yAxisABC();
 
-	angleCurrentTrajectoryAndMiddleLane = angleBetweenLinesABC(currentTrajectory, laneMiddleLine);
+	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
 
 	newLookAheadDistance = minDistance + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * distanceSpan);
+
+	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
+	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
+
+	return newLookAheadDistance;
+}
+
+/*==============================================================================*/
+
+static float calculateLookAheadDistancePID(PID pid, float minDistance, float maxDistance, LineABC laneMiddleLine) {
+	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
+	float pidIn, pidOut;
+	LineABC currentTrajectory;
+
+	/*
+	* setpoint: M_PI_2
+	* PID input: angleCurrentTrajectoryAndMiddleLane
+	*/
+
+	distanceSpan = maxDistance - minDistance;
+	currentTrajectory = yAxisABC();
+	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
+
+	pidOut = fabs(pidOut);
+	pidOut = pidOut / M_PI_2;
+	pidOut = MAX(pidOut, 0.0f);
+	pidOut = MIN(pidOut, 1.0f);
+
+	newLookAheadDistance = minDistance + (pidOut * distanceSpan);
 
 	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
 	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
@@ -253,7 +283,7 @@ void loop() {
       #endif
 
       laneMiddleLine = vectorsProcessing.getMiddleLine();
-      lookAheadDistance = calculateLookAheadDistance_noPID(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine);
+      lookAheadDistance = calculateLookAheadDistance_noPID(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine, LOOKAHEAD_PID_KP);
       purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
 
       if (loopIterationsCountNoVectorDetected > 15)
