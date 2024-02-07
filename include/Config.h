@@ -1,5 +1,23 @@
 //All defines and Includes
 
+/*
+43  cm - Inaltime camera 43cm
+6.7 cm - Distanta camera fata de suport
+Test safe{
+  MIN_SPEED (int)96
+  MAX_SPEED (int)105
+  LOOKAHEAD_MIN_DISTANCE_CM 16.0f
+  LOOKAHEAD_MAX_DISTANCE_CM 30.0f
+}
+Test rapid{
+  MIN_SPEED (int)97
+  MAX_SPEED (int)107
+  LOOKAHEAD_MIN_DISTANCE_CM 16.0f
+  LOOKAHEAD_MAX_DISTANCE_CM 30.0f
+}
+
+*/
+
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
@@ -29,14 +47,15 @@
 #define ENABLE_WIRELESS_DEBUG 1
 #define ENABLE_EMERGENCY_BREAKING 1
 
-#define DEBUG_MODE_STANDSTILL 1
-#define DEBUG_MODE_IN_MOTION 0
+#define DEBUG_MODE_STANDSTILL 0
+#define DEBUG_MODE_IN_MOTION 1
 
-#define DEBUG_WIFI_SSID "Off Limits"
+#define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 //#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
-#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
+//#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex laptop
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
@@ -81,9 +100,9 @@
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
-#define LANE_WIDTH_VECTOR_UNIT_REAL 39.0f
+#define LANE_WIDTH_VECTOR_UNIT_REAL 60.0f
 
-#define LOOKAHEAD_MIN_DISTANCE_CM 5.0f
+#define LOOKAHEAD_MIN_DISTANCE_CM 16.0f
 #define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
 #define LOOKAHEAD_PID_KP 4.0f
 #define CAR_LENGTH_CM 17.5
@@ -102,8 +121,8 @@
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)95
-#define MAX_SPEED (int)100
+#define MIN_SPEED (int)97
+#define MAX_SPEED (int)107
 #define STANDSTILL_SPEED (int)90
 
 /*====================================================================================================================================*/
