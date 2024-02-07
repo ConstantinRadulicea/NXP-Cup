@@ -32,11 +32,12 @@
 #define DEBUG_MODE_STANDSTILL 1
 #define DEBUG_MODE_IN_MOTION 0
 
-#define DEBUG_WIFI_SSID "Off Limits"
+#define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 //#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
-#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
+//#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
