@@ -14,7 +14,6 @@ SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_
 
 VectorsProcessing vectorsProcessing;
 Pixy2 pixy;
-//PID lookAheadDistancePID;
 
 /*====================================================================================================================================*/
 
@@ -164,40 +163,42 @@ static float calculateLookAheadDistance_noPID(float minDistance, float maxDistan
 
 /*==============================================================================*/
 
-static float calculateLookAheadDistancePID(PID pid, float minDistance, float maxDistance, LineABC laneMiddleLine) {
-	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
-	float pidIn, pidOut;
-	LineABC currentTrajectory;
-
-	/*
-	* setpoint: M_PI_2
-	* PID input: angleCurrentTrajectoryAndMiddleLane
-	*/
-
-	distanceSpan = maxDistance - minDistance;
-	currentTrajectory = yAxisABC();
-	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
-
-	pidOut = fabs(pidOut);
-	pidOut = pidOut / M_PI_2;
-	pidOut = MAX(pidOut, 0.0f);
-	pidOut = MIN(pidOut, 1.0f);
-
-	newLookAheadDistance = minDistance + (pidOut * distanceSpan);
-
-	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
-	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
-
-	return newLookAheadDistance;
-}
+//static float calculateLookAheadDistancePID(PID pid, float minDistance, float maxDistance, LineABC laneMiddleLine) {
+//	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
+//	float pidIn, pidOut;
+//	LineABC currentTrajectory;
+//
+//	/*
+//	* setpoint: M_PI_2
+//	* PID input: angleCurrentTrajectoryAndMiddleLane
+//	*/
+//
+//	distanceSpan = maxDistance - minDistance;
+//	currentTrajectory = yAxisABC();
+//	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
+//
+//	pidOut = fabs(pidOut);
+//	pidOut = pidOut / M_PI_2;
+//	pidOut = MAX(pidOut, 0.0f);
+//	pidOut = MIN(pidOut, 1.0f);
+//
+//	newLookAheadDistance = minDistance + (pidOut * distanceSpan);
+//
+//	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
+//	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
+//
+//	return newLookAheadDistance;
+//}
 
 /*====================================================================================================================================*/
 void loop() {
-  int i;
+  size_t i;
   int8_t pixyResult;
   uint32_t timeStart, loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
   LineABC laneMiddleLine, mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
+  std::vector<Vector> vectors;
+  std::vector<Intersection> intersections;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
   float carLength, laneWidth, lookAheadDistance, carSpeed, frontObstacleDistance;
@@ -244,17 +245,24 @@ void loop() {
 
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
+      vectors.resize(pixy.line.numVectors);
+      memcpy(vectors.data(), pixy.line.vectors, (pixy.line.numVectors * sizeof(Vector)));
+      intersections.resize(pixy.line.numIntersections);
+      memcpy(intersections.data(), pixy.line.intersections, (pixy.line.numIntersections * sizeof(Intersection)));
+
+      VectorsProcessing::filterVectorIntersections(vectors, intersections);
+
       loopIterationsCountVectorRetriveError = 0;
-      if (pixy.line.numVectors > 0){
+      if (vectors.size() > 0){
         loopIterationsCountNoVectorDetected = 0;
       }
       else{
         loopIterationsCountNoVectorDetected++;
       }
-      
-      for (i=0; i < pixy.line.numVectors; i++)
+
+      for (i=0; i < vectors.size(); i++)
       {
-        vec = pixy.line.vectors[i];
+        vec = vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
         vectorsProcessing.addVector(vec);
@@ -270,12 +278,11 @@ void loop() {
         #endif
 
         loopIterationsCountPixyChangeProgramError=0;
-        while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK)
-        {
+        while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK) {
           loopIterationsCountPixyChangeProgramError++;
           FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")",carSpeed);
+          delay(10);
         }
-        delay(40);
 
         vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
         approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
@@ -291,8 +298,8 @@ void loop() {
         while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
           loopIterationsCountPixyChangeProgramError++;
           FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")",carSpeed);
+          delay(10);
         }
-        //delay(40);
       }
       #endif
 

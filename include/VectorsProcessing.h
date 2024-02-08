@@ -3,6 +3,7 @@
 
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2Line.h"
 #include "PurePursuitGeometry.h"
+#include <vector>
 
 class VectorsProcessing
 {
@@ -257,6 +258,11 @@ public:
         newVector.m_y1 = newVectorEnd.y;
         return newVector;
     }
+
+    static void filterVectorIntersections(std::vector<Vector> &vectors, std::vector<Intersection> &intersections){
+        
+    }
+
     static Vector reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(Vector vec, Point2D point){
         LineABC pointXaxis;
         float distanceStartVector, distanceEndVector;
