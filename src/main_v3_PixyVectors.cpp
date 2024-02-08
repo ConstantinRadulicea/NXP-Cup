@@ -257,7 +257,7 @@ void loop() {
     #endif
 
     vectorsProcessing.clear();
-    if(pixy.line.getAllFeatures(LINE_VECTOR) >= (int8_t)0){
+    if(pixy.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION) >= (int8_t)0){
       vectors.resize(pixy.line.numVectors);
       memcpy(vectors.data(), pixy.line.vectors, (pixy.line.numVectors * sizeof(Vector)));
       intersections.resize(pixy.line.numIntersections);
@@ -296,6 +296,7 @@ void loop() {
           FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")",carSpeed);
           delay(10);
         }
+        delay(40);
 
         vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
         approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
@@ -313,6 +314,7 @@ void loop() {
           FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")",carSpeed);
           delay(10);
         }
+        delay(40);
       }
       #endif
 

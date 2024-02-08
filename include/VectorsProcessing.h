@@ -30,23 +30,6 @@ private:
     float minXaxeAngle;
     float laneWidth;
 
-    float vectorMagnitude(Vector vec1){
-        Point2D point1, point2;
-        point1.x = (float)vec1.m_x0;
-        point1.y = (float)vec1.m_y0;
-
-        point2.x = (float)vec1.m_x1;
-        point2.y = (float)vec1.m_y1;
-
-        return euclidianDistance(point1, point2);
-    }
-    float vectorAngleWithXaxis(Vector vec1){
-        LineABC line2;
-
-        line2 = this->vectorToLineABC(vec1);
-        return angleBetweenLinesABC(xAxisABC(), line2);
-    }
-
 
     /* data */
 public:
@@ -191,6 +174,23 @@ public:
         line2 = points2lineABC(point1, point2);
         return line2;
     }
+
+    static float vectorMagnitude(Vector vec1){
+        Point2D point1, point2;
+        point1.x = (float)vec1.m_x0;
+        point1.y = (float)vec1.m_y0;
+
+        point2.x = (float)vec1.m_x1;
+        point2.y = (float)vec1.m_y1;
+
+        return euclidianDistance(point1, point2);
+    }
+    static float vectorAngleWithXaxis(Vector vec1){
+        LineABC line2;
+
+        line2 = vectorToLineABC(vec1);
+        return angleBetweenLinesABC(xAxisABC(), line2);
+    }
     
     
     ~VectorsProcessing(){}
@@ -267,7 +267,6 @@ public:
 			newVectorEnd = startVector;
 		}
 
-
         newVector.m_x0 = newVectorStart.x;
         newVector.m_y0 = newVectorStart.y;
         newVector.m_x1 = newVectorEnd.x;
@@ -276,7 +275,52 @@ public:
     }
 
     static void filterVectorIntersections(std::vector<Vector> &vectors, std::vector<Intersection> &intersections){
-        
+        for (size_t i = 0; i < intersections.size(); i++)
+        {
+            //intersections[i].print();
+            filterVectorIntersection(vectors, intersections[i]);
+        }
+    }
+
+    static std::vector<Vector>::iterator findVectorByIndex(std::vector<Vector> &vectors, uint8_t index){
+        for(std::vector<Vector>::iterator it = vectors.begin(); it != vectors.end(); it++){
+            if (it->m_index == index) {
+                return it;
+            }
+        }
+        return vectors.end();
+    }
+
+    static void filterVectorIntersection(std::vector<Vector> &vectors, Intersection &intersection){
+        IntersectionLine bestIntersectionLine;
+        Vector bestVector;
+        Vector newVector;
+        std::vector<Vector>::iterator newVectorIterator, bestVectorIterator;
+
+        for (size_t i = 0; i < intersection.m_n; i++)
+        {
+            newVectorIterator = findVectorByIndex(vectors, intersection.m_intLines[i].m_index);
+            if (newVectorIterator == vectors.end()) {
+                continue;
+            }
+            newVector = *newVectorIterator;
+            if (i == 0)
+            {
+                bestIntersectionLine = intersection.m_intLines[i];
+                bestVector = newVector;
+                bestVectorIterator = newVectorIterator;
+            }
+            else if(vectorMagnitude(newVector) > vectorMagnitude(bestVector)){
+                bestIntersectionLine = intersection.m_intLines[i];
+                bestVector = newVector;
+                bestVectorIterator = newVectorIterator;
+
+                vectors.erase(bestVectorIterator);
+            }
+            else{
+                vectors.erase(newVectorIterator);
+            }
+        }
     }
 
     static Vector reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(Vector vec, Point2D point){

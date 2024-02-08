@@ -70,6 +70,10 @@ Test rapid{
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
+//#define DEBUG_WIFI_SSID "B020"
+//#define DEBUG_WIFI_PASSWORD "diferential2019"
+
+//#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 #define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
