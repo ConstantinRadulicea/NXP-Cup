@@ -247,11 +247,13 @@ void readAndSetGlobalVariablesFromSerial(HardwareSerial& serialPort, String reco
     else {
       // If vector has less than n number of elements,
       // then delete all elements
-      inputBuffer.erase(inputBuffer.begin(),  inputBuffer.end());
+      inputBuffer.clear();
+      return;
     }
 
     // parse the inputBuffer and load the new global variables
 
+    terminatorFound = false;
     inputBuffer.clear();
   }
   
