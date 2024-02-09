@@ -6,7 +6,7 @@ lookahead_min_distance_cm = 16.0;
 lookahead_max_distance_cm = 30.0;
 emergency_break_distance_cm = 60.0;
 min_speed = 96.0;
-max_speed = 112.0;
+max_speed = 105.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
 
