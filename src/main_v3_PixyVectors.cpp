@@ -243,6 +243,10 @@ void loop() {
   {
     timeStart = millis();
 
+    #if ENABLE_SERIAL_PRINT == 1
+      readAndSetGlobalVariablesFromSerial(SERIAL_PORT, "\r\n", ';');
+    #endif
+    
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
     while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {

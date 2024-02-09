@@ -17,6 +17,9 @@
 #ifndef __APPROXIMATEPIXYVECTOT_H__
 #define __APPROXIMATEPIXYVECTOT_H__
 
+#define IMAGE_MAX_X_VECTOR_UNIT 78.0f
+#define IMAGE_MAX_Y_VECTOR_UNIT 51.0f
+
 #include "rgb2hsv.h"
 #include "VectorsProcessing.h"
 #include "PurePursuitGeometry.h"
@@ -99,8 +102,8 @@ static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTres
     minY = 5;
 	maxX = ((int)pixy.frameWidth);     // 315
 	maxY = ((int)pixy.frameHeight);    // 207
-	vectorMaxX = 78;
-	vectorMaxY = 51;
+	vectorMaxX = (int)IMAGE_MAX_X_VECTOR_UNIT;
+	vectorMaxY = (int)IMAGE_MAX_Y_VECTOR_UNIT;
 
 	midPoint_ = VectorsProcessing::vectorMidPoint(vec);
 	midPoint_.x = (midPoint_.x / (float)vectorMaxX) * (float)maxX;

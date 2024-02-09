@@ -39,6 +39,19 @@ Test rapid{
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+static float lane_width_vector_unit_real = 60.0f;
+static float lookahead_min_distance_cm = 16.0f;
+static float lookahead_max_distance_cm = 30.0f;
+static float lookahead_pid_kp = 4.0f;
+static float emergency_break_distance_cm = 70.0f;
+static float min_speed = 96.0f;
+static float max_speed = 112.0f;
+static float black_color_treshold = 0.2f; // 0=black, 1=white
+static float car_length_cm = 17.5f;
+
+
+
+
 #define ENABLE_ARDUINO 0
 
 #include <Arduino.h>
@@ -122,14 +135,14 @@ Test rapid{
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
-#define LANE_WIDTH_VECTOR_UNIT_REAL 60.0f
+#define LANE_WIDTH_VECTOR_UNIT_REAL lane_width_vector_unit_real
 
-#define LOOKAHEAD_MIN_DISTANCE_CM 16.0f
-#define LOOKAHEAD_MAX_DISTANCE_CM 30.0f
-#define LOOKAHEAD_PID_KP 4.0f
-#define CAR_LENGTH_CM 17.5
-#define BLACK_COLOR_TRESHOLD 0.2f // 0=black, 1=white
-#define EMERGENCY_BREAK_DISTANCE_CM 50.0f
+#define LOOKAHEAD_MIN_DISTANCE_CM lookahead_min_distance_cm
+#define LOOKAHEAD_MAX_DISTANCE_CM lookahead_max_distance_cm
+#define LOOKAHEAD_PID_KP lookahead_pid_kp
+#define CAR_LENGTH_CM car_length_cm
+#define BLACK_COLOR_TRESHOLD black_color_treshold // 0=black, 1=white
+#define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
 #define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT_REAL)   // VECTOR_UNIT_PER_CM * CM = CM
@@ -143,9 +156,9 @@ Test rapid{
 #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
-#define MIN_SPEED (int)96
-#define MAX_SPEED (int)112
-#define STANDSTILL_SPEED (int)90
+#define MIN_SPEED min_speed
+#define MAX_SPEED max_speed
+#define STANDSTILL_SPEED 90.0f
 
 /*====================================================================================================================================*/
 
@@ -200,9 +213,48 @@ static void printSerial2WifiInfo(String initSequence, String wifiSsid, String wi
   SERIAL_PORT.println(commentChar + String("PORT: ") + String(port));
 }
 
+/*==============================================================================*/
+
 static void HardwareReset(){
   delay(100);
   SCB_AIRCR = 0x05FA0004;
+}
+/*==============================================================================*/
+
+void readAndSetGlobalVariablesFromSerial(HardwareSerial& serialPort, String recordTermintor = "\r\n", char variableTerminator = ';'){
+  static std::vector<char> inputBuffer = std::vector<char>();
+  char tempChar, lastTerminatorCharacter;
+  bool terminatorFound = false;
+
+  lastTerminatorCharacter = recordTermintor.charAt(recordTermintor.length()-1);
+
+  while (serialPort.available() > 0){
+    tempChar = (char)serialPort.read();
+    inputBuffer.push_back(tempChar);
+    if (tempChar == lastTerminatorCharacter && inputBuffer.size() >= (size_t)recordTermintor.length()) {
+      if (memcmp((const void*)recordTermintor.c_str(), (const void*)(inputBuffer.data() + (size_t)((int)inputBuffer.size() - (int)recordTermintor.length())), (size_t)recordTermintor.length()) == 0) {
+        terminatorFound = true;
+        break;
+      }
+    }
+  }
+
+  if (terminatorFound) {
+
+    if (inputBuffer.size() >= (size_t)recordTermintor.length()) {
+      inputBuffer.erase(inputBuffer.begin() + (inputBuffer.size() - (size_t)recordTermintor.length()), inputBuffer.end());
+    }
+    else {
+      // If vector has less than n number of elements,
+      // then delete all elements
+      inputBuffer.erase(inputBuffer.begin(),  inputBuffer.end());
+    }
+
+    // parse the inputBuffer and load the new global variables
+
+    inputBuffer.clear();
+  }
+  
 }
 
 #endif
