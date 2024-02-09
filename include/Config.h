@@ -39,16 +39,17 @@ Test rapid{
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+/*====================================================================================================================================*/
 static float lane_width_vector_unit_real = 60.0f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
-static float lookahead_pid_kp = 4.0f;
 static float emergency_break_distance_cm = 70.0f;
 static float min_speed = 96.0f;
 static float max_speed = 112.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 
+/*====================================================================================================================================*/
 
 
 
@@ -139,7 +140,6 @@ static float car_length_cm = 17.5f;
 
 #define LOOKAHEAD_MIN_DISTANCE_CM lookahead_min_distance_cm
 #define LOOKAHEAD_MAX_DISTANCE_CM lookahead_max_distance_cm
-#define LOOKAHEAD_PID_KP lookahead_pid_kp
 #define CAR_LENGTH_CM car_length_cm
 #define BLACK_COLOR_TRESHOLD black_color_treshold // 0=black, 1=white
 #define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
@@ -159,6 +159,9 @@ static float car_length_cm = 17.5f;
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
 #define STANDSTILL_SPEED 90.0f
+
+/*====================================================================================================================================*/
+static float car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
 /*====================================================================================================================================*/
 
@@ -220,17 +223,17 @@ static void HardwareReset(){
   SCB_AIRCR = 0x05FA0004;
 }
 /*==============================================================================*/
-
+#include<string>
 bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, std::vector<char> &record){
   static std::vector<char> inputBuffer = std::vector<char>();
+  static bool terminatorFound = false;
+
   char tempChar, lastTerminatorCharacter;
-  bool terminatorFound = false;
 
   if (serialPort.available() <= 0) {
     record = std::vector<char>();
     return false;
   }
-  
 
   if (terminatorFound == true && inputBuffer.size() > 0) {
     terminatorFound = false;
@@ -266,6 +269,8 @@ bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, st
     // parse the inputBuffer and load the new global variables
     record = inputBuffer;
     record.push_back('\0');
+    terminatorFound = false;
+    inputBuffer.clear();
     return true;
   }
   record = std::vector<char>();
@@ -321,7 +326,7 @@ float parseNextFloat(char* str, size_t strSize, char variableTerminator, char** 
 	return result;
 }
 
-// 60.0;16.0;30.0;4.0;70.0;96.0;112.0;0.2;17.5
+
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';') {
 	char* pEnd;
 	int resultSuccess;
@@ -329,12 +334,35 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 	lane_width_vector_unit_real = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	lookahead_min_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	lookahead_max_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-	lookahead_pid_kp = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-	min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	emergency_break_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	max_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	black_color_treshold = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	car_length_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
+  car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
+}
+
+void printGlobalVariables(HardwareSerial& serialPort){
+  String separatorCharacter = String(";");
+  serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING));
+
+  serialPort.print(String(lane_width_vector_unit_real));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(lookahead_min_distance_cm));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(lookahead_max_distance_cm));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(emergency_break_distance_cm));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(min_speed));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(max_speed));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(black_color_treshold));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(car_length_cm));
+  serialPort.println();
 }
 
 #endif

@@ -158,7 +158,7 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
 /*==============================================================================*/
 
-static float calculateLookAheadDistance_noPID(float minDistance, float maxDistance, LineABC laneMiddleLine, float Kp) {
+static float calculateLookAheadDistance_noPID(float minDistance, float maxDistance, LineABC laneMiddleLine) {
 	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
 	LineABC currentTrajectory;
 	distanceSpan = maxDistance - minDistance;
@@ -215,7 +215,7 @@ void loop() {
   std::vector<char> serialInputBuffer;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
-  float carLength, laneWidth, lookAheadDistance, carSpeed, frontObstacleDistance;
+  float laneWidth, lookAheadDistance, carSpeed, frontObstacleDistance;
 
   serialInputBuffer.clear();
   
@@ -235,7 +235,6 @@ void loop() {
   laneMiddleLine = yAxisABC();
 
   laneWidth = (float)LANE_WIDTH_VECTOR_UNIT;
-  carLength = (float)CAR_LENGTH_CM * (float)VECTOR_UNIT_PER_CM;
   
   lookAheadDistance = (float)LOOKAHEAD_MIN_DISTANCE_CM * (float)VECTOR_UNIT_PER_CM;
   
@@ -249,6 +248,7 @@ void loop() {
     #if ENABLE_SERIAL_PRINT == 1
       if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
         parseAndSetGlobalVariables(serialInputBuffer, ';');
+        printGlobalVariables(SERIAL_PORT);
       }
     #endif
     
@@ -259,7 +259,12 @@ void loop() {
       driverMotor.write((int)carSpeed);
       delay(100);
       frontObstacleDistance = getFrontObstacleDistance_cm();
+      
       #if ENABLE_SERIAL_PRINT == 1
+        if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
+          parseAndSetGlobalVariables(serialInputBuffer, ';');
+          printGlobalVariables(SERIAL_PORT);
+        }
         printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
       #endif
     }
@@ -328,8 +333,8 @@ void loop() {
       #endif
 
       laneMiddleLine = vectorsProcessing.getMiddleLine();
-      lookAheadDistance = calculateLookAheadDistance_noPID(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine, LOOKAHEAD_PID_KP);
-      purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, carLength, lookAheadDistance);
+      lookAheadDistance = calculateLookAheadDistance_noPID(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine);
+      purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, car_length_vector_unit, lookAheadDistance);
 
       if (loopIterationsCountNoVectorDetected > 15)
       {

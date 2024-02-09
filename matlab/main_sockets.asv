@@ -1,0 +1,27 @@
+clc;
+clear;
+close all;
+
+server = tcpserver(6789,"ConnectionChangedFcn",@newClientCallBack)
+server.UserData.lastFlushed = 1;
+server.UserData.figureHandle = figure;
+server.configureTerminator("CR/LF");
+server.configureCallback("terminator", @read_callback_serialport)
+
+server.write("60.0;16.0;30.0;4.0;70.0;96.0;112.0;0.2;17.5")
+
+lane_width_vector_unit_real = 60.0;
+lookahead_min_distance_cm = 16.0;
+lookahead_max_distance_cm = 30.0;
+lookahead_pid_kp = 4.0;
+emergency_break_distance_cm = 70.0;
+min_speed = 96.0;
+max_speed = 112.0;
+black_color_treshold = 0.2;
+car_length_cm = 17.5;
+
+values = [lane_width_vector_unit_real lookahead_min_distance_cm
+    lookahead_max_distance_cm lookahead_pid_kp emergency_break_distance_cm
+    min_speed max_speed black_color_treshold car_length_cm]
+
+
