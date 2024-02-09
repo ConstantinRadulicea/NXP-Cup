@@ -212,9 +212,12 @@ void loop() {
   Vector vec, leftVectorOld, rightVectorOld;
   std::vector<Vector> vectors;
   std::vector<Intersection> intersections;
+  std::vector<char> serialInputBuffer;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
   float carLength, laneWidth, lookAheadDistance, carSpeed, frontObstacleDistance;
+
+  serialInputBuffer.clear();
   
   carSpeed = 0.0f;
   timeStart = 0;
@@ -244,7 +247,9 @@ void loop() {
     timeStart = millis();
 
     #if ENABLE_SERIAL_PRINT == 1
-      readAndSetGlobalVariablesFromSerial(SERIAL_PORT, "\r\n", ';');
+      if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
+        parseAndSetGlobalVariables(serialInputBuffer, ';');
+      }
     #endif
     
     #if ENABLE_EMERGENCY_BREAKING == 1

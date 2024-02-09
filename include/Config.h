@@ -221,10 +221,22 @@ static void HardwareReset(){
 }
 /*==============================================================================*/
 
-void readAndSetGlobalVariablesFromSerial(HardwareSerial& serialPort, String recordTermintor = "\r\n", char variableTerminator = ';'){
+bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, std::vector<char> &record){
   static std::vector<char> inputBuffer = std::vector<char>();
   char tempChar, lastTerminatorCharacter;
   bool terminatorFound = false;
+
+  if (serialPort.available() <= 0) {
+    record = std::vector<char>();
+    return false;
+  }
+  
+
+  if (terminatorFound == true && inputBuffer.size() > 0) {
+    terminatorFound = false;
+    inputBuffer.clear();
+  }
+  
 
   lastTerminatorCharacter = recordTermintor.charAt(recordTermintor.length()-1);
 
@@ -248,15 +260,81 @@ void readAndSetGlobalVariablesFromSerial(HardwareSerial& serialPort, String reco
       // If vector has less than n number of elements,
       // then delete all elements
       inputBuffer.clear();
-      return;
+    record = std::vector<char>();
+    return false;
     }
-
     // parse the inputBuffer and load the new global variables
-
-    terminatorFound = false;
-    inputBuffer.clear();
+    record = inputBuffer;
+    record.push_back('\0');
+    return true;
   }
-  
+  record = std::vector<char>();
+  return false;
+}
+
+/*
+* str:
+* C-string beginning with the representation of a floating-point number.
+* endptr:
+* Reference to an already allocated object of type char*, whose value is set by the function to the next character in str after the numerical value.
+* This parameter can also be a null pointer, in which case it is not used.
+*/
+float parseNextFloat(char* str, size_t strSize, char variableTerminator, char** endptr, int* success) {
+	char* nextTerminator;
+	char* pEnd;
+	float result;
+	nextTerminator = (char*)memchr(str, (int)variableTerminator, strSize);
+	if (str == nextTerminator && strSize == 1) {
+		if (endptr) {
+			*endptr = nextTerminator;
+		}
+		if (success) {
+			*success = 0;
+		}
+
+		return 0.0f;
+	}
+	if (nextTerminator) {
+		*nextTerminator = '\0';
+	}
+	else {
+		nextTerminator = str + strSize;
+	}
+	
+	result = strtof(str, &pEnd);
+
+	if (pEnd != nextTerminator) {
+		// handle incomplete parse
+		pEnd += 1;
+		*success = 0;
+		if (endptr) {
+			*endptr = pEnd;
+		}
+	}
+	else {
+		pEnd += 1;
+		*success = 1;
+		if (endptr) {
+			*endptr = pEnd;
+		}
+	}
+	return result;
+}
+
+// 60.0;16.0;30.0;4.0;70.0;96.0;112.0;0.2;17.5
+void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';') {
+	char* pEnd;
+	int resultSuccess;
+	pEnd = rawData.data();
+	lane_width_vector_unit_real = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	lookahead_min_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	lookahead_max_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	lookahead_pid_kp = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	max_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	black_color_treshold = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	car_length_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+
 }
 
 #endif
