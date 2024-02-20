@@ -24,8 +24,7 @@
 
 
 #include <math.h>
-#include <string.h>
-#include <math.h>
+//#include <string.h>
 
 typedef struct LineMQ {
 	float m;

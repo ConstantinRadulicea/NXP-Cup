@@ -72,12 +72,18 @@ static float car_length_cm = 17.5f;
 
 
 
+
 #define ENABLE_SERIAL_PRINT 1     
 #define ENABLE_STEERING_SERVO 1
 #define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #define ENABLE_WIRELESS_DEBUG 1
 #define ENABLE_EMERGENCY_BREAKING 1
+#define ENABLE_SETTINGS_MENU 0
+
+#if ENABLE_SETTINGS_MENU == 1
+  #include <LiquidCrystal_I2C.h>
+#endif
 
 #define DEBUG_MODE_STANDSTILL 0
 #define DEBUG_MODE_IN_MOTION 1
@@ -89,7 +95,7 @@ static float car_length_cm = 17.5f;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.79.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.176.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
@@ -136,6 +142,10 @@ static float car_length_cm = 17.5f;
 #define DRIVER_MOTOR_PIN  9
 #define DISTANCE_SENSOR_TRIG_PIN 2
 #define DISTANCE_SENSOR_ECHO_PIN 5
+#define MENU_LEFT_ARROW_BUTTON_PIN 4
+#define MENU_RIGHT_ARROW_BUTTON_PIN 4
+#define MENU_INCREMENT_BUTTON_PIN 4
+#define MENU_DECREMENT_BUTTON_PIN 4
 
 #define IMAGE_MAX_X 78.0f
 #define IMAGE_MAX_Y 51.0f
@@ -282,7 +292,7 @@ bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, st
   record = std::vector<char>();
   return false;
 }
-
+/*==============================================================================*/
 /*
 * str:
 * C-string beginning with the representation of a floating-point number.
@@ -332,6 +342,7 @@ float parseNextFloat(char* str, size_t strSize, char variableTerminator, char** 
 	return result;
 }
 
+/*==============================================================================*/
 
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';') {
 	char* pEnd;
@@ -348,6 +359,8 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
+
+/*==============================================================================*/
 
 void printGlobalVariables(HardwareSerial& serialPort){
   String separatorCharacter = String(";");
@@ -370,6 +383,153 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(car_length_cm));
   serialPort.println();
 }
+
+/*==============================================================================*/
+
+#if ENABLE_SETTINGS_MENU == 1
+void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_arrow_btn, int increment_btn, int decrement_btn) {
+  enum LcdMenu {LCDMENU_FIRST_VALUE,
+                LCDMENU_MIN_SPEED,
+                LCDMENU_MAX_SPEED,
+                LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
+                LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
+                LCDMENU_EMERGENCY_BREAK_DISTANCE_CM,
+                LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
+                LCDMENU_BLACK_COLOR_TRESHOLD,
+                LCDMENU_LAST_VALUE};
+  
+  static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
+  static int leftArrowButtonState=LOW;
+  static int rightArrowButtonState=LOW;
+  int incrementButton=LOW;
+  int decrementButton=LOW;
+  int leftArrowButtonPrevState, rightArrowButtonPrevState;
+
+  leftArrowButtonPrevState = leftArrowButtonState;
+  rightArrowButtonPrevState = rightArrowButtonState;
+
+  leftArrowButtonState = digitalRead(left_arrow_btn);
+  rightArrowButtonState = digitalRead(right_arrow_btn);
+  incrementButton = digitalRead(increment_btn);
+  decrementButton = digitalRead(decrement_btn);
+
+  if (leftArrowButtonPrevState == leftArrowButtonState == HIGH) {
+    return;
+  }
+
+  if (rightArrowButtonPrevState == rightArrowButtonState == HIGH) {
+    return;
+  }
+
+
+  if (rightArrowButtonState == HIGH && lcdMenuIndex >= ((int)LCDMENU_LAST_VALUE) - 1) {
+    lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
+  } else if (rightArrowButtonState == HIGH) {
+    (int)lcdMenuIndex++;
+  }
+
+  if (leftArrowButtonState == HIGH && lcdMenuIndex <= ((int)LCDMENU_FIRST_VALUE) + 1) {
+    lcdMenuIndex = ((int)LCDMENU_LAST_VALUE) - 1;
+  } else if (leftArrowButtonState == HIGH) {
+    (int)lcdMenuIndex--;
+  }
+
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+    switch (lcdMenuIndex) {
+      case LCDMENU_MIN_SPEED:
+        if (incrementButton == HIGH) {
+          MIN_SPEED += 1;
+        } else if (decrementButton == HIGH) {
+          MIN_SPEED -= 1;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("MIN_SPEED: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(MIN_SPEED);
+        break;
+
+      case LCDMENU_MAX_SPEED:
+        if (incrementButton == HIGH) {
+          MAX_SPEED += 1;
+        } else if (decrementButton == HIGH) {
+          MAX_SPEED -= 1;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("MAX_SPEED: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(MAX_SPEED);
+        break;
+
+      case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:
+        if (incrementButton == HIGH) {
+          LOOKAHEAD_MIN_DISTANCE_CM += 0.5f;
+        } else if (decrementButton == HIGH) {
+          LOOKAHEAD_MIN_DISTANCE_CM -= 0.5f;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("LOOKAHEAD_MIN: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(LOOKAHEAD_MIN_DISTANCE_CM);
+        break;
+
+      case LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM:
+        if (incrementButton == HIGH) {
+          LOOKAHEAD_MAX_DISTANCE_CM += 0.5f;
+        } else if (decrementButton == HIGH) {
+          LOOKAHEAD_MAX_DISTANCE_CM -= 0.5f;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("LOOKAHEAD_MAX: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(LOOKAHEAD_MAX_DISTANCE_CM);
+        break;
+      
+      case LCDMENU_EMERGENCY_BREAK_DISTANCE_CM:
+        if (incrementButton == HIGH) {
+          EMERGENCY_BREAK_DISTANCE_CM += 0.5f;
+        } else if (decrementButton == HIGH) {
+          EMERGENCY_BREAK_DISTANCE_CM -= 0.5f;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("EMERGENCY_BREAK_DISTANCE_CM: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(EMERGENCY_BREAK_DISTANCE_CM);
+        break;
+      
+      case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
+        if (incrementButton == HIGH) {
+          LANE_WIDTH_VECTOR_UNIT_REAL += 0.5f;
+        } else if (decrementButton == HIGH) {
+          LANE_WIDTH_VECTOR_UNIT_REAL -= 0.5f;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("LANE_WIDTH_VECTOR_UNIT_REAL: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(LANE_WIDTH_VECTOR_UNIT_REAL);
+        break;
+      
+      case LCDMENU_BLACK_COLOR_TRESHOLD:
+        if (incrementButton == HIGH) {
+          BLACK_COLOR_TRESHOLD += 0.01f;
+        } else if (decrementButton == HIGH) {
+          BLACK_COLOR_TRESHOLD -= 0.01f;
+        }
+        lcd_.clear();
+        lcd_.setCursor(0, 0);
+        lcd_.print("LOOKAHEAD_MAX: ");
+        lcd_.setCursor(0, 1);
+        lcd_.print(BLACK_COLOR_TRESHOLD);
+        break;
+    }
+  }
+}
+#endif
 
 #endif
 

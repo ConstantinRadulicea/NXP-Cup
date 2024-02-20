@@ -16,6 +16,9 @@
 
 
 #include "Config.h"
+#if ENABLE_SETTINGS_MENU == 1
+  LiquidCrystal_I2C lcd(0x27, 16, 2);
+#endif
 
 SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
 
@@ -63,6 +66,15 @@ void setup() {
   #if ENABLE_EMERGENCY_BREAKING == 1
    pinMode(DISTANCE_SENSOR_TRIG_PIN, OUTPUT); 
    pinMode(DISTANCE_SENSOR_ECHO_PIN, INPUT); 
+  #endif
+
+  #if ENABLE_SETTINGS_MENU == 1
+    lcd.init();  //display initialization
+    lcd.backlight();  // activate the backlight
+    pinMode(MENU_LEFT_ARROW_BUTTON_PIN, INPUT);
+    pinMode(MENU_RIGHT_ARROW_BUTTON_PIN, INPUT);
+    pinMode(MENU_INCREMENT_BUTTON_PIN, INPUT);
+    pinMode(MENU_DECREMENT_BUTTON_PIN, INPUT);
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1
@@ -174,35 +186,6 @@ static float calculateLookAheadDistance_noPID(float minDistance, float maxDistan
 	return newLookAheadDistance;
 }
 
-/*==============================================================================*/
-
-//static float calculateLookAheadDistancePID(PID pid, float minDistance, float maxDistance, LineABC laneMiddleLine) {
-//	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
-//	float pidIn, pidOut;
-//	LineABC currentTrajectory;
-//
-//	/*
-//	* setpoint: M_PI_2
-//	* PID input: angleCurrentTrajectoryAndMiddleLane
-//	*/
-//
-//	distanceSpan = maxDistance - minDistance;
-//	currentTrajectory = yAxisABC();
-//	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
-//
-//	pidOut = fabs(pidOut);
-//	pidOut = pidOut / M_PI_2;
-//	pidOut = MAX(pidOut, 0.0f);
-//	pidOut = MIN(pidOut, 1.0f);
-//
-//	newLookAheadDistance = minDistance + (pidOut * distanceSpan);
-//
-//	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
-//	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
-//
-//	return newLookAheadDistance;
-//}
-
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
@@ -251,6 +234,10 @@ void loop() {
         printGlobalVariables(SERIAL_PORT);
       }
     #endif
+
+    #if ENABLE_SETTINGS_MENU == 1
+      settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
+    #endif
     
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
@@ -259,6 +246,10 @@ void loop() {
       driverMotor.write((int)carSpeed);
       delay(100);
       frontObstacleDistance = getFrontObstacleDistance_cm();
+
+      #if ENABLE_SETTINGS_MENU == 1
+        settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
+      #endif
       
       #if ENABLE_SERIAL_PRINT == 1
         if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
