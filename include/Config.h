@@ -413,11 +413,11 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   incrementButton = digitalRead(increment_btn);
   decrementButton = digitalRead(decrement_btn);
 
-  if (leftArrowButtonPrevState == leftArrowButtonState == HIGH) {
+  if (leftArrowButtonPrevState == HIGH && leftArrowButtonState == HIGH) {
     return;
   }
 
-  if (rightArrowButtonPrevState == rightArrowButtonState == HIGH) {
+  if (rightArrowButtonPrevState == HIGH && rightArrowButtonState == HIGH) {
     return;
   }
 

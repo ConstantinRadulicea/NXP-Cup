@@ -1,5 +1,9 @@
+#include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+
+#define ENABLE_SETTINGS_MENU 1
+
 
 static float lane_width_vector_unit_real = 60.0f;
 static float lookahead_min_distance_cm = 16.0f;
@@ -23,6 +27,13 @@ static float car_length_cm = 17.5f;
 #define MENU_RIGHT_ARROW_BUTTON_PIN 4
 #define MENU_INCREMENT_BUTTON_PIN 5
 #define MENU_DECREMENT_BUTTON_PIN 6
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+
+
+
+#if ENABLE_SETTINGS_MENU == 1
 void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_arrow_btn, int increment_btn, int decrement_btn) {
   enum LcdMenu {LCDMENU_FIRST_VALUE,
                 LCDMENU_MIN_SPEED,
@@ -49,11 +60,11 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   incrementButton = digitalRead(increment_btn);
   decrementButton = digitalRead(decrement_btn);
 
-  if (leftArrowButtonPrevState == leftArrowButtonState == HIGH) {
+  if (leftArrowButtonPrevState == HIGH && leftArrowButtonState == HIGH) {
     return;
   }
 
-  if (rightArrowButtonPrevState == rightArrowButtonState == HIGH) {
+  if (rightArrowButtonPrevState == HIGH && rightArrowButtonState == HIGH) {
     return;
   }
 
@@ -165,20 +176,25 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     }
   }
 }
+#endif
+
 
 void setup() {
   Serial.begin(9600);
 
-  lcd.init();  //display initialization
-  lcd.backlight();  // activate the backlight
-
-  pinMode(MENU_LEFT_ARROW_BUTTON_PIN, INPUT);
-  pinMode(MENU_RIGHT_ARROW_BUTTON_PIN, INPUT);
-  pinMode(MENU_INCREMENT_BUTTON_PIN, INPUT);
-  pinMode(MENU_DECREMENT_BUTTON_PIN, INPUT);
+  #if ENABLE_SETTINGS_MENU == 1
+    lcd.init();  //display initialization
+    lcd.backlight();  // activate the backlight
+    pinMode(MENU_LEFT_ARROW_BUTTON_PIN, INPUT);
+    pinMode(MENU_RIGHT_ARROW_BUTTON_PIN, INPUT);
+    pinMode(MENU_INCREMENT_BUTTON_PIN, INPUT);
+    pinMode(MENU_DECREMENT_BUTTON_PIN, INPUT);
+  #endif
 
   // initialize the pushbutton pin as an input:
 }
 void loop() {
-  settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
+    #if ENABLE_SETTINGS_MENU == 1
+      settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
+    #endif
 }
