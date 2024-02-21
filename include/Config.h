@@ -438,9 +438,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     switch (lcdMenuIndex) {
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
-          MIN_SPEED += 1;
+          MIN_SPEED += 0.5f;
         } else if (decrementButton == HIGH) {
-          MIN_SPEED -= 1;
+          MIN_SPEED -= 0.5f;
         }
         lcd_.clear();
         lcd_.setCursor(0, 0);
@@ -451,9 +451,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
 
       case LCDMENU_MAX_SPEED:
         if (incrementButton == HIGH) {
-          MAX_SPEED += 1;
+          MAX_SPEED += 0.5f;
         } else if (decrementButton == HIGH) {
-          MAX_SPEED -= 1;
+          MAX_SPEED -= 0.5f;
         }
         lcd_.clear();
         lcd_.setCursor(0, 0);
@@ -522,7 +522,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         }
         lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("LOOKAHEAD_MAX: ");
+        lcd_.print("BLACK_COLOR_TRESHOLD: ");
         lcd_.setCursor(0, 1);
         lcd_.print(BLACK_COLOR_TRESHOLD);
         break;

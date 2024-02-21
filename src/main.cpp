@@ -52,8 +52,6 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText, float &car
 
 void setup() {
   int8_t pixyResult;
-  int loopIterationsCountPixyChangeProgramError;
-  float temp_float;
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
