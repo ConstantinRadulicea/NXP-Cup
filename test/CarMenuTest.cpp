@@ -23,10 +23,10 @@ static float car_length_cm = 17.5f;
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
 
-#define MENU_LEFT_ARROW_BUTTON_PIN 2
-#define MENU_RIGHT_ARROW_BUTTON_PIN 4
-#define MENU_INCREMENT_BUTTON_PIN 5
-#define MENU_DECREMENT_BUTTON_PIN 6
+#define MENU_LEFT_ARROW_BUTTON_PIN 17
+#define MENU_RIGHT_ARROW_BUTTON_PIN 16
+#define MENU_INCREMENT_BUTTON_PIN 15
+#define MENU_DECREMENT_BUTTON_PIN 14
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 

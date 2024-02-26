@@ -43,7 +43,7 @@ Test rapid{
 static float lane_width_vector_unit_real = 60.0f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
-static float emergency_break_distance_cm = 60.0f;
+static float emergency_break_distance_cm = 40.0f;
 static float min_speed = 96.0f;
 static float max_speed = 112.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -81,13 +81,9 @@ static float car_length_cm = 17.5f;
 #define ENABLE_EMERGENCY_BREAKING 1
 #define ENABLE_SETTINGS_MENU 0
 
-#if ENABLE_SETTINGS_MENU == 1
-  #include <LiquidCrystal_I2C.h>
-#endif
-
-#define DEBUG_MODE_STANDSTILL 0
-#define DEBUG_MODE_IN_MOTION 1
-#define RACE_MODE 0
+#define DEBUG_MODE_STANDSTILL 0  
+#define DEBUG_MODE_IN_MOTION 0
+#define RACE_MODE 1
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
@@ -132,6 +128,11 @@ static float car_length_cm = 17.5f;
   #define ENABLE_WIRELESS_DEBUG 0
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
+  #define ENABLE_SETTINGS_MENU 1
+#endif
+
+#if ENABLE_SETTINGS_MENU == 1
+  #include <LiquidCrystal_I2C.h>
 #endif
 
 
@@ -142,10 +143,11 @@ static float car_length_cm = 17.5f;
 #define DRIVER_MOTOR_PIN  9
 #define DISTANCE_SENSOR_TRIG_PIN 2
 #define DISTANCE_SENSOR_ECHO_PIN 5
-#define MENU_LEFT_ARROW_BUTTON_PIN 4
-#define MENU_RIGHT_ARROW_BUTTON_PIN 4
-#define MENU_INCREMENT_BUTTON_PIN 4
-#define MENU_DECREMENT_BUTTON_PIN 4
+#define MENU_LEFT_ARROW_BUTTON_PIN 17
+#define MENU_RIGHT_ARROW_BUTTON_PIN 16
+#define MENU_INCREMENT_BUTTON_PIN 15
+#define MENU_DECREMENT_BUTTON_PIN 14
+#define EMERGENCY_BREAK_LIGHT_PIN 20
 
 #define IMAGE_MAX_X 78.0f
 #define IMAGE_MAX_Y 51.0f
@@ -532,4 +534,3 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
 #endif
 
 #endif
-

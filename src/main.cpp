@@ -64,6 +64,8 @@ void setup() {
   #if ENABLE_EMERGENCY_BREAKING == 1
    pinMode(DISTANCE_SENSOR_TRIG_PIN, OUTPUT); 
    pinMode(DISTANCE_SENSOR_ECHO_PIN, INPUT); 
+   pinMode(EMERGENCY_BREAK_LIGHT_PIN, OUTPUT);
+   digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
   #endif
 
   #if ENABLE_SETTINGS_MENU == 1
@@ -240,6 +242,7 @@ void loop() {
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
     while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
+      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
       carSpeed = (float)STANDSTILL_SPEED;
       driverMotor.write((int)carSpeed);
       delay(100);
@@ -257,6 +260,7 @@ void loop() {
         printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
       #endif
     }
+    digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
     #endif
 
     vectorsProcessing.clear();
