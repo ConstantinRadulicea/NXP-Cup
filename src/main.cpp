@@ -170,7 +170,7 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
 /*==============================================================================*/
 
-static float calculateLookAheadDistance_noPID(float minDistance, float maxDistance, LineABC laneMiddleLine) {
+static float calculateLookAheadDistance(float minDistance, float maxDistance, LineABC laneMiddleLine) {
 	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
 	LineABC currentTrajectory;
 	distanceSpan = maxDistance - minDistance;
@@ -326,7 +326,7 @@ void loop() {
       #endif
 
       laneMiddleLine = vectorsProcessing.getMiddleLine();
-      lookAheadDistance = calculateLookAheadDistance_noPID(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine);
+      lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine);
       purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, car_length_vector_unit, lookAheadDistance);
 
       if (loopIterationsCountNoVectorDetected > 15)

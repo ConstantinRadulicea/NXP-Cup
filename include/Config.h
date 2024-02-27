@@ -415,28 +415,23 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   incrementButton = digitalRead(increment_btn);
   decrementButton = digitalRead(decrement_btn);
 
-  if (leftArrowButtonPrevState == HIGH && leftArrowButtonState == HIGH) {
-    return;
+  if (!(leftArrowButtonPrevState == HIGH && leftArrowButtonState == HIGH) && !(rightArrowButtonPrevState == HIGH && rightArrowButtonState == HIGH)) {
+    if (rightArrowButtonState == HIGH && lcdMenuIndex >= ((int)LCDMENU_LAST_VALUE) - 1) {
+      lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
+    } else if (rightArrowButtonState == HIGH) {
+      (int)lcdMenuIndex++;
+    }
+
+    if (leftArrowButtonState == HIGH && lcdMenuIndex <= ((int)LCDMENU_FIRST_VALUE) + 1) {
+      lcdMenuIndex = ((int)LCDMENU_LAST_VALUE) - 1;
+    } else if (leftArrowButtonState == HIGH) {
+      (int)lcdMenuIndex--;
+    }
   }
 
-  if (rightArrowButtonPrevState == HIGH && rightArrowButtonState == HIGH) {
-    return;
-  }
-
-
-  if (rightArrowButtonState == HIGH && lcdMenuIndex >= ((int)LCDMENU_LAST_VALUE) - 1) {
-    lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
-  } else if (rightArrowButtonState == HIGH) {
-    (int)lcdMenuIndex++;
-  }
-
-  if (leftArrowButtonState == HIGH && lcdMenuIndex <= ((int)LCDMENU_FIRST_VALUE) + 1) {
-    lcdMenuIndex = ((int)LCDMENU_LAST_VALUE) - 1;
-  } else if (leftArrowButtonState == HIGH) {
-    (int)lcdMenuIndex--;
-  }
-
-  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+  //if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+  if(1) {
+    lcd_.clear();
     switch (lcdMenuIndex) {
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
@@ -444,9 +439,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           MIN_SPEED -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("MIN_SPEED: ");
+        lcd_.print("MIN_SPEED");
         lcd_.setCursor(0, 1);
         lcd_.print(MIN_SPEED);
         break;
@@ -457,9 +451,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           MAX_SPEED -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("MAX_SPEED: ");
+        lcd_.print("MAX_SPEED");
         lcd_.setCursor(0, 1);
         lcd_.print(MAX_SPEED);
         break;
@@ -470,9 +463,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           LOOKAHEAD_MIN_DISTANCE_CM -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("LOOKAHEAD_MIN: ");
+        lcd_.print("LOOKAHEAD_MIN");
         lcd_.setCursor(0, 1);
         lcd_.print(LOOKAHEAD_MIN_DISTANCE_CM);
         break;
@@ -483,9 +475,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           LOOKAHEAD_MAX_DISTANCE_CM -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("LOOKAHEAD_MAX: ");
+        lcd_.print("LOOKAHEAD_MAX");
         lcd_.setCursor(0, 1);
         lcd_.print(LOOKAHEAD_MAX_DISTANCE_CM);
         break;
@@ -496,9 +487,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           EMERGENCY_BREAK_DISTANCE_CM -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("EMERGENCY_BREAK_DISTANCE_CM: ");
+        lcd_.print("EMER_BRK_DIST_CM");
         lcd_.setCursor(0, 1);
         lcd_.print(EMERGENCY_BREAK_DISTANCE_CM);
         break;
@@ -509,9 +499,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           LANE_WIDTH_VECTOR_UNIT_REAL -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("LANE_WIDTH_VECTOR_UNIT_REAL: ");
+        lcd_.print("LANE_W_VECT_UNIT");
         lcd_.setCursor(0, 1);
         lcd_.print(LANE_WIDTH_VECTOR_UNIT_REAL);
         break;
@@ -522,11 +511,13 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           BLACK_COLOR_TRESHOLD -= 0.01f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
-        lcd_.print("BLACK_COLOR_TRESHOLD: ");
+        lcd_.print("BLACK_TRESHOLD");
         lcd_.setCursor(0, 1);
         lcd_.print(BLACK_COLOR_TRESHOLD);
+        break;
+
+      default:
         break;
     }
   }
