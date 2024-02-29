@@ -44,8 +44,8 @@ static float lane_width_vector_unit_real = 60.0f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
 static float emergency_break_distance_cm = 40.0f;
-static float min_speed = 96.0f;
-static float max_speed = 112.0f;
+static float min_speed = 97.0f;
+static float max_speed = 105.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 
@@ -62,6 +62,7 @@ static float car_length_cm = 17.5f;
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
+#include "strtod_.h"
 #include <vector>
 
 #if ENABLE_ARDUINO == 1
@@ -73,7 +74,7 @@ static float car_length_cm = 17.5f;
 
 
 
-#define ENABLE_SERIAL_PRINT 1     
+#define ENABLE_SERIAL_PRINT 1
 #define ENABLE_STEERING_SERVO 1
 #define ENABLE_DRIVERMOTOR 1
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
@@ -82,8 +83,9 @@ static float car_length_cm = 17.5f;
 #define ENABLE_SETTINGS_MENU 0
 
 #define DEBUG_MODE_STANDSTILL 0  
-#define DEBUG_MODE_IN_MOTION 0
-#define RACE_MODE 1
+#define DEBUG_MODE_IN_MOTION 1
+#define RACE_MODE 0
+#define TEMP_MODE 0
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
@@ -113,14 +115,18 @@ static float car_length_cm = 17.5f;
 
 #if DEBUG_MODE_IN_MOTION == 1
   #define ENABLE_SERIAL_PRINT 1
+  #define ENABLE_WIRELESS_DEBUG 1
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
+  #define ENABLE_SETTINGS_MENU 1
 #endif
 
 #if DEBUG_MODE_STANDSTILL == 1
   #define ENABLE_SERIAL_PRINT 1
+  #define ENABLE_WIRELESS_DEBUG 1
   #define ENABLE_STEERING_SERVO 0
   #define ENABLE_DRIVERMOTOR 0
+  #define ENABLE_SETTINGS_MENU 1
 #endif
 
 #if RACE_MODE == 1
@@ -129,6 +135,16 @@ static float car_length_cm = 17.5f;
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
+#endif
+
+#if TEMP_MODE == 1
+  #define ENABLE_SERIAL_PRINT 1
+  #define ENABLE_WIRELESS_DEBUG 0
+  #define ENABLE_STEERING_SERVO 0
+  #define ENABLE_DRIVERMOTOR 0
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 0
+  #define ENABLE_EMERGENCY_BREAKING 0
+  #define ENABLE_SETTINGS_MENU 0
 #endif
 
 #if ENABLE_SETTINGS_MENU == 1
@@ -184,30 +200,36 @@ static float car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 /*====================================================================================================================================*/
 
 static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance){
-  SERIAL_PORT.print(String(leftVectorOld.m_x0) + String(',') + String(leftVectorOld.m_y0) + String(',') + String(leftVectorOld.m_x1) + String(',') + String(leftVectorOld.m_y1));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(rightVectorOld.m_x0) + String(',') + String(rightVectorOld.m_y0) + String(',') + String(rightVectorOld.m_x1) + String(',') + String(rightVectorOld.m_y1));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(leftVector.m_x0) + String(',') + String(leftVector.m_y0) + String(',') + String(leftVector.m_x1) + String(',') + String(leftVector.m_y1));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(rightVector.m_x0) + String(',') + String(rightVector.m_y0) + String(',') + String(rightVector.m_x1) + String(',') + String(rightVector.m_y1));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(leftLine.Ax) + String(',') + String(leftLine.By) + String(',') + String(leftLine.C));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(rightLine.Ax) + String(',') + String(rightLine.By) + String(',') + String(rightLine.C));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(laneMiddleLine.Ax) + String(',') + String(laneMiddleLine.By) + String(',') + String(laneMiddleLine.C));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(purePersuitInfo.carPos.x) + String(',') + String(purePersuitInfo.carPos.y));
-  SERIAL_PORT.print(';');
-  SERIAL_PORT.print(String(purePersuitInfo.nextWayPoint.x) + String(',') + String(purePersuitInfo.nextWayPoint.y));
-  SERIAL_PORT.print(';');
+  String commaCharStr;
+  char semicolonChar;
+
+  commaCharStr = String(',');
+  semicolonChar = ';';
+
+  SERIAL_PORT.print(String(leftVectorOld.m_x0) + commaCharStr + String(leftVectorOld.m_y0) + commaCharStr + String(leftVectorOld.m_x1) + commaCharStr + String(leftVectorOld.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(rightVectorOld.m_x0) + commaCharStr + String(rightVectorOld.m_y0) + commaCharStr + String(rightVectorOld.m_x1) + commaCharStr + String(rightVectorOld.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(leftVector.m_x0) + commaCharStr + String(leftVector.m_y0) + commaCharStr + String(leftVector.m_x1) + commaCharStr + String(leftVector.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(rightVector.m_x0) + commaCharStr + String(rightVector.m_y0) + commaCharStr + String(rightVector.m_x1) + commaCharStr + String(rightVector.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(leftLine.Ax) + commaCharStr + String(leftLine.By) + commaCharStr + String(leftLine.C));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(rightLine.Ax) + commaCharStr + String(rightLine.By) + commaCharStr + String(rightLine.C));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(laneMiddleLine.Ax) + commaCharStr + String(laneMiddleLine.By) + commaCharStr + String(laneMiddleLine.C));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(purePersuitInfo.carPos.x) + commaCharStr + String(purePersuitInfo.carPos.y));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(purePersuitInfo.nextWayPoint.x) + commaCharStr + String(purePersuitInfo.nextWayPoint.y));
+  SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(purePersuitInfo.steeringAngle));
-  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(carAcceleration));
-  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(frontObstacleDistance));
-  SERIAL_PORT.print(';');
+  SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(purePersuitInfo.lookAheadDistance * CM_PER_VECTOR_UNIT));
   SERIAL_PORT.println();
 }
@@ -241,7 +263,7 @@ static void HardwareReset(){
   SCB_AIRCR = 0x05FA0004;
 }
 /*==============================================================================*/
-#include<string>
+
 bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, std::vector<char> &record){
   static std::vector<char> inputBuffer = std::vector<char>();
   static bool terminatorFound = false;
@@ -302,10 +324,12 @@ bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, st
 * Reference to an already allocated object of type char*, whose value is set by the function to the next character in str after the numerical value.
 * This parameter can also be a null pointer, in which case it is not used.
 */
+
 float parseNextFloat(char* str, size_t strSize, char variableTerminator, char** endptr, int* success) {
 	char* nextTerminator;
 	char* pEnd;
-	float result;
+	float result = 0;
+
 	nextTerminator = (char*)memchr(str, (int)variableTerminator, strSize);
 	if (str == nextTerminator && strSize == 1) {
 		if (endptr) {
@@ -324,7 +348,8 @@ float parseNextFloat(char* str, size_t strSize, char variableTerminator, char** 
 		nextTerminator = str + strSize;
 	}
 	
-	result = strtof(str, &pEnd);
+	result = (float)strtod_(str, &pEnd);  
+  
 
 	if (pEnd != nextTerminator) {
 		// handle incomplete parse
@@ -351,7 +376,7 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 	int resultSuccess;
 	pEnd = rawData.data();
 	lane_width_vector_unit_real = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-	lookahead_min_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  lookahead_min_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	lookahead_max_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	emergency_break_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
@@ -365,7 +390,9 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 /*==============================================================================*/
 
 void printGlobalVariables(HardwareSerial& serialPort){
-  String separatorCharacter = String(";");
+  char separatorCharacter;
+  separatorCharacter = ';';
+
   serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING));
 
   serialPort.print(String(lane_width_vector_unit_real));
