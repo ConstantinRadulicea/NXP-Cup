@@ -238,13 +238,19 @@ void loop() {
     #if ENABLE_SETTINGS_MENU == 1
       settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
     #endif
+
+    if (ENABLE_CAR_ENGINE == 0) {
+      driverMotor.write((int)STANDSTILL_SPEED);
+    }
     
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
     while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
       carSpeed = (float)STANDSTILL_SPEED;
-      driverMotor.write((int)carSpeed);
+      if (ENABLE_CAR_ENGINE == 1) {
+        driverMotor.write((int)carSpeed);
+      }
       delay(100);
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
@@ -294,7 +300,9 @@ void loop() {
       if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
         carSpeed = (float)MIN_SPEED;
         #if ENABLE_DRIVERMOTOR == 1
-          driverMotor.write((int)carSpeed);
+          if (ENABLE_CAR_ENGINE == 1) {
+            driverMotor.write((int)carSpeed);
+          }
         #endif
 
         loopIterationsCountPixyChangeProgramError=0;
@@ -333,7 +341,9 @@ void loop() {
       {
         carSpeed = (float)MIN_SPEED;
         #if ENABLE_DRIVERMOTOR == 1
-          driverMotor.write((int)carSpeed);
+          if (ENABLE_CAR_ENGINE == 1) {
+            driverMotor.write((int)carSpeed);
+          }
         #endif
       }
       else{
@@ -354,7 +364,9 @@ void loop() {
     #endif
 
     #if ENABLE_DRIVERMOTOR == 1
-      driverMotor.write((int)carSpeed);
+      if (ENABLE_CAR_ENGINE == 1) {
+        driverMotor.write((int)carSpeed);
+      }
     #endif
     
     #if ENABLE_SERIAL_PRINT == 1

@@ -48,6 +48,7 @@ static float min_speed = 97.0f;
 static float max_speed = 105.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
+static int enable_car_engine = 1;
 
 /*====================================================================================================================================*/
 
@@ -193,6 +194,8 @@ static float car_length_cm = 17.5f;
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
 #define STANDSTILL_SPEED 90.0f
+
+#define ENABLE_CAR_ENGINE enable_car_engine
 
 /*====================================================================================================================================*/
 static float car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
@@ -374,6 +377,8 @@ float parseNextFloat(char* str, size_t strSize, char variableTerminator, char** 
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';') {
 	char* pEnd;
 	int resultSuccess;
+  float temp_float;
+
 	pEnd = rawData.data();
 	lane_width_vector_unit_real = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   lookahead_min_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
@@ -383,6 +388,14 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 	max_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	black_color_treshold = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	car_length_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_car_engine = 1;
+  }
+  else{
+    enable_car_engine = 0;
+  }
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
@@ -410,6 +423,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(black_color_treshold));
   serialPort.print(separatorCharacter);
   serialPort.print(String(car_length_cm));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_car_engine));
   serialPort.println();
 }
 
@@ -418,6 +433,7 @@ void printGlobalVariables(HardwareSerial& serialPort){
 #if ENABLE_SETTINGS_MENU == 1
 void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_arrow_btn, int increment_btn, int decrement_btn) {
   enum LcdMenu {LCDMENU_FIRST_VALUE,
+                LCDMENU_ENABLE_CAR_ENGINE,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -460,6 +476,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   if(1) {
     lcd_.clear();
     switch (lcdMenuIndex) {
+      case LCDMENU_ENABLE_CAR_ENGINE:
+        if (incrementButton == HIGH) {
+          ENABLE_CAR_ENGINE = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_CAR_ENGINE = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_CAR_ENGINE");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_CAR_ENGINE == 1) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+        break;
+
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
           MIN_SPEED += 0.5f;

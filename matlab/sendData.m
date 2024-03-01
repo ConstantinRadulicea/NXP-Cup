@@ -9,10 +9,12 @@ min_speed = 96.0;
 max_speed = 105.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
+enable_car_engine = 1.0;
 
 values = [lane_width_vector_unit_real lookahead_min_distance_cm...
     lookahead_max_distance_cm emergency_break_distance_cm...
-    min_speed max_speed black_color_treshold car_length_cm];
+    min_speed max_speed black_color_treshold car_length_cm...
+    enable_car_engine];
 
 outputString = '';
 
