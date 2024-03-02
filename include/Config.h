@@ -64,7 +64,10 @@ static int enable_car_engine = 1;
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
 #include "strtod_.h"
+#include "SimpleKalmanFilter.h"
+#include "MovingAverage.h"
 #include <vector>
+
 
 #if ENABLE_ARDUINO == 1
   #include <Servo.h>
@@ -83,7 +86,7 @@ static int enable_car_engine = 1;
 #define ENABLE_EMERGENCY_BREAKING 1
 #define ENABLE_SETTINGS_MENU 0
 
-#define DEBUG_MODE_STANDSTILL 0  
+#define DEBUG_MODE_STANDSTILL 0
 #define DEBUG_MODE_IN_MOTION 1
 #define RACE_MODE 0
 #define TEMP_MODE 0
@@ -187,8 +190,8 @@ static int enable_car_engine = 1;
 #define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL + ((5.0f * VECTOR_UNIT_PER_CM)*2.0f))
 
 #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
-#define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 38 max right
-#define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 135 max left
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 38 max right
+#define STEERING_SERVO_ANGLE_MAX_LEFT   170   // 135 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
 #define MIN_SPEED min_speed
@@ -484,9 +487,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
           ENABLE_CAR_ENGINE = 0;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("ENABLE_CAR_ENGINE");
+        lcd_.print("ENABLE_ENGINE");
         lcd_.setCursor(0, 1);
-        if (ENABLE_CAR_ENGINE == 1) {
+        if (ENABLE_CAR_ENGINE != 0) {
           lcd_.print("Enabled");
         }
         else{

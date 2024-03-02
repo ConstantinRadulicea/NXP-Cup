@@ -70,7 +70,8 @@ void setup() {
 
   #if ENABLE_SETTINGS_MENU == 1
     lcd.init();  //display initialization
-    lcd.backlight();  // activate the backlight
+    //lcd.backlight();  // activate the backlight
+    //lcd.noBacklight();
     pinMode(MENU_LEFT_ARROW_BUTTON_PIN, INPUT);
     pinMode(MENU_RIGHT_ARROW_BUTTON_PIN, INPUT);
     pinMode(MENU_INCREMENT_BUTTON_PIN, INPUT);
@@ -124,8 +125,11 @@ void setup() {
 /*==============================================================================*/
 
 float getFrontObstacleDistance_cm(){
+  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
+  static MovingAverage movingAverage(4);
   float duration;
-  float distance;
+  float measured_distance;
+  float estimated_distance;
 
   digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
   delayMicroseconds(2);
@@ -136,9 +140,20 @@ float getFrontObstacleDistance_cm(){
   // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = (float)(pulseIn(DISTANCE_SENSOR_ECHO_PIN, HIGH));
   // Calculating the distance
-  distance = duration * 0.034321f / 2.0f;
+  measured_distance = duration * 0.034321f / 2.0f;
 
-  return distance;
+  if (measured_distance <= 0.0f) {
+    measured_distance = 400.0f;
+  }
+  
+
+  measured_distance = MIN(measured_distance, 400.0f);
+
+  //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+  estimated_distance = movingAverage.next(measured_distance);
+  //estimated_distance = measured_distance;
+
+  return estimated_distance;
 }
 
 /*==============================================================================*/
@@ -245,13 +260,22 @@ void loop() {
     
     #if ENABLE_EMERGENCY_BREAKING == 1
     frontObstacleDistance = getFrontObstacleDistance_cm();
+
+    if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
+      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
+      if (ENABLE_CAR_ENGINE != 0) {
+        driverMotor.write((float)STANDSTILL_SPEED - 7.0f);
+        delay(300);
+        driverMotor.write((float)STANDSTILL_SPEED);
+      }
+    }
     while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
       carSpeed = (float)STANDSTILL_SPEED;
-      if (ENABLE_CAR_ENGINE == 1) {
+      if (ENABLE_CAR_ENGINE != 0) {
         driverMotor.write((int)carSpeed);
       }
-      delay(100);
+      delay(10);
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
       #if ENABLE_SETTINGS_MENU == 1
@@ -300,7 +324,7 @@ void loop() {
       if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
         carSpeed = (float)MIN_SPEED;
         #if ENABLE_DRIVERMOTOR == 1
-          if (ENABLE_CAR_ENGINE == 1) {
+          if (ENABLE_CAR_ENGINE != 0) {
             driverMotor.write((int)carSpeed);
           }
         #endif
@@ -341,7 +365,7 @@ void loop() {
       {
         carSpeed = (float)MIN_SPEED;
         #if ENABLE_DRIVERMOTOR == 1
-          if (ENABLE_CAR_ENGINE == 1) {
+          if (ENABLE_CAR_ENGINE != 0) {
             driverMotor.write((int)carSpeed);
           }
         #endif
@@ -364,7 +388,7 @@ void loop() {
     #endif
 
     #if ENABLE_DRIVERMOTOR == 1
-      if (ENABLE_CAR_ENGINE == 1) {
+      if (ENABLE_CAR_ENGINE != 0) {
         driverMotor.write((int)carSpeed);
       }
     #endif
