@@ -202,6 +202,8 @@ static int enable_car_engine = 1;
 
 /*====================================================================================================================================*/
 static float car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
+static int emergency_break_active = 0;
+static unsigned int emergency_break_loops_count = 0;
 
 /*====================================================================================================================================*/
 

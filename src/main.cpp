@@ -258,39 +258,34 @@ void loop() {
       driverMotor.write((int)STANDSTILL_SPEED);
     }
     
-    #if ENABLE_EMERGENCY_BREAKING == 1
+    
+    #if ENABLE_EMERGENCY_BREAKING == 1    // handling emergency braking
     frontObstacleDistance = getFrontObstacleDistance_cm();
 
     if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
-      if (ENABLE_CAR_ENGINE != 0) {
-        driverMotor.write((float)STANDSTILL_SPEED - 7.0f);
-        delay(300);
-        driverMotor.write((float)STANDSTILL_SPEED);
+      emergency_break_active = 1;
+      emergency_break_loops_count++;
+      carSpeed = (float)MIN_SPEED;
+      if(frontObstacleDistance <= 9.0f){
+        carSpeed = (float)STANDSTILL_SPEED;
       }
-    }
-    while (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
-      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
-      carSpeed = (float)STANDSTILL_SPEED;
+      else{
+        if (ENABLE_CAR_ENGINE != 0 && emergency_break_loops_count == 1) {
+          driverMotor.write((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED));
+          delay(300);
+          driverMotor.write((float)carSpeed);
+        }
+      }
       if (ENABLE_CAR_ENGINE != 0) {
         driverMotor.write((int)carSpeed);
       }
-      delay(10);
-      frontObstacleDistance = getFrontObstacleDistance_cm();
-
-      #if ENABLE_SETTINGS_MENU == 1
-        settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
-      #endif
-      
-      #if ENABLE_SERIAL_PRINT == 1
-        if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
-          parseAndSetGlobalVariables(serialInputBuffer, ';');
-          printGlobalVariables(SERIAL_PORT);
-        }
-        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
-      #endif
     }
-    digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
+    else{
+      emergency_break_active = 0;
+      emergency_break_loops_count = 0;
+      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
+    }
     #endif
 
     vectorsProcessing.clear();
@@ -322,7 +317,9 @@ void loop() {
 
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
-        carSpeed = (float)MIN_SPEED;
+        if (emergency_break_active == 0){
+          carSpeed = (float)MIN_SPEED;
+        }
         #if ENABLE_DRIVERMOTOR == 1
           if (ENABLE_CAR_ENGINE != 0) {
             driverMotor.write((int)carSpeed);
@@ -363,7 +360,9 @@ void loop() {
 
       if (loopIterationsCountNoVectorDetected > 15)
       {
-        carSpeed = (float)MIN_SPEED;
+        if (emergency_break_active == 0) {
+          carSpeed = (float)MIN_SPEED;
+        }
         #if ENABLE_DRIVERMOTOR == 1
           if (ENABLE_CAR_ENGINE != 0) {
             driverMotor.write((int)carSpeed);
@@ -371,7 +370,9 @@ void loop() {
         #endif
       }
       else{
-        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, laneMiddleLine);
+        if (emergency_break_active == 0){
+          carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, laneMiddleLine);
+        }
       }
     }
     else{
