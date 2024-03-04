@@ -15,7 +15,16 @@
 */
 
 
+
 #include "Config.h"
+
+#define TIMER1_INTERVAL_MS 10
+
+//IntervalTimer emergencyBreakTimer;
+
+
+
+
 #if ENABLE_SETTINGS_MENU == 1
   LiquidCrystal_I2C lcd(0x27, 16, 2);
 #endif
@@ -33,7 +42,7 @@ Pixy2 pixy;
 
 /*====================================================================================================================================*/
 
-void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText, float &carSpeed){
+void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] " + errorText));
   #endif
@@ -117,6 +126,7 @@ void setup() {
   #if ENABLE_DRIVERMOTOR == 1
     delay(3000);
   #endif
+
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
   #endif
@@ -124,7 +134,7 @@ void setup() {
 
 /*==============================================================================*/
 
-float getFrontObstacleDistance_cm(){
+static float getFrontObstacleDistance_cm(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
   static MovingAverage movingAverage(4);
   float duration;
@@ -145,7 +155,6 @@ float getFrontObstacleDistance_cm(){
   if (measured_distance <= 0.0f) {
     measured_distance = 400.0f;
   }
-  
 
   measured_distance = MIN(measured_distance, 400.0f);
 
@@ -201,6 +210,30 @@ static float calculateLookAheadDistance(float minDistance, float maxDistance, Li
 	return newLookAheadDistance;
 }
 
+/*==============================================================================*/
+
+void TimerHandler1(void) {
+
+  float frontObstacleDistance;
+
+  frontObstacleDistance = getFrontObstacleDistance_cm();
+
+  if(frontObstacleDistance <= 9.0f){
+    carSpeed = (float)STANDSTILL_SPEED;
+    #if ENABLE_DRIVERMOTOR == 1
+      if (ENABLE_CAR_ENGINE != 0) {
+        //driverMotor.write((int)carSpeed);
+      }
+    #endif
+    //#if ENABLE_SERIAL_PRINT == 1
+    //  SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Emergency brake stop!"));
+    //#endif
+  }
+  //#if ENABLE_SERIAL_PRINT == 1
+  //  SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Completed emergency brake handler!"));
+  //#endif
+}
+
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
@@ -213,11 +246,10 @@ void loop() {
   std::vector<char> serialInputBuffer;
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
-  float laneWidth, lookAheadDistance, carSpeed, frontObstacleDistance;
+  float laneWidth, lookAheadDistance, frontObstacleDistance;
 
   serialInputBuffer.clear();
-  
-  carSpeed = 0.0f;
+
   timeStart = 0;
   loopIterationsCountNoVectorDetected = 0;
   loopIterationsCountVectorRetriveError = 0;
@@ -266,22 +298,36 @@ void loop() {
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
       emergency_break_active = 1;
       emergency_break_loops_count++;
-      carSpeed = (float)MIN_SPEED;
+
+      if (emergency_break_loops_count == 1) {
+        //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
+        #if ENABLE_DRIVERMOTOR == 1
+          if (ENABLE_CAR_ENGINE != 0) {
+            driverMotor.write((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED));
+            delay(300);
+          }
+        #endif
+
+        carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
+      }
+      
       if(frontObstacleDistance <= 9.0f){
         carSpeed = (float)STANDSTILL_SPEED;
       }
       else{
-        if (ENABLE_CAR_ENGINE != 0 && emergency_break_loops_count == 1) {
-          driverMotor.write((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED));
-          delay(300);
-          driverMotor.write((float)carSpeed);
+        carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;
+      }
+      #if ENABLE_DRIVERMOTOR == 1
+        if (ENABLE_CAR_ENGINE != 0) {
+          driverMotor.write((int)carSpeed);
         }
-      }
-      if (ENABLE_CAR_ENGINE != 0) {
-        driverMotor.write((int)carSpeed);
-      }
+      #endif
+
     }
     else{
+      if(emergency_break_loops_count >= 1) {
+        //emergencyBreakTimer.end();
+      }
       emergency_break_active = 0;
       emergency_break_loops_count = 0;
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
@@ -329,7 +375,7 @@ void loop() {
         loopIterationsCountPixyChangeProgramError=0;
         while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK) {
           loopIterationsCountPixyChangeProgramError++;
-          FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")",carSpeed);
+          FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")");
           delay(10);
         }
         delay(40);
@@ -347,7 +393,7 @@ void loop() {
         loopIterationsCountPixyChangeProgramError = 0;
         while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
           loopIterationsCountPixyChangeProgramError++;
-          FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")",carSpeed);
+          FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")");
           delay(10);
         }
         delay(40);
@@ -377,7 +423,7 @@ void loop() {
     }
     else{
       loopIterationsCountVectorRetriveError++;
-      FailureModeMessage(pixy, loopIterationsCountVectorRetriveError,"ERROR: pixy.line.getAllFeatures(LINE_VECTOR)",carSpeed);
+      FailureModeMessage(pixy, loopIterationsCountVectorRetriveError,"ERROR: pixy.line.getAllFeatures(LINE_VECTOR)");
     }
     
     #if ENABLE_SERIAL_PRINT == 1

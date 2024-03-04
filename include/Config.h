@@ -43,12 +43,12 @@ Test rapid{
 static float lane_width_vector_unit_real = 60.0f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
-static float emergency_break_distance_cm = 40.0f;
+static float emergency_break_distance_cm = 50.0f;
 static float min_speed = 97.0f;
-static float max_speed = 105.0f;
+static float max_speed = 107.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
-static int enable_car_engine = 1;
+static volatile int enable_car_engine = 1;
 
 /*====================================================================================================================================*/
 
@@ -97,7 +97,7 @@ static int enable_car_engine = 1;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.176.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
@@ -197,13 +197,15 @@ static int enable_car_engine = 1;
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
 #define STANDSTILL_SPEED 90.0f
+#define EMERGENCY_BRAKE_MIN_SPEED 94.0f
 
 #define ENABLE_CAR_ENGINE enable_car_engine
 
 /*====================================================================================================================================*/
-static float car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
-static int emergency_break_active = 0;
-static unsigned int emergency_break_loops_count = 0;
+static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_PER_CM;
+static int emergency_break_active =(int) 0;
+static unsigned int emergency_break_loops_count = (int)0;
+static volatile float carSpeed = (float)STANDSTILL_SPEED;
 
 /*====================================================================================================================================*/
 
