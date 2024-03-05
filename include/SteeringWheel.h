@@ -52,9 +52,9 @@ public:
 
 
     void setSteeringAngleDeg(float steering_angle){// It interprets the received value as the steering wheel angle and converts it to the corresponding angle for the servo motor
-        int new_servo_angle = 90;
+        int new_servo_angle = this->ServoMiddleAngle;
 
-        if(steering_angle < 0){ // going right
+        if(steering_angle < 0) { // going right
             steering_angle = MAX(steering_angle, this->SteeringWheel_MaxRightAngle);
             this->SteeringWheelAngle = steering_angle;
 

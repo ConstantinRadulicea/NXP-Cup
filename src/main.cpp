@@ -62,12 +62,20 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
 void setup() {
   int8_t pixyResult;
 
-  // serial Initialization
-  #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-    SERIAL_PORT.begin(115200);
-    while (!SERIAL_PORT){
-      delay(100);
-    }
+  // Initialization and attachment of the servo and motor
+  #if ENABLE_STEERING_SERVO == 1
+    steeringWheel.attach(STEERING_SERVO_PIN);
+    steeringWheel.setSteeringAngleDeg(0.0f);
+  #endif
+
+  #if ENABLE_DRIVERMOTOR == 1
+    #if ENABLE_ARDUINO == 1
+      driverMotor.attach(DRIVER_MOTOR_PIN);
+      driverMotor.writeMicroseconds(1500);
+    #else
+      driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+    #endif
+    driverMotor.write((int)STANDSTILL_SPEED);
   #endif
 
   #if ENABLE_EMERGENCY_BREAKING == 1
@@ -87,28 +95,20 @@ void setup() {
     pinMode(MENU_DECREMENT_BUTTON_PIN, INPUT);
   #endif
 
+  // serial Initialization
+  #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
+    SERIAL_PORT.begin(115200);
+    while (!SERIAL_PORT){
+      delay(100);
+    }
+  #endif
+
   #if ENABLE_WIRELESS_DEBUG == 1
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1 && ENABLE_SERIAL_PRINT == 1
     printSerial2WifiInfo(String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
-  #endif
-
-  // Initialization and attachment of the servo and motor
-  #if ENABLE_STEERING_SERVO == 1
-    steeringWheel.attach(STEERING_SERVO_PIN);
-    steeringWheel.setSteeringAngleDeg(0);
-  #endif
-
-  #if ENABLE_DRIVERMOTOR == 1
-    #if ENABLE_ARDUINO == 1
-      driverMotor.attach(DRIVER_MOTOR_PIN);
-      driverMotor.writeMicroseconds(1500);
-    #else
-      driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
-    #endif
-    driverMotor.write((int)STANDSTILL_SPEED);
   #endif
     
   // we must initialize the pixy object
@@ -432,7 +432,9 @@ void loop() {
     #endif
     
     #if ENABLE_STEERING_SERVO == 1
-      steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN);
+      if (ENABLE_CAR_STEERING_WHEEL != 0) {
+        steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN);
+      }
     #endif
 
     #if ENABLE_DRIVERMOTOR == 1

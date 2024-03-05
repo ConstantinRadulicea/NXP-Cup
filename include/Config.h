@@ -48,7 +48,8 @@ static float min_speed = 97.0f;
 static float max_speed = 107.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
-static volatile int enable_car_engine = 1;
+static volatile int enable_car_engine = 0;
+static volatile int enable_car_steering_wheel = 1;
 
 /*====================================================================================================================================*/
 
@@ -201,6 +202,7 @@ static volatile int enable_car_engine = 1;
 #define STANDSTILL_SPEED 90.0f
 
 #define ENABLE_CAR_ENGINE enable_car_engine
+#define ENABLE_CAR_STEERING_WHEEL enable_car_steering_wheel
 
 /*====================================================================================================================================*/
 static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_PER_CM;
@@ -405,6 +407,15 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
     enable_car_engine = 0;
   }
 
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_car_steering_wheel = 1;
+  }
+  else{
+    enable_car_steering_wheel = 0;
+  }
+
+
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
 
@@ -433,6 +444,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(car_length_cm));
   serialPort.print(separatorCharacter);
   serialPort.print(String(enable_car_engine));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_car_steering_wheel));
   serialPort.println();
 }
 
@@ -442,6 +455,7 @@ void printGlobalVariables(HardwareSerial& serialPort){
 void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_arrow_btn, int increment_btn, int decrement_btn) {
   enum LcdMenu {LCDMENU_FIRST_VALUE,
                 LCDMENU_ENABLE_CAR_ENGINE,
+                LCDMENU_ENABLE_CAR_STEERING_WHEEL,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -495,6 +509,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("ENABLE_ENGINE");
         lcd_.setCursor(0, 1);
         if (ENABLE_CAR_ENGINE != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+        break;
+      
+      case LCDMENU_ENABLE_CAR_STEERING_WHEEL:
+        if (incrementButton == HIGH) {
+          ENABLE_CAR_STEERING_WHEEL = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_CAR_STEERING_WHEEL = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_STEERING");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_CAR_STEERING_WHEEL != 0) {
           lcd_.print("Enabled");
         }
         else{
