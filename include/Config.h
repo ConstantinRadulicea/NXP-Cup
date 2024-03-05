@@ -43,7 +43,7 @@ Test rapid{
 static float lane_width_vector_unit_real = 60.0f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
-static float emergency_break_distance_cm = 50.0f;
+static float emergency_break_distance_cm = 60.0f;
 static float min_speed = 97.0f;
 static float max_speed = 107.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -159,6 +159,10 @@ static volatile int enable_car_steering_wheel = 1;
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
+#define abs(x) ({ \
+  typeof(x) _x = (x); \
+  (_x > 0) ? _x : -_x; \
+})
 
 #define STEERING_SERVO_PIN  3
 #define DRIVER_MOTOR_PIN  9
@@ -182,7 +186,7 @@ static volatile int enable_car_steering_wheel = 1;
 #define CAR_LENGTH_CM car_length_cm
 #define BLACK_COLOR_TRESHOLD black_color_treshold // 0=black, 1=white
 #define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
-#define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_DISTANCE_CM 10.0f
+#define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM 9.0f
 #define EMERGENCY_BRAKE_MIN_SPEED 93.0f
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
@@ -192,9 +196,9 @@ static volatile int enable_car_steering_wheel = 1;
 
 #define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL + ((5.0f * VECTOR_UNIT_PER_CM)*2.0f))
 
-#define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
-#define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 38 max right
-#define STEERING_SERVO_ANGLE_MAX_LEFT   170   // 135 max left
+#define STEERING_SERVO_ANGLE_MIDDLE     120    // 90 middle
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  30    // 0 max right
+#define STEERING_SERVO_ANGLE_MAX_LEFT   210   // 180 max left
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
 #define MIN_SPEED min_speed
@@ -494,8 +498,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     }
   }
 
-  //if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
-  if(1) {
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+  //if(1) {
     lcd_.clear();
     switch (lcdMenuIndex) {
       case LCDMENU_ENABLE_CAR_ENGINE:

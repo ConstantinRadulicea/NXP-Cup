@@ -218,7 +218,7 @@ void TimerHandler1(void) {
 
   frontObstacleDistance = getFrontObstacleDistance_cm();
 
-  if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_DISTANCE_CM){
+  if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
     carSpeed = (float)STANDSTILL_SPEED;
     #if ENABLE_DRIVERMOTOR == 1
       if (ENABLE_CAR_ENGINE != 0) {
@@ -304,16 +304,24 @@ void loop() {
 
         #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
           if (ENABLE_CAR_ENGINE != 0) {
-            driverMotor.write((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED));
-            delay(fabsf(((float)driverMotor.read() - (float)STANDSTILL_SPEED)) * (300.0f / (107.0f - 90.0f)));
+            driverMotor.write((int)((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED)));
+            delay((uint32_t)fabsf(((float)driverMotor.read() - (float)STANDSTILL_SPEED)) * (300.0f / (107.0f - 90.0f)));
           }
         #endif
 
         carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
       }
       
-      if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_DISTANCE_CM){
+      if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
         carSpeed = (float)STANDSTILL_SPEED;
+        /*
+        #if ENABLE_DRIVERMOTOR == 1
+          if (ENABLE_CAR_ENGINE != 0) {
+            driverMotor.write((int)carSpeed);
+          }
+        #endif
+        while (1);
+        */
       }
       else{
         carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;
@@ -363,42 +371,45 @@ void loop() {
       rightVectorOld = vectorsProcessing.getRightVector();
 
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
-      if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
-        if (emergency_break_active == 0){
-          carSpeed = (float)MIN_SPEED;
-        }
-        #if ENABLE_DRIVERMOTOR == 1
-          if (ENABLE_CAR_ENGINE != 0) {
-            driverMotor.write((int)carSpeed);
+      if(emergency_break_active == 0){
+        if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
+          if (emergency_break_active == 0){
+            carSpeed = (float)MIN_SPEED;
           }
-        #endif
+          #if ENABLE_DRIVERMOTOR == 1
+            if (ENABLE_CAR_ENGINE != 0) {
+              driverMotor.write((int)carSpeed);
+            }
+          #endif
 
-        loopIterationsCountPixyChangeProgramError=0;
-        while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK) {
-          loopIterationsCountPixyChangeProgramError++;
-          FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")");
-          delay(10);
+          loopIterationsCountPixyChangeProgramError=0;
+          while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK) {
+            loopIterationsCountPixyChangeProgramError++;
+            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")");
+            delay(10);
+          }
+          delay(40);
+
+          vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
+          approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
+          vectorsProcessing.setLeftVector(vec);
+
+          vec = VectorsProcessing::mirrorVector(mirrorLine, rightVectorOld);
+          approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
+          vectorsProcessing.setRightVector(vec);
+          
+          loopIterationsCountPixyChangeProgramError = 0;
+          while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
+            loopIterationsCountPixyChangeProgramError++;
+            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")");
+            delay(10);
+          }
+          delay(40);
         }
-        delay(40);
-
-        vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
-        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
-        vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-        vectorsProcessing.setLeftVector(vec);
-
-        vec = VectorsProcessing::mirrorVector(mirrorLine, rightVectorOld);
-        approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
-        vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-        vectorsProcessing.setRightVector(vec);
-        
-        loopIterationsCountPixyChangeProgramError = 0;
-        while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
-          loopIterationsCountPixyChangeProgramError++;
-          FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")");
-          delay(10);
-        }
-        delay(40);
       }
+
       #endif
 
       laneMiddleLine = vectorsProcessing.getMiddleLine();
