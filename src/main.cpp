@@ -218,7 +218,7 @@ void TimerHandler1(void) {
 
   frontObstacleDistance = getFrontObstacleDistance_cm();
 
-  if(frontObstacleDistance <= 9.0f){
+  if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_DISTANCE_CM){
     carSpeed = (float)STANDSTILL_SPEED;
     #if ENABLE_DRIVERMOTOR == 1
       if (ENABLE_CAR_ENGINE != 0) {
@@ -301,17 +301,18 @@ void loop() {
 
       if (emergency_break_loops_count == 1) {
         //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
-        #if ENABLE_DRIVERMOTOR == 1
+
+        #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
           if (ENABLE_CAR_ENGINE != 0) {
             driverMotor.write((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED));
-            delay(300);
+            delay(fabsf(((float)driverMotor.read() - (float)STANDSTILL_SPEED)) * (300.0f / (107.0f - 90.0f)));
           }
         #endif
 
         carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
       }
       
-      if(frontObstacleDistance <= 9.0f){
+      if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_DISTANCE_CM){
         carSpeed = (float)STANDSTILL_SPEED;
       }
       else{

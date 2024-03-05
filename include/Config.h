@@ -181,6 +181,8 @@ static volatile int enable_car_engine = 1;
 #define CAR_LENGTH_CM car_length_cm
 #define BLACK_COLOR_TRESHOLD black_color_treshold // 0=black, 1=white
 #define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
+#define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_DISTANCE_CM 10.0f
+#define EMERGENCY_BRAKE_MIN_SPEED 93.0f
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
 #define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT_REAL)   // VECTOR_UNIT_PER_CM * CM = CM
@@ -197,7 +199,6 @@ static volatile int enable_car_engine = 1;
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
 #define STANDSTILL_SPEED 90.0f
-#define EMERGENCY_BRAKE_MIN_SPEED 94.0f
 
 #define ENABLE_CAR_ENGINE enable_car_engine
 
