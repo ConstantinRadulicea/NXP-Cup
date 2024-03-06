@@ -50,6 +50,8 @@ static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static volatile int enable_car_engine = 0;
 static volatile int enable_car_steering_wheel = 1;
+static float emergency_brake_min_speed = 94.0f;
+static float emergency_brake_distance_from_obstacle_cm = 9.0f;
 
 /*====================================================================================================================================*/
 
@@ -186,8 +188,8 @@ static volatile int enable_car_steering_wheel = 1;
 #define CAR_LENGTH_CM car_length_cm
 #define BLACK_COLOR_TRESHOLD black_color_treshold // 0=black, 1=white
 #define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
-#define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM 9.0f
-#define EMERGENCY_BRAKE_MIN_SPEED 93.0f
+#define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM emergency_brake_distance_from_obstacle_cm
+#define EMERGENCY_BRAKE_MIN_SPEED emergency_brake_min_speed
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
 #define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT_REAL)   // VECTOR_UNIT_PER_CM * CM = CM
@@ -419,6 +421,8 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
     enable_car_steering_wheel = 0;
   }
 
+  emergency_brake_min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  emergency_brake_distance_from_obstacle_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
@@ -450,6 +454,10 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(enable_car_engine));
   serialPort.print(separatorCharacter);
   serialPort.print(String(enable_car_steering_wheel));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(emergency_brake_min_speed));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(emergency_brake_distance_from_obstacle_cm));
   serialPort.println();
 }
 
@@ -465,6 +473,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_EMERGENCY_BREAK_DISTANCE_CM,
+                LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
+                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
                 LCDMENU_LAST_VALUE};
@@ -598,6 +608,18 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print(EMERGENCY_BREAK_DISTANCE_CM);
         break;
       
+      case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM:
+              if (incrementButton == HIGH) {
+          EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM += 0.5f;
+        } else if (decrementButton == HIGH) {
+          EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM -= 0.5f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("EMR_BR_DIST_OBST");
+        lcd_.setCursor(0, 1);
+        lcd_.print(EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM);
+      break;
+      
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
         if (incrementButton == HIGH) {
           LANE_WIDTH_VECTOR_UNIT_REAL += 0.5f;
@@ -608,6 +630,18 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("LANE_W_VECT_UNIT");
         lcd_.setCursor(0, 1);
         lcd_.print(LANE_WIDTH_VECTOR_UNIT_REAL);
+        break;
+
+      case LCDMENU_EMERGENCY_BRAKE_MIN_SPEED:
+        if (incrementButton == HIGH) {
+          EMERGENCY_BRAKE_MIN_SPEED += 0.5f;
+        } else if (decrementButton == HIGH) {
+          EMERGENCY_BRAKE_MIN_SPEED -= 0.5f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("EMER_BRK_MIN_SPD");
+        lcd_.setCursor(0, 1);
+        lcd_.print(EMERGENCY_BRAKE_MIN_SPEED);
         break;
       
       case LCDMENU_BLACK_COLOR_TRESHOLD:

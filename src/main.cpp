@@ -87,8 +87,7 @@ void setup() {
 
   #if ENABLE_SETTINGS_MENU == 1
     lcd.init();  //display initialization
-    //lcd.backlight();  // activate the backlight
-    //lcd.noBacklight();
+    lcd.backlight();  // activate the backlight
     pinMode(MENU_LEFT_ARROW_BUTTON_PIN, INPUT);
     pinMode(MENU_RIGHT_ARROW_BUTTON_PIN, INPUT);
     pinMode(MENU_INCREMENT_BUTTON_PIN, INPUT);
