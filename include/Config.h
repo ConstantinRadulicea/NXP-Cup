@@ -50,8 +50,8 @@ static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static volatile int enable_car_engine = 0;
 static volatile int enable_car_steering_wheel = 1;
-static float emergency_brake_min_speed = 94.0f;
-static float emergency_brake_distance_from_obstacle_cm = 9.0f;
+static float emergency_brake_min_speed = 93.0f;
+static float emergency_brake_distance_from_obstacle_cm = 10.0f;
 
 /*====================================================================================================================================*/
 

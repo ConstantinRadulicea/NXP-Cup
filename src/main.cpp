@@ -135,7 +135,7 @@ void setup() {
 
 static float getFrontObstacleDistance_cm(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
-  static MovingAverage movingAverage(4);
+  static MovingAverage movingAverage(5);
   float duration;
   float measured_distance;
   float estimated_distance;
@@ -274,21 +274,9 @@ void loop() {
   {
     timeStart = millis();
 
-    #if ENABLE_SERIAL_PRINT == 1
-      if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
-        parseAndSetGlobalVariables(serialInputBuffer, ';');
-        printGlobalVariables(SERIAL_PORT);
-      }
-    #endif
-
-    #if ENABLE_SETTINGS_MENU == 1
-      settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
-    #endif
-
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
     }
-    
     
     #if ENABLE_EMERGENCY_BREAKING == 1    // handling emergency braking
     frontObstacleDistance = getFrontObstacleDistance_cm();
@@ -298,29 +286,29 @@ void loop() {
       emergency_break_active = 1;
       emergency_break_loops_count++;
 
+      #if ENABLE_SERIAL_PRINT == 1
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Emergency brake nr loop: ") + String(emergency_break_loops_count));
+      #endif
+
       if (emergency_break_loops_count == 1) {
         //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
 
         #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
           if (ENABLE_CAR_ENGINE != 0) {
-            driverMotor.write((int)((float)STANDSTILL_SPEED - ((float)driverMotor.read() - (float)STANDSTILL_SPEED)));
-            delay((uint32_t)fabsf(((float)driverMotor.read() - (float)STANDSTILL_SPEED)) * (300.0f / (107.0f - 90.0f)));
+            float startTime_ = (float)millis();
+            float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (250.0f / (107.0f - 90.0f));
+            int brakeSpeed_ = ((float)STANDSTILL_SPEED - fabsf(carSpeed - (float)STANDSTILL_SPEED));
+
+            while (((float)millis() - startTime_) < brakeTime_) {
+              driverMotor.write(brakeSpeed_);
+            }
           }
         #endif
-
         carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
       }
       
       if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
         carSpeed = (float)STANDSTILL_SPEED;
-        /*
-        #if ENABLE_DRIVERMOTOR == 1
-          if (ENABLE_CAR_ENGINE != 0) {
-            driverMotor.write((int)carSpeed);
-          }
-        #endif
-        while (1);
-        */
       }
       else{
         carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;
@@ -336,10 +324,22 @@ void loop() {
       if(emergency_break_loops_count >= 1) {
         //emergencyBreakTimer.end();
       }
+      
       emergency_break_active = 0;
       emergency_break_loops_count = 0;
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
     }
+    #endif
+
+    #if ENABLE_SERIAL_PRINT == 1
+      if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
+        parseAndSetGlobalVariables(serialInputBuffer, ';');
+        printGlobalVariables(SERIAL_PORT);
+      }
+    #endif
+
+    #if ENABLE_SETTINGS_MENU == 1
+      settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
     #endif
 
     vectorsProcessing.clear();
