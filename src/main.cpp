@@ -122,7 +122,7 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.changeProg(line) = ") + String(pixyResult));
   #endif
-  
+
   #if ENABLE_DRIVERMOTOR == 1
     float startTime_ = millis();
     while (((float)millis() - startTime_) < 3000.0f) {
@@ -339,9 +339,11 @@ void loop() {
     #endif
 
     #if ENABLE_SERIAL_PRINT == 1
-      if(readRecordFromSerial(SERIAL_PORT, "\r\n", serialInputBuffer)){
+      if(readRecordFromSerial(SERIAL_PORT, String("\r\n"), serialInputBuffer)){
+        //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: ") + String(serialInputBuffer.data()));
         parseAndSetGlobalVariables(serialInputBuffer, ';');
         printGlobalVariables(SERIAL_PORT);
+        serialInputBuffer.clear();
       }
     #endif
 
@@ -377,7 +379,7 @@ void loop() {
       rightVectorOld = vectorsProcessing.getRightVector();
 
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
-      if(emergency_break_active == 0){
+      if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION2 != 0){
         if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
           if (emergency_break_active == 0){
             carSpeed = (float)MIN_SPEED;

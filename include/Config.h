@@ -51,6 +51,7 @@ static float car_length_cm = 17.5f;
 static int enable_car_engine = 0;
 static int enable_car_steering_wheel = 1;
 static int enable_emergency_brake = 1;
+static int enable_pixy_vector_approximation = 1;
 static float emergency_brake_min_speed = 93.0f;
 static float emergency_brake_distance_from_obstacle_cm = 10.0f;
 
@@ -128,6 +129,8 @@ static float emergency_brake_distance_from_obstacle_cm = 10.0f;
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
+  #define ENABLE_EMERGENCY_BREAKING 1
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #endif
 
 #if DEBUG_MODE_STANDSTILL == 1
@@ -136,6 +139,8 @@ static float emergency_brake_distance_from_obstacle_cm = 10.0f;
   #define ENABLE_STEERING_SERVO 0
   #define ENABLE_DRIVERMOTOR 0
   #define ENABLE_SETTINGS_MENU 1
+  #define ENABLE_EMERGENCY_BREAKING 1
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #endif
 
 #if RACE_MODE == 1
@@ -144,6 +149,8 @@ static float emergency_brake_distance_from_obstacle_cm = 10.0f;
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
+  #define ENABLE_EMERGENCY_BREAKING 1
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #endif
 
 #if TEMP_MODE == 1
@@ -212,6 +219,9 @@ static float emergency_brake_distance_from_obstacle_cm = 10.0f;
 #define ENABLE_CAR_ENGINE enable_car_engine
 #define ENABLE_CAR_STEERING_WHEEL enable_car_steering_wheel
 #define ENABLE_EMERGENCY_BRAKE enable_emergency_brake
+
+
+#define ENABLE_PIXY_VECTOR_APPROXIMATION2 enable_pixy_vector_approximation
 
 /*====================================================================================================================================*/
 static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_PER_CM;
@@ -293,7 +303,7 @@ bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, st
   char tempChar, lastTerminatorCharacter;
 
   if (serialPort.available() <= 0) {
-    record = std::vector<char>();
+    //record = std::vector<char>();
     return false;
   }
 
@@ -325,7 +335,7 @@ bool readRecordFromSerial(HardwareSerial& serialPort, String recordTermintor, st
       // If vector has less than n number of elements,
       // then delete all elements
       inputBuffer.clear();
-    record = std::vector<char>();
+    //record = std::vector<char>();
     return false;
     }
     // parse the inputBuffer and load the new global variables
@@ -435,6 +445,14 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
     enable_emergency_brake = 0;
   }
 
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_pixy_vector_approximation = 1;
+  }
+  else{
+    enable_pixy_vector_approximation = 0;
+  }
+
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
 
@@ -471,6 +489,9 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(emergency_brake_distance_from_obstacle_cm));
   serialPort.print(separatorCharacter);
   serialPort.print(String(enable_emergency_brake));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_pixy_vector_approximation));
+
   serialPort.println();
 }
 
@@ -482,6 +503,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_ENABLE_CAR_ENGINE,
                 LCDMENU_ENABLE_CAR_STEERING_WHEEL,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
+                LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -573,6 +595,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("ENABLE_EMERG_BRK");
         lcd_.setCursor(0, 1);
         if (ENABLE_EMERGENCY_BRAKE != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION:
+              if (incrementButton == HIGH) {
+          ENABLE_PIXY_VECTOR_APPROXIMATION2 = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_PIXY_VECTOR_APPROXIMATION2 = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_VEC_APRX");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_PIXY_VECTOR_APPROXIMATION2 != 0) {
           lcd_.print("Enabled");
         }
         else{
