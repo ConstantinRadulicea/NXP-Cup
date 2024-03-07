@@ -122,8 +122,12 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.changeProg(line) = ") + String(pixyResult));
   #endif
+  
   #if ENABLE_DRIVERMOTOR == 1
-    delay(3000);
+    float startTime_ = millis();
+    while (((float)millis() - startTime_) < 3000.0f) {
+      driverMotor.write((int)STANDSTILL_SPEED);
+    }
   #endif
 
   #if ENABLE_SERIAL_PRINT == 1
@@ -279,56 +283,59 @@ void loop() {
     }
     
     #if ENABLE_EMERGENCY_BREAKING == 1    // handling emergency braking
-    frontObstacleDistance = getFrontObstacleDistance_cm();
+    if (ENABLE_EMERGENCY_BRAKE != 0) {
+      frontObstacleDistance = getFrontObstacleDistance_cm();
 
-    if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
-      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
-      emergency_break_active = 1;
-      emergency_break_loops_count++;
+      if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
+        digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
+        emergency_break_active = 1;
+        emergency_break_loops_count++;
 
-      #if ENABLE_SERIAL_PRINT == 1
-        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Emergency brake nr loop: ") + String(emergency_break_loops_count));
-      #endif
+        #if ENABLE_SERIAL_PRINT == 1
+          SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Emergency brake nr loop: ") + String(emergency_break_loops_count));
+        #endif
 
-      if (emergency_break_loops_count == 1) {
-        //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
+        if (emergency_break_loops_count == 1) {
+          //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
 
-        #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
-          if (ENABLE_CAR_ENGINE != 0) {
-            float startTime_ = (float)millis();
-            float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (250.0f / (107.0f - 90.0f));
-            int brakeSpeed_ = ((float)STANDSTILL_SPEED - fabsf(carSpeed - (float)STANDSTILL_SPEED));
+          #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
+            if (ENABLE_CAR_ENGINE != 0) {
+              float startTime_ = (float)millis();
+              float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (250.0f / (107.0f - 90.0f));
+              int brakeSpeed_ = ((float)STANDSTILL_SPEED - fabsf(carSpeed - (float)STANDSTILL_SPEED));
 
-            while (((float)millis() - startTime_) < brakeTime_) {
-              driverMotor.write(brakeSpeed_);
+              while (((float)millis() - startTime_) < brakeTime_) {
+                driverMotor.write(brakeSpeed_);
+              }
             }
+          #endif
+          carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
+        }
+        
+        if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
+          carSpeed = (float)STANDSTILL_SPEED;
+        }
+        else{
+          carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;
+        }
+        #if ENABLE_DRIVERMOTOR == 1
+          if (ENABLE_CAR_ENGINE != 0) {
+            driverMotor.write((int)carSpeed);
           }
         #endif
-        carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
-      }
-      
-      if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
-        carSpeed = (float)STANDSTILL_SPEED;
+
       }
       else{
-        carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;
-      }
-      #if ENABLE_DRIVERMOTOR == 1
-        if (ENABLE_CAR_ENGINE != 0) {
-          driverMotor.write((int)carSpeed);
+        if(emergency_break_loops_count >= 1) {
+          //emergencyBreakTimer.end();
         }
-      #endif
-
-    }
-    else{
-      if(emergency_break_loops_count >= 1) {
-        //emergencyBreakTimer.end();
+        
+        emergency_break_active = 0;
+        emergency_break_loops_count = 0;
+        digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
       }
-      
-      emergency_break_active = 0;
-      emergency_break_loops_count = 0;
-      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
     }
+
     #endif
 
     #if ENABLE_SERIAL_PRINT == 1

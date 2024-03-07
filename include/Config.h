@@ -48,10 +48,12 @@ static float min_speed = 97.0f;
 static float max_speed = 107.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
-static volatile int enable_car_engine = 0;
-static volatile int enable_car_steering_wheel = 1;
+static int enable_car_engine = 0;
+static int enable_car_steering_wheel = 1;
+static int enable_emergency_brake = 1;
 static float emergency_brake_min_speed = 93.0f;
 static float emergency_brake_distance_from_obstacle_cm = 10.0f;
+
 
 /*====================================================================================================================================*/
 
@@ -209,12 +211,13 @@ static float emergency_brake_distance_from_obstacle_cm = 10.0f;
 
 #define ENABLE_CAR_ENGINE enable_car_engine
 #define ENABLE_CAR_STEERING_WHEEL enable_car_steering_wheel
+#define ENABLE_EMERGENCY_BRAKE enable_emergency_brake
 
 /*====================================================================================================================================*/
 static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_PER_CM;
 static int emergency_break_active =(int) 0;
 static unsigned int emergency_break_loops_count = (int)0;
-static volatile float carSpeed = (float)STANDSTILL_SPEED;
+static float carSpeed = (float)STANDSTILL_SPEED;
 
 /*====================================================================================================================================*/
 
@@ -424,6 +427,14 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   emergency_brake_min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   emergency_brake_distance_from_obstacle_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_emergency_brake = 1;
+  }
+  else{
+    enable_emergency_brake = 0;
+  }
+
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
 
@@ -458,6 +469,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(emergency_brake_min_speed));
   serialPort.print(separatorCharacter);
   serialPort.print(String(emergency_brake_distance_from_obstacle_cm));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_emergency_brake));
   serialPort.println();
 }
 
@@ -468,6 +481,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   enum LcdMenu {LCDMENU_FIRST_VALUE,
                 LCDMENU_ENABLE_CAR_ENGINE,
                 LCDMENU_ENABLE_CAR_STEERING_WHEEL,
+                LCDMENU_ENABLE_EMERGENCY_BRAKE,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -547,6 +561,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
           lcd_.print("Disabled");
         }
         break;
+      
+      case LCDMENU_ENABLE_EMERGENCY_BRAKE:
+        if (incrementButton == HIGH) {
+          ENABLE_EMERGENCY_BRAKE = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_EMERGENCY_BRAKE = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_EMERG_BRK");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_EMERGENCY_BRAKE != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
 
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
