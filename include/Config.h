@@ -40,20 +40,21 @@ Test rapid{
 #define __CONFIG_H__
 
 /*====================================================================================================================================*/
-static float lane_width_vector_unit_real = 60.0f;
-static float lookahead_min_distance_cm = 16.0f;
-static float lookahead_max_distance_cm = 30.0f;
-static float emergency_break_distance_cm = 60.0f;
-static float min_speed = 97.0f;
-static float max_speed = 107.0f;
-static float black_color_treshold = 0.2f; // 0=black, 1=white
-static float car_length_cm = 17.5f;
 static int enable_car_engine = 0;
 static int enable_car_steering_wheel = 1;
 static int enable_emergency_brake = 1;
-static int enable_pixy_vector_approximation = 1;
+static int enable_pixy_vector_approximation = 0;
+
+static float lane_width_vector_unit_real = 60.0f;
+static float black_color_treshold = 0.2f; // 0=black, 1=white
+static float car_length_cm = 17.5f;
+static float lookahead_min_distance_cm = 16.0f;
+static float lookahead_max_distance_cm = 30.0f;
+static float min_speed = 97.0f;
+static float max_speed = 107.0f;
+static float emergency_break_distance_cm = 60.0f;
 static float emergency_brake_min_speed = 93.0f;
-static float emergency_brake_distance_from_obstacle_cm = 10.0f;
+static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 
 
 /*====================================================================================================================================*/
