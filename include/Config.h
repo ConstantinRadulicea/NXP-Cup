@@ -92,6 +92,8 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 #define ENABLE_WIRELESS_DEBUG 1
 #define ENABLE_EMERGENCY_BREAKING 1
 #define ENABLE_SETTINGS_MENU 0
+#define ENABLE_DISTANCE_SENSOR1 1
+#define ENABLE_DISTANCE_SENSOR2 0
 
 #define DEBUG_MODE_STANDSTILL 0
 #define DEBUG_MODE_IN_MOTION 1
@@ -168,6 +170,10 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
   #include <LiquidCrystal_I2C.h>
 #endif
 
+#if ENABLE_DISTANCE_SENSOR1 == 0 && ENABLE_DISTANCE_SENSOR2 == 0
+  #define ENABLE_EMERGENCY_BREAKING 0
+#endif
+
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -178,10 +184,15 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 
 #define STEERING_SERVO_PIN  3
 #define DRIVER_MOTOR_PIN  9
-#define DISTANCE_SENSOR_TRIG_PIN 2
-#define DISTANCE_SENSOR_ECHO_PIN 5
+
+#define DISTANCE_SENSOR1_TRIG_PIN 2
+#define DISTANCE_SENSOR1_ECHO_PIN 5
+#define DISTANCE_SENSOR2_TRIG_PIN 
+#define DISTANCE_SENSOR2_ECHO_PIN 
+
 #define MENU_LEFT_ARROW_BUTTON_PIN 17
 #define MENU_RIGHT_ARROW_BUTTON_PIN 16
+
 #define MENU_INCREMENT_BUTTON_PIN 15
 #define MENU_DECREMENT_BUTTON_PIN 14
 #define EMERGENCY_BREAK_LIGHT_PIN 20

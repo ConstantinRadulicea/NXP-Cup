@@ -79,8 +79,16 @@ void setup() {
   #endif
 
   #if ENABLE_EMERGENCY_BREAKING == 1
-   pinMode(DISTANCE_SENSOR_TRIG_PIN, OUTPUT); 
-   pinMode(DISTANCE_SENSOR_ECHO_PIN, INPUT); 
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    pinMode(DISTANCE_SENSOR1_TRIG_PIN, OUTPUT); 
+    pinMode(DISTANCE_SENSOR1_ECHO_PIN, INPUT); 
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    pinMode(DISTANCE_SENSOR2_TRIG_PIN, OUTPUT); 
+    pinMode(DISTANCE_SENSOR2_ECHO_PIN, INPUT); 
+  #endif
+   
    pinMode(EMERGENCY_BREAK_LIGHT_PIN, OUTPUT);
    digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
   #endif
@@ -139,31 +147,73 @@ void setup() {
 
 static float getFrontObstacleDistance_cm(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
-  static MovingAverage movingAverage(5);
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    static MovingAverage movingAverage_sensor1(5);
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    static MovingAverage movingAverage_sensor2(5);
+  #endif
+  
   float duration;
   float measured_distance;
   float estimated_distance;
+  float estimated_distance_sensor1, estimated_distance_sensor2;
 
-  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, HIGH);
-  delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
-  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-  duration = (float)(pulseIn(DISTANCE_SENSOR_ECHO_PIN, HIGH));
-  // Calculating the distance
-  measured_distance = duration * 0.034321f / 2.0f;
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    // Sets the trigPin on HIGH state for 10 micro seconds
+    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, HIGH);
+    delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
+    // Reads the echoPin, returns the sound wave travel time in microseconds
+    duration = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH));
+    // Calculating the distance
+    measured_distance = duration * 0.034321f / 2.0f;
 
-  if (measured_distance <= 0.0f) {
-    measured_distance = 400.0f;
-  }
+    if (measured_distance <= 0.0f) {
+      measured_distance = 400.0f;
+    }
 
-  measured_distance = MIN(measured_distance, 400.0f);
+    measured_distance = MIN(measured_distance, 400.0f);
 
-  //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
-  estimated_distance = movingAverage.next(measured_distance);
-  //estimated_distance = measured_distance;
+    //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+    estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance);
+    //estimated_distance = measured_distance;
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    // Sets the trigPin on HIGH state for 10 micro seconds
+    digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, HIGH);
+    delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+    digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
+    // Reads the echoPin, returns the sound wave travel time in microseconds
+    duration = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH));
+    // Calculating the distance
+    measured_distance = duration * 0.034321f / 2.0f;
+
+    if (measured_distance <= 0.0f) {
+      measured_distance = 400.0f;
+    }
+
+    measured_distance = MIN(measured_distance, 400.0f);
+
+    //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+    estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance);
+    //estimated_distance = measured_distance;
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
+    estimated_distance = (estimated_distance_sensor1 + estimated_distance_sensor2) / 2.0f;
+  #elif ENABLE_DISTANCE_SENSOR1 == 1
+    estimated_distance = estimated_distance_sensor1;
+  #elif ENABLE_DISTANCE_SENSOR2 == 1
+    estimated_distance = estimated_distance_sensor2;
+  #endif
+
 
   return estimated_distance;
 }
