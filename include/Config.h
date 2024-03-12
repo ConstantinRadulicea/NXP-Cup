@@ -115,7 +115,6 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
 
 
-
 #if ENABLE_WIRELESS_DEBUG == 1
   #if ENABLE_ARDUINO == 1
     #define SERIAL_PORT Serial
