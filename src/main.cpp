@@ -184,6 +184,7 @@ static float getFrontObstacleDistance_cm(){
   #endif
 
   #if ENABLE_DISTANCE_SENSOR2 == 1
+    delay(1);
     digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
     delayMicroseconds(2);
     // Sets the trigPin on HIGH state for 10 micro seconds
@@ -193,7 +194,7 @@ static float getFrontObstacleDistance_cm(){
     // Reads the echoPin, returns the sound wave travel time in microseconds
     duration = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH));
     // Calculating the distance
-    measured_distance = duration * 0.034321f / 2.0f;
+    measured_distance = (duration * 0.034321f / 2.0f);
 
     if (measured_distance <= 0.0f) {
       measured_distance = 400.0f;
@@ -207,13 +208,12 @@ static float getFrontObstacleDistance_cm(){
   #endif
 
   #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
-    estimated_distance = (estimated_distance_sensor1 + estimated_distance_sensor2) / 2.0f;
+    estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
   #elif ENABLE_DISTANCE_SENSOR1 == 1
     estimated_distance = estimated_distance_sensor1;
   #elif ENABLE_DISTANCE_SENSOR2 == 1
     estimated_distance = estimated_distance_sensor2;
   #endif
-
 
   return estimated_distance;
 }
@@ -351,7 +351,8 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
             if (ENABLE_CAR_ENGINE != 0) {
               float startTime_ = (float)millis();
-              float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (250.0f / (107.0f - 90.0f));
+              float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (500.0f / (107.0f - 90.0f));
+              //float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((carSpeed - (float)STANDSTILL_SPEED)));
               int brakeSpeed_ = ((float)STANDSTILL_SPEED - fabsf(carSpeed - (float)STANDSTILL_SPEED));
 
               while (((float)millis() - startTime_) < brakeTime_) {

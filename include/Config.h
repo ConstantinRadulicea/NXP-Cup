@@ -93,7 +93,7 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 #define ENABLE_EMERGENCY_BREAKING 1
 #define ENABLE_SETTINGS_MENU 0
 #define ENABLE_DISTANCE_SENSOR1 1
-#define ENABLE_DISTANCE_SENSOR2 0
+#define ENABLE_DISTANCE_SENSOR2 1
 
 #define DEBUG_MODE_STANDSTILL 0
 #define DEBUG_MODE_IN_MOTION 1
@@ -106,9 +106,9 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
+//#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-//#define DEBUG_HOST_IPADDRESS "192.168.79.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -186,8 +186,8 @@ static float emergency_brake_distance_from_obstacle_cm = 14.0f;
 
 #define DISTANCE_SENSOR1_TRIG_PIN 2
 #define DISTANCE_SENSOR1_ECHO_PIN 5
-#define DISTANCE_SENSOR2_TRIG_PIN 
-#define DISTANCE_SENSOR2_ECHO_PIN 
+#define DISTANCE_SENSOR2_TRIG_PIN 7
+#define DISTANCE_SENSOR2_ECHO_PIN 8
 
 #define MENU_LEFT_ARROW_BUTTON_PIN 17
 #define MENU_RIGHT_ARROW_BUTTON_PIN 16
