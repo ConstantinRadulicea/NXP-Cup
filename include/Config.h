@@ -34,6 +34,23 @@ Test rapid{
   LOOKAHEAD_MAX_DISTANCE_CM 30.0f
 }
 
+test fast 1{
+  enable_car_engine = 0.0;
+  enable_car_steering_wheel = 1.0;
+  enable_emergency_brake = 1.0;
+  enable_pixy_vector_approximation = 0.0;
+  lane_width_vector_unit_real = 60.0;
+  black_color_treshold = 0.2;
+  car_length_cm = 17.5;
+  lookahead_min_distance_cm = 22.0;                       % 22
+  lookahead_max_distance_cm = 40.0;                       % 40
+  min_speed = 97.0;
+  max_speed = 115.0;                                      % 115
+  emergency_break_distance_cm = 75.0;                     % 75
+  emergency_brake_min_speed = 94.0;
+  emergency_brake_distance_from_obstacle_cm = 50.0;       % 14
+}
+
 */
 
 #ifndef __CONFIG_H__
@@ -52,9 +69,9 @@ static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
 static float min_speed = 97.0f;
 static float max_speed = 107.0f;
-static float emergency_break_distance_cm = 60.0f;
-static float emergency_brake_min_speed = 93.0f;
-static float emergency_brake_distance_from_obstacle_cm = 14.0f;
+static float emergency_break_distance_cm = 75.0f;
+static float emergency_brake_min_speed = 94.0f;
+static float emergency_brake_distance_from_obstacle_cm = 13.5f;
 
 
 /*====================================================================================================================================*/
