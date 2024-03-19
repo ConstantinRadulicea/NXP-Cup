@@ -48,7 +48,7 @@ test fast 1{
   max_speed = 115.0;                                      % 115
   emergency_break_distance_cm = 75.0;                     % 75
   emergency_brake_min_speed = 94.0;
-  emergency_brake_distance_from_obstacle_cm = 50.0;       % 14
+  emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
 }
 
 */
@@ -123,9 +123,9 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-//#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
+//#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"

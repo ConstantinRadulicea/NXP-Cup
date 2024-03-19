@@ -351,7 +351,7 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
             if (ENABLE_CAR_ENGINE != 0) {
               float startTime_ = (float)millis();
-              float brakeTime_ = (float)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (500.0f / (107.0f - 90.0f));
+              float brakeTime_ = (float)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (250.0f / (107.0f - 90.0f));
               //float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((carSpeed - (float)STANDSTILL_SPEED)));
               int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(carSpeed - (float)STANDSTILL_SPEED));
 
