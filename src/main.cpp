@@ -300,6 +300,7 @@ void loop() {
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
   float laneWidth, lookAheadDistance, frontObstacleDistance;
+  MovingAverage movingAverage_speed(20);
 
   serialInputBuffer.clear();
 
@@ -326,6 +327,7 @@ void loop() {
   vectorsProcessing.setMinXaxisAngle(3.0f * RADIANS_PER_DEGREE);
   while (1)
   {
+    movingAverage_speed.next(carSpeed);
     timeStart = millis();
 
     if (ENABLE_CAR_ENGINE == 0) {
@@ -350,10 +352,11 @@ void loop() {
 
           #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
             if (ENABLE_CAR_ENGINE != 0) {
+              float tempCarSpeed = movingAverage_speed.next(carSpeed);
               float startTime_ = (float)millis();
-              float brakeTime_ = (float)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * (250.0f / (107.0f - 90.0f));
-              //float brakeTime_ = (uint32_t)fabsf((carSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((carSpeed - (float)STANDSTILL_SPEED)));
-              int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(carSpeed - (float)STANDSTILL_SPEED));
+              float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (500.0f / (107.0f - 90.0f));
+              //float brakeTime_ = (uint32_t)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)));
+              int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
 
               while (((float)millis() - startTime_) < brakeTime_) {
                 driverMotor.write(brakeSpeed_);
