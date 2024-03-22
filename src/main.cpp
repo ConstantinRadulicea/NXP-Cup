@@ -265,33 +265,12 @@ static float calculateLookAheadDistance(float minDistance, float maxDistance, Li
 
 /*==============================================================================*/
 
-void TimerHandler1(void) {
-
-  float frontObstacleDistance;
-
-  frontObstacleDistance = getFrontObstacleDistance_cm();
-
-  if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
-    carSpeed = (float)STANDSTILL_SPEED;
-    #if ENABLE_DRIVERMOTOR == 1
-      if (ENABLE_CAR_ENGINE != 0) {
-        //driverMotor.write((int)carSpeed);
-      }
-    #endif
-    //#if ENABLE_SERIAL_PRINT == 1
-    //  SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Emergency brake stop!"));
-    //#endif
-  }
-  //#if ENABLE_SERIAL_PRINT == 1
-  //  SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Completed emergency brake handler!"));
-  //#endif
-}
 
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
   int8_t pixyResult;
-  uint32_t timeStart, loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
+  uint32_t loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
   LineABC laneMiddleLine, mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
   std::vector<Vector> vectors;
@@ -300,11 +279,12 @@ void loop() {
   PurePersuitInfo purePersuitInfo;
   Point2D carPosition;
   float laneWidth, lookAheadDistance, frontObstacleDistance;
+  float timeStart;
   MovingAverage movingAverage_speed(20);
 
   serialInputBuffer.clear();
 
-  timeStart = 0;
+  timeStart = 0.0f;
   loopIterationsCountNoVectorDetected = 0;
   loopIterationsCountVectorRetriveError = 0;
 
@@ -328,7 +308,7 @@ void loop() {
   while (1)
   {
     movingAverage_speed.next(carSpeed);
-    timeStart = millis();
+    timeStart = (float)millis();
 
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
@@ -358,7 +338,7 @@ void loop() {
               //float brakeTime_ = (uint32_t)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)));
               int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
 
-              while (((float)millis() - startTime_) < brakeTime_) {
+              while ((((float)millis()) - startTime_) < brakeTime_) {
                 driverMotor.write(brakeSpeed_);
               }
             }
@@ -517,7 +497,7 @@ void loop() {
     #endif
     
     #if ENABLE_SERIAL_PRINT == 1
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(millis() - timeStart) + String(" ms"));
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(((float)millis()) - timeStart) + String(" ms"));
     #endif
   }
 }
