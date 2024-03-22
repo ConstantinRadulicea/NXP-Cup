@@ -38,7 +38,7 @@ test fast 1{
   enable_car_engine = 0.0;
   enable_car_steering_wheel = 1.0;
   enable_emergency_brake = 1.0;
-  enable_pixy_vector_approximation = 0.0;
+  enable_pixy_vector_approximation_soft = 0.0;
   lane_width_vector_unit_real = 60.0;
   black_color_treshold = 0.2;
   car_length_cm = 17.5;
@@ -51,6 +51,26 @@ test fast 1{
   emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
 }
 
+test fast 2{
+enable_car_engine = 1.0;
+enable_car_steering_wheel = 1.0;
+enable_emergency_brake = 1.0;
+enable_pixy_vector_approximation = 0.0;
+enable_distance_sensor1 = 1.0;
+enable_distance_sensor2 = 1.0;
+
+lane_width_vector_unit_real = 60.0;
+black_color_treshold = 0.2;
+car_length_cm = 17.5;
+lookahead_min_distance_cm = 22.0;                       % 22
+lookahead_max_distance_cm = 45.0;                       % 40
+min_speed = 97.0;
+max_speed = 120.0;                                      % 115 merge si 120
+emergency_break_distance_cm = 85;                     % 75
+emergency_brake_min_speed = 93.0;
+emergency_brake_distance_from_obstacle_cm = 60.0;       % 14
+}
+
 */
 
 #ifndef __CONFIG_H__
@@ -60,7 +80,9 @@ test fast 1{
 static int enable_car_engine = 0;
 static int enable_car_steering_wheel = 1;
 static int enable_emergency_brake = 1;
-static int enable_pixy_vector_approximation = 0;
+static int enable_pixy_vector_approximation_soft = 0;
+static int enable_distance_sensor1_soft = 1;
+static int enable_distance_sensor2_soft = 1;
 
 static float lane_width_vector_unit_real = 60.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -108,7 +130,7 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #define ENABLE_WIRELESS_DEBUG 1
 #define ENABLE_EMERGENCY_BREAKING 1
-#define ENABLE_SETTINGS_MENU 0
+#define ENABLE_SETTINGS_MENU 1
 #define ENABLE_DISTANCE_SENSOR1 1
 #define ENABLE_DISTANCE_SENSOR2 1
 
@@ -233,7 +255,8 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 #define RADIANS_PER_DEGREE (float)((float)M_PI / 180.0f) // DEGREE * RADIAN_PER_DEGREE = RADIAN
 #define DEGREES_PER_RADIAN (float)(180.0f / (float)M_PI) // RADIAN * DEGREE_PER_RADIAN = DEGREE
 
-#define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL + ((5.0f * VECTOR_UNIT_PER_CM)*2.0f))
+//#define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL + ((5.0f * VECTOR_UNIT_PER_CM)*2.0f))
+#define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL)
 
 #define STEERING_SERVO_ANGLE_MIDDLE     120    // 90 middle
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  30    // 0 max right
@@ -247,9 +270,11 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 #define ENABLE_CAR_ENGINE enable_car_engine
 #define ENABLE_CAR_STEERING_WHEEL enable_car_steering_wheel
 #define ENABLE_EMERGENCY_BRAKE enable_emergency_brake
+#define ENABLE_DISTANCE_SENSOR1_SOFT enable_distance_sensor1_soft
+#define ENABLE_DISTANCE_SENSOR2_SOFT enable_distance_sensor2_soft
 
 
-#define ENABLE_PIXY_VECTOR_APPROXIMATION2 enable_pixy_vector_approximation
+#define ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT enable_pixy_vector_approximation_soft
 
 /*====================================================================================================================================*/
 static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_PER_CM;
@@ -475,10 +500,26 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 
   temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   if (temp_float >= 0.5f) {
-    enable_pixy_vector_approximation = 1;
+    enable_pixy_vector_approximation_soft = 1;
   }
   else{
-    enable_pixy_vector_approximation = 0;
+    enable_pixy_vector_approximation_soft = 0;
+  }
+
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_distance_sensor1_soft = 1;
+  }
+  else{
+    enable_distance_sensor1_soft = 0;
+  }
+
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_distance_sensor2_soft = 1;
+  }
+  else{
+    enable_distance_sensor2_soft = 0;
   }
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
@@ -518,7 +559,11 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(String(enable_emergency_brake));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(enable_pixy_vector_approximation));
+  serialPort.print(String(enable_pixy_vector_approximation_soft));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_distance_sensor1_soft));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_distance_sensor2_soft));
 
   serialPort.println();
 }
@@ -532,6 +577,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_ENABLE_CAR_STEERING_WHEEL,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
+                LCDMENU_ENABLE_DISTANCE_SENSOR1,
+                LCDMENU_ENABLE_DISTANCE_SENSOR2,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -631,16 +678,52 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
       break;
 
       case LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION:
-              if (incrementButton == HIGH) {
-          ENABLE_PIXY_VECTOR_APPROXIMATION2 = 1;
+        if (incrementButton == HIGH) {
+          ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT = 1;
         }
         else if (decrementButton == HIGH) {
-          ENABLE_PIXY_VECTOR_APPROXIMATION2 = 0;
+          ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT = 0;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("ENABLE_VEC_APRX");
         lcd_.setCursor(0, 1);
-        if (ENABLE_PIXY_VECTOR_APPROXIMATION2 != 0) {
+        if (ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_DISTANCE_SENSOR1:
+        if (incrementButton == HIGH) {
+          ENABLE_DISTANCE_SENSOR1_SOFT = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_DISTANCE_SENSOR1_SOFT = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_DIST_SNS1");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_DISTANCE_SENSOR2:
+              if (incrementButton == HIGH) {
+          ENABLE_DISTANCE_SENSOR2_SOFT = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_DISTANCE_SENSOR2_SOFT = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_DIST_SNS2");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
           lcd_.print("Enabled");
         }
         else{

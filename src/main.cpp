@@ -124,6 +124,8 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.init() = ") + String(pixyResult));
   #endif
+
+  //pixy.setLamp(1,1);
     
   // Getting the RGB pixel values requires the 'video' program
   pixyResult = pixy.changeProg("line");
@@ -155,36 +157,52 @@ static float getFrontObstacleDistance_cm(){
     static MovingAverage movingAverage_sensor2(5);
   #endif
   
+  // calculations were made in centimeters
+  static uint32_t pulseInTimeout_us = (uint32_t)((150.0f / 34300.0f) * 1000000.0f);
+
   float duration;
   float measured_distance;
   float estimated_distance;
   float estimated_distance_sensor1, estimated_distance_sensor2;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
-    delayMicroseconds(2);
-    // Sets the trigPin on HIGH state for 10 micro seconds
-    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, HIGH);
-    delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
-    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
-    // Reads the echoPin, returns the sound wave travel time in microseconds
-    duration = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH));
-    // Calculating the distance
-    measured_distance = duration * 0.034321f / 2.0f;
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0)
+    {
+      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
+      delayMicroseconds(2);
+      // Sets the trigPin on HIGH state for 10 micro seconds
+      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, HIGH);
+      delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
+      // Reads the echoPin, returns the sound wave travel time in microseconds
+      duration = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH, pulseInTimeout_us));
+      // Calculating the distance
+      measured_distance = duration * 0.034321f / 2.0f;
 
-    if (measured_distance <= 0.0f) {
-      measured_distance = 400.0f;
+      if (measured_distance <= 0.0f) {
+        measured_distance = 400.0f;
+      }
+
+      measured_distance = MIN(measured_distance, 400.0f);
+
+      //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+      estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance);
+      //estimated_distance = measured_distance;
     }
-
-    measured_distance = MIN(measured_distance, 400.0f);
-
-    //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
-    estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance);
-    //estimated_distance = measured_distance;
   #endif
 
-  #if ENABLE_DISTANCE_SENSOR2 == 1
+  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
+  if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
     delay(1);
+  }
+  #endif
+  
+
+
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+  if (ENABLE_DISTANCE_SENSOR2_SOFT != 0)
+  {
+    
     digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
     delayMicroseconds(2);
     // Sets the trigPin on HIGH state for 10 micro seconds
@@ -192,7 +210,7 @@ static float getFrontObstacleDistance_cm(){
     delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
     digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
     // Reads the echoPin, returns the sound wave travel time in microseconds
-    duration = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH));
+    duration = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH, pulseInTimeout_us));
     // Calculating the distance
     measured_distance = (duration * 0.034321f / 2.0f);
 
@@ -205,14 +223,23 @@ static float getFrontObstacleDistance_cm(){
     //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
     estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance);
     //estimated_distance = measured_distance;
+  }
+ 
   #endif
 
   #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
-    estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+    if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
+      estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+    }
+    
   #elif ENABLE_DISTANCE_SENSOR1 == 1
-    estimated_distance = estimated_distance_sensor1;
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor1;
+    }
   #elif ENABLE_DISTANCE_SENSOR2 == 1
-    estimated_distance = estimated_distance_sensor2;
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor2;
+    }
   #endif
 
   return estimated_distance;
@@ -314,8 +341,8 @@ void loop() {
       driverMotor.write((int)STANDSTILL_SPEED);
     }
     
-    #if ENABLE_EMERGENCY_BREAKING == 1    // handling emergency braking
-    if (ENABLE_EMERGENCY_BRAKE != 0) {
+    #if ENABLE_EMERGENCY_BREAKING == 1  && (ENABLE_DISTANCE_SENSOR1 == 1 || ENABLE_DISTANCE_SENSOR2 == 1)   // handling emergency braking
+    if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
       if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
@@ -369,6 +396,11 @@ void loop() {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
       }
     }
+    else{
+      emergency_break_active = 0;
+      emergency_break_loops_count = 0;
+      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
+    }
 
     #endif
 
@@ -413,7 +445,7 @@ void loop() {
       rightVectorOld = vectorsProcessing.getRightVector();
 
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
-      if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION2 != 0){
+      if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT != 0){
         if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
           if (emergency_break_active == 0){
             carSpeed = (float)MIN_SPEED;
