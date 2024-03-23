@@ -247,6 +247,116 @@ static float getFrontObstacleDistance_cm(){
 
 /*==============================================================================*/
 
+static float getFrontObstacleDistance_cm_2(){
+  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    static MovingAverage movingAverage_sensor1(5);
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    static MovingAverage movingAverage_sensor2(5);
+  #endif
+  
+  // calculations were made in centimeters
+  static uint32_t pulseInTimeout_us = (uint32_t)((150.0f / 34300.0f) * 1000000.0f);
+
+  float duration_sensor1, duration_sensor2;
+  float measured_distance_sensor1, measured_distance_sensor2;
+  float estimated_distance;
+  float estimated_distance_sensor1, estimated_distance_sensor2;
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
+    }
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
+    }
+  #endif
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, HIGH);
+    }
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, HIGH);
+    }
+  #endif
+  delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
+    }
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
+    }
+  #endif
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      duration_sensor1 = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH, pulseInTimeout_us));
+    }
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      duration_sensor2 = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH, pulseInTimeout_us));
+    }
+  #endif
+
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      // Calculating the distance
+      measured_distance_sensor1 = duration_sensor1 * 0.034321f / 2.0f;
+      if (measured_distance_sensor1 <= 0.0f) {
+        measured_distance_sensor1 = 400.0f;
+      }
+      measured_distance_sensor1 = MIN(measured_distance_sensor1, 400.0f);
+      estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance_sensor1);
+    }
+  #endif
+
+    #if ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0)
+    {
+      // Calculating the distance
+      measured_distance_sensor2 = duration_sensor2 * 0.034321f / 2.0f;
+      if (measured_distance_sensor2 <= 0.0f) {
+        measured_distance_sensor2 = 400.0f;
+      }
+      measured_distance_sensor2 = MIN(measured_distance_sensor2, 400.0f);
+      estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance_sensor2);
+    }
+  #endif
+
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
+    if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
+      estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+    }
+    
+  #elif ENABLE_DISTANCE_SENSOR1 == 1
+    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor1;
+    }
+  #elif ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor2;
+    }
+  #endif
+
+  return estimated_distance;
+}
+
+/*==============================================================================*/
+
 static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine) {
 	float newCarSpeed_bySteeringAngle, speedSpan, angleCurrentTrajectoryAndMiddleLane, newCarSpeed_byTrajectoryAngle;
   LineABC currentTrajectory;
