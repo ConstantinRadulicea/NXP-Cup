@@ -2,11 +2,11 @@ recordTerminator = sprintf('\r\n');
 fieldTerminator = ';';
 
 
-enable_car_engine = 1.0;
+enable_car_engine = 0.0;
 enable_car_steering_wheel = 1.0;
 enable_emergency_brake = 1.0;
 enable_pixy_vector_approximation = 0.0;
-enable_distance_sensor1 = 1.0;
+enable_distance_sensor1 = 0.0;
 enable_distance_sensor2 = 1.0;
 
 lane_width_vector_unit_real = 60.0;

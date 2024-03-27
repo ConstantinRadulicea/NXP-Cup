@@ -228,6 +228,12 @@ static float getFrontObstacleDistance_cm(){
     if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
       estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
     }
+    else if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor1;
+    }
+    else if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor2;
+    }
     
   #elif ENABLE_DISTANCE_SENSOR1 == 1
     if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
@@ -257,20 +263,16 @@ static float getFrontObstacleDistance_cm_2(){
   // calculations were made in centimeters
   static uint32_t pulseInTimeout_us = (uint32_t)((150.0f / 34300.0f) * 1000000.0f);
 
-  float duration_sensor1, duration_sensor2;
+  float duration_sensor1 = 0.0f, duration_sensor2 = 0.0f;
   float measured_distance_sensor1, measured_distance_sensor2;
   float estimated_distance;
   float estimated_distance_sensor1, estimated_distance_sensor2;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
-    }
+    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
   #endif
   #if ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
-    }
+    digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
   #endif
   delayMicroseconds(2);
   // Sets the trigPin on HIGH state for 10 micro seconds
@@ -320,9 +322,8 @@ static float getFrontObstacleDistance_cm_2(){
     }
   #endif
 
-    #if ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0)
-    {
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
       // Calculating the distance
       measured_distance_sensor2 = duration_sensor2 * 0.034321f / 2.0f;
       if (measured_distance_sensor2 <= 0.0f) {
@@ -337,6 +338,12 @@ static float getFrontObstacleDistance_cm_2(){
   #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
     if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
       estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+    }
+    else if(ENABLE_DISTANCE_SENSOR1_SOFT != 0){
+      estimated_distance = estimated_distance_sensor1;
+    }
+    else if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      estimated_distance = estimated_distance_sensor2;
     }
     
   #elif ENABLE_DISTANCE_SENSOR1 == 1
