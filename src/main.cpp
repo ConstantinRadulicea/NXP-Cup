@@ -14,15 +14,11 @@
 * limitations under the License.
 */
 
-
-
 #include "Config.h"
 
 #define TIMER1_INTERVAL_MS 10
 
 //IntervalTimer emergencyBreakTimer;
-
-
 
 
 #if ENABLE_SETTINGS_MENU == 1
@@ -74,6 +70,7 @@ void setup() {
       driverMotor.writeMicroseconds(1500);
     #else
       driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
+      //driverMotor.attach(DRIVER_MOTOR_PIN);
     #endif
     driverMotor.write((int)STANDSTILL_SPEED);
   #endif
