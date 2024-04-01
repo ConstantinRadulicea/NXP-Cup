@@ -234,9 +234,9 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 
 #define MENU_LEFT_ARROW_BUTTON_PIN 17
 #define MENU_RIGHT_ARROW_BUTTON_PIN 16
-
 #define MENU_INCREMENT_BUTTON_PIN 15
 #define MENU_DECREMENT_BUTTON_PIN 14
+
 #define EMERGENCY_BREAK_LIGHT_PIN 20
 
 #define IMAGE_MAX_X 78.0f

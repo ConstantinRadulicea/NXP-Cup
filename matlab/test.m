@@ -1,6 +1,3 @@
-clc;
-clear;
-close all;
 
 angleSpan = 160;
 
@@ -16,6 +13,8 @@ rowValue = ServoMiddleAngle - (steeringDegrees * ServoAngleSpan_per_SteeringWhee
 % 120 middle    30 deg
 % 32 right              58 deg
 
+
+cmd = 2216 * 0.034321 / 2.0
 
 
 

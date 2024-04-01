@@ -190,7 +190,7 @@ static float getFrontObstacleDistance_cm(){
 
   #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
   if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
-    delay(1);
+    delay(2);
   }
   #endif
   
@@ -264,9 +264,9 @@ static float getFrontObstacleDistance_cm_2(){
   static uint32_t pulseInTimeout_us = (uint32_t)((150.0f / 34300.0f) * 1000000.0f);
 
   float duration_sensor1 = 0.0f, duration_sensor2 = 0.0f;
-  float measured_distance_sensor1, measured_distance_sensor2;
-  float estimated_distance;
-  float estimated_distance_sensor1, estimated_distance_sensor2;
+  float measured_distance_sensor1 = 0.0f, measured_distance_sensor2 = 0.0f;
+  float estimated_distance = 0.0f;
+  float estimated_distance_sensor1=0.0f, estimated_distance_sensor2=0.0f;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
     digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
@@ -298,12 +298,42 @@ static float getFrontObstacleDistance_cm_2(){
     }
   #endif
   // Reads the echoPin, returns the sound wave travel time in microseconds
-  #if ENABLE_DISTANCE_SENSOR1 == 1
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
+    //if(ENABLE_DISTANCE_SENSOR1_SOFT != 0 && ENABLE_DISTANCE_SENSOR2_SOFT != 0){
+      if(true){
+        float startTime_us = (float)micros();
+        duration_sensor1 = 0.0f;
+        duration_sensor2 = 0.0f;
+        while (((float)micros() - startTime_us) < pulseInTimeout_us)
+        {
+          if(duration_sensor1 == 0.0f){
+            if (digitalRead(DISTANCE_SENSOR1_ECHO_PIN) == HIGH) {
+              duration_sensor1 = ((float)micros() - startTime_us);
+            }
+          }
+          if(duration_sensor2 == 0.0f){
+            if (digitalRead(DISTANCE_SENSOR2_ECHO_PIN) == HIGH) {
+              duration_sensor2 = ((float)micros() - startTime_us);
+            }
+          }
+          if (duration_sensor1 != 0.0f && duration_sensor2 != 0.0f) {
+            break;
+          }
+        }
+    }
+    else if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
+      duration_sensor1 = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH, pulseInTimeout_us));
+    }
+    else if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+      duration_sensor2 = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH, pulseInTimeout_us));
+    }
+
+  #elif ENABLE_DISTANCE_SENSOR1 == 1
     if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
       duration_sensor1 = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH, pulseInTimeout_us));
     }
-  #endif
-  #if ENABLE_DISTANCE_SENSOR2 == 1
+  #elif ENABLE_DISTANCE_SENSOR2 == 1
     if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
       duration_sensor2 = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH, pulseInTimeout_us));
     }
@@ -355,6 +385,11 @@ static float getFrontObstacleDistance_cm_2(){
       estimated_distance = estimated_distance_sensor2;
     }
   #endif
+
+    SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+    SERIAL_PORT.println(duration_sensor1, 2);
+    SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+    SERIAL_PORT.println(duration_sensor2, 2);
 
   return estimated_distance;
 }
