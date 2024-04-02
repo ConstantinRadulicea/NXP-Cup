@@ -447,7 +447,7 @@ void loop() {
   size_t i;
   int8_t pixyResult;
   uint32_t loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
-  LineABC laneMiddleLine, mirrorLine;
+  LineABC mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
   std::vector<Vector> vectors;
   std::vector<Intersection> intersections;
@@ -472,7 +472,7 @@ void loop() {
   carPosition.x = (float)SCREEN_CENTER_X;
   carPosition.y = 0.0f;
 
-  laneMiddleLine = yAxisABC();
+  middle_lane_line = yAxisABC();
 
   laneWidth = (float)LANE_WIDTH_VECTOR_UNIT;
   
@@ -635,9 +635,9 @@ void loop() {
 
       #endif
 
-      laneMiddleLine = vectorsProcessing.getMiddleLine();
-      lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, laneMiddleLine);
-      purePersuitInfo = purePursuitComputeABC(carPosition, laneMiddleLine, car_length_vector_unit, lookAheadDistance);
+      middle_lane_line = vectorsProcessing.getMiddleLine();
+      lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, middle_lane_line);
+      purePersuitInfo = purePursuitComputeABC(carPosition, middle_lane_line, car_length_vector_unit, lookAheadDistance);
 
       if (loopIterationsCountNoVectorDetected > 15)
       {
@@ -652,7 +652,7 @@ void loop() {
       }
       else{
         if (emergency_break_active == 0){
-          carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, laneMiddleLine);
+          carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line);
         }
       }
     }
@@ -662,7 +662,7 @@ void loop() {
     }
     
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), laneMiddleLine, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
+        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), middle_lane_line, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance);
     #endif
     
     #if ENABLE_STEERING_SERVO == 1

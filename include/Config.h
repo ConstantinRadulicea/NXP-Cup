@@ -145,7 +145,7 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.244"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
@@ -285,6 +285,7 @@ static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_
 static int emergency_break_active =(int) 0;
 static unsigned int emergency_break_loops_count = (int)0;
 static float carSpeed = (float)STANDSTILL_SPEED;
+static LineABC middle_lane_line;
 
 /*====================================================================================================================================*/
 
@@ -592,6 +593,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
+                LCDMENU_CALIBRATION_VIEW,
                 LCDMENU_LAST_VALUE};
   
   static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
@@ -623,7 +625,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     }
   }
 
-  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || lcdMenuIndex == LCDMENU_CALIBRATION_VIEW) {
   //if(1) {
     lcd_.clear();
     switch (lcdMenuIndex) {
@@ -841,6 +843,31 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("BLACK_TRESHOLD");
         lcd_.setCursor(0, 1);
         lcd_.print(BLACK_COLOR_TRESHOLD);
+        break;
+
+      case LCDMENU_CALIBRATION_VIEW:
+        LineABC upper_line, lower_line;
+        IntersectionLines upper_intersection, lower_intersection;
+        
+        upper_line = xAxisABC();
+        upper_line.C = -IMAGE_MAX_Y;
+        lower_line = xAxisABC();
+        upper_intersection = intersectionLinesABC(middle_lane_line, upper_line);
+        lower_intersection = intersectionLinesABC(middle_lane_line, lower_line);
+
+        if (upper_intersection.info != 0) {
+          lcd_.setCursor(0, 0);
+          lcd_.print("OUT_OF_RANGE");
+          lcd_.setCursor(0, 1);
+          lcd_.print("OUT_OF_RANGE");
+        }
+        else{
+          lcd_.setCursor(0, 0);
+          lcd_.print(SCREEN_CENTER_X - upper_intersection.point.x, 2);
+          lcd_.setCursor(0, 1);
+          lcd_.print(SCREEN_CENTER_X - lower_intersection.point.x, 2);
+        }
+        delay(200);
         break;
 
       default:
