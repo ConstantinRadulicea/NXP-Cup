@@ -111,7 +111,7 @@ void setup() {
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
 
-  #if ENABLE_WIRELESS_DEBUG == 1 && ENABLE_SERIAL_PRINT == 1
+  #if ENABLE_WIRELESS_DEBUG == 1
     printSerial2WifiInfo(String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
     
@@ -676,6 +676,10 @@ void loop() {
         driverMotor.write((int)carSpeed);
       }
     #endif
+    
+    left_lane_line = VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector());
+    right_lane_line = VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector());
+
     loop_time_ms = ((float)millis()) - timeStart;
     time_passed_ms += loop_time_ms;
     #if ENABLE_SERIAL_PRINT == 1

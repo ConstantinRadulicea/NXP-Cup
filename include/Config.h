@@ -134,8 +134,7 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 #define ENABLE_DISTANCE_SENSOR1 1
 #define ENABLE_DISTANCE_SENSOR2 1
 
-#define DEBUG_MODE_STANDSTILL 0
-#define DEBUG_MODE_IN_MOTION 1
+#define DEBUG_MODE 1
 #define RACE_MODE 0
 #define TEMP_MODE 0
 
@@ -164,7 +163,7 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
   #define SERIAL_PORT Serial
 #endif
 
-#if DEBUG_MODE_IN_MOTION == 1
+#if DEBUG_MODE == 1
   #define ENABLE_SERIAL_PRINT 1
   #define ENABLE_WIRELESS_DEBUG 1
   #define ENABLE_STEERING_SERVO 1
@@ -174,16 +173,6 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
   #define ENABLE_DISTANCE_SENSOR1 1
   #define ENABLE_DISTANCE_SENSOR2 1
-#endif
-
-#if DEBUG_MODE_STANDSTILL == 1
-  #define ENABLE_SERIAL_PRINT 1
-  #define ENABLE_WIRELESS_DEBUG 1
-  #define ENABLE_STEERING_SERVO 0
-  #define ENABLE_DRIVERMOTOR 0
-  #define ENABLE_SETTINGS_MENU 1
-  #define ENABLE_EMERGENCY_BREAKING 1
-  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
 #endif
 
 #if RACE_MODE == 1
@@ -242,6 +231,7 @@ static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
 #define IMAGE_MAX_X 78.0f
 #define IMAGE_MAX_Y 51.0f
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
+#define SCREEN_CENTER_Y ((float)IMAGE_MAX_Y / 2.0f)
 
 #define LANE_WIDTH_CM 53.5f
 #define LANE_WIDTH_VECTOR_UNIT_REAL lane_width_vector_unit_real
@@ -286,6 +276,8 @@ static int emergency_break_active =(int) 0;
 static unsigned int emergency_break_loops_count = (int)0;
 static float carSpeed = (float)STANDSTILL_SPEED;
 static LineABC middle_lane_line;
+static LineABC left_lane_line;
+static LineABC right_lane_line;
 static float loop_time_ms = 0.0f;
 static float time_passed_ms = 0.0f;
 
@@ -630,7 +622,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   }
   lcd_print_timeont -= fabsf(loop_time_ms);
   if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || lcd_print_timeont <= 0.0f) {
-  lcd_print_timeont = 300.0f;
+  lcd_print_timeont = 500.0f;
   //if(1) {
     lcd_.clear();
     switch (lcdMenuIndex) {
@@ -861,8 +853,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         break;
 
       case LCDMENU_CALIBRATION_VIEW:
-        LineABC upper_line, lower_line;
-        IntersectionLines upper_intersection, lower_intersection;
+        LineABC upper_line, lower_line, middle_line;
+        IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
+        float lane_width_;
         
         upper_line = xAxisABC();
         upper_line.C = -IMAGE_MAX_Y;
@@ -872,15 +865,32 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
 
         if (upper_intersection.info != 0) {
           lcd_.setCursor(0, 0);
-          lcd_.print("OUT_OF_RANGE");
+          lcd_.print("inf");
           lcd_.setCursor(0, 1);
-          lcd_.print("OUT_OF_RANGE");
+          lcd_.print("inf");
         }
         else{
           lcd_.setCursor(0, 0);
           lcd_.print(SCREEN_CENTER_X - upper_intersection.point.x, 2);
           lcd_.setCursor(0, 1);
           lcd_.print(SCREEN_CENTER_X - lower_intersection.point.x, 2);
+        }
+
+        middle_line = xAxisABC();
+        middle_line.C = -SCREEN_CENTER_Y;
+
+        left_lane_line_intersection = intersectionLinesABC(left_lane_line, middle_line);
+        right_lane_line_intersection = intersectionLinesABC(right_lane_line, middle_line);
+
+        lcd_.setCursor(8, 0);
+        lcd_.print("LaneWdt");
+        lcd_.setCursor(8, 1);
+        if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
+          lane_width_ = euclidianDistance(left_lane_line_intersection.point, right_lane_line_intersection.point);
+          lcd_.print(lane_width_);
+        }
+        else{
+          lcd_.print("NO_LINE");
         }
         break;
 
