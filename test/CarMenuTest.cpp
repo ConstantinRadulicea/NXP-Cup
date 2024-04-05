@@ -81,7 +81,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     (int)lcdMenuIndex--;
   }
 
-  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+lcd_.clear();
+
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || 1) {
     switch (lcdMenuIndex) {
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {

@@ -84,16 +84,16 @@ static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
 
-static float lane_width_vector_unit_real = 60.0f;
+static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
 static float min_speed = 97.0f;
 static float max_speed = 107.0f;
-static float emergency_break_distance_cm = 75.0f;
+static float emergency_break_distance_cm = 80.0f;
 static float emergency_brake_min_speed = 94.0f;
-static float emergency_brake_distance_from_obstacle_cm = 50.0f;   // 13.5f
+static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 
 
 /*====================================================================================================================================*/
@@ -621,19 +621,22 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     }
   }
   lcd_print_timeont -= fabsf(loop_time_ms);
+  #if RACE_MODE == 1
+    if (ENABLE_CAR_ENGINE == 0)
+    {
+  #endif
   if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || lcd_print_timeont <= 0.0f) {
-  lcd_print_timeont = 500.0f;
-  //if(1) {
+    lcd_print_timeont = 500.0f;
     lcd_.clear();
     switch (lcdMenuIndex) {
       case LCDMENU_MAIN_VIEW:
         lcd_.setCursor(0, 0);
-        lcd_.print("LoopTime [ms]: ");
+        lcd_.print("Loop ms: ");
         lcd_.print(loop_time_ms);
 
         lcd_.setCursor(0, 1);
-        lcd_.print("TimePassed [ms]: ");
-        lcd_.print(time_passed_ms);
+        lcd_.print("Timer s: ");
+        lcd_.print((time_passed_ms / 1000.0f));
       break;
 
       case LCDMENU_ENABLE_CAR_ENGINE:
@@ -898,6 +901,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         break;
     }
   }
+  #if RACE_MODE == 1
+  }
+  #endif
 }
 #endif
 
