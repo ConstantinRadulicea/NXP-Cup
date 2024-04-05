@@ -286,6 +286,8 @@ static int emergency_break_active =(int) 0;
 static unsigned int emergency_break_loops_count = (int)0;
 static float carSpeed = (float)STANDSTILL_SPEED;
 static LineABC middle_lane_line;
+static float loop_time_ms = 0.0f;
+static float time_passed_ms = 0.0f;
 
 /*====================================================================================================================================*/
 
@@ -578,6 +580,7 @@ void printGlobalVariables(HardwareSerial& serialPort){
 #if ENABLE_SETTINGS_MENU == 1
 void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_arrow_btn, int increment_btn, int decrement_btn) {
   enum LcdMenu {LCDMENU_FIRST_VALUE,
+                LCDMENU_MAIN_VIEW,
                 LCDMENU_ENABLE_CAR_ENGINE,
                 LCDMENU_ENABLE_CAR_STEERING_WHEEL,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
@@ -599,6 +602,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
   static int leftArrowButtonState=LOW;
   static int rightArrowButtonState=LOW;
+  static float lcd_print_timeont = 0.0f;
   int incrementButton=LOW;
   int decrementButton=LOW;
   int leftArrowButtonPrevState, rightArrowButtonPrevState;
@@ -624,11 +628,22 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
       (int)lcdMenuIndex--;
     }
   }
-
-  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || lcdMenuIndex == LCDMENU_CALIBRATION_VIEW) {
+  lcd_print_timeont -= fabsf(loop_time_ms);
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || lcd_print_timeont <= 0.0f) {
+  lcd_print_timeont = 300.0f;
   //if(1) {
     lcd_.clear();
     switch (lcdMenuIndex) {
+      case LCDMENU_MAIN_VIEW:
+        lcd_.setCursor(0, 0);
+        lcd_.print("LoopTime [ms]: ");
+        lcd_.print(loop_time_ms);
+
+        lcd_.setCursor(0, 1);
+        lcd_.print("TimePassed [ms]: ");
+        lcd_.print(time_passed_ms);
+      break;
+
       case LCDMENU_ENABLE_CAR_ENGINE:
         if (incrementButton == HIGH) {
           ENABLE_CAR_ENGINE = 1;
@@ -720,7 +735,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
       break;
 
       case LCDMENU_ENABLE_DISTANCE_SENSOR2:
-              if (incrementButton == HIGH) {
+        if (incrementButton == HIGH) {
           ENABLE_DISTANCE_SENSOR2_SOFT = 1;
         }
         else if (decrementButton == HIGH) {
@@ -798,7 +813,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         break;
       
       case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM:
-              if (incrementButton == HIGH) {
+        if (incrementButton == HIGH) {
           EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM += 0.5f;
         } else if (decrementButton == HIGH) {
           EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM -= 0.5f;
@@ -867,7 +882,6 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
           lcd_.setCursor(0, 1);
           lcd_.print(SCREEN_CENTER_X - lower_intersection.point.x, 2);
         }
-        delay(200);
         break;
 
       default:

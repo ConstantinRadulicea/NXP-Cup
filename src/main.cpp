@@ -676,9 +676,10 @@ void loop() {
         driverMotor.write((int)carSpeed);
       }
     #endif
-    
+    loop_time_ms = ((float)millis()) - timeStart;
+    time_passed_ms += loop_time_ms;
     #if ENABLE_SERIAL_PRINT == 1
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(((float)millis()) - timeStart) + String(" ms"));
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(loop_time_ms) + String(" ms"));
     #endif
   }
 }
