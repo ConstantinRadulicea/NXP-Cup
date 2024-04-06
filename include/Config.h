@@ -760,6 +760,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           MIN_SPEED -= 0.5f;
         }
+        MIN_SPEED = MAX(MIN_SPEED, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("MIN_SPEED");
         lcd_.setCursor(0, 1);
@@ -772,6 +773,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           MAX_SPEED -= 0.5f;
         }
+        MAX_SPEED = MAX(MAX_SPEED, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("MAX_SPEED");
         lcd_.setCursor(0, 1);
@@ -784,6 +786,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           LOOKAHEAD_MIN_DISTANCE_CM -= 0.5f;
         }
+        LOOKAHEAD_MIN_DISTANCE_CM = MAX(LOOKAHEAD_MIN_DISTANCE_CM, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("LOOKAHEAD_MIN");
         lcd_.setCursor(0, 1);
@@ -796,6 +799,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           LOOKAHEAD_MAX_DISTANCE_CM -= 0.5f;
         }
+        LOOKAHEAD_MAX_DISTANCE_CM = MAX(LOOKAHEAD_MAX_DISTANCE_CM, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("LOOKAHEAD_MAX");
         lcd_.setCursor(0, 1);
@@ -808,6 +812,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           EMERGENCY_BREAK_DISTANCE_CM -= 0.5f;
         }
+        EMERGENCY_BREAK_DISTANCE_CM = MAX(EMERGENCY_BREAK_DISTANCE_CM, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("EMER_BRK_DIST_CM");
         lcd_.setCursor(0, 1);
@@ -820,6 +825,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM -= 0.5f;
         }
+        EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM = MAX(EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("EMR_BR_DIST_OBST");
         lcd_.setCursor(0, 1);
@@ -832,6 +838,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           EMERGENCY_BRAKE_ENABLE_DELAY_S -= 0.5f;
         }
+        EMERGENCY_BRAKE_ENABLE_DELAY_S = MAX(EMERGENCY_BRAKE_ENABLE_DELAY_S, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("EMER_BRK_DELY_S");
         lcd_.setCursor(0, 1);
@@ -844,6 +851,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           LANE_WIDTH_VECTOR_UNIT_REAL -= 0.5f;
         }
+        LANE_WIDTH_VECTOR_UNIT_REAL = MAX(LANE_WIDTH_VECTOR_UNIT_REAL, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("LANE_W_VECT_UNIT");
         lcd_.setCursor(0, 1);
@@ -856,6 +864,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           EMERGENCY_BRAKE_MIN_SPEED -= 0.5f;
         }
+        EMERGENCY_BRAKE_MIN_SPEED = MAX(EMERGENCY_BRAKE_MIN_SPEED, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("EMER_BRK_MIN_SPD");
         lcd_.setCursor(0, 1);
@@ -868,6 +877,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         } else if (decrementButton == HIGH) {
           BLACK_COLOR_TRESHOLD -= 0.01f;
         }
+        BLACK_COLOR_TRESHOLD = MAX(BLACK_COLOR_TRESHOLD, 0.0f);
         lcd_.setCursor(0, 0);
         lcd_.print("BLACK_TRESHOLD");
         lcd_.setCursor(0, 1);
