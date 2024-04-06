@@ -915,7 +915,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         right_lane_line_intersection = intersectionLinesABC(right_lane_line, middle_line);
 
         lcd_.setCursor(8, 0);
-        lcd_.print("LaneWdt");
+        lcd_.print("LaneWdth");
         lcd_.setCursor(8, 1);
         if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
           lane_width_ = euclidianDistance(left_lane_line_intersection.point, right_lane_line_intersection.point);
