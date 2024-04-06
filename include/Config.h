@@ -94,6 +94,7 @@ static float max_speed = 107.0f;
 static float emergency_break_distance_cm = 80.0f;
 static float emergency_brake_min_speed = 94.0f;
 static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
+static float emergency_brake_enable_delay_s = 0.0f;
 
 
 /*====================================================================================================================================*/
@@ -243,6 +244,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 #define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
 #define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM emergency_brake_distance_from_obstacle_cm
 #define EMERGENCY_BRAKE_MIN_SPEED emergency_brake_min_speed
+#define EMERGENCY_BRAKE_ENABLE_DELAY_S emergency_brake_enable_delay_s
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
 #define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT_REAL)   // VECTOR_UNIT_PER_CM * CM = CM
@@ -521,6 +523,8 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
     enable_distance_sensor2_soft = 0;
   }
 
+  emergency_brake_enable_delay_s = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 }
 
@@ -563,6 +567,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(enable_distance_sensor1_soft));
   serialPort.print(separatorCharacter);
   serialPort.print(String(enable_distance_sensor2_soft));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(emergency_brake_enable_delay_s));
 
   serialPort.println();
 }
@@ -586,6 +592,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_EMERGENCY_BREAK_DISTANCE_CM,
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
                 LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
+                LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
                 LCDMENU_CALIBRATION_VIEW,
@@ -818,6 +825,18 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.setCursor(0, 1);
         lcd_.print(EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM);
       break;
+
+      case LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S:
+        if (incrementButton == HIGH) {
+          EMERGENCY_BRAKE_ENABLE_DELAY_S += 0.5f;
+        } else if (decrementButton == HIGH) {
+          EMERGENCY_BRAKE_ENABLE_DELAY_S -= 0.5f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("EMER_BRK_DELY_S");
+        lcd_.setCursor(0, 1);
+        lcd_.print(EMERGENCY_BRAKE_ENABLE_DELAY_S);
+        break;
       
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
         if (incrementButton == HIGH) {
