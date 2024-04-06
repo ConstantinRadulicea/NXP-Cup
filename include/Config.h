@@ -912,9 +912,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         }
         else{
           lcd_.setCursor(0, 0);
-          lcd_.print(SCREEN_CENTER_X - upper_intersection.point.x, 2);
+          lcd_.print(upper_intersection.point.x - SCREEN_CENTER_X, 2);
           lcd_.setCursor(0, 1);
-          lcd_.print(SCREEN_CENTER_X - lower_intersection.point.x, 2);
+          lcd_.print(lower_intersection.point.x - SCREEN_CENTER_X, 2);
         }
 
         middle_line = xAxisABC();
