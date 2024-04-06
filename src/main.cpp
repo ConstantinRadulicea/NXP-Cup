@@ -491,10 +491,16 @@ void loop() {
     }
     
     #if ENABLE_EMERGENCY_BREAKING == 1  && (ENABLE_DISTANCE_SENSOR1 == 1 || ENABLE_DISTANCE_SENSOR2 == 1)   // handling emergency braking
-    if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0) && EMERGENCY_BRAKE_ENABLE_DELAY_S <= (time_passed_ms / 1000.0f)) {
+    
+    if (ENABLE_CAR_ENGINE != 0 && EMERGENCY_BRAKE_ENABLE_DELAY_S > 0.0f) {
+      EMERGENCY_BRAKE_ENABLE_DELAY_S -= loop_time_ms;
+      EMERGENCY_BRAKE_ENABLE_DELAY_S = MAX(EMERGENCY_BRAKE_ENABLE_DELAY_S, 0.0f);
+    }
+    
+    if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
-      if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM) {
+      if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM && EMERGENCY_BRAKE_ENABLE_DELAY_S <= 0.0f) {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
         emergency_break_active = 1;
         emergency_break_loops_count++;
