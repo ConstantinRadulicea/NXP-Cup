@@ -536,10 +536,6 @@ void loop() {
 
       }
       else{
-        if(emergency_break_loops_count >= 1) {
-          //emergencyBreakTimer.end();
-        }
-        
         emergency_break_active = 0;
         emergency_break_loops_count = 0;
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
@@ -681,7 +677,9 @@ void loop() {
     right_lane_line = VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector());
 
     loop_time_ms = ((float)millis()) - timeStart;
+    loop_time_ms = MAX(loop_time_ms, 0.0f);
     time_passed_ms += loop_time_ms;
+    
     #if ENABLE_SERIAL_PRINT == 1
       SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(loop_time_ms) + String(" ms"));
     #endif
