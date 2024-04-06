@@ -76,6 +76,11 @@ emergency_brake_distance_from_obstacle_cm = 60.0;       % 14
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+
+#define DEBUG_MODE 1
+#define RACE_MODE 0
+#define TEMP_MODE 0
+
 /*====================================================================================================================================*/
 static int enable_car_engine = 0;
 static int enable_car_steering_wheel = 1;
@@ -94,7 +99,15 @@ static float max_speed = 107.0f;
 static float emergency_break_distance_cm = 80.0f;
 static float emergency_brake_min_speed = 94.0f;
 static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
-static float emergency_brake_enable_delay_s = 0.0f;
+
+#if RACE_MODE == 1
+  static float emergency_brake_enable_delay_s = 15.0f;
+#elif DEBUG_MODE == 1
+  static float emergency_brake_enable_delay_s = 0.0f;
+#else
+  static float emergency_brake_enable_delay_s = 15.0f;
+#endif
+
 
 
 /*====================================================================================================================================*/
@@ -134,10 +147,6 @@ static float emergency_brake_enable_delay_s = 0.0f;
 #define ENABLE_SETTINGS_MENU 1
 #define ENABLE_DISTANCE_SENSOR1 1
 #define ENABLE_DISTANCE_SENSOR2 1
-
-#define DEBUG_MODE 1
-#define RACE_MODE 0
-#define TEMP_MODE 0
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
