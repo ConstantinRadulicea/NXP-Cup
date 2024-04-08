@@ -81,9 +81,9 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     (int)lcdMenuIndex--;
   }
 
-lcd_.clear();
-
-  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || 1) {
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH) {
+    lcd_.clear();
+    delay(100);
     switch (lcdMenuIndex) {
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
@@ -91,7 +91,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           MIN_SPEED -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("MIN_SPEED: ");
         lcd_.setCursor(0, 1);
@@ -104,7 +103,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           MAX_SPEED -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("MAX_SPEED: ");
         lcd_.setCursor(0, 1);
@@ -117,7 +115,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           LOOKAHEAD_MIN_DISTANCE_CM -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("LOOKAHEAD_MIN: ");
         lcd_.setCursor(0, 1);
@@ -130,7 +127,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           LOOKAHEAD_MAX_DISTANCE_CM -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("LOOKAHEAD_MAX: ");
         lcd_.setCursor(0, 1);
@@ -143,7 +139,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           EMERGENCY_BREAK_DISTANCE_CM -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("EMERGENCY_BREAK_DISTANCE_CM: ");
         lcd_.setCursor(0, 1);
@@ -156,7 +151,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           LANE_WIDTH_VECTOR_UNIT_REAL -= 0.5f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("LANE_WIDTH_VECTOR_UNIT_REAL: ");
         lcd_.setCursor(0, 1);
@@ -169,7 +163,6 @@ lcd_.clear();
         } else if (decrementButton == HIGH) {
           BLACK_COLOR_TRESHOLD -= 0.01f;
         }
-        lcd_.clear();
         lcd_.setCursor(0, 0);
         lcd_.print("BLACK_COLOR_TRESHOLD: ");
         lcd_.setCursor(0, 1);

@@ -77,6 +77,15 @@ emergency_brake_distance_from_obstacle_cm = 60.0;       % 14
 #define __CONFIG_H__
 
 
+#define CAR1 0
+#define CAR2 1
+
+#define CAR2_PARAMETERS_DIFFERENCE 0.0f
+#if CAR2 == 1
+  #define CAR2_PARAMETERS_DIFFERENCE (-0.0f)
+#endif
+
+
 #define DEBUG_MODE 1
 #define RACE_MODE 0
 #define TEMP_MODE 0
@@ -94,10 +103,10 @@ static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 16.0f;
 static float lookahead_max_distance_cm = 30.0f;
-static float min_speed = 97.0f;
-static float max_speed = 107.0f;
-static float emergency_break_distance_cm = 80.0f;
-static float emergency_brake_min_speed = 94.0f;
+static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
+static float max_speed = 107.0f  + CAR2_PARAMETERS_DIFFERENCE;
+static float emergency_break_distance_cm = 70.0f;
+static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 
 #if RACE_MODE == 1
@@ -154,7 +163,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.55.244"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
@@ -198,13 +207,15 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 #endif
 
 #if TEMP_MODE == 1
-  #define ENABLE_SERIAL_PRINT 1
-  #define ENABLE_WIRELESS_DEBUG 1
-  #define ENABLE_STEERING_SERVO 1
-  #define ENABLE_DRIVERMOTOR 0
-  #define ENABLE_PIXY_VECTOR_APPROXIMATION 0
-  #define ENABLE_EMERGENCY_BREAKING 0
-  #define ENABLE_SETTINGS_MENU 0
+#define ENABLE_SERIAL_PRINT 0
+#define ENABLE_STEERING_SERVO 0
+#define ENABLE_DRIVERMOTOR 1
+#define ENABLE_PIXY_VECTOR_APPROXIMATION 0
+#define ENABLE_WIRELESS_DEBUG 0
+#define ENABLE_EMERGENCY_BREAKING 0
+#define ENABLE_SETTINGS_MENU 1
+#define ENABLE_DISTANCE_SENSOR1 0
+#define ENABLE_DISTANCE_SENSOR2 0
 #endif
 
 #if ENABLE_SETTINGS_MENU == 1
@@ -263,14 +274,27 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 //#define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL + ((5.0f * VECTOR_UNIT_PER_CM)*2.0f))
 #define LANE_WIDTH_VECTOR_UNIT (float)(LANE_WIDTH_VECTOR_UNIT_REAL)
 
-#define STEERING_SERVO_ANGLE_MIDDLE     120    // 90 middle
-#define STEERING_SERVO_ANGLE_MAX_RIGHT  30    // 0 max right
-#define STEERING_SERVO_ANGLE_MAX_LEFT   210   // 180 max left
+
+
+#if CAR1 == 1
+  #define STEERING_SERVO_ANGLE_MIDDLE     120    // 90 middle
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  30    // 0 max right
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   210   // 180 max left
+#elif CAR2 == 1
+  #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 0 max right
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 180 max left
+#endif
+
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
-#define STANDSTILL_SPEED 90.0f
+#if CAR1 == 1
+  #define STANDSTILL_SPEED 90.0f      //(car1: 90)  (car2: 83)
+#elif CAR2 == 1
+  #define STANDSTILL_SPEED 83.0f      //(car1: 90)  (car2: 83)
+#endif
 
 #define ENABLE_CAR_ENGINE enable_car_engine
 #define ENABLE_CAR_STEERING_WHEEL enable_car_steering_wheel
@@ -296,7 +320,7 @@ static int emergency_brake_enable_delay_started_count = 0;
 
 /*====================================================================================================================================*/
 
-static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance){
+static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
 
@@ -328,6 +352,8 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
   SERIAL_PORT.print(String(frontObstacleDistance));
   SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(purePersuitInfo.lookAheadDistance * CM_PER_VECTOR_UNIT));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(carSpeed_));
   SERIAL_PORT.println();
 }
 

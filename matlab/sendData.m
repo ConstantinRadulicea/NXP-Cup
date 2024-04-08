@@ -4,9 +4,9 @@ fieldTerminator = ';';
 
 enable_car_engine = 0.0;
 enable_car_steering_wheel = 1.0;
-enable_emergency_brake = 1.0;
+enable_emergency_brake = 0.0;
 enable_pixy_vector_approximation = 0.0;
-enable_distance_sensor1 = 0.0;
+enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
 
 lane_width_vector_unit_real = 60.0;
@@ -19,7 +19,7 @@ max_speed = 122.0;                                      % 115 merge si 120
 emergency_break_distance_cm = 85;                     % 75
 emergency_brake_min_speed = 93.0;
 emergency_brake_distance_from_obstacle_cm = 60.0;       % 14
-emergency_brake_enable_delay = 10.0
+emergency_brake_enable_delay = 10.0;
 
 values = [lane_width_vector_unit_real lookahead_min_distance_cm...
     lookahead_max_distance_cm emergency_break_distance_cm...

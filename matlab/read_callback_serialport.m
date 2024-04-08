@@ -22,6 +22,7 @@ function read_callback_serialport(src, ~)
     carAcceleration = str2double(raw_data(11,1));
     frontObstacleDistance = str2double(raw_data(12,1));
     lookAheadDistance = str2double(raw_data(13,1));
+    carSpeedRaw = str2double(raw_data(13,1));
     
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
@@ -66,7 +67,8 @@ function read_callback_serialport(src, ~)
     text(xmin, ymax-11, myText);
     myText = sprintf("LookAheadDistance[cm]: %.2f", lookAheadDistance);
     text(xmin, ymax-15, myText);
-
+    myText = sprintf("carSpeed[raw]: %.2f", carSpeedRaw);
+    text(xmin, ymax-19, myText);
 
     
     xlim([xmin xmax])
