@@ -291,6 +291,8 @@ static LineABC left_lane_line;
 static LineABC right_lane_line;
 static float loop_time_ms = 0.0f;
 static float time_passed_ms = 0.0f;
+static float emergency_brake_enable_remaining_delay_s = 0.0f;
+static int emergency_brake_enable_delay_started_count = 0;
 
 /*====================================================================================================================================*/
 
