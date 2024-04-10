@@ -19,57 +19,25 @@
 //All defines and Includes
 
 /*
-43  cm - Inaltime camera 43cm
-6.7 cm - Distanta camera fata de suport
-Test safe{
-  MIN_SPEED (int)96
-  MAX_SPEED (int)105
-  LOOKAHEAD_MIN_DISTANCE_CM 16.0f
-  LOOKAHEAD_MAX_DISTANCE_CM 30.0f
-}
-Test rapid{
-  MIN_SPEED (int)97
-  MAX_SPEED (int)107
-  LOOKAHEAD_MIN_DISTANCE_CM 16.0f
-  LOOKAHEAD_MAX_DISTANCE_CM 30.0f
-}
-
-test fast 1{
-  enable_car_engine = 0.0;
-  enable_car_steering_wheel = 1.0;
-  enable_emergency_brake = 1.0;
-  enable_pixy_vector_approximation_soft = 0.0;
-  lane_width_vector_unit_real = 60.0;
-  black_color_treshold = 0.2;
-  car_length_cm = 17.5;
-  lookahead_min_distance_cm = 22.0;                       % 22
-  lookahead_max_distance_cm = 40.0;                       % 40
-  min_speed = 97.0;
-  max_speed = 115.0;                                      % 115
-  emergency_break_distance_cm = 75.0;                     % 75
-  emergency_brake_min_speed = 94.0;
-  emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
-}
-
-test fast 2{
-enable_car_engine = 1.0;
+CAR1 & CAR2 
+enable_car_engine = 0.0;
 enable_car_steering_wheel = 1.0;
 enable_emergency_brake = 1.0;
-enable_pixy_vector_approximation = 0.0;
+enable_pixy_vector_approximation = 0.0;             
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
 
-lane_width_vector_unit_real = 60.0;
+lane_width_vector_unit_real = 52.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
 lookahead_min_distance_cm = 22.0;                       % 22
-lookahead_max_distance_cm = 45.0;                       % 40
+lookahead_max_distance_cm = 40.0;                       % 40
 min_speed = 97.0;
-max_speed = 120.0;                                      % 115 merge si 120
-emergency_break_distance_cm = 85;                     % 75
-emergency_brake_min_speed = 93.0;
-emergency_brake_distance_from_obstacle_cm = 60.0;       % 14
-}
+max_speed = 112.0;                                      % 115 merge si 120
+emergency_break_distance_cm = 75;                     % 75
+emergency_brake_min_speed = 94.0;
+emergency_brake_distance_from_obstacle_cm = 75.0;       % 14
+emergency_brake_enable_delay = 10.0;
 
 */
 
@@ -92,7 +60,7 @@ emergency_brake_distance_from_obstacle_cm = 60.0;       % 14
 
 /*====================================================================================================================================*/
 static int enable_car_engine = 0;
-static int enable_car_steering_wheel = 1;
+static int enable_car_steering_wheel = 0;
 static int enable_emergency_brake = 1;
 static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
@@ -163,7 +131,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.55.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.244"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
@@ -277,13 +245,13 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 
 
 #if CAR1 == 1
-  #define STEERING_SERVO_ANGLE_MIDDLE     120    // 90 middle
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  30    // 0 max right
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   210   // 180 max left
+  #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  20    // 0 max right // 30
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   160   // 180 max left // 210
 #elif CAR2 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 0 max right
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 180 max left
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 0 max right
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   170   // 180 max left
 #endif
 
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
@@ -664,13 +632,13 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
       (int)lcdMenuIndex--;
     }
   }
-  lcd_print_timeont -= fabsf(loop_time_ms);
+  ///lcd_print_timeont -= fabsf(loop_time_ms);
   #if RACE_MODE == 1
     if (ENABLE_CAR_ENGINE == 0)
     {
   #endif
-  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH || lcd_print_timeont <= 0.0f) {
-    lcd_print_timeont = 500.0f;
+  if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH /*|| lcd_print_timeont <= 0.0f*/) {
+    //lcd_print_timeont = 500.0f;
     lcd_.clear();
     switch (lcdMenuIndex) {
       case LCDMENU_MAIN_VIEW:
