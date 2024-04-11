@@ -14,12 +14,12 @@ lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
 lookahead_min_distance_cm = 22.0;                       % 22
-lookahead_max_distance_cm = 40.0;                       % 40
+lookahead_max_distance_cm = 45.0;                       % 40
 min_speed = 97.0;
-max_speed = 112.0;                                      % 115 merge si 120
-emergency_break_distance_cm = 70.0;                     % 75
+max_speed = 115.0;                                      % 115 merge si 120
+emergency_break_distance_cm = 20.0;                     % 75
 emergency_brake_min_speed = 94.0;
-emergency_brake_distance_from_obstacle_cm = 70.0;       % 14
+emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
 emergency_brake_enable_delay = 10.0;
 steering_wheel_angle_offset = 0.0;
 

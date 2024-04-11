@@ -19,7 +19,6 @@
 //All defines and Includes
 
 /*
-CAR1 & CAR2 
 enable_car_engine = 0.0;
 enable_car_steering_wheel = 1.0;
 enable_emergency_brake = 1.0;
@@ -27,17 +26,18 @@ enable_pixy_vector_approximation = 0.0;
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
 
-lane_width_vector_unit_real = 52.0;
+lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
 lookahead_min_distance_cm = 22.0;                       % 22
-lookahead_max_distance_cm = 40.0;                       % 40
+lookahead_max_distance_cm = 45.0;                       % 40
 min_speed = 97.0;
-max_speed = 112.0;                                      % 115 merge si 120
-emergency_break_distance_cm = 75;                     % 75
+max_speed = 115.0;                                      % 115 merge si 120
+emergency_break_distance_cm = 75.0;                     % 75
 emergency_brake_min_speed = 94.0;
-emergency_brake_distance_from_obstacle_cm = 75.0;       % 14
+emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
 emergency_brake_enable_delay = 10.0;
+steering_wheel_angle_offset = 0.0;
 
 */
 
@@ -256,8 +256,8 @@ static float steering_wheel_angle_offset = 0.0f;
 
 #if CAR1 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  20    // 0 max right // 30
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   160   // 180 max left // 210
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 0 max right // 30
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   170   // 180 max left // 210
 #elif CAR2 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
   #define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 0 max right
