@@ -79,12 +79,8 @@ static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float max_speed = 112.0f  + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_break_distance_cm = 60.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
-<<<<<<< HEAD
 static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
-=======
-static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
->>>>>>> ba0864fd3c5e9a488a848a257d78690f2d8a8236
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 15.0f;
