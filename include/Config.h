@@ -45,8 +45,8 @@ emergency_brake_enable_delay = 10.0;
 #define __CONFIG_H__
 
 
-#define CAR1 0
-#define CAR2 1
+#define CAR1 1
+#define CAR2 0
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
@@ -73,13 +73,13 @@ static int enable_distance_sensor2_soft = 1;
 static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
-static float lookahead_min_distance_cm = 16.0f;
-static float lookahead_max_distance_cm = 30.0f;
+static float lookahead_min_distance_cm = 22.0f;
+static float lookahead_max_distance_cm = 40.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float max_speed = 107.0f  + CAR2_PARAMETERS_DIFFERENCE;
-static float emergency_break_distance_cm = 70.0f;
+static float max_speed = 112.0f  + CAR2_PARAMETERS_DIFFERENCE;
+static float emergency_break_distance_cm = 60.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
+static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 15.0f;
@@ -128,6 +128,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 #define ENABLE_SETTINGS_MENU 1
 #define ENABLE_DISTANCE_SENSOR1 1
 #define ENABLE_DISTANCE_SENSOR2 1
+#define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
@@ -135,9 +136,9 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.55.244"   // Constantin phone
+//#define DEBUG_HOST_IPADDRESS "192.168.55.244"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-//#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -164,6 +165,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
   #define ENABLE_DISTANCE_SENSOR1 1
   #define ENABLE_DISTANCE_SENSOR2 1
+  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
 #endif
 
 #if RACE_MODE == 1
@@ -176,6 +178,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
   #define ENABLE_DISTANCE_SENSOR1 1
   #define ENABLE_DISTANCE_SENSOR2 1
+  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
 #endif
 
 #if TEMP_MODE == 1
