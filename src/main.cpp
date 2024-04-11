@@ -155,7 +155,7 @@ static float getFrontObstacleDistance_cm(){
   #endif
   
   // calculations were made in centimeters
-  static uint32_t pulseInTimeout_us = (uint32_t)((100.0f / 34300.0f) * 1000000.0f);
+  static uint32_t pulseInTimeout_us = (uint32_t)((200.0f / 34300.0f) * 1000000.0f);
 
   float duration;
   float measured_distance;
@@ -523,7 +523,7 @@ void loop() {
         if (emergency_break_loops_count == 1) {
           //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
 
-          #if ENABLE_DRIVERMOTOR == 1   // use brakes to get to a near standstill
+          #if ENABLE_DRIVERMOTOR == 1 &&  ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE == 1 // use brakes to get to a near standstill
             if (ENABLE_CAR_ENGINE != 0) {
               float tempCarSpeed = movingAverage_speed.next(carSpeed);
               float startTime_ = (float)millis();
