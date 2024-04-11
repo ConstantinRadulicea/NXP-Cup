@@ -48,7 +48,11 @@ emergency_brake_enable_delay = 10.0;
 #define CAR1 0
 #define CAR2 1
 
-#define CAR2_PARAMETERS_DIFFERENCE 0.0f
+#if CAR1 == 0 && CAR2 == 0
+  #define CAR1 1
+#endif
+
+#define CAR2_PARAMETERS_DIFFERENCE (0.0f)
 #if CAR2 == 1
   #define CAR2_PARAMETERS_DIFFERENCE (-0.0f)
 #endif
@@ -199,7 +203,7 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define abs(x) ({ \
   typeof(x) _x = (x); \
-  (_x > 0) ? _x : -_x; \
+  (_x > 0) ? (_x) : (-_x); \
 })
 
 #define STEERING_SERVO_PIN  3

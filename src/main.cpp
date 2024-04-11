@@ -486,6 +486,7 @@ void loop() {
     timeStart = (float)millis();
     movingAverage_speed.next(carSpeed);
     
+    
     if (emergency_brake_enable_delay_started_count == 0 && ENABLE_CAR_ENGINE != 0) {
       emergency_brake_enable_remaining_delay_s = EMERGENCY_BRAKE_ENABLE_DELAY_S;
       emergency_brake_enable_delay_started_count = 1;
@@ -577,6 +578,10 @@ void loop() {
     #if ENABLE_SETTINGS_MENU == 1
       settingsMenuRoutine(lcd, MENU_LEFT_ARROW_BUTTON_PIN, MENU_RIGHT_ARROW_BUTTON_PIN, MENU_INCREMENT_BUTTON_PIN, MENU_DECREMENT_BUTTON_PIN);
     #endif
+
+    if (ENABLE_CAR_STEERING_WHEEL == 0 && ENABLE_CAR_ENGINE != 0) {
+      ENABLE_CAR_STEERING_WHEEL = 1;
+    }
 
     vectorsProcessing.clear();
     if(pixy.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION) >= (int8_t)0){
