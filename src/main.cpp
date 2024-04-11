@@ -655,6 +655,7 @@ void loop() {
       middle_lane_line = vectorsProcessing.getMiddleLine();
       lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, middle_lane_line);
       purePersuitInfo = purePursuitComputeABC(carPosition, middle_lane_line, car_length_vector_unit, lookAheadDistance);
+      purePersuitInfo.steeringAngle += STEERING_WHEEL_ANGLE_OFFSET;
 
       if (loopIterationsCountNoVectorDetected > 15)
       {

@@ -80,6 +80,7 @@ static float max_speed = 107.0f  + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_break_distance_cm = 70.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
+static float steering_wheel_angle_offset = 0.0f;
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 15.0f;
@@ -237,6 +238,8 @@ static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
 #define EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM emergency_brake_distance_from_obstacle_cm
 #define EMERGENCY_BRAKE_MIN_SPEED emergency_brake_min_speed
 #define EMERGENCY_BRAKE_ENABLE_DELAY_S emergency_brake_enable_delay_s
+#define STEERING_WHEEL_ANGLE_OFFSET steering_wheel_angle_offset
+
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
 #define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)LANE_WIDTH_VECTOR_UNIT_REAL)   // VECTOR_UNIT_PER_CM * CM = CM
@@ -533,8 +536,10 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   }
 
   emergency_brake_enable_delay_s = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  steering_wheel_angle_offset = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
+
 }
 
 /*==============================================================================*/
@@ -594,6 +599,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_ENABLE_DISTANCE_SENSOR1,
                 LCDMENU_ENABLE_DISTANCE_SENSOR2,
+                LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -645,6 +651,18 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     //lcd_print_timeont = 500.0f;
     lcd_.clear();
     switch (lcdMenuIndex) {
+      case LCDMENU_STEERING_WHEEL_ANGLE_OFFSET:
+        if (incrementButton == HIGH) {
+          STEERING_WHEEL_ANGLE_OFFSET += 0.1f;
+        } else if (decrementButton == HIGH) {
+          STEERING_WHEEL_ANGLE_OFFSET -= 0.1f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("STR_WHEEL_OFST");
+        lcd_.setCursor(0, 1);
+        lcd_.print(STEERING_WHEEL_ANGLE_OFFSET);
+
+      break;
       case LCDMENU_MAIN_VIEW:
         lcd_.setCursor(0, 0);
         lcd_.print("Loop ms: ");
