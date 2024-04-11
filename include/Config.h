@@ -45,8 +45,8 @@ emergency_brake_enable_delay = 10.0;
 #define __CONFIG_H__
 
 
-#define CAR1 1
-#define CAR2 0
+#define CAR1 0
+#define CAR2 1
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
