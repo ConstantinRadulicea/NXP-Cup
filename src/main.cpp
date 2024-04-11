@@ -148,14 +148,14 @@ static float getFrontObstacleDistance_cm(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    static MovingAverage movingAverage_sensor1(5);
+    static MovingAverage movingAverage_sensor1(3);
   #endif
   #if ENABLE_DISTANCE_SENSOR2 == 1
-    static MovingAverage movingAverage_sensor2(5);
+    static MovingAverage movingAverage_sensor2(3);
   #endif
   
   // calculations were made in centimeters
-  static uint32_t pulseInTimeout_us = (uint32_t)((150.0f / 34300.0f) * 1000000.0f);
+  static uint32_t pulseInTimeout_us = (uint32_t)((100.0f / 34300.0f) * 1000000.0f);
 
   float duration;
   float measured_distance;
@@ -254,10 +254,10 @@ static float getFrontObstacleDistance_cm_2(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    static MovingAverage movingAverage_sensor1(5);
+    static MovingAverage movingAverage_sensor1(3);
   #endif
   #if ENABLE_DISTANCE_SENSOR2 == 1
-    static MovingAverage movingAverage_sensor2(5);
+    static MovingAverage movingAverage_sensor2(3);
   #endif
   
   // calculations were made in centimeters
@@ -456,7 +456,7 @@ void loop() {
   Point2D carPosition;
   float laneWidth, lookAheadDistance, frontObstacleDistance;
   float timeStart;
-  MovingAverage movingAverage_speed(20);
+  MovingAverage movingAverage_speed(10);
 
   serialInputBuffer.clear();
 
