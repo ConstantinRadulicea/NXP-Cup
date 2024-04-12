@@ -40,7 +40,7 @@ Pixy2 pixy;
 
 void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] " + errorText));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
 
   #endif
   if (iteration >= 5){  
@@ -88,6 +88,11 @@ void setup() {
   #if ENABLE_DISTANCE_SENSOR2 == 1
     pinMode(DISTANCE_SENSOR2_TRIG_PIN, OUTPUT); 
     pinMode(DISTANCE_SENSOR2_ECHO_PIN, INPUT); 
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    pinMode(DISTANCE_SENSOR3_TRIG_PIN, OUTPUT); 
+    pinMode(DISTANCE_SENSOR3_ECHO_PIN, INPUT); 
   #endif
    
    pinMode(EMERGENCY_BREAK_LIGHT_PIN, OUTPUT);
@@ -157,14 +162,18 @@ static float getFrontObstacleDistance_cm(){
   #if ENABLE_DISTANCE_SENSOR2 == 1
     static MovingAverage movingAverage_sensor2(3);
   #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    static MovingAverage movingAverage_sensor3(3);
+  #endif
   
   // calculations were made in centimeters
   static uint32_t pulseInTimeout_us = (uint32_t)((200.0f / 34300.0f) * 1000000.0f);
 
   float duration;
-  float measured_distance;
-  float estimated_distance;
-  float estimated_distance_sensor1, estimated_distance_sensor2;
+  float measured_distance = 0.0f;
+  float estimated_distance = 0.0f;
+  float estimated_distance_sensor1 = 400.0f, estimated_distance_sensor2 = 400.0f, estimated_distance_sensor3 = 400.0f;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
     if (ENABLE_DISTANCE_SENSOR1_SOFT != 0)
@@ -194,12 +203,10 @@ static float getFrontObstacleDistance_cm(){
 
   #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
   if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
-    delay(2);
+    delay(1);
   }
   #endif
   
-
-
   #if ENABLE_DISTANCE_SENSOR2 == 1
   if (ENABLE_DISTANCE_SENSOR2_SOFT != 0)
   {
@@ -225,9 +232,46 @@ static float getFrontObstacleDistance_cm(){
     estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance);
     //estimated_distance = measured_distance;
   }
- 
   #endif
 
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1 && (ENABLE_DISTANCE_SENSOR2 == 1 || ENABLE_DISTANCE_SENSOR1 == 1)
+  if ((ENABLE_DISTANCE_SENSOR3_SOFT != 0) && ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) || (ENABLE_DISTANCE_SENSOR2_SOFT != 0))) {
+    delay(1);
+  }
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    if (ENABLE_DISTANCE_SENSOR3_SOFT != 0)
+    {
+      digitalWrite(DISTANCE_SENSOR3_TRIG_PIN, LOW);
+      delayMicroseconds(2);
+      // Sets the trigPin on HIGH state for 10 micro seconds
+      digitalWrite(DISTANCE_SENSOR3_TRIG_PIN, HIGH);
+      delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+      digitalWrite(DISTANCE_SENSOR3_TRIG_PIN, LOW);
+      // Reads the echoPin, returns the sound wave travel time in microseconds
+      duration = (float)(pulseIn(DISTANCE_SENSOR3_ECHO_PIN, HIGH, pulseInTimeout_us));
+      // Calculating the distance
+      measured_distance = duration * 0.034321f / 2.0f;
+
+      if (measured_distance <= 0.0f) {
+        measured_distance = 400.0f;
+      }
+
+      measured_distance = MIN(measured_distance, 400.0f);
+
+      //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+      estimated_distance_sensor3 = movingAverage_sensor3.next(measured_distance);
+      //estimated_distance = measured_distance;
+    }
+  #endif
+
+
+estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+estimated_distance = MIN(estimated_distance, estimated_distance_sensor3);
+//estimated_distance = estimated_distance_sensor3;
+/*
   #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
     if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
       estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
@@ -248,153 +292,7 @@ static float getFrontObstacleDistance_cm(){
       estimated_distance = estimated_distance_sensor2;
     }
   #endif
-
-  return estimated_distance;
-}
-
-/*==============================================================================*/
-
-static float getFrontObstacleDistance_cm_2(){
-  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
-
-  #if ENABLE_DISTANCE_SENSOR1 == 1
-    static MovingAverage movingAverage_sensor1(3);
-  #endif
-  #if ENABLE_DISTANCE_SENSOR2 == 1
-    static MovingAverage movingAverage_sensor2(3);
-  #endif
-  
-  // calculations were made in centimeters
-  static uint32_t pulseInTimeout_us = (uint32_t)((150.0f / 34300.0f) * 1000000.0f);
-
-  float duration_sensor1 = 0.0f, duration_sensor2 = 0.0f;
-  float measured_distance_sensor1 = 0.0f, measured_distance_sensor2 = 0.0f;
-  float estimated_distance = 0.0f;
-  float estimated_distance_sensor1=0.0f, estimated_distance_sensor2=0.0f;
-
-  #if ENABLE_DISTANCE_SENSOR1 == 1
-    digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
-  #endif
-  #if ENABLE_DISTANCE_SENSOR2 == 1
-    digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
-  #endif
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  #if ENABLE_DISTANCE_SENSOR1 == 1
-    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, HIGH);
-    }
-  #endif
-  #if ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, HIGH);
-    }
-  #endif
-  delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
-  #if ENABLE_DISTANCE_SENSOR1 == 1
-    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      digitalWrite(DISTANCE_SENSOR1_TRIG_PIN, LOW);
-    }
-  #endif
-  #if ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      digitalWrite(DISTANCE_SENSOR2_TRIG_PIN, LOW);
-    }
-  #endif
-  // Reads the echoPin, returns the sound wave travel time in microseconds
-
-  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
-    //if(ENABLE_DISTANCE_SENSOR1_SOFT != 0 && ENABLE_DISTANCE_SENSOR2_SOFT != 0){
-      if(true){
-        float startTime_us = (float)micros();
-        duration_sensor1 = 0.0f;
-        duration_sensor2 = 0.0f;
-        while (((float)micros() - startTime_us) < pulseInTimeout_us)
-        {
-          if(duration_sensor1 == 0.0f){
-            if (digitalRead(DISTANCE_SENSOR1_ECHO_PIN) == HIGH) {
-              duration_sensor1 = ((float)micros() - startTime_us);
-            }
-          }
-          if(duration_sensor2 == 0.0f){
-            if (digitalRead(DISTANCE_SENSOR2_ECHO_PIN) == HIGH) {
-              duration_sensor2 = ((float)micros() - startTime_us);
-            }
-          }
-          if (duration_sensor1 != 0.0f && duration_sensor2 != 0.0f) {
-            break;
-          }
-        }
-    }
-    else if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      duration_sensor1 = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH, pulseInTimeout_us));
-    }
-    else if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      duration_sensor2 = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH, pulseInTimeout_us));
-    }
-
-  #elif ENABLE_DISTANCE_SENSOR1 == 1
-    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      duration_sensor1 = (float)(pulseIn(DISTANCE_SENSOR1_ECHO_PIN, HIGH, pulseInTimeout_us));
-    }
-  #elif ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      duration_sensor2 = (float)(pulseIn(DISTANCE_SENSOR2_ECHO_PIN, HIGH, pulseInTimeout_us));
-    }
-  #endif
-
-
-  #if ENABLE_DISTANCE_SENSOR1 == 1
-    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      // Calculating the distance
-      measured_distance_sensor1 = duration_sensor1 * 0.034321f / 2.0f;
-      if (measured_distance_sensor1 <= 0.0f) {
-        measured_distance_sensor1 = 400.0f;
-      }
-      measured_distance_sensor1 = MIN(measured_distance_sensor1, 400.0f);
-      estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance_sensor1);
-    }
-  #endif
-
-  #if ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      // Calculating the distance
-      measured_distance_sensor2 = duration_sensor2 * 0.034321f / 2.0f;
-      if (measured_distance_sensor2 <= 0.0f) {
-        measured_distance_sensor2 = 400.0f;
-      }
-      measured_distance_sensor2 = MIN(measured_distance_sensor2, 400.0f);
-      estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance_sensor2);
-    }
-  #endif
-
-
-  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
-    if ((ENABLE_DISTANCE_SENSOR1_SOFT != 0) && (ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
-      estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
-    }
-    else if(ENABLE_DISTANCE_SENSOR1_SOFT != 0){
-      estimated_distance = estimated_distance_sensor1;
-    }
-    else if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      estimated_distance = estimated_distance_sensor2;
-    }
-    
-  #elif ENABLE_DISTANCE_SENSOR1 == 1
-    if (ENABLE_DISTANCE_SENSOR1_SOFT != 0) {
-      estimated_distance = estimated_distance_sensor1;
-    }
-  #elif ENABLE_DISTANCE_SENSOR2 == 1
-    if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
-      estimated_distance = estimated_distance_sensor2;
-    }
-  #endif
-
-    SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-    SERIAL_PORT.println(duration_sensor1, 2);
-    SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-    SERIAL_PORT.println(duration_sensor2, 2);
-
+*/
   return estimated_distance;
 }
 
@@ -505,14 +403,14 @@ void loop() {
       driverMotor.write((int)STANDSTILL_SPEED);
     }
     
-    #if ENABLE_EMERGENCY_BREAKING == 1  && (ENABLE_DISTANCE_SENSOR1 == 1 || ENABLE_DISTANCE_SENSOR2 == 1)   // handling emergency braking
+    #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
     
     if (ENABLE_CAR_ENGINE != 0 && emergency_brake_enable_remaining_delay_s > 0.0f) {
       emergency_brake_enable_remaining_delay_s -= (loop_time_ms / 1000.0f);
       emergency_brake_enable_remaining_delay_s = MAX(emergency_brake_enable_remaining_delay_s, 0.0f);
     }
     
-    if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0)) {
+    if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0 || ENABLE_DISTANCE_SENSOR3_SOFT != 0)) {
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
       if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM && emergency_brake_enable_remaining_delay_s <= 0.0f) {
@@ -521,7 +419,7 @@ void loop() {
         emergency_break_loops_count++;
 
         #if ENABLE_SERIAL_PRINT == 1
-          SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Emergency brake nr loop: ") + String(emergency_break_loops_count));
+          SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK loop: ") + String(emergency_break_loops_count));
         #endif
 
         if (emergency_break_loops_count == 1) {
@@ -531,7 +429,7 @@ void loop() {
             if (ENABLE_CAR_ENGINE != 0) {
               float tempCarSpeed = movingAverage_speed.next(carSpeed);
               float startTime_ = (float)millis();
-              float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (500.0f / (107.0f - 90.0f));
+              float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (40.0f / (107.0f - 90.0f));
               //float brakeTime_ = (uint32_t)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)));
               int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
 
@@ -629,7 +527,7 @@ void loop() {
           loopIterationsCountPixyChangeProgramError=0;
           while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK) {
             loopIterationsCountPixyChangeProgramError++;
-            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"video\")");
+            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"pixy video");
             delay(10);
           }
           delay(40);
@@ -647,7 +545,7 @@ void loop() {
           loopIterationsCountPixyChangeProgramError = 0;
           while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
             loopIterationsCountPixyChangeProgramError++;
-            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"ERROR: pixy.changeProg(\"line\")");
+            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"pixy line");
             delay(10);
           }
           delay(40);
@@ -680,7 +578,7 @@ void loop() {
     }
     else{
       loopIterationsCountVectorRetriveError++;
-      FailureModeMessage(pixy, loopIterationsCountVectorRetriveError,"ERROR: pixy.line.getAllFeatures(LINE_VECTOR)");
+      FailureModeMessage(pixy, loopIterationsCountVectorRetriveError,"pixy getAllFeatures");
     }
     
     #if ENABLE_SERIAL_PRINT == 1

@@ -45,8 +45,8 @@ steering_wheel_angle_offset = 0.0;
 #define __CONFIG_H__
 
 
-#define CAR1 0
-#define CAR2 1
+#define CAR1 1
+#define CAR2 0
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
@@ -69,17 +69,18 @@ static int enable_emergency_brake = 1;
 static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
+static int enable_distance_sensor3_soft = 1;
 
-static float lane_width_vector_unit_real = 53.0f;
+static float lane_width_vector_unit_real = 52.5f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
-static float lookahead_max_distance_cm = 40.0f;
+static float lookahead_max_distance_cm = 45.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float max_speed = 112.0f  + CAR2_PARAMETERS_DIFFERENCE;
-static float emergency_break_distance_cm = 60.0f;
+static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float emergency_brake_distance_from_obstacle_cm = 13.5f;   // 13.5f
+static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
 
 #if RACE_MODE == 1
@@ -137,9 +138,9 @@ static float steering_wheel_angle_offset = 0.0f;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-//#define DEBUG_HOST_IPADDRESS "192.168.55.244"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
+//#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -166,7 +167,8 @@ static float steering_wheel_angle_offset = 0.0f;
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
   #define ENABLE_DISTANCE_SENSOR1 1
   #define ENABLE_DISTANCE_SENSOR2 1
-  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
+  #define ENABLE_DISTANCE_SENSOR3 1
+  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
 #endif
 
 #if RACE_MODE == 1
@@ -179,7 +181,8 @@ static float steering_wheel_angle_offset = 0.0f;
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
   #define ENABLE_DISTANCE_SENSOR1 1
   #define ENABLE_DISTANCE_SENSOR2 1
-  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
+  #define ENABLE_DISTANCE_SENSOR3 1
+  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
 #endif
 
 #if TEMP_MODE == 1
@@ -198,7 +201,7 @@ static float steering_wheel_angle_offset = 0.0f;
   #include <LiquidCrystal_I2C.h>
 #endif
 
-#if ENABLE_DISTANCE_SENSOR1 == 0 && ENABLE_DISTANCE_SENSOR2 == 0
+#if ENABLE_EMERGENCY_BREAKING == 1 && !(ENABLE_DISTANCE_SENSOR1 == 1 || ENABLE_DISTANCE_SENSOR2 == 1 || ENABLE_DISTANCE_SENSOR3 == 1)
   #define ENABLE_EMERGENCY_BREAKING 0
 #endif
 
@@ -217,6 +220,8 @@ static float steering_wheel_angle_offset = 0.0f;
 #define DISTANCE_SENSOR1_ECHO_PIN 5
 #define DISTANCE_SENSOR2_TRIG_PIN 7
 #define DISTANCE_SENSOR2_ECHO_PIN 8
+#define DISTANCE_SENSOR3_TRIG_PIN 4
+#define DISTANCE_SENSOR3_ECHO_PIN 6
 
 #define MENU_LEFT_ARROW_BUTTON_PIN 17
 #define MENU_RIGHT_ARROW_BUTTON_PIN 16
@@ -279,6 +284,7 @@ static float steering_wheel_angle_offset = 0.0f;
 #define ENABLE_EMERGENCY_BRAKE enable_emergency_brake
 #define ENABLE_DISTANCE_SENSOR1_SOFT enable_distance_sensor1_soft
 #define ENABLE_DISTANCE_SENSOR2_SOFT enable_distance_sensor2_soft
+#define ENABLE_DISTANCE_SENSOR3_SOFT enable_distance_sensor3_soft
 
 
 #define ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT enable_pixy_vector_approximation_soft
@@ -349,12 +355,14 @@ static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, 
 /*==============================================================================*/
 
 static void printSerial2WifiInfo(String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+  /*
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   SERIAL_PORT.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);
   SERIAL_PORT.println(commentChar + String("SSID: ") + wifiSsid);
   SERIAL_PORT.println(commentChar + String("PASSWORD: ") + wifiPassword);
   SERIAL_PORT.println(commentChar + String("HOSTNAME: ") + hostname);
   SERIAL_PORT.println(commentChar + String("PORT: ") + String(port));
+  */
 }
 
 /*==============================================================================*/
@@ -541,6 +549,15 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   emergency_brake_enable_delay_s = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   steering_wheel_angle_offset = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_distance_sensor3_soft = 1;
+  }
+  else{
+    enable_distance_sensor3_soft = 0;
+  }
+
+
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
 }
@@ -586,6 +603,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(enable_distance_sensor2_soft));
   serialPort.print(separatorCharacter);
   serialPort.print(String(emergency_brake_enable_delay_s));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_distance_sensor3_soft));
 
   serialPort.println();
 }
@@ -602,6 +621,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_ENABLE_DISTANCE_SENSOR1,
                 LCDMENU_ENABLE_DISTANCE_SENSOR2,
+                LCDMENU_ENABLE_DISTANCE_SENSOR3,
                 LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
@@ -777,6 +797,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("ENABLE_DIST_SNS2");
         lcd_.setCursor(0, 1);
         if (ENABLE_DISTANCE_SENSOR2_SOFT != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_DISTANCE_SENSOR3:
+        if (incrementButton == HIGH) {
+          ENABLE_DISTANCE_SENSOR3_SOFT = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_DISTANCE_SENSOR3_SOFT = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_DIST_SNS3");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_DISTANCE_SENSOR3_SOFT != 0) {
           lcd_.print("Enabled");
         }
         else{
