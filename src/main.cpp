@@ -41,15 +41,19 @@ Pixy2 pixy;
 void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] " + errorText));
+
   #endif
   if (iteration >= 5){  
-    #if ENABLE_DRIVERMOTOR == 1
-      driverMotor.write((int)STANDSTILL_SPEED);
-    #endif
     carSpeed = (float)STANDSTILL_SPEED;
-    while (pixy.init() != PIXY_RESULT_OK) {
-    delay(10);
-    }
+ do{
+#if ENABLE_DRIVERMOTOR == 1
+   driverMotor.write((int)STANDSTILL_SPEED);
+    #endif
+#if ENABLE_STEERING_SERVO == 1
+    steeringWheel.setSteeringAngleDeg(0.0f);
+  #endif
+delay(10);
+    } while (pixy.init() != PIXY_RESULT_OK);
   }
 }
 
