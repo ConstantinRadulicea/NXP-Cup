@@ -45,8 +45,8 @@ steering_wheel_angle_offset = 0.0;
 #define __CONFIG_H__
 
 
-#define CAR1 1
-#define CAR2 0
+#define CAR1 0
+#define CAR2 1
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
@@ -213,7 +213,7 @@ static float steering_wheel_angle_offset = 0.0f;
   (_x > 0) ? (_x) : (-_x); \
 })
 
-#define STEERING_SERVO_PIN  3
+#define STEERING_SERVO_PIN  22 // 3
 #define DRIVER_MOTOR_PIN  9
 
 #define DISTANCE_SENSOR1_TRIG_PIN 2
@@ -261,12 +261,12 @@ static float steering_wheel_angle_offset = 0.0f;
 
 #if CAR1 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 0 max right // 30
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   170   // 180 max left // 210
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  35    // 0 max right // 90 - 58 = 32
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   145   // 180 max left // 90 + 58
 #elif CAR2 == 1
-  #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  10    // 0 max right
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   170   // 180 max left
+  #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  35    // 0 max right // 90 - 58 = 32
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   145   // 180 max left // 90 + 58
 #endif
 
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))

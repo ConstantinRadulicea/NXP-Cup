@@ -64,6 +64,7 @@ void setup() {
 
   // Initialization and attachment of the servo and motor
   #if ENABLE_STEERING_SERVO == 1
+    pinMode(STEERING_SERVO_PIN, OUTPUT); 
     steeringWheel.attach(STEERING_SERVO_PIN);
     steeringWheel.setSteeringAngleDeg(0.0f);
   #endif

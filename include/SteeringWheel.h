@@ -51,7 +51,10 @@ public:
     ~SteeringWheel(){}
 
 
-    void setSteeringAngleDeg(float steering_angle){// It interprets the received value as the steering wheel angle and converts it to the corresponding angle for the servo motor
+    // It interprets the received value as the steering wheel angle and converts it to the corresponding angle for the servo motor
+    // angle < 0: going right
+    // angle > 0: going left
+    void setSteeringAngleDeg(float steering_angle){
         int new_servo_angle = this->ServoMiddleAngle;
 
         if(steering_angle < 0) { // going right
