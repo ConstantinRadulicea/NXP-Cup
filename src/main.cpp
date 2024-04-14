@@ -383,11 +383,12 @@ void loop() {
   
   vectorsProcessing.setCarPosition(carPosition);
   vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle(3.0f * RADIANS_PER_DEGREE);
+  vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
   while (1)
   {
     timeStart = (float)millis();
     movingAverage_speed.next(carSpeed);
+    vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
     
     
     if (emergency_brake_enable_delay_started_count == 0 && ENABLE_CAR_ENGINE != 0) {

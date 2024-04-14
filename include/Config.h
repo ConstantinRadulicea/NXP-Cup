@@ -19,24 +19,26 @@
 //All defines and Includes
 
 /*
+CAR2 FULL JUICE baterie mica
 enable_car_engine = 0.0;
 enable_car_steering_wheel = 1.0;
 enable_emergency_brake = 1.0;
 enable_pixy_vector_approximation = 0.0;             
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
+enable_distance_sensor3 = 1.0;
 
 lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
-lookahead_min_distance_cm = 22.0;                       % 22
-lookahead_max_distance_cm = 45.0;                       % 40
+lookahead_min_distance_cm = 16.0;                       % 22
+lookahead_max_distance_cm = 40.0;                       % 40
 min_speed = 97.0;
-max_speed = 115.0;                                      % 115 merge si 120
+max_speed = 115.0;                                      % 
 emergency_break_distance_cm = 75.0;                     % 75
 emergency_brake_min_speed = 94.0;
 emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
-emergency_brake_enable_delay = 10.0;
+emergency_brake_enable_delay = 0.0;
 steering_wheel_angle_offset = 0.0;
 
 */
@@ -45,8 +47,8 @@ steering_wheel_angle_offset = 0.0;
 #define __CONFIG_H__
 
 
-#define CAR1 0
-#define CAR2 1
+#define CAR1 1
+#define CAR2 0
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
@@ -82,6 +84,7 @@ static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
+static float min_axis_angle_vector = 30.0f;
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 15.0f;
@@ -138,9 +141,9 @@ static float steering_wheel_angle_offset = 0.0f;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
+//#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-//#define DEBUG_HOST_IPADDRESS "192.168.55.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.45.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -247,6 +250,7 @@ static float steering_wheel_angle_offset = 0.0f;
 #define EMERGENCY_BRAKE_MIN_SPEED emergency_brake_min_speed
 #define EMERGENCY_BRAKE_ENABLE_DELAY_S emergency_brake_enable_delay_s
 #define STEERING_WHEEL_ANGLE_OFFSET steering_wheel_angle_offset
+#define MIN_XAXIS_ANGLE_VECTOR min_axis_angle_vector
 
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
@@ -558,6 +562,9 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   }
 
 
+  min_axis_angle_vector = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+
+
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
 }
@@ -605,6 +612,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(emergency_brake_enable_delay_s));
   serialPort.print(separatorCharacter);
   serialPort.print(String(enable_distance_sensor3_soft));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(min_axis_angle_vector));
 
   serialPort.println();
 }
@@ -633,6 +642,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
+                LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
                 LCDMENU_CALIBRATION_VIEW,
                 LCDMENU_LAST_VALUE};
   
@@ -684,8 +694,20 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("STR_WHEEL_OFST");
         lcd_.setCursor(0, 1);
         lcd_.print(STEERING_WHEEL_ANGLE_OFFSET);
-
       break;
+
+      case LCDMENU_MIN_XAXIS_ANGLE_VECTOR:
+        if (incrementButton == HIGH) {
+          MIN_XAXIS_ANGLE_VECTOR += 0.1f;
+        } else if (decrementButton == HIGH) {
+          MIN_XAXIS_ANGLE_VECTOR -= 0.1f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("XAXIS_ANGL_VECT");
+        lcd_.setCursor(0, 1);
+        lcd_.print(MIN_XAXIS_ANGLE_VECTOR);
+      break;
+
       case LCDMENU_MAIN_VIEW:
         lcd_.setCursor(0, 0);
         lcd_.print("Loop ms: ");

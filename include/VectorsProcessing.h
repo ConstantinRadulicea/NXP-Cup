@@ -29,6 +29,7 @@ private:
     Point2D carPosition;
     float minXaxeAngle;
     float laneWidth;
+    LineABC lastMidLine;
 
 
     /* data */
@@ -39,6 +40,8 @@ public:
         this->carPosition.y = carPositionY;
         this->minXaxeAngle = minXaxeAngle;
         this->laneWidth = laneWidth;
+        this->lastMidLine = yAxisABC();
+        this->lastMidLine.C = -this->carPosition.x;
         this->clear();
     }
 
@@ -116,6 +119,7 @@ public:
             middleLine_ = yAxisABC();
             middleLine_.C = -this->carPosition.x;
             return middleLine_;
+            //return lastMidLine;
         }
 
         if (this->isVectorValid(leftVector_)) {
@@ -152,7 +156,7 @@ public:
         else{
             middleLine_ = ottuseAngleBisector;
         }
-        
+        //lastMidLine = middleLine_;
         return middleLine_;
     }
     
