@@ -572,6 +572,7 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 /*==============================================================================*/
 
 void printGlobalVariables(HardwareSerial& serialPort){
+  /*
   char separatorCharacter;
   separatorCharacter = ';';
 
@@ -616,6 +617,7 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(min_axis_angle_vector));
 
   serialPort.println();
+  */
 }
 
 /*==============================================================================*/
@@ -643,6 +645,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
                 LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
+                LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
                 LCDMENU_LAST_VALUE};
   
@@ -975,6 +978,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         break;
 
       case LCDMENU_CALIBRATION_VIEW:
+      {
         LineABC upper_line, lower_line, middle_line;
         IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
         float lane_width_;
@@ -1013,6 +1017,62 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         }
         else{
           lcd_.print("NO_LINE");
+        }
+      }
+        break;
+
+        case LCDMENU_CALIBRATION_VIEW_SINGLE_LINE:
+        {
+        LineABC upper_line, lower_line, middle_line, calibration_line;
+        IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
+
+        middle_line = xAxisABC();
+        middle_line.C = -SCREEN_CENTER_Y;
+
+        left_lane_line_intersection = intersectionLinesABC(left_lane_line, middle_line);
+        right_lane_line_intersection = intersectionLinesABC(right_lane_line, middle_line);
+
+        if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
+          if (euclidianDistance(left_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y}) < euclidianDistance(right_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y})) {
+            calibration_line = left_lane_line;
+          }
+          else{
+            calibration_line = right_lane_line;
+          }
+        }
+        else if(left_lane_line_intersection.info == 0){
+          calibration_line = left_lane_line;
+        }
+        else if(right_lane_line_intersection.info == 0){
+          calibration_line = right_lane_line;
+        }
+        else{
+          lcd_.setCursor(0, 0);
+          lcd_.print("NO_LINE");
+          lcd_.setCursor(0, 1);
+          lcd_.print("NO_LINE");
+          break;
+        }
+
+
+        upper_line = xAxisABC();
+        upper_line.C = -IMAGE_MAX_Y;
+        lower_line = xAxisABC();
+        upper_intersection = intersectionLinesABC(calibration_line, upper_line);
+        lower_intersection = intersectionLinesABC(calibration_line, lower_line);
+
+        if (upper_intersection.info != 0) {
+          lcd_.setCursor(0, 0);
+          lcd_.print("inf");
+          lcd_.setCursor(0, 1);
+          lcd_.print("inf");
+        }
+        else{
+          lcd_.setCursor(0, 0);
+          lcd_.print(upper_intersection.point.x - SCREEN_CENTER_X, 2);
+          lcd_.setCursor(0, 1);
+          lcd_.print(lower_intersection.point.x - SCREEN_CENTER_X, 2);
+        }
         }
         break;
 
