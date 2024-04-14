@@ -654,6 +654,10 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   int decrementButton=LOW;
   int leftArrowButtonPrevState, rightArrowButtonPrevState;
 
+  #if RACE_MODE == 1
+  if (ENABLE_CAR_ENGINE == 0) {
+  #endif
+
   leftArrowButtonPrevState = leftArrowButtonState;
   rightArrowButtonPrevState = rightArrowButtonState;
 
@@ -676,10 +680,6 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     }
   }
   ///lcd_print_timeont -= fabsf(loop_time_ms);
-  #if RACE_MODE == 1
-    if (ENABLE_CAR_ENGINE == 0)
-    {
-  #endif
   if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH /*|| lcd_print_timeont <= 0.0f*/) {
     //lcd_print_timeont = 500.0f;
     lcd_.clear();
