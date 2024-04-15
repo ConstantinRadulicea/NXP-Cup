@@ -359,6 +359,7 @@ void loop() {
   Point2D carPosition;
   float laneWidth, lookAheadDistance, frontObstacleDistance;
   float timeStart;
+  float max_speed_original;
   MovingAverage movingAverage_speed(10);
 
   serialInputBuffer.clear();
@@ -366,6 +367,7 @@ void loop() {
   timeStart = 0.0f;
   loopIterationsCountNoVectorDetected = 0;
   loopIterationsCountVectorRetriveError = 0;
+  max_speed_original = MAX_SPEED;
 
   frontObstacleDistance = 0.0f;
 
@@ -390,27 +392,29 @@ void loop() {
     movingAverage_speed.next(carSpeed);
     vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
     
-    
-    if (emergency_brake_enable_delay_started_count == 0 && ENABLE_CAR_ENGINE != 0) {
-      emergency_brake_enable_remaining_delay_s = EMERGENCY_BRAKE_ENABLE_DELAY_S;
-      emergency_brake_enable_delay_started_count = 1;
-    }
-    else if(emergency_brake_enable_delay_started_count != 0 && ENABLE_CAR_ENGINE == 0){
-      emergency_brake_enable_remaining_delay_s = 0;
-      emergency_brake_enable_delay_started_count = 0;
-    }
-    
-
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
     }
     
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
+
+    if (emergency_brake_enable_delay_started_count == 0 && ENABLE_CAR_ENGINE != 0) {
+      max_speed_original = MAX_SPEED;
+      emergency_brake_enable_remaining_delay_s = EMERGENCY_BRAKE_ENABLE_DELAY_S;
+      emergency_brake_enable_delay_started_count = 1;
+    }
+    else if(emergency_brake_enable_delay_started_count != 0 && ENABLE_CAR_ENGINE == 0){
+      MAX_SPEED = max_speed_original;
+      emergency_brake_enable_remaining_delay_s = 0;
+      emergency_brake_enable_delay_started_count = 0;
+    }
     
     if (ENABLE_CAR_ENGINE != 0 && emergency_brake_enable_remaining_delay_s > 0.0f) {
       emergency_brake_enable_remaining_delay_s -= (loop_time_ms / 1000.0f);
       emergency_brake_enable_remaining_delay_s = MAX(emergency_brake_enable_remaining_delay_s, 0.0f);
+
       if (emergency_brake_enable_remaining_delay_s <= 0.0f) {
+        max_speed_original = MAX_SPEED;
         MAX_SPEED = MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY;
       }
     }
