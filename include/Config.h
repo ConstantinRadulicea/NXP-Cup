@@ -85,6 +85,7 @@ static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
 static float min_axis_angle_vector = 30.0f;
+static float max_speed_after_emergency_brake_delay = max_speed;
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 15.0f;
@@ -141,9 +142,9 @@ static float min_axis_angle_vector = 30.0f;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-//#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
+#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-#define DEBUG_HOST_IPADDRESS "192.168.45.122"   // Daniel phone
+//#define DEBUG_HOST_IPADDRESS "192.168.45.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -251,6 +252,7 @@ static float min_axis_angle_vector = 30.0f;
 #define EMERGENCY_BRAKE_ENABLE_DELAY_S emergency_brake_enable_delay_s
 #define STEERING_WHEEL_ANGLE_OFFSET steering_wheel_angle_offset
 #define MIN_XAXIS_ANGLE_VECTOR min_axis_angle_vector
+#define MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY max_speed_after_emergency_brake_delay
 
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
@@ -563,7 +565,7 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 
 
   min_axis_angle_vector = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-
+  max_speed_after_emergency_brake_delay = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
@@ -615,6 +617,9 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(enable_distance_sensor3_soft));
   serialPort.print(separatorCharacter);
   serialPort.print(String(min_axis_angle_vector));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(max_speed_after_emergency_brake_delay));
+  
 
   serialPort.println();
   */
@@ -642,6 +647,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
                 LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
                 LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S,
+                LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
                 LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
@@ -871,6 +877,19 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("MAX_SPEED");
         lcd_.setCursor(0, 1);
         lcd_.print(MAX_SPEED);
+        break;
+
+      case LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY:
+        if (incrementButton == HIGH) {
+          MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY += 0.5f;
+        } else if (decrementButton == HIGH) {
+          MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY -= 0.5f;
+        }
+        MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY = MAX(MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY, 0.0f);
+        lcd_.setCursor(0, 0);
+        lcd_.print("MS_AFT_EMBRK_DLY");
+        lcd_.setCursor(0, 1);
+        lcd_.print(MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY);
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:
