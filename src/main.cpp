@@ -112,9 +112,13 @@ void setup() {
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
     SERIAL_PORT.begin(115200);
-    while (!SERIAL_PORT){
+    #if RACE_MODE == 1
+    #else
+      while (!SERIAL_PORT){
       delay(100);
     }
+    #endif
+
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1
@@ -398,6 +402,10 @@ void loop() {
     
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
 
+
+    
+    if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0 || ENABLE_DISTANCE_SENSOR3_SOFT != 0)) {
+      
     if (emergency_brake_enable_delay_started_count == 0 && ENABLE_CAR_ENGINE != 0) {
       max_speed_original = MAX_SPEED;
       emergency_brake_enable_remaining_delay_s = EMERGENCY_BRAKE_ENABLE_DELAY_S;
@@ -405,8 +413,8 @@ void loop() {
     }
     else if(emergency_brake_enable_delay_started_count != 0 && ENABLE_CAR_ENGINE == 0){
       MAX_SPEED = max_speed_original;
-      emergency_brake_enable_remaining_delay_s = 0;
-      emergency_brake_enable_delay_started_count = 0;
+      emergency_brake_enable_remaining_delay_s = 0.0f;
+      emergency_brake_enable_delay_started_count = 0.0f;
     }
     
     if (ENABLE_CAR_ENGINE != 0 && emergency_brake_enable_remaining_delay_s > 0.0f) {
@@ -418,8 +426,11 @@ void loop() {
         MAX_SPEED = MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY;
       }
     }
-    
-    if (ENABLE_EMERGENCY_BRAKE != 0 && emergency_brake_enable_remaining_delay_s <= 0.0f && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0 || ENABLE_DISTANCE_SENSOR3_SOFT != 0)) {
+      if (emergency_brake_enable_remaining_delay_s <= 0.0f)
+      {
+      
+      
+      
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
       if (frontObstacleDistance <= EMERGENCY_BREAK_DISTANCE_CM ) {
@@ -468,6 +479,12 @@ void loop() {
         emergency_break_loops_count = 0;
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
       }
+      }
+      else{
+      emergency_break_active = 0;
+      emergency_break_loops_count = 0;
+      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
+    }
     }
     else{
       emergency_break_active = 0;

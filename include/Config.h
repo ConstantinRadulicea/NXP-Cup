@@ -47,8 +47,8 @@ steering_wheel_angle_offset = 0.0;
 #define __CONFIG_H__
 
 
-#define CAR1 0
-#define CAR2 1
+#define CAR1 1
+#define CAR2 0
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
@@ -60,35 +60,35 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 1
-#define RACE_MODE 0
+#define DEBUG_MODE 0
+#define RACE_MODE 1
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
-static int enable_car_engine = 0;
-static int enable_car_steering_wheel = 0;
+static int enable_car_engine = 1;
+static int enable_car_steering_wheel = 1;
 static int enable_emergency_brake = 1;
 static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
 static int enable_distance_sensor3_soft = 1;
 
-static float lane_width_vector_unit_real = 52.5f;
+static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
-static float lookahead_max_distance_cm = 45.0f;
+static float lookahead_max_distance_cm = 40.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float max_speed = 110.0f  + CAR2_PARAMETERS_DIFFERENCE;
+static float max_speed = 114.0f  + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
-static float min_axis_angle_vector = 10.0f;
-static float max_speed_after_emergency_brake_delay = max_speed;
+static float min_axis_angle_vector = 25.0f;
+static float max_speed_after_emergency_brake_delay = 110.0f;
 
 #if RACE_MODE == 1
-  static float emergency_brake_enable_delay_s = 15.0f;
+  static float emergency_brake_enable_delay_s = 0.0f;
 #elif DEBUG_MODE == 1
   static float emergency_brake_enable_delay_s = 0.0f;
 #else
@@ -142,9 +142,9 @@ static float max_speed_after_emergency_brake_delay = max_speed;
 //#define DEBUG_WIFI_PASSWORD "diferential2019"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
-#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
+//#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-//#define DEBUG_HOST_IPADDRESS "192.168.45.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.45.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -176,8 +176,8 @@ static float max_speed_after_emergency_brake_delay = max_speed;
 #endif
 
 #if RACE_MODE == 1
-  #define ENABLE_SERIAL_PRINT 0
-  #define ENABLE_WIRELESS_DEBUG 0
+  #define ENABLE_SERIAL_PRINT 1
+  #define ENABLE_WIRELESS_DEBUG 1
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
@@ -633,24 +633,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_MAIN_VIEW,
                 LCDMENU_ENABLE_CAR_ENGINE,
                 LCDMENU_ENABLE_CAR_STEERING_WHEEL,
+                LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S,
+                LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
+                LCDMENU_MIN_SPEED,
+                LCDMENU_MAX_SPEED,
+		            LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
+                LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
+                LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
+                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_ENABLE_DISTANCE_SENSOR1,
                 LCDMENU_ENABLE_DISTANCE_SENSOR2,
                 LCDMENU_ENABLE_DISTANCE_SENSOR3,
-                LCDMENU_MIN_SPEED,
-                LCDMENU_MAX_SPEED,
-		LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
-                LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
-                LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_EMERGENCY_BREAK_DISTANCE_CM,
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
-                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
-                LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
-                LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
-		LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
+		            LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
                 LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
                 LCDMENU_LAST_VALUE};
@@ -663,7 +663,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   int decrementButton=LOW;
   int leftArrowButtonPrevState, rightArrowButtonPrevState;
 
-  #if RACE_MODE == 1
+  #if RACE_MODE == 999
   if (ENABLE_CAR_ENGINE == 0) {
   #endif
 
@@ -729,6 +729,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
 
       case LCDMENU_ENABLE_CAR_ENGINE:
         if (incrementButton == HIGH) {
+          emergency_brake_enable_delay_started_count = 0;
+          emergency_brake_enable_remaining_delay_s = 0.0f;
           ENABLE_CAR_ENGINE = 1;
         }
         else if (decrementButton == HIGH) {
@@ -1099,7 +1101,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         break;
     }
   }
-  #if RACE_MODE == 1
+  #if RACE_MODE == 999
   }
   #endif
 }

@@ -4,8 +4,8 @@ fieldTerminator = ';';
 % 17 - 3
 % 22 - 0
 enable_car_engine = 0.0;
-enable_car_steering_wheel = 1.0;
-enable_emergency_brake = 1.0;
+enable_car_steering_wheel = 0.0;
+enable_emergency_brake = 0.0;
 enable_pixy_vector_approximation = 0.0;             
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
@@ -14,8 +14,8 @@ enable_distance_sensor3 = 1.0;
 lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
-lookahead_min_distance_cm = 16.0;                       % 22
-lookahead_max_distance_cm = 35.0;                       % 40
+lookahead_min_distance_cm = 22.0;                       % 22
+lookahead_max_distance_cm = 45.0;                       % 40
 min_speed = 97.0;
 max_speed = 115.0;                                      % 
 emergency_break_distance_cm = 75.0;                     % 75
@@ -23,7 +23,7 @@ emergency_brake_min_speed = 94.0;
 emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
 emergency_brake_enable_delay = 0.0;
 steering_wheel_angle_offset = 0.0;
-min_axis_angle_vector = 10.0;
+min_axis_angle_vector = 25.0;
 max_speed_after_emergency_brake_delay = (max_speed);
 
 values = [lane_width_vector_unit_real lookahead_min_distance_cm...
