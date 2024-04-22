@@ -100,13 +100,12 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 /*====================================================================================================================================*/
 
 
-
+#define SPI_SS
 #define ENABLE_ARDUINO 0
 
 #include <Arduino.h>
 #include <SPI.h>
 #include "SteeringWheel.h"
-#include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h"
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
@@ -114,6 +113,22 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 #include "SimpleKalmanFilter.h"
 #include "MovingAverage.h"
 #include <vector>
+
+
+#ifdef I2C
+  #include <pixy2_libs/host/arduino/libraries/Pixy2/Pixy2I2C.h>
+#else 
+  #ifdef UART
+    #include <pixy2_libs/host/arduino/libraries/Pixy2/Pixy2UART.h>
+  #else 
+    #ifdef SPI_SS
+      #include<pixy2_libs/host/arduino/libraries/Pixy2/Pixy2SPI_SS.h>
+    #else
+      #include <pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h>
+    #endif
+  #endif
+#endif
+
 
 
 #if ENABLE_ARDUINO == 1
@@ -233,6 +248,9 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 #define MENU_DECREMENT_BUTTON_PIN 14
 
 #define EMERGENCY_BREAK_LIGHT_PIN 20
+
+#define SPI_SS_PIXY_1_PIN 20
+#define SPI_SS_PIXY_2_PIN 23
 
 #define IMAGE_MAX_X 78.0f
 #define IMAGE_MAX_Y 51.0f

@@ -20,6 +20,42 @@
 #ifndef _PIXY2LINE_H
 #define _PIXY2LINE_H
 
+#define PIXY_DEFAULT_ARGVAL                  0x80000000
+#define PIXY_BUFFERSIZE                      0x104
+#define PIXY_CHECKSUM_SYNC                   0xc1af
+#define PIXY_NO_CHECKSUM_SYNC                0xc1ae
+#define PIXY_SEND_HEADER_SIZE                4
+#define PIXY_MAX_PROGNAME                    33
+
+#define PIXY_TYPE_REQUEST_CHANGE_PROG        0x02
+#define PIXY_TYPE_REQUEST_RESOLUTION         0x0c
+#define PIXY_TYPE_RESPONSE_RESOLUTION        0x0d
+#define PIXY_TYPE_REQUEST_VERSION            0x0e
+#define PIXY_TYPE_RESPONSE_VERSION           0x0f
+#define PIXY_TYPE_RESPONSE_RESULT            0x01
+#define PIXY_TYPE_RESPONSE_ERROR             0x03
+#define PIXY_TYPE_REQUEST_BRIGHTNESS         0x10
+#define PIXY_TYPE_REQUEST_SERVO              0x12
+#define PIXY_TYPE_REQUEST_LED                0x14
+#define PIXY_TYPE_REQUEST_LAMP               0x16
+#define PIXY_TYPE_REQUEST_FPS                0x18
+
+#define PIXY_RESULT_OK                       0
+#define PIXY_RESULT_ERROR                    -1
+#define PIXY_RESULT_BUSY                     -2
+#define PIXY_RESULT_CHECKSUM_ERROR           -3
+#define PIXY_RESULT_TIMEOUT                  -4
+#define PIXY_RESULT_BUTTON_OVERRIDE          -5
+#define PIXY_RESULT_PROG_CHANGING            -6
+
+// RC-servo values
+#define PIXY_RCS_MIN_POS                     0
+#define PIXY_RCS_MAX_POS                     1000L
+#define PIXY_RCS_CENTER_POS                  ((PIXY_RCS_MAX_POS-PIXY_RCS_MIN_POS)/2)
+
+
+
+
 #define LINE_REQUEST_GET_FEATURES                0x30
 #define LINE_RESPONSE_GET_FEATURES               0x31
 #define LINE_REQUEST_SET_MODE                    0x36
