@@ -1,7 +1,5 @@
 #include "Config.h"
 
-#define SS_pin_pixy
-
 Pixy2SPI_SS pixy_1;
 Pixy2SPI_SS pixy_2;
 

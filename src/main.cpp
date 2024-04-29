@@ -34,11 +34,12 @@ SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_
 #endif
 
 VectorsProcessing vectorsProcessing;
-Pixy2 pixy;
+Pixy2SPI_SS pixy_1;
+Pixy2SPI_SS pixy_2;
 
 /*====================================================================================================================================*/
 
-void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
+void FailureModeMessage(Pixy2SPI_SS &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
 
@@ -129,19 +130,32 @@ void setup() {
     printSerial2WifiInfo(String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
     
-  // we must initialize the pixy object
-  pixyResult = pixy.init();
-  
+  pinMode(SPI_SS_PIXY_1_PIN, OUTPUT);
+  pinMode(SPI_SS_PIXY_2_PIN, OUTPUT);
+
+  pixyResult = pixy_1.init(SPI_SS_PIXY_1_PIN);
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.init() = ") + String(pixyResult));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1.init() = ") + String(pixyResult));
   #endif
+
+  pixyResult = pixy_2.init(SPI_SS_PIXY_2_PIN);
+  #if ENABLE_SERIAL_PRINT == 1
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_2.init() = ") + String(pixyResult));
+  #endif
+  
+
 
   //pixy.setLamp(1,1);
     
   // Getting the RGB pixel values requires the 'video' program
-  pixyResult = pixy.changeProg("line");
+  pixyResult = pixy_1.changeProg("line");
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy.changeProg(line) = ") + String(pixyResult));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1.changeProg(line) = ") + String(pixyResult));
+  #endif
+
+  pixyResult = pixy_2.changeProg("line");
+  #if ENABLE_SERIAL_PRINT == 1
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_2.changeProg(line) = ") + String(pixyResult));
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
@@ -352,7 +366,7 @@ static float calculateLookAheadDistance(float minDistance, float maxDistance, Li
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
-  int8_t pixyResult;
+  int8_t pixyResult, pixy_1_result, pixy_2_result;
   uint32_t loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
   LineABC mirrorLine;
   Vector vec, leftVectorOld, rightVectorOld;
@@ -366,6 +380,8 @@ void loop() {
   float max_speed_original;
   MovingAverage movingAverage_speed(10);
 
+  pixy_1_result = PIXY_RESULT_ERROR;
+  pixy_2_result = PIXY_RESULT_ERROR;
   serialInputBuffer.clear();
 
   timeStart = 0.0f;
@@ -512,11 +528,23 @@ void loop() {
     }
 
     vectorsProcessing.clear();
-    if(pixy.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION) >= (int8_t)0){
-      vectors.resize(pixy.line.numVectors);
-      memcpy(vectors.data(), pixy.line.vectors, (pixy.line.numVectors * sizeof(Vector)));
-      intersections.resize(pixy.line.numIntersections);
-      memcpy(intersections.data(), pixy.line.intersections, (pixy.line.numIntersections * sizeof(Intersection)));
+
+    pixy_1_result = PIXY_RESULT_ERROR;
+    pixy_2_result = PIXY_RESULT_ERROR;
+    while ((pixy_1_result < (int8_t)0) || (pixy_2_result < (int8_t)0)) {
+      if (pixy_1_result < (int8_t)0) {
+        pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
+      }
+      if (pixy_2_result < (int8_t)0) {
+        pixy_2_result = pixy_2.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
+      }
+    }
+    
+    if(pixy_1_result >= (int8_t)0){
+      vectors.resize(pixy_1.line.numVectors);
+      memcpy(vectors.data(), pixy_1.line.vectors, (pixy_1.line.numVectors * sizeof(Vector)));
+      intersections.resize(pixy_1.line.numIntersections);
+      memcpy(intersections.data(), pixy_1.line.intersections, (pixy_1.line.numIntersections * sizeof(Intersection)));
 
       VectorsProcessing::filterVectorIntersections(vectors, intersections);
 
@@ -551,27 +579,27 @@ void loop() {
           #endif
 
           loopIterationsCountPixyChangeProgramError=0;
-          while ((pixyResult = pixy.changeProg("video")) != PIXY_RESULT_OK) {
+          while ((pixyResult = pixy_1.changeProg("video")) != PIXY_RESULT_OK) {
             loopIterationsCountPixyChangeProgramError++;
-            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"pixy video");
+            FailureModeMessage(pixy_1, loopIterationsCountPixyChangeProgramError,"pixy video");
             delay(10);
           }
           delay(40);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
-          approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
           vectorsProcessing.setLeftVector(vec);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, rightVectorOld);
-          approximatePixyVectorVector(pixy, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
           vectorsProcessing.setRightVector(vec);
           
           loopIterationsCountPixyChangeProgramError = 0;
-          while ((pixyResult = pixy.changeProg("line")) != PIXY_RESULT_OK) {
+          while ((pixyResult = pixy_1.changeProg("line")) != PIXY_RESULT_OK) {
             loopIterationsCountPixyChangeProgramError++;
-            FailureModeMessage(pixy, loopIterationsCountPixyChangeProgramError,"pixy line");
+            FailureModeMessage(pixy_1, loopIterationsCountPixyChangeProgramError,"pixy line");
             delay(10);
           }
           delay(40);
@@ -604,7 +632,7 @@ void loop() {
     }
     else{
       loopIterationsCountVectorRetriveError++;
-      FailureModeMessage(pixy, loopIterationsCountVectorRetriveError,"pixy getAllFeatures");
+      FailureModeMessage(pixy_1, loopIterationsCountVectorRetriveError,"pixy getAllFeatures");
     }
     
     #if ENABLE_SERIAL_PRINT == 1

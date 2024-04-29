@@ -24,6 +24,7 @@
 #include "VectorsProcessing.h"
 #include "PurePursuitGeometry.h"
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2.h"
+#include<pixy2_libs/host/arduino/libraries/Pixy2/Pixy2SPI_SS.h>
 
 static Vector vectorApproximationSelectionLogic(Vector vec, Point2D approximatedPointFound, Point2D carPosition) {
 	Point2D startVector, endVector, newVectorStart, newVectorEnd;
@@ -87,7 +88,7 @@ static Vector vectorApproximationSelectionLogic(Vector vec, Point2D approximated
 }
 
 // return 0 on success
-static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTreshold, Point2D carPosition) {
+static int approximatePixyVectorVector(Pixy2SPI_SS& pixy, Vector& vec, float blackTreshold, Point2D carPosition) {
     RGBcolor pixel;
 	Point2D midPoint_, pointFound;
 	LineABC perpendicularLine, vectorLine;
