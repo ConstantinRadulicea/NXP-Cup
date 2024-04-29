@@ -318,9 +318,9 @@ static float car_length_vector_unit = (float)car_length_cm * (float)VECTOR_UNIT_
 static int emergency_break_active =(int) 0;
 static unsigned int emergency_break_loops_count = (int)0;
 static float carSpeed = (float)STANDSTILL_SPEED;
-static LineABC middle_lane_line;
-static LineABC left_lane_line;
-static LineABC right_lane_line;
+static LineABC middle_lane_line_pixy_1;
+static LineABC left_lane_line_pixy_1;
+static LineABC right_lane_line_pixy_1;
 static float loop_time_ms = 0.0f;
 static float time_passed_ms = 0.0f;
 static float emergency_brake_enable_remaining_delay_s = 0.0f;
@@ -1025,8 +1025,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         upper_line = xAxisABC();
         upper_line.C = -IMAGE_MAX_Y;
         lower_line = xAxisABC();
-        upper_intersection = intersectionLinesABC(middle_lane_line, upper_line);
-        lower_intersection = intersectionLinesABC(middle_lane_line, lower_line);
+        upper_intersection = intersectionLinesABC(middle_lane_line_pixy_1, upper_line);
+        lower_intersection = intersectionLinesABC(middle_lane_line_pixy_1, lower_line);
 
         if (upper_intersection.info != 0) {
           lcd_.setCursor(0, 0);
@@ -1044,8 +1044,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         middle_line = xAxisABC();
         middle_line.C = -SCREEN_CENTER_Y;
 
-        left_lane_line_intersection = intersectionLinesABC(left_lane_line, middle_line);
-        right_lane_line_intersection = intersectionLinesABC(right_lane_line, middle_line);
+        left_lane_line_intersection = intersectionLinesABC(left_lane_line_pixy_1, middle_line);
+        right_lane_line_intersection = intersectionLinesABC(right_lane_line_pixy_1, middle_line);
 
         lcd_.setCursor(8, 0);
         lcd_.print("LaneWdth");
@@ -1068,22 +1068,22 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         middle_line = xAxisABC();
         middle_line.C = -SCREEN_CENTER_Y;
 
-        left_lane_line_intersection = intersectionLinesABC(left_lane_line, middle_line);
-        right_lane_line_intersection = intersectionLinesABC(right_lane_line, middle_line);
+        left_lane_line_intersection = intersectionLinesABC(left_lane_line_pixy_1, middle_line);
+        right_lane_line_intersection = intersectionLinesABC(right_lane_line_pixy_1, middle_line);
 
         if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
           if (euclidianDistance(left_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y}) < euclidianDistance(right_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y})) {
-            calibration_line = left_lane_line;
+            calibration_line = left_lane_line_pixy_1;
           }
           else{
-            calibration_line = right_lane_line;
+            calibration_line = right_lane_line_pixy_1;
           }
         }
         else if(left_lane_line_intersection.info == 0){
-          calibration_line = left_lane_line;
+          calibration_line = left_lane_line_pixy_1;
         }
         else if(right_lane_line_intersection.info == 0){
-          calibration_line = right_lane_line;
+          calibration_line = right_lane_line_pixy_1;
         }
         else{
           lcd_.setCursor(0, 0);

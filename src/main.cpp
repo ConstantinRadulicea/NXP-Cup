@@ -33,7 +33,7 @@ SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_
   PWMServo driverMotor;
 #endif
 
-VectorsProcessing vectorsProcessing;
+VectorsProcessing pixy_1_vectorsProcessing;
 Pixy2SPI_SS pixy_1;
 Pixy2SPI_SS pixy_2;
 
@@ -369,7 +369,7 @@ void loop() {
   int8_t pixyResult, pixy_1_result, pixy_2_result;
   uint32_t loopIterationsCountNoVectorDetected, loopIterationsCountVectorRetriveError, loopIterationsCountPixyChangeProgramError;
   LineABC mirrorLine;
-  Vector vec, leftVectorOld, rightVectorOld;
+  Vector vec, pixy_1_leftVectorOld, pixy_1_rightVectorOld;
   std::vector<Vector> vectors;
   std::vector<Intersection> intersections;
   std::vector<char> serialInputBuffer;
@@ -397,20 +397,20 @@ void loop() {
   carPosition.x = (float)SCREEN_CENTER_X;
   carPosition.y = 0.0f;
 
-  middle_lane_line = yAxisABC();
+  middle_lane_line_pixy_1 = yAxisABC();
 
   laneWidth = (float)LANE_WIDTH_VECTOR_UNIT;
   
   lookAheadDistance = (float)LOOKAHEAD_MIN_DISTANCE_CM * (float)VECTOR_UNIT_PER_CM;
   
-  vectorsProcessing.setCarPosition(carPosition);
-  vectorsProcessing.setLaneWidth(laneWidth);
-  vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
+  pixy_1_vectorsProcessing.setCarPosition(carPosition);
+  pixy_1_vectorsProcessing.setLaneWidth(laneWidth);
+  pixy_1_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
   while (1)
   {
     timeStart = (float)millis();
     movingAverage_speed.next(carSpeed);
-    vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
+    pixy_1_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
     
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
@@ -527,7 +527,7 @@ void loop() {
       ENABLE_CAR_STEERING_WHEEL = 1;
     }
 
-    vectorsProcessing.clear();
+    pixy_1_vectorsProcessing.clear();
 
     pixy_1_result = PIXY_RESULT_ERROR;
     pixy_2_result = PIXY_RESULT_ERROR;
@@ -561,14 +561,14 @@ void loop() {
         vec = vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
-        vectorsProcessing.addVector(vec);
+        pixy_1_vectorsProcessing.addVector(vec);
       }
-      leftVectorOld = vectorsProcessing.getLeftVector();
-      rightVectorOld = vectorsProcessing.getRightVector();
+      pixy_1_leftVectorOld = pixy_1_vectorsProcessing.getLeftVector();
+      pixy_1_rightVectorOld = pixy_1_vectorsProcessing.getRightVector();
 
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT != 0){
-        if (((int)vectorsProcessing.isVectorValid(rightVectorOld) + (int)vectorsProcessing.isVectorValid(leftVectorOld))==1){
+        if (((int)pixy_1_vectorsProcessing.isVectorValid(pixy_1_rightVectorOld) + (int)pixy_1_vectorsProcessing.isVectorValid(pixy_1_leftVectorOld))==1){
           if (emergency_break_active == 0){
             carSpeed = (float)MIN_SPEED;
           }
@@ -586,15 +586,15 @@ void loop() {
           }
           delay(40);
 
-          vec = VectorsProcessing::mirrorVector(mirrorLine, leftVectorOld);
+          vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_leftVectorOld);
           approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-          vectorsProcessing.setLeftVector(vec);
+          pixy_1_vectorsProcessing.setLeftVector(vec);
 
-          vec = VectorsProcessing::mirrorVector(mirrorLine, rightVectorOld);
+          vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_rightVectorOld);
           approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-          vectorsProcessing.setRightVector(vec);
+          pixy_1_vectorsProcessing.setRightVector(vec);
           
           loopIterationsCountPixyChangeProgramError = 0;
           while ((pixyResult = pixy_1.changeProg("line")) != PIXY_RESULT_OK) {
@@ -608,9 +608,9 @@ void loop() {
 
       #endif
 
-      middle_lane_line = vectorsProcessing.getMiddleLine();
-      lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, middle_lane_line);
-      purePersuitInfo = purePursuitComputeABC(carPosition, middle_lane_line, car_length_vector_unit, lookAheadDistance);
+      middle_lane_line_pixy_1 = pixy_1_vectorsProcessing.getMiddleLine();
+      lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, middle_lane_line_pixy_1);
+      purePersuitInfo = purePursuitComputeABC(carPosition, middle_lane_line_pixy_1, car_length_vector_unit, lookAheadDistance);
       purePersuitInfo.steeringAngle -= (STEERING_WHEEL_ANGLE_OFFSET * RADIANS_PER_DEGREE);
 
       if (loopIterationsCountNoVectorDetected > 15)
@@ -626,7 +626,7 @@ void loop() {
       }
       else{
         if (emergency_break_active == 0){
-          carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line);
+          carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1);
         }
       }
     }
@@ -636,7 +636,7 @@ void loop() {
     }
     
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(leftVectorOld, rightVectorOld, vectorsProcessing.getLeftVector(), vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector()), middle_lane_line, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance, carSpeed);
+        printDataToSerial(pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getRightVector()), middle_lane_line_pixy_1, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance, carSpeed);
     #endif
     
     #if ENABLE_STEERING_SERVO == 1
@@ -651,8 +651,8 @@ void loop() {
       }
     #endif
     
-    left_lane_line = VectorsProcessing::vectorToLineABC(vectorsProcessing.getLeftVector());
-    right_lane_line = VectorsProcessing::vectorToLineABC(vectorsProcessing.getRightVector());
+    left_lane_line_pixy_1 = VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getLeftVector());
+    right_lane_line_pixy_1 = VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getRightVector());
 
     loop_time_ms = ((float)millis()) - timeStart;
     loop_time_ms = MAX(loop_time_ms, 0.0f);

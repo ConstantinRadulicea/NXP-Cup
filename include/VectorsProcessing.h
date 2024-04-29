@@ -74,6 +74,17 @@ public:
         this->laneWidth = laneWidth;
     }
 
+    bool hasLeftVector(){
+        return this->isVectorValid(this->leftVector);
+    }
+    bool hasRightVector(){
+        return this->isVectorValid(this->rightVector);
+    }
+
+    bool hasMiddleLine(){
+        return (this->hasLeftVector() || this->hasLeftVector());
+    }
+
     void addVector(Vector vec){
         
         if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
