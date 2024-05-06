@@ -240,6 +240,7 @@ public:
         vec.m_y1 = (uint8_t)point2.y;
         return vec;
     }
+    
     static Point2D vectorMidPoint(Vector vec) {
         Point2D point1, point2;
         point1.x = (float)vec.m_x0;
