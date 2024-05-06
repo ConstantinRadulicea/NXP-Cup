@@ -328,7 +328,7 @@ static int emergency_brake_enable_delay_started_count = 0;
 
 /*====================================================================================================================================*/
 
-static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePersuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
+static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
 

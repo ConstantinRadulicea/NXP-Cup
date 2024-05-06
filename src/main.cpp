@@ -353,7 +353,7 @@ void loop() {
   std::vector<Vector> vectors;
   std::vector<Intersection> intersections;
   std::vector<char> serialInputBuffer;
-  PurePersuitInfo purePersuitInfo;
+  PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
   float laneWidth, lookAheadDistance, frontObstacleDistance;
   float timeStart;
@@ -573,12 +573,12 @@ void loop() {
           delay(40);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_leftVectorOld);
-          approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImageABC(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
           pixy_1_vectorsProcessing.setLeftVector(vec);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_rightVectorOld);
-          approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          approximatePixyVectorVector(pixy_1, vec, BLACK_COLOR_TRESHOLD, mirrorImageABC(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
           pixy_1_vectorsProcessing.setRightVector(vec);
           
@@ -646,12 +646,12 @@ void loop() {
           delay(40);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_2_leftVectorOld);
-          approximatePixyVectorVector(pixy_2, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          approximatePixyVectorVector(pixy_2, vec, BLACK_COLOR_TRESHOLD, mirrorImageABC(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
           pixy_2_vectorsProcessing.setLeftVector(vec);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_2_rightVectorOld);
-          approximatePixyVectorVector(pixy_2, vec, BLACK_COLOR_TRESHOLD, mirrorImage(mirrorLine, carPosition));
+          approximatePixyVectorVector(pixy_2, vec, BLACK_COLOR_TRESHOLD, mirrorImageABC(mirrorLine, carPosition));
           vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
           pixy_2_vectorsProcessing.setRightVector(vec);
           

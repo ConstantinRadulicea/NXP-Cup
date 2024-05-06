@@ -18,7 +18,7 @@
 #define __VECTORSPROCESSING_H__
 
 #include "pixy2_libs/host/arduino/libraries/Pixy2/Pixy2Line.h"
-#include "PurePursuitGeometry.h"
+#include "geometry2D.h"
 #include <vector>
 
 class VectorsProcessing
@@ -142,11 +142,11 @@ public:
         }
 
         if (!this->isVectorValid(rightVector_)) {
-            rightLine = parallelLineAtDistance(leftLine, this->laneWidth, 1);
+            rightLine = parallelLineAtDistanceABC(leftLine, this->laneWidth, 1);
         }
 
         if (!this->isVectorValid(leftVector_)) {
-            leftLine = parallelLineAtDistance(rightLine, this->laneWidth, 0);
+            leftLine = parallelLineAtDistanceABC(rightLine, this->laneWidth, 0);
         }
 /*
         leftVector_.print();
@@ -155,7 +155,7 @@ public:
         Serial.println("(" + String(leftLine.Ax) + ")x + " + "(" + String(leftLine.By) + ")y + " + "(" + String(leftLine.C) + ") = 0");
         Serial.println("(" + String(rightLine.Ax) + ")x + " + "(" + String(rightLine.By) + ")y + " + "(" + String(rightLine.C) + ") = 0");
 */
-        bisectorsOfTwoLines(leftLine, rightLine, &acuteAngleBisector, &ottuseAngleBisector);
+        bisectorsOfTwoLinesABC(leftLine, rightLine, &acuteAngleBisector, &ottuseAngleBisector);
         if (ottuseAngleBisector.Ax == 0.0f && ottuseAngleBisector.By == 0.0f)
         {
            middleLine_ = acuteAngleBisector;
@@ -230,8 +230,8 @@ public:
         point2.x = (float)vec.m_x1;
         point2.y = (float)vec.m_y1;
 
-        point1 = mirrorImage(line, point1);
-        point2 = mirrorImage(line, point2);
+        point1 = mirrorImageABC(line, point1);
+        point2 = mirrorImageABC(line, point2);
 
         vec.m_x0 = (uint8_t)point1.x;
         vec.m_y0 = (uint8_t)point1.y;

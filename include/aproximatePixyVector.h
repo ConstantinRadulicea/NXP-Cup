@@ -113,7 +113,7 @@ static int approximatePixyVectorVector(Pixy2SPI_SS& pixy, Vector& vec, float bla
 	vectorLine = VectorsProcessing::vectorToLineABC(vec);
 	perpendicularLine = perpendicularToLinePassingThroughPointABC(vectorLine, midPoint_);
 
-	if (!isLineParallelToYaxis(perpendicularLine)) {
+	if (!isLineParallelToYaxisABC(perpendicularLine)) {
 		xRight = (int)roundf(midPoint_.x);
 		xLeft = (int)roundf(midPoint_.x-1.0f);
 		while (xRight <= maxX || xLeft >= minX) {
