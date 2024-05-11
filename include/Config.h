@@ -60,8 +60,8 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 0
-#define RACE_MODE 1
+#define DEBUG_MODE 1
+#define RACE_MODE 0
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
@@ -233,24 +233,24 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 })
 
 #define STEERING_SERVO_PIN  22 // 3
-#define DRIVER_MOTOR_PIN  9
+#define DRIVER_MOTOR_PIN  23
 
-#define DISTANCE_SENSOR1_TRIG_PIN 2
-#define DISTANCE_SENSOR1_ECHO_PIN 5
-#define DISTANCE_SENSOR2_TRIG_PIN 7
-#define DISTANCE_SENSOR2_ECHO_PIN 8
-#define DISTANCE_SENSOR3_TRIG_PIN 4
-#define DISTANCE_SENSOR3_ECHO_PIN 6
+#define DISTANCE_SENSOR1_TRIG_PIN 7
+#define DISTANCE_SENSOR1_ECHO_PIN 6
+#define DISTANCE_SENSOR2_TRIG_PIN 5
+#define DISTANCE_SENSOR2_ECHO_PIN 4
+#define DISTANCE_SENSOR3_TRIG_PIN 3
+#define DISTANCE_SENSOR3_ECHO_PIN 2
 
-#define MENU_LEFT_ARROW_BUTTON_PIN 17
-#define MENU_RIGHT_ARROW_BUTTON_PIN 16
-#define MENU_INCREMENT_BUTTON_PIN 15
-#define MENU_DECREMENT_BUTTON_PIN 14
+#define MENU_RIGHT_ARROW_BUTTON_PIN 14
+#define MENU_LEFT_ARROW_BUTTON_PIN 15
+#define MENU_DECREMENT_BUTTON_PIN 16
+#define MENU_INCREMENT_BUTTON_PIN 17
 
-#define EMERGENCY_BREAK_LIGHT_PIN 20
+#define EMERGENCY_BREAK_LIGHT_PIN 21
 
-#define SPI_SS_PIXY_1_PIN 20
-#define SPI_SS_PIXY_2_PIN 23
+#define SPI_SS_PIXY_1_PIN 8
+#define SPI_SS_PIXY_2_PIN 9
 
 #define IMAGE_MAX_X 78.0f
 #define IMAGE_MAX_Y 51.0f
