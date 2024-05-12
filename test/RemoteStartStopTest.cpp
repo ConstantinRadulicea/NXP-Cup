@@ -17,7 +17,7 @@ void loop() {
     // Remote State Reading
     #if ENABLE_REMOTE_START_STOP == 1
       if (digitalRead(REMOTE_STOP_PIN) == HIGH) {
-        Serial.println("START");
+        Serial.println("STOP");
       }
       else if(digitalRead(REMOTE_START_PIN) == HIGH){
         Serial.println("START");
