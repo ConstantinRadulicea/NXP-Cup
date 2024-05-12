@@ -8105,7 +8105,7 @@
 			(uuid "e3261585-1457-4fca-a4e9-09149c2daea0")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J9")
 					(unit 1)
@@ -8173,7 +8173,7 @@
 			(uuid "9921f0a2-58d9-4e26-b17a-692d4dfd9798")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "D1")
 					(unit 1)
@@ -8198,7 +8198,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 34.29 44.45 90)
 			(effects
 				(font
@@ -8240,7 +8240,7 @@
 			(uuid "c560491e-87be-4b58-945e-01843af6e0cf")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R5")
 					(unit 1)
@@ -8265,7 +8265,7 @@
 				)
 			)
 		)
-		(property "Value" "100"
+		(property "Value" "220"
 			(at 190.5 31.75 90)
 			(effects
 				(font
@@ -8307,7 +8307,7 @@
 			(uuid "6d5b864f-4033-499d-bb09-4108a1e8cae7")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R10")
 					(unit 1)
@@ -8498,7 +8498,7 @@
 			(uuid "9d7ef743-4bf1-4140-aee3-70d5af857ad0")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J14")
 					(unit 1)
@@ -8568,7 +8568,7 @@
 			(uuid "6d8865eb-abbe-418d-a076-8859bb79f4cd")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "C2")
 					(unit 1)
@@ -8631,7 +8631,7 @@
 			)
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "H3")
 					(unit 1)
@@ -8736,7 +8736,7 @@
 			(uuid "608fc04f-6d44-4d2d-9a8f-6003ab664412")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J15")
 					(unit 1)
@@ -8821,7 +8821,7 @@
 			(uuid "ef65b9a4-190f-41ce-aab3-854226e19801")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J10")
 					(unit 1)
@@ -8907,7 +8907,7 @@
 			(uuid "62a6e921-88c1-40df-9b00-a06cf5eb2e2d")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J2")
 					(unit 1)
@@ -8932,7 +8932,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 26.67 44.45 90)
 			(effects
 				(font
@@ -8974,7 +8974,7 @@
 			(uuid "114923c2-e654-4fa1-92d9-8d61619ec3a3")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R4")
 					(unit 1)
@@ -9038,7 +9038,7 @@
 			)
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "#G1")
 					(unit 1)
@@ -9063,7 +9063,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 44.45 31.75 90)
 			(effects
 				(font
@@ -9105,7 +9105,7 @@
 			(uuid "d856a7f0-c011-4e82-a898-9b30a1e0d38e")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R3")
 					(unit 1)
@@ -9130,7 +9130,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 34.29 31.75 90)
 			(effects
 				(font
@@ -9172,7 +9172,7 @@
 			(uuid "480b878f-9d0b-467f-8e2c-2f2b915e6ad6")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R2")
 					(unit 1)
@@ -9235,7 +9235,7 @@
 			)
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "H2")
 					(unit 1)
@@ -9321,7 +9321,7 @@
 			(uuid "189783a9-e31c-4fa4-a4c6-ebbcec18b5f1")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J1")
 					(unit 1)
@@ -9346,7 +9346,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 26.67 57.15 90)
 			(effects
 				(font
@@ -9388,7 +9388,7 @@
 			(uuid "9d9507d6-5fb5-4e55-b36f-8c4d6f254724")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R7")
 					(unit 1)
@@ -9460,7 +9460,7 @@
 			(uuid "62bf0cc6-fd7b-49c3-b94b-e969b51cc1d0")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J13")
 					(unit 1)
@@ -9696,7 +9696,7 @@
 			(uuid "23d9e3cf-5697-4fb6-8bf7-82ba6edcb6fa")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "IC1")
 					(unit 1)
@@ -9772,7 +9772,7 @@
 			(uuid "e97b7608-5b27-4c8e-bbdc-ff4b3ddeff5d")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J6")
 					(unit 1)
@@ -9797,7 +9797,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 44.45 57.15 90)
 			(effects
 				(font
@@ -9839,7 +9839,7 @@
 			(uuid "4a9056ff-aba0-4a3c-b686-99c21bef4b30")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R9")
 					(unit 1)
@@ -9864,7 +9864,7 @@
 				)
 			)
 		)
-		(property "Value" "1K"
+		(property "Value" "2K"
 			(at 44.45 44.45 90)
 			(effects
 				(font
@@ -9906,7 +9906,7 @@
 			(uuid "ecc9dbba-2e76-4c0b-920d-7c79d6060e7d")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R6")
 					(unit 1)
@@ -9982,7 +9982,7 @@
 			(uuid "a53b8ab5-2bd1-4373-a4f8-3865000ecbf8")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "U1")
 					(unit 1)
@@ -10045,7 +10045,7 @@
 			)
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "H1")
 					(unit 1)
@@ -10150,7 +10150,7 @@
 			(uuid "0eadc171-7269-4d24-8556-3db86fb69a35")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J16")
 					(unit 1)
@@ -10175,7 +10175,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 34.29 57.15 90)
 			(effects
 				(font
@@ -10217,7 +10217,7 @@
 			(uuid "454aa7fb-d3b5-4639-a3d9-4c78641ed313")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R8")
 					(unit 1)
@@ -10280,7 +10280,7 @@
 			)
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "H4")
 					(unit 1)
@@ -10353,7 +10353,7 @@
 			(uuid "b012b292-3767-4ab1-b38e-119f4716f0a7")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J7")
 					(unit 1)
@@ -10426,7 +10426,7 @@
 			(uuid "9e32b882-49e5-48a2-b79d-ade79f997e21")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J8")
 					(unit 1)
@@ -10502,7 +10502,7 @@
 			(uuid "1c1af0d4-a4b2-41b9-85b3-e1c4b6375b83")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J5")
 					(unit 1)
@@ -10643,7 +10643,7 @@
 			(uuid "d1dd751d-799b-47ad-92c8-3674b84364ec")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J12")
 					(unit 1)
@@ -10668,7 +10668,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 26.67 31.75 90)
 			(effects
 				(font
@@ -10710,7 +10710,7 @@
 			(uuid "3ea4ab4e-f30c-4f74-a37a-6a26da354828")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "R1")
 					(unit 1)
@@ -10779,7 +10779,7 @@
 			(uuid "e88e41c6-f729-4960-86fc-ade6453aa536")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "C1")
 					(unit 1)
@@ -10855,7 +10855,7 @@
 			(uuid "ab0cbf24-03c8-47a2-a0eb-35ba0c3169b5")
 		)
 		(instances
-			(project "Modul_LCD"
+			(project "Modul_Main_Board"
 				(path "/e383a7f7-29ae-4aa9-abeb-7f7854670ab9"
 					(reference "J4")
 					(unit 1)

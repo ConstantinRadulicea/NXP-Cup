@@ -398,6 +398,16 @@ void loop() {
     pixy_1_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
     pixy_2_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
     
+    // Remote State Reading
+    if (digitalRead(REMOTE_STOP_PIN) ==  HIGH) {
+      ENABLE_CAR_ENGINE = 0;
+    }else if(digitalRead(REMOTE_START_PIN) == HIGH){
+      emergency_brake_enable_delay_started_count = 0;
+      emergency_brake_enable_remaining_delay_s = 0.0f;
+      ENABLE_CAR_ENGINE = 1;
+    }
+
+
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
     }

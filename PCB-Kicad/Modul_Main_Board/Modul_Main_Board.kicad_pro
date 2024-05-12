@@ -640,7 +640,7 @@
       "plot": "NXP_CUP_Main_Board/",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "Modul_Main_Board.step",
       "svg": "",
       "vrml": ""
     },

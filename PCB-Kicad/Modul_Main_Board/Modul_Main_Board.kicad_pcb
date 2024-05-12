@@ -208,7 +208,7 @@
 		(property ki_fp_filters "Connector*:*_2x??_*")
 		(path "/38cda982-5781-4484-ba4f-7c47289a2410")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.83 -5.21)
@@ -659,7 +659,7 @@
 				)
 			)
 		)
-		(property "Value" "1K"
+		(property "Value" "2K"
 			(at 6.35 2.92 180)
 			(layer "F.Fab")
 			(uuid "b8d26267-530b-4098-861c-2bb3e9886ae7")
@@ -709,7 +709,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/a491e70e-6067-499c-92c6-cb1cde2691ce")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 11.42 1.92)
@@ -981,7 +981,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/3125bd60-ccd9-4614-8ab9-a4316f755c21")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 1.27)
@@ -1583,7 +1583,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/ad7dd911-173f-493d-a813-c5b450fe7974")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -1.33)
@@ -1929,7 +1929,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 0)
 			(layer "F.Fab")
 			(uuid "8e965afc-7920-40a1-b90e-ae941ae98180")
@@ -1979,7 +1979,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/847ce148-d2af-4361-a24b-d60dd9369126")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.28 -1.92)
@@ -2404,7 +2404,7 @@
 		)
 		(path "/13f87b59-4520-4469-99e0-394994eb8121")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 8.5 0)
@@ -2719,7 +2719,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/6c71544f-9929-47c2-bc79-6fb6a6fca4f8")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -2829,7 +2829,7 @@
 		(property ki_fp_filters "Connector*:*_2x??_*")
 		(path "/3c95c9c0-79f1-4480-9967-c19200d3324f")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.83 -5.21)
@@ -3421,7 +3421,7 @@
 		)
 		(path "/debc2e4b-e8a7-44df-9569-06f92dab9e54")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.5 3.5)
@@ -3666,7 +3666,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/82369822-c421-4417-a06f-fb9f4e0cd54c")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.85 -2.75)
@@ -4143,7 +4143,7 @@
 		(property ki_fp_filters "CP_*")
 		(path "/ecffbf7e-9832-4e8d-b454-8ace5753395c")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.581 -0.599)
@@ -6319,7 +6319,7 @@
 		)
 		(path "/798b0342-8281-4e2d-92ee-302e03c6743d")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 34.29 -16.51)
@@ -6862,7 +6862,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/d5e0bd4e-94ed-4e9a-ab82-23f04d59a714")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -6973,7 +6973,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/ad35c1f8-4f1b-4df1-b38f-c536026f7ae1")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -7083,7 +7083,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/769bb14b-98cf-42c4-a4d7-15d6616001ac")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -1.33)
@@ -7308,7 +7308,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 180)
 			(layer "F.Fab")
 			(uuid "58acf1a4-1a4b-4d30-902c-2e72ad31e457")
@@ -7358,7 +7358,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/b67479ab-c83b-47e9-b991-4b4a73dab4c6")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 11.42 1.92)
@@ -7580,7 +7580,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 180)
 			(layer "F.Fab")
 			(uuid "7212e93f-a878-4c79-82c2-bd5a3ddeb0cd")
@@ -7630,7 +7630,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/0b867c39-1008-406c-a21a-dcea41056fcc")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 11.42 1.92)
@@ -7902,7 +7902,7 @@
 		(property ki_fp_filters "LED* LED_SMD:* LED_THT:*")
 		(path "/0956ab63-7daa-4853-b1cb-ec2c3207d5e1")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.85 -2.75)
@@ -8357,7 +8357,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/f0e209b9-e85c-45ab-b3f8-45540d24c72e")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.85 -2.75)
@@ -8784,7 +8784,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 0)
 			(layer "F.Fab")
 			(uuid "c9ada766-6612-44a6-9495-9492ecda253f")
@@ -8834,7 +8834,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/6dee3845-83d7-454e-bfe9-10c6943057d0")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.28 -1.92)
@@ -9107,7 +9107,7 @@
 		(property ki_fp_filters "MountingHole*")
 		(path "/1c6faf13-6642-4695-9f9a-3e6c0653f66c")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr exclude_from_pos_files exclude_from_bom)
 		(fp_circle
 			(center 0 0)
@@ -9219,7 +9219,7 @@
 		)
 		(path "/a964c40e-5ffd-4f0a-a7a1-af679f3ed0cd")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_rect
 			(start -0.254 0)
@@ -9328,7 +9328,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 180)
 			(layer "F.Fab")
 			(uuid "a0812f6b-6282-4eb7-a2eb-321b77759a14")
@@ -9378,7 +9378,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/5595b4c2-ffa4-479b-bfdf-eb71d55d558a")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 11.42 1.92)
@@ -9600,7 +9600,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 -90)
 			(layer "F.Fab")
 			(uuid "d22f2c4a-d18b-4f6c-9b4b-d0d0dc460f82")
@@ -9650,7 +9650,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/ebd4a87b-55d5-4bdc-83cc-e0402e5eb7f4")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 11.42 -1.92)
@@ -9922,7 +9922,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/01b6f335-9190-43ae-b4fe-b9c9615eedb6")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.33 -1.33)
@@ -10148,7 +10148,7 @@
 		(descr "Resistor, Axial_DIN0411 series, Axial, Horizontal, pin pitch=12.7mm, 1W, length*diameter=9.9*3.6mm^2")
 		(tags "Resistor Axial_DIN0411 series Axial Horizontal pin pitch 12.7mm 1W length 9.9mm diameter 3.6mm")
 		(property "Reference" "R3"
-			(at 3.85 0 360)
+			(at 3.85 0 0)
 			(layer "F.SilkS")
 			(uuid "dd9983ad-c558-462a-a205-ecf597ecf460")
 			(effects
@@ -10158,8 +10158,8 @@
 				)
 			)
 		)
-		(property "Value" "1k"
-			(at 6.35 2.92 360)
+		(property "Value" "2k"
+			(at 6.35 2.92 0)
 			(layer "F.Fab")
 			(uuid "713b5034-d88f-47eb-ba3a-1ddafcbdbbab")
 			(effects
@@ -10208,7 +10208,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/54bc5e50-2a23-402f-b118-1f1579c615ac")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.28 -1.92)
@@ -10371,7 +10371,7 @@
 			(uuid "42b3b267-7f74-4127-a8c1-77e3a75489ca")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 6.35 0 360)
+			(at 6.35 0 0)
 			(layer "F.Fab")
 			(uuid "d394f066-67fe-48ce-a155-a182af55dd75")
 			(effects
@@ -10480,7 +10480,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/ddc8db54-663b-45ca-a40c-c2e893db31f9")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.85 -2.75)
@@ -10957,7 +10957,7 @@
 		(property ki_fp_filters "CP_*")
 		(path "/1ae20831-ff7c-4b80-88fc-179149c8f587")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 7.581 -0.599)
@@ -13042,7 +13042,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/dd0f75aa-ed73-4cfc-b6ec-311fb1a80fb5")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -1.33 -1.33)
@@ -13317,7 +13317,7 @@
 		(property ki_fp_filters "Connector*:*_1x??_*")
 		(path "/ddb800df-d0fa-4d1e-b363-6aaa3ea40647")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start -2.85 -2.75)
@@ -13783,7 +13783,7 @@
 		(property ki_fp_filters "Connector*:*_2x??_*")
 		(path "/6d60df3e-1210-42d5-b078-d38fc85dbdda")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 5.83 -5.21)
@@ -14234,7 +14234,7 @@
 				)
 			)
 		)
-		(property "Value" "100"
+		(property "Value" "220"
 			(at 6.35 2.92 -90)
 			(layer "F.Fab")
 			(uuid "e24705d8-47c7-4cef-9937-ad7bb0db52af")
@@ -14284,7 +14284,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/10c45bd5-3f6d-488c-a3c6-59873dd3ed80")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 11.42 -1.92)
@@ -14506,7 +14506,7 @@
 				)
 			)
 		)
-		(property "Value" "1k"
+		(property "Value" "2k"
 			(at 6.35 2.92 0)
 			(layer "F.Fab")
 			(uuid "9568a019-9fea-42cb-8630-c337f4c2efef")
@@ -14556,7 +14556,7 @@
 		(property ki_fp_filters "R_*")
 		(path "/3cd66f61-37d0-42f7-8c38-366c294810e1")
 		(sheetname "Root")
-		(sheetfile "Modul_LCD.kicad_sch")
+		(sheetfile "Modul_Main_Board.kicad_sch")
 		(attr through_hole)
 		(fp_line
 			(start 1.28 -1.92)

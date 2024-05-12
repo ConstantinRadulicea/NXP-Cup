@@ -554,7 +554,7 @@
       "plot": "NXP_CUP_Lcd_Board_Gerber/",
       "pos_files": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "Modul_Lcd_Butoane.step",
       "svg": "",
       "vrml": ""
     },

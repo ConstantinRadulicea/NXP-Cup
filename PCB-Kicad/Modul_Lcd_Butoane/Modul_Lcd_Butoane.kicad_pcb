@@ -2440,7 +2440,7 @@
 			(uuid "ca9ade68-4484-4004-9e52-7d76767eb4d2")
 		)
 		(fp_text user "${REFERENCE}"
-			(at -5.775 3.81 270)
+			(at -5.775 3.81 -90)
 			(layer "F.Fab")
 			(uuid "e954fc6c-5b56-4e5e-a357-a0c54d17f591")
 			(effects
@@ -2872,7 +2872,7 @@
 		(descr "Through hole IDC box header, 2x04, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0")
 		(tags "Through hole vertical IDC box header THT 2x04 2.54mm double row")
 		(property "Reference" "J11"
-			(at 1.27 -6.1 270)
+			(at 1.27 -6.1 -90)
 			(layer "F.SilkS")
 			(uuid "14ef1c14-9794-434e-914e-098e27349700")
 			(effects
@@ -2883,7 +2883,7 @@
 			)
 		)
 		(property "Value" "LcdModule"
-			(at 1.27 13.72 270)
+			(at 1.27 13.72 -90)
 			(layer "F.Fab")
 			(uuid "0d331ecf-4168-47e2-a298-c612ee079486")
 			(effects
@@ -3255,7 +3255,7 @@
 			(uuid "737630ce-1240-4bb1-bc68-9cc669503d47")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 1.27 3.81 360)
+			(at 1.27 3.81 0)
 			(layer "F.Fab")
 			(uuid "99019f98-61fe-4b66-b072-f90f1496b214")
 			(effects
@@ -5537,7 +5537,7 @@
 		(descr "Through hole IDC box header, 2x04, 2.54mm pitch, DIN 41651 / IEC 60603-13, double rows, https://docs.google.com/spreadsheets/d/16SsEcesNF15N3Lb4niX7dcUr-NY5_MFPQhobNuNppn4/edit#gid=0")
 		(tags "Through hole vertical IDC box header THT 2x04 2.54mm double row")
 		(property "Reference" "J1"
-			(at 1.27 -6.1 270)
+			(at 1.27 -6.1 -90)
 			(layer "F.SilkS")
 			(uuid "8e842846-8243-4cd6-8c22-8504b4032395")
 			(effects
@@ -5548,7 +5548,7 @@
 			)
 		)
 		(property "Value" "LcdModule"
-			(at 1.27 13.72 270)
+			(at 1.27 13.72 -90)
 			(layer "F.Fab")
 			(uuid "d78374aa-91bb-45ee-8659-00b8eff4ef74")
 			(effects
@@ -5920,7 +5920,7 @@
 			(uuid "d6efd47c-7750-40de-9824-243e1f63e094")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 1.27 3.81 360)
+			(at 1.27 3.81 0)
 			(layer "F.Fab")
 			(uuid "2b1d9851-6d9c-4cb7-aa5a-78582006e2f7")
 			(effects
@@ -6308,7 +6308,7 @@
 			)
 		)
 		(property "Value" "AMS1117 +3.3v"
-			(at 0 0 360)
+			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
 			(uuid "994e5e81-2036-4105-9b98-9741f47486c9")
@@ -6591,7 +6591,7 @@
 			(uuid "56439498-eb97-4182-bac9-b26dc003b10a")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 0 0 360)
+			(at 0 0 0)
 			(layer "F.Fab")
 			(uuid "ead73ff0-1ad3-405e-95c4-f5f07f4791b3")
 			(effects
@@ -7375,7 +7375,7 @@
 			(at 0 0 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "1403afc7-49f1-4449-88df-c85fdd182950")
+			(uuid "dfbb2da7-116d-4770-8e4c-d47ec71de58d")
 			(effects
 				(font
 					(size 1.5 1.5)
@@ -7387,7 +7387,7 @@
 			(at 0.75 0 0)
 			(layer "F.SilkS")
 			(hide yes)
-			(uuid "4b50a14a-7e71-4689-9d44-ba64789ee695")
+			(uuid "87695358-5915-42b5-9c81-789ba946a0bf")
 			(effects
 				(font
 					(size 1.5 1.5)
@@ -7443,7 +7443,7 @@
 			)
 			(fill solid)
 			(layer "F.SilkS")
-			(uuid "8520f10f-9b5d-4dbd-ad01-2c78bb40181a")
+			(uuid "bb34f7c5-7bbf-4263-ab89-b1ab7ed16255")
 		)
 		(fp_poly
 			(pts
@@ -7465,7 +7465,7 @@
 			)
 			(fill solid)
 			(layer "F.SilkS")
-			(uuid "da83e9c4-36b8-4c51-9371-4ee3562b9d41")
+			(uuid "f615f7a2-8fca-4038-b8aa-a3aa3cfc9368")
 		)
 		(fp_poly
 			(pts
@@ -7488,7 +7488,7 @@
 			)
 			(fill solid)
 			(layer "F.SilkS")
-			(uuid "aa78fb97-0f31-41a4-bbcb-1bba72f1f86c")
+			(uuid "2ded22eb-72bc-4e93-8575-7a2d3e61c437")
 		)
 		(fp_poly
 			(pts
@@ -7511,7 +7511,7 @@
 			)
 			(fill solid)
 			(layer "F.SilkS")
-			(uuid "aaede3c6-76e9-43a9-a528-4cc56ca5b547")
+			(uuid "1f78414a-2e93-400d-a06e-3f0f3218db56")
 		)
 		(fp_poly
 			(pts
@@ -7536,7 +7536,7 @@
 			)
 			(fill solid)
 			(layer "F.SilkS")
-			(uuid "35c2af41-cf4d-4d3e-a1be-e1d4f397082b")
+			(uuid "ca2706b5-57bf-45ca-afc6-09d22a9903a1")
 		)
 		(fp_poly
 			(pts
@@ -7570,7 +7570,7 @@
 			)
 			(fill solid)
 			(layer "F.SilkS")
-			(uuid "840c64c4-408a-4c68-8083-cd63681d5b95")
+			(uuid "68cf40fd-f4af-4683-b255-703297645592")
 		)
 		(model "C:/Users/gulya/Downloads/lcd1602-4.snapshot.1/LCD.STEP"
 			(offset
@@ -8627,7 +8627,7 @@
 			(uuid "3855fc5c-2828-4557-9b1e-e5988a8c4c7c")
 		)
 		(fp_text user "${REFERENCE}"
-			(at -5.775 3.81 270)
+			(at -5.775 3.81 -90)
 			(layer "F.Fab")
 			(uuid "2ef4b860-5c82-4499-aaa8-a02ad62bf884")
 			(effects
