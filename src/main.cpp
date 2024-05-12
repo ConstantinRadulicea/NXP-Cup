@@ -111,6 +111,11 @@ void setup() {
     pinMode(MENU_DECREMENT_BUTTON_PIN, INPUT);
   #endif
 
+  #if ENABLE_REMOTE_START_STOP == 1
+    pinMode(REMOTE_STOP_PIN, INPUT);
+    pinMode(REMOTE_START_PIN, INPUT);
+  #endif
+
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
     SERIAL_PORT.begin(115200);
@@ -399,14 +404,16 @@ void loop() {
     pixy_2_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
     
     // Remote State Reading
-    if (digitalRead(REMOTE_STOP_PIN) ==  HIGH) {
-      ENABLE_CAR_ENGINE = 0;
-    }else if(digitalRead(REMOTE_START_PIN) == HIGH){
-      emergency_brake_enable_delay_started_count = 0;
-      emergency_brake_enable_remaining_delay_s = 0.0f;
-      ENABLE_CAR_ENGINE = 1;
-    }
-
+    #if ENABLE_REMOTE_START_STOP == 1
+      if (digitalRead(REMOTE_STOP_PIN) == HIGH) {
+        ENABLE_CAR_ENGINE = 0;
+      }
+      else if(digitalRead(REMOTE_START_PIN) == HIGH){
+        emergency_brake_enable_delay_started_count = 0;
+        emergency_brake_enable_remaining_delay_s = 0.0f;
+        ENABLE_CAR_ENGINE = 1;
+      }
+    #endif
 
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
@@ -414,8 +421,6 @@ void loop() {
     
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
 
-
-    
     if (ENABLE_EMERGENCY_BRAKE != 0 && (ENABLE_DISTANCE_SENSOR1_SOFT != 0 || ENABLE_DISTANCE_SENSOR2_SOFT != 0 || ENABLE_DISTANCE_SENSOR3_SOFT != 0)) {
       
     if (emergency_brake_enable_delay_started_count == 0 && ENABLE_CAR_ENGINE != 0) {
