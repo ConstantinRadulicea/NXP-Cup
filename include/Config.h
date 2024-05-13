@@ -151,6 +151,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 #define ENABLE_DISTANCE_SENSOR2 1
 #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
 #define ENABLE_REMOTE_START_STOP 1
+#define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
@@ -190,6 +191,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
   #define ENABLE_DISTANCE_SENSOR3 1
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 1
+  #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
 #endif
 
 #if RACE_MODE == 1
@@ -205,6 +207,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
   #define ENABLE_DISTANCE_SENSOR3 1
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 1
+  #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
 #endif
 
 #if TEMP_MODE == 1
@@ -218,6 +221,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 #define ENABLE_DISTANCE_SENSOR1 0
 #define ENABLE_DISTANCE_SENSOR2 0
 #define ENABLE_REMOTE_START_STOP 1
+#define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
 #endif
 
 #if ENABLE_SETTINGS_MENU == 1
@@ -688,7 +692,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
   int decrementButton=LOW;
   int leftArrowButtonPrevState, rightArrowButtonPrevState;
 
-  #if RACE_MODE == 999
+  #if ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE == 1
   if (ENABLE_CAR_ENGINE == 0) {
   #endif
 
@@ -1126,7 +1130,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         break;
     }
   }
-  #if RACE_MODE == 999
+  #if ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE == 1
   }
   #endif
 }
