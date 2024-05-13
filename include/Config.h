@@ -72,6 +72,7 @@ static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
 static int enable_distance_sensor3_soft = 1;
+static int enable_remote_start_stop_soft = 1;
 
 static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -320,6 +321,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 #define ENABLE_DISTANCE_SENSOR1_SOFT enable_distance_sensor1_soft
 #define ENABLE_DISTANCE_SENSOR2_SOFT enable_distance_sensor2_soft
 #define ENABLE_DISTANCE_SENSOR3_SOFT enable_distance_sensor3_soft
+#define ENABLE_REMOTE_START_STOP_SOFT enable_remote_start_stop_soft
 
 
 #define ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT enable_pixy_vector_approximation_soft
@@ -592,9 +594,16 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
     enable_distance_sensor3_soft = 0;
   }
 
-
   min_axis_angle_vector = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   max_speed_after_emergency_brake_delay = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_remote_start_stop_soft = 1;
+  }
+  else{
+    enable_remote_start_stop_soft = 0;
+  }
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
@@ -603,7 +612,6 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 /*==============================================================================*/
 
 void printGlobalVariables(HardwareSerial& serialPort){
-  /*
   char separatorCharacter;
   separatorCharacter = ';';
 
@@ -648,10 +656,9 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(min_axis_angle_vector));
   serialPort.print(separatorCharacter);
   serialPort.print(String(max_speed_after_emergency_brake_delay));
-  
-
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_remote_start_stop_soft));
   serialPort.println();
-  */
 }
 
 /*==============================================================================*/
@@ -671,6 +678,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
                 LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
+                LCDMENU_ENABLE_REMOTE_START_STOP,
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_ENABLE_DISTANCE_SENSOR1,
                 LCDMENU_ENABLE_DISTANCE_SENSOR2,
@@ -683,6 +691,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
                 LCDMENU_LAST_VALUE};
+  
   
   static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
   static int leftArrowButtonState=LOW;
@@ -877,6 +886,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("ENABLE_DIST_SNS3");
         lcd_.setCursor(0, 1);
         if (ENABLE_DISTANCE_SENSOR3_SOFT != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_REMOTE_START_STOP:
+        if (incrementButton == HIGH) {
+          ENABLE_REMOTE_START_STOP_SOFT = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_REMOTE_START_STOP_SOFT = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_REMOTE");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_REMOTE_START_STOP_SOFT != 0) {
           lcd_.print("Enabled");
         }
         else{
