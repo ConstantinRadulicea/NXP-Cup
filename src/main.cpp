@@ -406,14 +406,17 @@ void loop() {
     // Remote State Reading
     #if ENABLE_REMOTE_START_STOP == 1
       // stop car
-      if (digitalRead(REMOTE_STOP_PIN) == HIGH && ENABLE_CAR_ENGINE != 0) {
-        ENABLE_CAR_ENGINE = 0;
-      }
-      // start car
-      else if(digitalRead(REMOTE_START_PIN) == HIGH && ENABLE_CAR_ENGINE == 0){
-        emergency_brake_enable_delay_started_count = 0;
-        emergency_brake_enable_remaining_delay_s = 0.0f;
-        ENABLE_CAR_ENGINE = 1;
+      if (ENABLE_REMOTE_START_STOP_SOFT != 0)
+      {
+        if (digitalRead(REMOTE_STOP_PIN) == HIGH && ENABLE_CAR_ENGINE != 0) {
+          ENABLE_CAR_ENGINE = 0;
+        }
+        // start car
+        else if(digitalRead(REMOTE_START_PIN) == HIGH && ENABLE_CAR_ENGINE == 0){
+          emergency_brake_enable_delay_started_count = 0;
+          emergency_brake_enable_remaining_delay_s = 0.0f;
+          ENABLE_CAR_ENGINE = 1;
+        }
       }
     #endif
 
