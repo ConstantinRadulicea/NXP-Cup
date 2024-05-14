@@ -546,6 +546,7 @@ void loop() {
       }
     }
     
+/*===================================================START first camera============================================================================*/
     if(pixy_1_result >= (int8_t)0){
       vectors.resize(pixy_1.line.numVectors);
       memcpy(vectors.data(), pixy_1.line.vectors, (pixy_1.line.numVectors * sizeof(Vector)));
@@ -617,8 +618,9 @@ void loop() {
       pixy_1_loopIterationsCountNoVectorDetected++;
       FailureModeMessage(pixy_1, pixy_1_loopIterationsCountNoVectorDetected,"pixy getAllFeatures");
     }
+/*===================================================END first camera============================================================================*/
 
-/*===============================================================================================================================*/
+/*===================================================START second camera============================================================================*/
     if(pixy_2_result >= (int8_t)0){
       vectors.resize(pixy_2.line.numVectors);
       memcpy(vectors.data(), pixy_2.line.vectors, (pixy_2.line.numVectors * sizeof(Vector)));
@@ -690,6 +692,8 @@ void loop() {
       pixy_2_loopIterationsCountNoVectorDetected++;
       FailureModeMessage(pixy_2, pixy_2_loopIterationsCountNoVectorDetected,"pixy getAllFeatures");
     }
+    /*===================================================END second camera============================================================================*/
+
 
     middle_lane_line_pixy_1 = pixy_1_vectorsProcessing.getMiddleLine();
     lookAheadDistance = calculateLookAheadDistance(LOOKAHEAD_MIN_DISTANCE_CM * VECTOR_UNIT_PER_CM, LOOKAHEAD_MAX_DISTANCE_CM * VECTOR_UNIT_PER_CM, middle_lane_line_pixy_1);
