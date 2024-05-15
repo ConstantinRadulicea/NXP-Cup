@@ -10,6 +10,7 @@ enable_pixy_vector_approximation = 0.0;
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
 enable_distance_sensor3 = 1.0;
+enable_remote_start_stop = 0.0
 
 lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
@@ -41,7 +42,8 @@ values = [lane_width_vector_unit_real lookahead_min_distance_cm...
     steering_wheel_angle_offset...
     enable_distance_sensor3...
     min_axis_angle_vector...
-    max_speed_after_emergency_brake_delay];
+    max_speed_after_emergency_brake_delay...
+    enable_remote_start_stop];
 
 outputString = '';
 

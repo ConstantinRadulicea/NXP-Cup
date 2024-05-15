@@ -65,8 +65,8 @@ steering_wheel_angle_offset = 0.0;
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
-static int enable_car_engine = 1;
-static int enable_car_steering_wheel = 1;
+static int enable_car_engine = 0;
+static int enable_car_steering_wheel = 0;
 static int enable_emergency_brake = 1;
 static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
@@ -162,7 +162,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-#define DEBUG_HOST_IPADDRESS "192.168.45.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.231.243"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
@@ -208,7 +208,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
   #define ENABLE_DISTANCE_SENSOR3 1
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 1
-  #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
+  #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
 #endif
 
 #if TEMP_MODE == 1
