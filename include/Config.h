@@ -244,8 +244,8 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 #define STEERING_SERVO_PIN  22 // 3
 #define DRIVER_MOTOR_PIN  23
 
-#define REMOTE_START_PIN 10
-#define REMOTE_STOP_PIN 20
+#define REMOTE_START_PIN 20
+#define REMOTE_STOP_PIN 10
 
 #define DISTANCE_SENSOR1_TRIG_PIN 7
 #define DISTANCE_SENSOR1_ECHO_PIN 6

@@ -34,9 +34,9 @@ SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_
 #endif
 
 VectorsProcessing pixy_1_vectorsProcessing;
-VectorsProcessing pixy_2_vectorsProcessing;
+//VectorsProcessing pixy_2_vectorsProcessing;
 Pixy2SPI_SS pixy_1;
-Pixy2SPI_SS pixy_2;
+//Pixy2SPI_SS pixy_2;
 
 /*====================================================================================================================================*/
 
@@ -143,15 +143,16 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1.init() = ") + String(pixyResult));
   #endif
-
+  /*
   pixyResult = pixy_2.init(SPI_SS_PIXY_2_PIN);
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_2.init() = ") + String(pixyResult));
   #endif
+  */
   
 
 
-  //pixy.setLamp(1,1);
+  pixy_1.setLamp(1,1);
     
   // Getting the RGB pixel values requires the 'video' program
   pixyResult = pixy_1.changeProg("line");
@@ -159,10 +160,12 @@ void setup() {
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1.changeProg(line) = ") + String(pixyResult));
   #endif
 
+/*
   pixyResult = pixy_2.changeProg("line");
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_2.changeProg(line) = ") + String(pixyResult));
   #endif
+  */
 
   #if ENABLE_DRIVERMOTOR == 1
     float startTime_ = (float)millis();
@@ -174,6 +177,27 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
   #endif
+}
+
+/*==============================================================================*/
+
+void remote_control_routine(){
+    // Remote State Reading
+    #if ENABLE_REMOTE_START_STOP == 1
+      // stop car
+      if (ENABLE_REMOTE_START_STOP_SOFT != 0)
+      {
+        if (digitalRead(REMOTE_STOP_PIN) == HIGH && ENABLE_CAR_ENGINE != 0) {
+          ENABLE_CAR_ENGINE = 0;
+        }
+        // start car
+        else if(digitalRead(REMOTE_START_PIN) == HIGH && ENABLE_CAR_ENGINE == 0){
+          emergency_brake_enable_delay_started_count = 0;
+          emergency_brake_enable_remaining_delay_s = 0.0f;
+          ENABLE_CAR_ENGINE = 1;
+        }
+      }
+    #endif
 }
 
 /*==============================================================================*/
@@ -392,33 +416,20 @@ void loop() {
   pixy_1_vectorsProcessing.setLaneWidth(laneWidth);
   pixy_1_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
 
+/*
   pixy_2_vectorsProcessing.setCarPosition(carPosition);
   pixy_2_vectorsProcessing.setLaneWidth(laneWidth);
   pixy_2_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
-
+*/
   for (;;)
   {
     timeStart = (float)millis();
     movingAverage_speed.next(carSpeed);
     pixy_1_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
-    pixy_2_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
-    
-    // Remote State Reading
-    #if ENABLE_REMOTE_START_STOP == 1
-      // stop car
-      if (ENABLE_REMOTE_START_STOP_SOFT != 0)
-      {
-        if (digitalRead(REMOTE_STOP_PIN) == HIGH && ENABLE_CAR_ENGINE != 0) {
-          ENABLE_CAR_ENGINE = 0;
-        }
-        // start car
-        else if(digitalRead(REMOTE_START_PIN) == HIGH && ENABLE_CAR_ENGINE == 0){
-          emergency_brake_enable_delay_started_count = 0;
-          emergency_brake_enable_remaining_delay_s = 0.0f;
-          ENABLE_CAR_ENGINE = 1;
-        }
-      }
-    #endif
+    //pixy_2_vectorsProcessing.setMinXaxisAngle(MIN_XAXIS_ANGLE_VECTOR * RADIANS_PER_DEGREE);
+
+    remote_control_routine();
+
 
     if (ENABLE_CAR_ENGINE == 0) {
       driverMotor.write((int)STANDSTILL_SPEED);
@@ -536,14 +547,20 @@ void loop() {
     pixy_1_vectorsProcessing.clear();
 
     pixy_1_result = PIXY_RESULT_ERROR;
-    pixy_2_result = PIXY_RESULT_ERROR;
-    while ((pixy_1_result < (int8_t)0) || (pixy_2_result < (int8_t)0)) {
+    //pixy_2_result = PIXY_RESULT_ERROR;
+    while ((pixy_1_result < (int8_t)0) /*|| (pixy_2_result < (int8_t)0)*/) {
+      remote_control_routine();
+      if (ENABLE_CAR_ENGINE == 0) {
+        driverMotor.write((int)STANDSTILL_SPEED);
+      }
       if (pixy_1_result < (int8_t)0) {
         pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
       }
+      /*
       if (pixy_2_result < (int8_t)0) {
         pixy_2_result = pixy_2.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
       }
+      */
     }
     
 /*===================================================START first camera============================================================================*/
@@ -621,6 +638,7 @@ void loop() {
 /*===================================================END first camera============================================================================*/
 
 /*===================================================START second camera============================================================================*/
+    /*
     if(pixy_2_result >= (int8_t)0){
       vectors.resize(pixy_2.line.numVectors);
       memcpy(vectors.data(), pixy_2.line.vectors, (pixy_2.line.numVectors * sizeof(Vector)));
@@ -692,6 +710,7 @@ void loop() {
       pixy_2_loopIterationsCountNoVectorDetected++;
       FailureModeMessage(pixy_2, pixy_2_loopIterationsCountNoVectorDetected,"pixy getAllFeatures");
     }
+    */
     /*===================================================END second camera============================================================================*/
 
 
