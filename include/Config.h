@@ -60,8 +60,8 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 1
-#define RACE_MODE 0
+#define DEBUG_MODE 0
+#define RACE_MODE 1
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
