@@ -60,8 +60,8 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 0
-#define RACE_MODE 1
+#define DEBUG_MODE 1
+#define RACE_MODE 0
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
@@ -162,7 +162,7 @@ static float max_speed_after_emergency_brake_delay = 110.0f;
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.0.227"   // Constantin home
-#define DEBUG_HOST_IPADDRESS "192.168.231.243"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.17.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
