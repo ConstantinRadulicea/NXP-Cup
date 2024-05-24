@@ -325,8 +325,9 @@ static float getFrontObstacleDistance_cm(){
 
 /*==============================================================================*/
 
-static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine) {
+static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine, float ki) {
 	float newCarSpeed_bySteeringAngle, speedSpan, angleCurrentTrajectoryAndMiddleLane, newCarSpeed_byTrajectoryAngle;
+  static float sumSteeringWheelAngle = 0.0f;
   LineABC currentTrajectory;
 
 	speedSpan = maxSpeed - minSpeed;
@@ -337,15 +338,20 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
   currentTrajectory = yAxisABC();
 	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
 
-  newCarSpeed_byTrajectoryAngle = minSpeed + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * speedSpan);
+  newCarSpeed_byTrajectoryAngle = minSpeed + (((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * speedSpan) + ki * sumSteeringWheelAngle);
 
 	newCarSpeed_byTrajectoryAngle = MAX(newCarSpeed_byTrajectoryAngle, minSpeed);
 	newCarSpeed_byTrajectoryAngle = MIN(newCarSpeed_byTrajectoryAngle, maxSpeed);
 	
-	newCarSpeed_bySteeringAngle = minSpeed + (((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan);
+	newCarSpeed_bySteeringAngle = minSpeed + ((((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan) + ki * sumSteeringWheelAngle) ;
 
 	newCarSpeed_bySteeringAngle = MAX(newCarSpeed_bySteeringAngle, minSpeed);
 	newCarSpeed_bySteeringAngle = MIN(newCarSpeed_bySteeringAngle, maxSpeed);
+
+  sumSteeringWheelAngle += steeringWheelAngle;
+
+  sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, -5.0f / ki);
+	sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, 5.0f / ki);
 
 	return (float)MIN(newCarSpeed_bySteeringAngle, newCarSpeed_byTrajectoryAngle);
 }
@@ -733,7 +739,7 @@ void loop() {
     }
     else{
       if (emergency_break_active == 0){
-        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1);
+        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI);
       }
     }
     
