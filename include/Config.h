@@ -60,8 +60,8 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 1
-#define RACE_MODE 0
+#define DEBUG_MODE 0
+#define RACE_MODE 1
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
@@ -78,16 +78,16 @@ static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
-static float lookahead_max_distance_cm = 40.0f;
+static float lookahead_max_distance_cm = 45.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float max_speed = 114.0f  + CAR2_PARAMETERS_DIFFERENCE;
+static float max_speed = 127.0f  + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float emergency_brake_distance_from_obstacle_cm = 14.0f;   // 13.5f
+static float emergency_brake_distance_from_obstacle_cm = 74.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
-static float min_axis_angle_vector = 25.0f;
+static float min_axis_angle_vector = 15.0f;
 static float max_speed_after_emergency_brake_delay = 110.0f;
-static float car_speed_ki = 0.01f;
+static float car_speed_ki = -0.02f;
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 0.0f;
