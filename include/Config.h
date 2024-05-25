@@ -307,9 +307,9 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define STEERING_SERVO_ANGLE_MAX_RIGHT  35    // 0 max right // 90 - 58 = 32
   #define STEERING_SERVO_ANGLE_MAX_LEFT   145   // 180 max left // 90 + 58
 #elif CAR2 == 1
-  #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  35    // 0 max right // 90 - 58 = 32
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   145   // 180 max left // 90 + 58
+  #define STEERING_SERVO_ANGLE_MIDDLE     (90)    // 90 middle // 120
+  #define STEERING_SERVO_ANGLE_MAX_RIGHT  (145)    // 0 max right // 90 - 58 = 32
+  #define STEERING_SERVO_ANGLE_MAX_LEFT   (35)   // 180 max left // 90 + 58
 #endif
 
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))

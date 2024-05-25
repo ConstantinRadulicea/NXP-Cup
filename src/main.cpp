@@ -339,7 +339,7 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 	steeringWheelAngle = fabsf(steeringWheelAngle);
 	steeringWheelAngle = MIN(steeringWheelAngle, maxSteeringWheelAngle);
 
-  derivativeSteeringError = steeringWheelAngle - prevSteeringWheelAngleError;
+  derivativeSteeringError = fabs(steeringWheelAngle - prevSteeringWheelAngleError);
 
   currentTrajectory = yAxisABC();
 	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
