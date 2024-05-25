@@ -20,6 +20,8 @@ lookahead_max_distance_cm = 45.0;                       % 40
 min_speed = 97.0;
 max_speed = 127.0;                                      % 
 car_speed_ki = -0.02;
+car_speed_kd = -0.2
+car_speed_ki_min_max_impact = 5.0f;
 emergency_break_distance_cm = 75.0;                     % 75
 emergency_brake_min_speed = 94.0;
 emergency_brake_distance_from_obstacle_cm = 74.0;       % 14
@@ -45,7 +47,9 @@ values = [lane_width_vector_unit_real lookahead_min_distance_cm...
     min_axis_angle_vector...
     max_speed_after_emergency_brake_delay...
     enable_remote_start_stop...
-    car_speed_ki];
+    car_speed_ki...
+    car_speed_kd...
+    car_speed_ki_min_max_impact];
 
 outputString = '';
 

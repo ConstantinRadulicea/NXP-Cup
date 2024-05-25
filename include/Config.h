@@ -89,6 +89,8 @@ static float min_axis_angle_vector = 15.0f;
 static float max_speed_after_emergency_brake_delay = 110.0f;
 static float car_speed_ki = -0.02f;
 static float car_speed_kd = -0.2f;
+static float car_speed_ki_min_max_impact = 5.0f;
+
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 0.0f;
@@ -287,6 +289,7 @@ static float car_speed_kd = -0.2f;
 #define MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY max_speed_after_emergency_brake_delay
 #define CAR_SPEED_KI car_speed_ki
 #define CAR_SPEED_KD car_speed_kd
+#define CAR_SPEED_KI_MIN_MAX_IMPACT car_speed_ki_min_max_impact
 
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
@@ -611,6 +614,7 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
 
   car_speed_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   car_speed_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  car_speed_ki_min_max_impact = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
@@ -670,9 +674,10 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(car_speed_ki));
   serialPort.print(separatorCharacter);
   serialPort.print(String(car_speed_kd));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(car_speed_ki_min_max_impact));
 
 
-  
   serialPort.println();
 }
 
@@ -690,6 +695,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_MAX_SPEED,
                 LCDMENU_MAX_SPEED_CAR_SPEED_KI,
                 LCDMENU_MAX_SPEED_CAR_SPEED_KD,
+                LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT,
 		            LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
@@ -964,6 +970,19 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("SPEED_KD");
         lcd_.setCursor(0, 1);
         lcd_.print(CAR_SPEED_KD);
+      break;
+
+
+      case LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT:
+        if (incrementButton == HIGH) {
+          CAR_SPEED_KI_MIN_MAX_IMPACT += 0.1f;
+        } else if (decrementButton == HIGH) {
+          CAR_SPEED_KI_MIN_MAX_IMPACT -= 0.1f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("SPD_KI_MIN_MAX");
+        lcd_.setCursor(0, 1);
+        lcd_.print(CAR_SPEED_KI_MIN_MAX_IMPACT);
       break;
 
 

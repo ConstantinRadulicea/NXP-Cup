@@ -325,12 +325,14 @@ static float getFrontObstacleDistance_cm(){
 
 /*==============================================================================*/
 
-static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine, float ki, float kd) {
+static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine, float ki, float kd, float kiMinMaxImpact) {
 	float newCarSpeed_bySteeringAngle, speedSpan, angleCurrentTrajectoryAndMiddleLane, newCarSpeed_byTrajectoryAngle;
   static float sumSteeringWheelAngle = 0.0f;
   static float prevSteeringWheelAngleError = 0.0f;
   float derivativeSteeringError;
   LineABC currentTrajectory;
+
+  kiMinMaxImpact = fabs(kiMinMaxImpact);
 
 	speedSpan = maxSpeed - minSpeed;
 	maxSteeringWheelAngle = fabsf(maxSteeringWheelAngle);
@@ -354,8 +356,8 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
   sumSteeringWheelAngle += steeringWheelAngle;
 
-  sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, -5.0f / ki);
-	sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, 5.0f / ki);
+  sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, -kiMinMaxImpact / ki);
+	sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, kiMinMaxImpact / ki);
 
   prevSteeringWheelAngleError = steeringWheelAngle;
 
@@ -748,7 +750,7 @@ void loop() {
     }
     else{
       if (emergency_break_active == 0){
-        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI, CAR_SPEED_KD);
+        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI, CAR_SPEED_KD, CAR_SPEED_KI_MIN_MAX_IMPACT);
       }
     }
     
