@@ -290,6 +290,60 @@ public:
         return newVector;
     }
 
+    static void findIntersections(std::vector<Vector> &vectors, std::vector<Intersection> &intersections){
+        //intersections.clear();
+        Intersection inters;
+        std::vector<Vector> vectors_copy = vectors;
+        bool isIntersection;
+        int x, y;
+        for (size_t i = 0; i < (size_t)(vectors_copy.size() / 2); i++)
+        {
+            x = vectors_copy[i].m_x0;
+            y = vectors_copy[i].m_y0;
+            memset(&inters, 0, sizeof(Intersection));
+            inters.m_x = x;
+            inters.m_y = y;
+            inters.m_intLines[inters.m_n].m_index = vectors_copy[i].m_index;
+            inters.m_n += 1;
+            isIntersection = false;
+            for (size_t j = i+1; j < vectors_copy.size(); j++) {
+                if (x == vectors_copy[j].m_x0 && y == vectors_copy[j].m_y0) {
+                    isIntersection = true;
+                    inters.m_x = x;
+                    inters.m_y = y;
+                    inters.m_intLines[inters.m_n].m_index = vectors_copy[j].m_index;
+                    inters.m_n += 1;
+                    vectors_copy.erase(vectors_copy.begin() + j);
+                }
+            }
+            if (isIntersection == true) {
+                intersections.push_back(inters);
+            }
+
+            x = vectors_copy[i].m_x1;
+            y = vectors_copy[i].m_y1;
+            memset(&inters, 0, sizeof(Intersection));
+            inters.m_x = x;
+            inters.m_y = y;
+            inters.m_intLines[inters.m_n].m_index = vectors_copy[i].m_index;
+            inters.m_n += 1;
+            isIntersection = false;
+            for (size_t j = i+1; j < vectors_copy.size(); j++) {
+                if (x == vectors_copy[j].m_x1 && y == vectors_copy[j].m_y1) {
+                    isIntersection = true;
+                    inters.m_x = x;
+                    inters.m_y = y;
+                    inters.m_intLines[inters.m_n].m_index = vectors_copy[j].m_index;
+                    inters.m_n += 1;
+                    vectors_copy.erase(vectors_copy.begin() + j);
+                }
+            }
+            if (isIntersection == true) {
+                intersections.push_back(inters);
+            }
+        }
+    }
+
     static void filterVectorIntersections(std::vector<Vector> &vectors, std::vector<Intersection> &intersections){
         for (size_t i = 0; i < intersections.size(); i++)
         {

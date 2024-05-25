@@ -578,15 +578,16 @@ void loop() {
     //  */
     //}
 
-    pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, true);
+    pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR /*| LINE_INTERSECTION*/, true);
     
 /*===================================================START first camera============================================================================*/
     if(pixy_1_result >= (int8_t)0){
       vectors.resize(pixy_1.line.numVectors);
       memcpy(vectors.data(), pixy_1.line.vectors, (pixy_1.line.numVectors * sizeof(Vector)));
-      intersections.resize(pixy_1.line.numIntersections);
-      memcpy(intersections.data(), pixy_1.line.intersections, (pixy_1.line.numIntersections * sizeof(Intersection)));
-
+      //intersections.resize(pixy_1.line.numIntersections);
+      //memcpy(intersections.data(), pixy_1.line.intersections, (pixy_1.line.numIntersections * sizeof(Intersection)));
+      intersections.clear();
+      VectorsProcessing::findIntersections(vectors, intersections);
       VectorsProcessing::filterVectorIntersections(vectors, intersections);
 
       pixy_1_loopIterationsCountNoVectorDetected = 0;
