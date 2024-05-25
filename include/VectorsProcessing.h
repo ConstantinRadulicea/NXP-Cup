@@ -296,7 +296,7 @@ public:
         std::vector<Vector> vectors_copy = vectors;
         bool isIntersection;
         int x, y;
-        for (size_t i = 0; i < (size_t)(vectors_copy.size() / 2); i++)
+        for (size_t i = 0; i < (vectors_copy.size()/2); i++)
         {
             x = vectors_copy[i].m_x0;
             y = vectors_copy[i].m_y0;
@@ -314,6 +314,7 @@ public:
                     inters.m_intLines[inters.m_n].m_index = vectors_copy[j].m_index;
                     inters.m_n += 1;
                     vectors_copy.erase(vectors_copy.begin() + j);
+j -= 1;
                 }
             }
             if (isIntersection == true) {
@@ -336,6 +337,7 @@ public:
                     inters.m_intLines[inters.m_n].m_index = vectors_copy[j].m_index;
                     inters.m_n += 1;
                     vectors_copy.erase(vectors_copy.begin() + j);
+j -= 1;
                 }
             }
             if (isIntersection == true) {
