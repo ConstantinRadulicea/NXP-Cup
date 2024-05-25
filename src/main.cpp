@@ -325,9 +325,11 @@ static float getFrontObstacleDistance_cm(){
 
 /*==============================================================================*/
 
-static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine, float ki) {
+static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine, float ki, float kd) {
 	float newCarSpeed_bySteeringAngle, speedSpan, angleCurrentTrajectoryAndMiddleLane, newCarSpeed_byTrajectoryAngle;
   static float sumSteeringWheelAngle = 0.0f;
+  static float prevSteeringWheelAngleError = 0.0f;
+  float derivativeSteeringError;
   LineABC currentTrajectory;
 
 	speedSpan = maxSpeed - minSpeed;
@@ -335,15 +337,17 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 	steeringWheelAngle = fabsf(steeringWheelAngle);
 	steeringWheelAngle = MIN(steeringWheelAngle, maxSteeringWheelAngle);
 
+  derivativeSteeringError = steeringWheelAngle - prevSteeringWheelAngleError;
+
   currentTrajectory = yAxisABC();
 	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
 
-  newCarSpeed_byTrajectoryAngle = minSpeed + (((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * speedSpan) + ki * sumSteeringWheelAngle);
+  newCarSpeed_byTrajectoryAngle = minSpeed + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * speedSpan) + (ki * sumSteeringWheelAngle) + (kd * derivativeSteeringError);
 
 	newCarSpeed_byTrajectoryAngle = MAX(newCarSpeed_byTrajectoryAngle, minSpeed);
 	newCarSpeed_byTrajectoryAngle = MIN(newCarSpeed_byTrajectoryAngle, maxSpeed);
 	
-	newCarSpeed_bySteeringAngle = minSpeed + ((((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan) + ki * sumSteeringWheelAngle) ;
+	newCarSpeed_bySteeringAngle = minSpeed + (((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan) + (ki * sumSteeringWheelAngle) + (kd * derivativeSteeringError);
 
 	newCarSpeed_bySteeringAngle = MAX(newCarSpeed_bySteeringAngle, minSpeed);
 	newCarSpeed_bySteeringAngle = MIN(newCarSpeed_bySteeringAngle, maxSpeed);
@@ -352,6 +356,8 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
   sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, -5.0f / ki);
 	sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, 5.0f / ki);
+
+  prevSteeringWheelAngleError = steeringWheelAngle;
 
 	return (float)MIN(newCarSpeed_bySteeringAngle, newCarSpeed_byTrajectoryAngle);
 }
@@ -554,20 +560,23 @@ void loop() {
 
     pixy_1_result = PIXY_RESULT_ERROR;
     //pixy_2_result = PIXY_RESULT_ERROR;
-    while ((pixy_1_result < (int8_t)0) /*|| (pixy_2_result < (int8_t)0)*/) {
-      remote_control_routine();
-      if (ENABLE_CAR_ENGINE == 0) {
-        driverMotor.write((int)STANDSTILL_SPEED);
-      }
-      if (pixy_1_result < (int8_t)0) {
-        pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
-      }
-      /*
-      if (pixy_2_result < (int8_t)0) {
-        pixy_2_result = pixy_2.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
-      }
-      */
-    }
+    
+    //while ((pixy_1_result < (int8_t)0) /*|| (pixy_2_result < (int8_t)0)*/) {
+    //  remote_control_routine();
+    //  if (ENABLE_CAR_ENGINE == 0) {
+    //    driverMotor.write((int)STANDSTILL_SPEED);
+    //  }
+    //  if (pixy_1_result < (int8_t)0) {
+    //    pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
+    //  }
+    //  /*
+    //  if (pixy_2_result < (int8_t)0) {
+    //    pixy_2_result = pixy_2.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
+    //  }
+    //  */
+    //}
+
+    pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, true);
     
 /*===================================================START first camera============================================================================*/
     if(pixy_1_result >= (int8_t)0){
@@ -739,7 +748,7 @@ void loop() {
     }
     else{
       if (emergency_break_active == 0){
-        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI);
+        carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI, CAR_SPEED_KD);
       }
     }
     

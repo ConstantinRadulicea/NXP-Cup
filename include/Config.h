@@ -88,6 +88,7 @@ static float steering_wheel_angle_offset = 0.0f;
 static float min_axis_angle_vector = 15.0f;
 static float max_speed_after_emergency_brake_delay = 110.0f;
 static float car_speed_ki = -0.02f;
+static float car_speed_kd = -0.2f;
 
 #if RACE_MODE == 1
   static float emergency_brake_enable_delay_s = 0.0f;
@@ -285,6 +286,7 @@ static float car_speed_ki = -0.02f;
 #define MIN_XAXIS_ANGLE_VECTOR min_axis_angle_vector
 #define MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY max_speed_after_emergency_brake_delay
 #define CAR_SPEED_KI car_speed_ki
+#define CAR_SPEED_KD car_speed_kd
 
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
@@ -608,6 +610,7 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   }
 
   car_speed_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  car_speed_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
 
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
@@ -665,6 +668,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(enable_remote_start_stop_soft));
   serialPort.print(separatorCharacter);
   serialPort.print(String(car_speed_ki));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(car_speed_kd));
 
 
   
@@ -684,6 +689,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
                 LCDMENU_MAX_SPEED_CAR_SPEED_KI,
+                LCDMENU_MAX_SPEED_CAR_SPEED_KD,
 		            LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
@@ -938,14 +944,26 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KI:
         if (incrementButton == HIGH) {
-          CAR_SPEED_KI += 0.001f;
+          CAR_SPEED_KI += 0.0001f;
         } else if (decrementButton == HIGH) {
-          CAR_SPEED_KI -= 0.001f;
+          CAR_SPEED_KI -= 0.0001f;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("SPEED_KI");
         lcd_.setCursor(0, 1);
         lcd_.print(CAR_SPEED_KI);
+      break;
+
+      case LCDMENU_MAX_SPEED_CAR_SPEED_KD:
+        if (incrementButton == HIGH) {
+          CAR_SPEED_KD += 0.0001f;
+        } else if (decrementButton == HIGH) {
+          CAR_SPEED_KD -= 0.0001f;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("SPEED_KD");
+        lcd_.setCursor(0, 1);
+        lcd_.print(CAR_SPEED_KD);
       break;
 
 
