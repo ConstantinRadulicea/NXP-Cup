@@ -307,7 +307,9 @@ public:
             inters.m_n += 1;
             isIntersection = false;
             for (size_t j = i+1; j < vectors_copy.size(); j++) {
-                if ((x == vectors_copy[j].m_x1 && y == vectors_copy[j].m_y1) || (x == vectors_copy[j].m_x0 && y == vectors_copy[j].m_y0)) {
+                
+                if ((euclidianDistance(Point2D{(float)x, (float)y}, Point2D{(float)vectors_copy[j].m_x0, (float)vectors_copy[j].m_y0}) < 5.0f) ||
+                (euclidianDistance(Point2D{(float)x, (float)y}, Point2D{(float)vectors_copy[j].m_x1, (float)vectors_copy[j].m_y1}) < 5.0f)) {
                     isIntersection = true;
                     inters.m_x = x;
                     inters.m_y = y;
@@ -330,7 +332,8 @@ public:
             inters.m_n += 1;
             isIntersection = false;
             for (size_t j = i+1; j < vectors_copy.size(); j++) {
-                if ((x == vectors_copy[j].m_x1 && y == vectors_copy[j].m_y1) || (x == vectors_copy[j].m_x0 && y == vectors_copy[j].m_y0)) {
+                if ((euclidianDistance(Point2D{(float)x, (float)y}, Point2D{(float)vectors_copy[j].m_x0, (float)vectors_copy[j].m_y0}) < 5.0f) ||
+                (euclidianDistance(Point2D{(float)x, (float)y}, Point2D{(float)vectors_copy[j].m_x1, (float)vectors_copy[j].m_y1}) < 5.0f)) {
                     isIntersection = true;
                     inters.m_x = x;
                     inters.m_y = y;

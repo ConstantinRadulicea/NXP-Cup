@@ -165,8 +165,8 @@ static float car_speed_ki_min_max_impact = 5.0f;
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
-//#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
-#define DEBUG_HOST_IPADDRESS "192.168.204.122"   // Daniel phone
+#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
+//#define DEBUG_HOST_IPADDRESS "192.168.204.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"

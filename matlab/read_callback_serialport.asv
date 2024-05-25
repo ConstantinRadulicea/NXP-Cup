@@ -6,20 +6,22 @@ function read_callback_serialport(src, ~)
         return
     end
     raw_data = src.readline();
-    raw_data_chars = char(raw_data);
 
-    if(raw_data_chars(1) == '%')
-         disp(raw_data)
+    if(toc(start) == '%')
+         raw_data
 %         src.UserData.Debug = [raw_data; src.UserData.Debug];
 %         src.UserData.Debug = src.UserData.Debug(1:min(end, 50), 1);
         return;
     end
 
-    if(toc(startTime) < 1)
+    raw_data_chars = char(raw_data);
+
+    if(raw_data_chars(1) == '%')
+         raw_data
+%         src.UserData.Debug = [raw_data; src.UserData.Debug];
+%         src.UserData.Debug = src.UserData.Debug(1:min(end, 50), 1);
         return;
     end
-    startTime = tic;
-
     raw_data = split(raw_data, ";");
     leftVectorOld_str = split(raw_data(1,1), ",");
     rightVectorOld_str = split(raw_data(2,1), ",");
