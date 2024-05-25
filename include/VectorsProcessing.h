@@ -307,14 +307,14 @@ public:
             inters.m_n += 1;
             isIntersection = false;
             for (size_t j = i+1; j < vectors_copy.size(); j++) {
-                if (x == vectors_copy[j].m_x0 && y == vectors_copy[j].m_y0) {
+                if ((x == vectors_copy[j].m_x1 && y == vectors_copy[j].m_y1) || (x == vectors_copy[j].m_x0 && y == vectors_copy[j].m_y0)) {
                     isIntersection = true;
                     inters.m_x = x;
                     inters.m_y = y;
                     inters.m_intLines[inters.m_n].m_index = vectors_copy[j].m_index;
                     inters.m_n += 1;
                     vectors_copy.erase(vectors_copy.begin() + j);
-j -= 1;
+                    j -= 1;
                 }
             }
             if (isIntersection == true) {
@@ -330,14 +330,14 @@ j -= 1;
             inters.m_n += 1;
             isIntersection = false;
             for (size_t j = i+1; j < vectors_copy.size(); j++) {
-                if (x == vectors_copy[j].m_x1 && y == vectors_copy[j].m_y1) {
+                if ((x == vectors_copy[j].m_x1 && y == vectors_copy[j].m_y1) || (x == vectors_copy[j].m_x0 && y == vectors_copy[j].m_y0)) {
                     isIntersection = true;
                     inters.m_x = x;
                     inters.m_y = y;
                     inters.m_intLines[inters.m_n].m_index = vectors_copy[j].m_index;
                     inters.m_n += 1;
                     vectors_copy.erase(vectors_copy.begin() + j);
-j -= 1;
+                    j -= 1;
                 }
             }
             if (isIntersection == true) {
