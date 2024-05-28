@@ -158,14 +158,14 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define ENABLE_REMOTE_START_STOP 1
 #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
 
-#define DEBUG_WIFI_SSID "Off Limits3"
-#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-//#define DEBUG_WIFI_SSID "B020"
-//#define DEBUG_WIFI_PASSWORD "diferential2019"
+//#define DEBUG_WIFI_SSID "Off Limits3"
+//#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
+#define DEBUG_WIFI_SSID "wifi"
+#define DEBUG_WIFI_PASSWORD "b020a314"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
-#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
+//#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
 //#define DEBUG_HOST_IPADDRESS "192.168.204.122"   // Daniel phone
 //#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
 #define DEBUG_HOST_PORT 6789
@@ -195,7 +195,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_DISTANCE_SENSOR2 1
   #define ENABLE_DISTANCE_SENSOR3 1
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
-  #define ENABLE_REMOTE_START_STOP 1
+  #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
 #endif
 
@@ -211,7 +211,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_DISTANCE_SENSOR2 1
   #define ENABLE_DISTANCE_SENSOR3 1
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
-  #define ENABLE_REMOTE_START_STOP 1
+  #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
 #endif
 
