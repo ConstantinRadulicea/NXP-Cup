@@ -353,11 +353,10 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
 	newCarSpeed_bySteeringAngle = MAX(newCarSpeed_bySteeringAngle, minSpeed);
 	newCarSpeed_bySteeringAngle = MIN(newCarSpeed_bySteeringAngle, maxSpeed);
-
   sumSteeringWheelAngle += steeringWheelAngle;
 
-  sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, -kiMinMaxImpact / ki);
-	sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, kiMinMaxImpact / ki);
+  sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, ((-kiMinMaxImpact) / ki));
+	sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, (kiMinMaxImpact / ki));
 
   prevSteeringWheelAngleError = steeringWheelAngle;
 

@@ -72,7 +72,7 @@ static int enable_pixy_vector_approximation_soft = 0;
 static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
 static int enable_distance_sensor3_soft = 1;
-static int enable_remote_start_stop_soft = 1;
+static int enable_remote_start_stop_soft = 0;
 
 static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -80,20 +80,20 @@ static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
 static float lookahead_max_distance_cm = 45.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float max_speed = 127.0f  + CAR2_PARAMETERS_DIFFERENCE;
+static float max_speed = 128.0f  + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float emergency_brake_distance_from_obstacle_cm = 74.0f;   // 13.5f
+static float emergency_brake_distance_from_obstacle_cm = 9.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
 static float min_axis_angle_vector = 15.0f;
-static float max_speed_after_emergency_brake_delay = 110.0f;
+static float max_speed_after_emergency_brake_delay = 105.0f;
 static float car_speed_ki = -0.02f;
 static float car_speed_kd = -0.2f;
 static float car_speed_ki_min_max_impact = 5.0f;
 
 
 #if RACE_MODE == 1
-  static float emergency_brake_enable_delay_s = 0.0f;
+  static float emergency_brake_enable_delay_s = 15.0f;
 #elif DEBUG_MODE == 1
   static float emergency_brake_enable_delay_s = 0.0f;
 #else
@@ -158,16 +158,22 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define ENABLE_REMOTE_START_STOP 1
 #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
 
-//#define DEBUG_WIFI_SSID "Off Limits3"
-//#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-#define DEBUG_WIFI_SSID "wifi"
-#define DEBUG_WIFI_PASSWORD "b020a314"
+#define DEBUG_WIFI_SSID "Off Limits2"
+#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
+//#define DEBUG_WIFI_SSID "wifi"
+//#define DEBUG_WIFI_PASSWORD "b020a314"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
-//#define DEBUG_HOST_IPADDRESS "192.168.204.122"   // Daniel phone
-//#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
+#if CAR1 == 1
+  #define DEBUG_HOST_IPADDRESS "192.168.254.122"   // Daniel phone
+#else
+  #define DEBUG_HOST_IPADDRESS "192.168.254.227"   // edu
+#endif
+
+
+
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
@@ -950,34 +956,34 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KI:
         if (incrementButton == HIGH) {
-          CAR_SPEED_KI += 0.0001f;
+          CAR_SPEED_KI += 0.001f;
         } else if (decrementButton == HIGH) {
-          CAR_SPEED_KI -= 0.0001f;
+          CAR_SPEED_KI -= 0.001f;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("SPEED_KI");
         lcd_.setCursor(0, 1);
-        lcd_.print(CAR_SPEED_KI);
+        lcd_.print(CAR_SPEED_KI, 4);
       break;
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KD:
         if (incrementButton == HIGH) {
-          CAR_SPEED_KD += 0.0001f;
+          CAR_SPEED_KD += 0.001f;
         } else if (decrementButton == HIGH) {
-          CAR_SPEED_KD -= 0.0001f;
+          CAR_SPEED_KD -= 0.001f;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("SPEED_KD");
         lcd_.setCursor(0, 1);
-        lcd_.print(CAR_SPEED_KD);
+        lcd_.print(CAR_SPEED_KD, 4);
       break;
 
 
       case LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT:
         if (incrementButton == HIGH) {
-          CAR_SPEED_KI_MIN_MAX_IMPACT += 0.1f;
+          CAR_SPEED_KI_MIN_MAX_IMPACT += 0.5f;
         } else if (decrementButton == HIGH) {
-          CAR_SPEED_KI_MIN_MAX_IMPACT -= 0.1f;
+          CAR_SPEED_KI_MIN_MAX_IMPACT -= 0.5f;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("SPD_KI_MIN_MAX");
