@@ -79,7 +79,7 @@ static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
-static float lookahead_max_distance_cm = 55.0f;
+static float lookahead_max_distance_cm = 50.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float max_speed = 135.0f  + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_break_distance_cm = 75.0f;
