@@ -42,11 +42,12 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
 
 int main() {
+	float Ki = 0.0f, Kd = 0.0f;
 	float speed;
 
-	speed = calculateCarSpeed(97, 128, 55.0f, 25.0f, yAxisABC(), -0.02, -0.2, 5.0f);
-	speed = calculateCarSpeed(97, 128, 55.0f, 0.0f, yAxisABC(), -0.02, -0.2, 5.0f);
-	speed = calculateCarSpeed(97, 128, 55.0f, 10.0f, yAxisABC(), 0.00f, -0.2, 5.0f);
+	speed = calculateCarSpeed(97, 135, 55.0f, 55.0f, yAxisABC(), Ki, Kd, 5.0f);
+	speed = calculateCarSpeed(97, 135, 55.0f, 0.0f, yAxisABC(), Ki, Kd, 5.0f);
+	speed = calculateCarSpeed(97, 135, 55.0f, 10.0f, yAxisABC(), Ki, Kd, 5.0f);
 
 
 	return 0;
