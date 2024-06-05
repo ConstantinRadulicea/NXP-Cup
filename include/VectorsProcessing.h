@@ -21,6 +21,11 @@
 #include "geometry2D.h"
 #include <vector>
 
+typedef struct FinishLine{
+    Vector leftSegment;
+    Vector rightSegment;
+}FinishLine;
+
 class VectorsProcessing
 {
 private:
@@ -260,6 +265,23 @@ public:
         return true;
     }
 
+    static bool areVectorsEqual(Vector vec1, Vector vec2){
+        if (vec1.m_x0 == vec2.m_x0 && vec1.m_x1 == vec2.m_x1 && vec1.m_y0 == vec2.m_y0 && vec1.m_y1 == vec2.m_y1) {
+            return true;
+        }
+        if (vec1.m_x0 == vec2.m_x0 && vec1.m_y1 == vec2.m_y1 && vec1.m_y0 == vec2.m_y0 && vec1.m_x1 == vec2.m_x1) {
+            return true;
+        }
+        return false;
+    }
+
+    static bool isFinishLineValid(FinishLine finishLine){
+        if(isVectorValid(finishLine.leftSegment) || isVectorValid(finishLine.rightSegment)){
+            return true;
+        }
+        return false;
+    }
+
     static Vector reComputeVectorStartEnd_basedOnproximityToPoint(Vector vec, Point2D point){
         float distanceStartVector, distanceEndVector;
         Point2D startVector, endVector, newVectorStart, newVectorEnd;
@@ -432,6 +454,35 @@ public:
         newVector.m_y1 = newVectorEnd.y;
         return newVector;
     }
+
+    static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, float errorAngleDegrees){
+        FinishLine finishLine;
+        LineABC leftLine, rightLine, tempVectorLine;
+
+        memset(&finishLine, 0, sizeof(FinishLine));
+        if(!isVectorValid(leftLineVector) && !isVectorValid(rightLineVector)){
+            return finishLine;
+        }
+
+        leftLine = vectorToLineABC(leftLineVector);
+        rightLine = vectorToLineABC(rightLineVector);
+        
+
+        for (size_t i = 0; i < vectors.size(); i++) {
+            if (!isVectorValid(vectors[i])) {
+                continue;
+            }
+            if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
+                continue;
+            }
+            tempVectorLine = vectorToLineABC(vectors[i]);
+
+            angleBetweenLinesABC(leftLine, tempVectorLine);
+            
+        }
+        return finishLine;
+    }
+
 };
 
 

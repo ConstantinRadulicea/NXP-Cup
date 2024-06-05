@@ -160,13 +160,6 @@ void setup() {
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1.changeProg(line) = ") + String(pixyResult));
   #endif
 
-/*
-  pixyResult = pixy_2.changeProg("line");
-  #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_2.changeProg(line) = ") + String(pixyResult));
-  #endif
-  */
-
   #if ENABLE_DRIVERMOTOR == 1
     float startTime_ = (float)millis();
     while (((float)millis() - startTime_) < 3000.0f) {
@@ -489,14 +482,12 @@ void loop() {
         #endif
 
         if (emergency_break_loops_count == 1) {
-          //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
 
           #if ENABLE_DRIVERMOTOR == 1 &&  ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE == 1 // use brakes to get to a near standstill
             if (ENABLE_CAR_ENGINE != 0) {
               float tempCarSpeed = movingAverage_speed.next(carSpeed);
               float startTime_ = (float)millis();
               float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (40.0f / (107.0f - 90.0f));
-              //float brakeTime_ = (uint32_t)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)));
               int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
 
               while ((((float)millis()) - startTime_) < brakeTime_) {
@@ -560,22 +551,6 @@ void loop() {
     pixy_1_vectorsProcessing.clear();
 
     pixy_1_result = PIXY_RESULT_ERROR;
-    //pixy_2_result = PIXY_RESULT_ERROR;
-    
-    //while ((pixy_1_result < (int8_t)0) /*|| (pixy_2_result < (int8_t)0)*/) {
-    //  remote_control_routine();
-    //  if (ENABLE_CAR_ENGINE == 0) {
-    //    driverMotor.write((int)STANDSTILL_SPEED);
-    //  }
-    //  if (pixy_1_result < (int8_t)0) {
-    //    pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
-    //  }
-    //  /*
-    //  if (pixy_2_result < (int8_t)0) {
-    //    pixy_2_result = pixy_2.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
-    //  }
-    //  */
-    //}
 
     pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR /*| LINE_INTERSECTION*/, true);
     
@@ -606,6 +581,9 @@ void loop() {
       }
       pixy_1_leftVectorOld = pixy_1_vectorsProcessing.getLeftVector();
       pixy_1_rightVectorOld = pixy_1_vectorsProcessing.getRightVector();
+
+      vectors.resize(pixy_1.line.numVectors);
+      memcpy(vectors.data(), pixy_1.line.vectors, (pixy_1.line.numVectors * sizeof(Vector)));
 
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT != 0){
