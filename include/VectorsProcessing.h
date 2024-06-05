@@ -266,10 +266,10 @@ public:
     }
 
     static bool areVectorsEqual(Vector vec1, Vector vec2){
-        if (vec1.m_x0 == vec2.m_x0 && vec1.m_x1 == vec2.m_x1 && vec1.m_y0 == vec2.m_y0 && vec1.m_y1 == vec2.m_y1) {
+        if (vec1.m_x0 == vec2.m_x0 && vec1.m_y0 == vec2.m_y0 && vec1.m_x1 == vec2.m_x1 && vec1.m_y1 == vec2.m_y1) {
             return true;
         }
-        if (vec1.m_x0 == vec2.m_x0 && vec1.m_y1 == vec2.m_y1 && vec1.m_y0 == vec2.m_y0 && vec1.m_x1 == vec2.m_x1) {
+        if (vec1.m_x0 == vec2.m_x1 && vec1.m_y0 == vec2.m_y1 && vec1.m_x1 == vec2.m_x0 && vec1.m_y1 == vec2.m_y0) {
             return true;
         }
         return false;
@@ -280,6 +280,18 @@ public:
             return true;
         }
         return false;
+    }
+
+    static LineSegment vectorToLineSegment(Vector vec){
+        return LineSegment{Point2D{(float)(vec.m_x0), (float)(vec.m_y0)}, Point2D{(float)(vec.m_x1), (float)(vec.m_y1)}};
+    }
+
+    static float minDistanceVectorToLine(Vector vec, LineABC line){
+        return minDistanceLineSegmentToLine(vectorToLineSegment(vec), line);
+    }
+
+    static float maxDistanceVectorToLine(Vector vec, LineABC line){
+        return maxDistanceLineSegmentToLine(vectorToLineSegment(vec), line);
     }
 
     static Vector reComputeVectorStartEnd_basedOnproximityToPoint(Vector vec, Point2D point){
@@ -455,30 +467,64 @@ public:
         return newVector;
     }
 
-    static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, float errorAngleDegrees){
+    static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees){
         FinishLine finishLine;
         LineABC leftLine, rightLine, tempVectorLine;
+        Point2D projectionOnLine;
+        float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev;
 
         memset(&finishLine, 0, sizeof(FinishLine));
-        if(!isVectorValid(leftLineVector) && !isVectorValid(rightLineVector)){
+        if(!isVectorValid(leftLineVector) || !isVectorValid(rightLineVector)){
             return finishLine;
         }
+        
 
         leftLine = vectorToLineABC(leftLineVector);
         rightLine = vectorToLineABC(rightLineVector);
+
+        if (floatCmp(fabs(angleBetweenLinesABC(leftLine, rightLine)), radians(45.0f)) >= 0) {
+            return finishLine;
+        }
+        
         
 
         for (size_t i = 0; i < vectors.size(); i++) {
-            if (!isVectorValid(vectors[i])) {
-                continue;
-            }
             if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
                 continue;
             }
-            tempVectorLine = vectorToLineABC(vectors[i]);
+            angleRadiansError = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, tempVectorLine)));
 
-            angleBetweenLinesABC(leftLine, tempVectorLine);
-            
+            if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees)) <= 0)) {
+                minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
+                minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
+                if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
+                    continue;
+                }
+
+                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
+                    if (isVectorValid(finishLine.leftSegment)) {
+                        angleRadiansError_prev = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment))));
+                        if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
+                            finishLine.leftSegment = vectors[i];
+                        }
+                    }
+                    else{
+                        finishLine.leftSegment = vectors[i];
+                    }
+                }
+
+                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
+                    if (isVectorValid(finishLine.rightSegment)) {
+                        angleRadiansError_prev = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment))));
+                        if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
+                            finishLine.rightSegment = vectors[i];
+                        }
+                    }
+                    else{
+                        finishLine.rightSegment = vectors[i];
+                    }
+                }
+            }
         }
         return finishLine;
     }

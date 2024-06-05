@@ -394,6 +394,8 @@ void loop() {
   float timeStart;
   float max_speed_original;
   MovingAverage movingAverage_speed(10);
+  
+  int consecutiveValidFinishLines = 0;
 
   pixy_1_result = PIXY_RESULT_ERROR;
   pixy_2_result = PIXY_RESULT_ERROR;
@@ -438,6 +440,9 @@ void loop() {
 
 
     if (ENABLE_CAR_ENGINE == 0) {
+      consecutiveValidFinishLines = 0;
+      finish_line_detected = 0;
+      finish_line_detected_now = 0;
       driverMotor.write((int)STANDSTILL_SPEED);
     }
     
@@ -465,10 +470,8 @@ void loop() {
         MAX_SPEED = MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY;
       }
     }
-      if (emergency_brake_enable_remaining_delay_s <= 0.0f)
-      {
-      
-      
+    if (emergency_brake_enable_remaining_delay_s <= 0.0f)
+    {
       
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
@@ -585,6 +588,22 @@ void loop() {
       vectors.resize(pixy_1.line.numVectors);
       memcpy(vectors.data(), pixy_1.line.vectors, (pixy_1.line.numVectors * sizeof(Vector)));
 
+      #if ENABLE_FINISH_LINE_DETECTION == 1
+        finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), 25.0f);
+        if (VectorsProcessing::isFinishLineValid(finish_line)) {
+          consecutiveValidFinishLines += 1;
+          finish_line_detected_now = 1;
+          if (consecutiveValidFinishLines >= 5) {
+            finish_line_detected = 1;
+          }
+        }
+        else{
+          consecutiveValidFinishLines = 0;
+          finish_line_detected_now = 0;
+          memset(&finish_line, 0, sizeof(finish_line));
+        }
+      #endif
+      
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT != 0){
         if (((int)pixy_1_vectorsProcessing.isVectorValid(pixy_1_rightVectorOld) + (int)pixy_1_vectorsProcessing.isVectorValid(pixy_1_leftVectorOld))==1){

@@ -27,6 +27,11 @@
 
 #define M_PI       3.14159265358979323846   // pi
 #define M_PI_2     1.57079632679489661923   // pi/2
+#define DEG_TO_RAD 0.017453292519943295769236907684886
+#define RAD_TO_DEG 57.295779513082320876798154814105
+
+#define radians(deg) ((deg)*DEG_TO_RAD)
+#define degrees(rad) ((rad)*RAD_TO_DEG)
 
 #define INCONSISTENT_ECUATION_SYSTEM 1
 #define CONSISTENT_ECUATION_SYSTEM 2
@@ -72,7 +77,7 @@ typedef struct IntersectionPoints2D_2
 
 typedef struct IntersectionLines {
 	Point2D point;
-	int info; // 1: lines are parallel, 2: the lines are equal
+	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal
 }IntersectionLines;
 
 static LineABC xAxisABC() {
@@ -1061,4 +1066,36 @@ static LineSegmentsDistancePoints distancePointsBwSegments(LineSegment segment1,
 	}
 	return segmentsDistances;
 }
+
+LineABC lineSegmentToLineABC(LineSegment segment){
+	return points2lineABC(segment.A, segment.B);
+}
+
+
+    static float minDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line){
+        float point1Distance, point2Distance;
+        IntersectionLines inters;
+
+        inters = intersectionLinesABC(lineSegmentToLineABC(vectorSegment), line);
+        if (inters.info == 0) {
+            if (isPointOnSegment(vectorSegment, inters.point) != 0); {
+                return 0.0f;
+            }
+        }
+
+        point1Distance = distance2lineABC(vectorSegment.A, line);
+        point2Distance = distance2lineABC(vectorSegment.B, line);
+
+        return MIN(point1Distance, point2Distance);
+    }
+
+    static float maxDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line){
+        float point1Distance, point2Distance;
+        point1Distance = distance2lineABC(vectorSegment.A, line);
+        point2Distance = distance2lineABC(vectorSegment.B, line);
+
+        return MAX(point1Distance, point2Distance);
+    }
+
+
 #endif // !__GEOMETRY2D_H__

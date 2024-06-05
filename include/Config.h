@@ -60,8 +60,8 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 0
-#define RACE_MODE 1
+#define DEBUG_MODE 1
+#define RACE_MODE 0
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
@@ -194,6 +194,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
 #define ENABLE_REMOTE_START_STOP 1
 #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
+#define ENABLE_FINISH_LINE_DETECTION 1
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
@@ -240,6 +241,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
+  #define ENABLE_FINISH_LINE_DETECTION 1
 #endif
 
 #if RACE_MODE == 1
@@ -256,6 +258,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
+  #define ENABLE_FINISH_LINE_DETECTION 0
 #endif
 
 #if TEMP_MODE == 1
@@ -388,6 +391,9 @@ static float loop_time_ms = 0.0f;
 static float time_passed_ms = 0.0f;
 static float emergency_brake_enable_remaining_delay_s = 0.0f;
 static int emergency_brake_enable_delay_started_count = 0;
+static int finish_line_detected = 0;
+static int finish_line_detected_now = 0;
+FinishLine finish_line = {};
 
 /*====================================================================================================================================*/
 
@@ -425,6 +431,12 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
   SERIAL_PORT.print(String(purePersuitInfo.lookAheadDistance * CM_PER_VECTOR_UNIT));
   SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(carSpeed_));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line_detected));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line.leftSegment.m_x0) + commaCharStr + String(finish_line.leftSegment.m_y0) + commaCharStr + String(finish_line.leftSegment.m_x1) + commaCharStr + String(finish_line.leftSegment.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line.rightSegment.m_x0) + commaCharStr + String(finish_line.rightSegment.m_y0) + commaCharStr + String(finish_line.rightSegment.m_x1) + commaCharStr + String(finish_line.rightSegment.m_y1));
   SERIAL_PORT.println();
 }
 
