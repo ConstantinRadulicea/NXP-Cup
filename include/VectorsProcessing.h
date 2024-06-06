@@ -479,18 +479,28 @@ public:
         FinishLine finishLine;
         LineABC leftLine, rightLine, tempVectorLine;
         Point2D projectionOnLine;
-        float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev;
+        float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev, laneWidth_max, laneWidth_min;
+        LineSegmentsDistancePoints laneWidth_;
 
         memset(&finishLine, 0, sizeof(FinishLine));
         if(!isVectorValid(leftLineVector) || !isVectorValid(rightLineVector)){
             return finishLine;
         }
         
+        laneWidth_ = distancePointsBwSegments(vectorToLineSegment(leftLineVector), vectorToLineSegment(rightLineVector));
+        laneWidth_min = euclidianDistance(laneWidth_.min.A, laneWidth_.min.B);
+        laneWidth_max = euclidianDistance(laneWidth_.max.A, laneWidth_.max.B);
+        //Serial1.print("%");
+        //Serial1.println(laneWidth_min);
 
         leftLine = vectorToLineABC(leftLineVector);
         rightLine = vectorToLineABC(rightLineVector);
 
         if (floatCmp(fabs(angleBetweenLinesABC(leftLine, rightLine)), radians(45.0f)) >= 0) {
+            return finishLine;
+        }
+
+        if (floatCmp(laneWidth_min, 0.0f) <= 0) {
             return finishLine;
         }
 
@@ -505,18 +515,25 @@ public:
             //angleRadiansError = angleBetweenLinesABC(middleLine, tempVectorLine);
 
             if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees))) <= 0) {
-                Serial1.print("%");
-                Serial1.println(angleRadiansError);
+                //Serial1.print("%");
+                //Serial1.println(angleRadiansError);
                 minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
                 minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
 
                 if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
                     continue;
                 }
+                //Serial1.print("%");
+                //Serial1.println(minDistanceVectorToLeftLine);
+                //Serial1.print("%");
+                //Serial1.println(minDistanceVectorToRightLine);
+                if ((floatCmp(minDistanceVectorToLeftLine, laneWidth_min) > 0) || (floatCmp(minDistanceVectorToRightLine, laneWidth_min) > 0)) {
+                    continue;
+                }
 
                 if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
                     if (isVectorValid(finishLine.leftSegment)) {
-                        angleRadiansError_prev = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment))));
+                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
                             finishLine.leftSegment = vectors[i];
                         }
@@ -528,7 +545,7 @@ public:
 
                 if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
                     if (isVectorValid(finishLine.rightSegment)) {
-                        angleRadiansError_prev = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment))));
+                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
                             finishLine.rightSegment = vectors[i];
                         }
