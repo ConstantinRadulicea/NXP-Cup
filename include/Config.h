@@ -205,9 +205,9 @@ static float car_speed_ki_min_max_impact = 5.0f;
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
 #if CAR1 == 1
-  #define DEBUG_HOST_IPADDRESS "192.168.254.122"   // Daniel phone
+  #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // Daniel phone
 #else
-  #define DEBUG_HOST_IPADDRESS "192.168.254.227"   // edu
+  #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // edu
 #endif
 
 

@@ -589,7 +589,7 @@ void loop() {
       memcpy(vectors.data(), pixy_1.line.vectors, (pixy_1.line.numVectors * sizeof(Vector)));
 
       #if ENABLE_FINISH_LINE_DETECTION == 1
-        finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), 25.0f);
+        finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), 45.0f);
         if (VectorsProcessing::isFinishLineValid(finish_line)) {
           consecutiveValidFinishLines += 1;
           finish_line_detected_now = 1;

@@ -485,22 +485,33 @@ public:
         if (floatCmp(fabs(angleBetweenLinesABC(leftLine, rightLine)), radians(45.0f)) >= 0) {
             return finishLine;
         }
-        
-        
+         
+        Serial1.print("%");
+        Serial1.println("Passed");
 
         for (size_t i = 0; i < vectors.size(); i++) {
             if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
                 continue;
             }
+
             angleRadiansError = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, tempVectorLine)));
+
+            Serial1.print("% angle error");
+            Serial1.println(angleRadiansError, 5);
+            
 
             if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees)) <= 0)) {
                 minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
                 minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
+                Serial1.print("% min");
+                Serial1.println(minDistanceVectorToLeftLine, 4);
+                Serial1.print("% min2");
+                Serial1.println(minDistanceVectorToRightLine, 4);
                 if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
                     continue;
                 }
-
+            Serial1.print("%");
+            Serial1.println("pass2");
                 if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
                     if (isVectorValid(finishLine.leftSegment)) {
                         angleRadiansError_prev = (M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment))));
