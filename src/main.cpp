@@ -591,7 +591,7 @@ void loop() {
       }
 
       #if ENABLE_FINISH_LINE_DETECTION == 1
-        finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), 10.0f);
+        finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), FINISH_LINE_ANGLE_TOLERANCE);
         if (VectorsProcessing::isFinishLineValid(finish_line)) {
           consecutiveValidFinishLines += 1;
           finish_line_detected_now = 1;
