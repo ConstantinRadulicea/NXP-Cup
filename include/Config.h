@@ -74,6 +74,7 @@ static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
 static int enable_distance_sensor3_soft = 1;
 static int enable_remote_start_stop_soft = 0;
+static int enable_finish_line_detection_soft = 1;
 
 static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -377,8 +378,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define ENABLE_DISTANCE_SENSOR2_SOFT enable_distance_sensor2_soft
 #define ENABLE_DISTANCE_SENSOR3_SOFT enable_distance_sensor3_soft
 #define ENABLE_REMOTE_START_STOP_SOFT enable_remote_start_stop_soft
-
-
+#define ENABLE_FINISH_LINE_DETECTION_SOFT enable_finish_line_detection_soft
 #define ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT enable_pixy_vector_approximation_soft
 
 /*====================================================================================================================================*/
@@ -439,6 +439,8 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
   SERIAL_PORT.print(String(finish_line.leftSegment.m_x0) + commaCharStr + String(finish_line.leftSegment.m_y0) + commaCharStr + String(finish_line.leftSegment.m_x1) + commaCharStr + String(finish_line.leftSegment.m_y1));
   SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(finish_line.rightSegment.m_x0) + commaCharStr + String(finish_line.rightSegment.m_y0) + commaCharStr + String(finish_line.rightSegment.m_x1) + commaCharStr + String(finish_line.rightSegment.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line_detected_now));
   SERIAL_PORT.println();
 }
 
@@ -674,6 +676,14 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   car_speed_ki_min_max_impact = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   finish_line_angle_tolerance = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
+
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_finish_line_detection_soft = 1;
+  }
+  else{
+    enable_finish_line_detection_soft = 0;
+  }
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
 }
@@ -735,6 +745,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(car_speed_ki_min_max_impact));
   serialPort.print(separatorCharacter);
   serialPort.print(String(finish_line_angle_tolerance));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_finish_line_detection_soft));
 
 
   serialPort.println();
@@ -756,6 +768,7 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_MAX_SPEED_CAR_SPEED_KD,
                 LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT,
 		            LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
+                LCDMENU_ENABLE_FINISH_LINE_DETECTION,
                 LCDMENU_FINISH_LINE_ANGLE_TOLERANCE,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
@@ -1000,6 +1013,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("ENABLE_REMOTE");
         lcd_.setCursor(0, 1);
         if (ENABLE_REMOTE_START_STOP_SOFT != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_FINISH_LINE_DETECTION:
+        if (incrementButton == HIGH) {
+          ENABLE_FINISH_LINE_DETECTION_SOFT = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_FINISH_LINE_DETECTION_SOFT = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_FINSH_LN");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_FINISH_LINE_DETECTION_SOFT != 0) {
           lcd_.print("Enabled");
         }
         else{

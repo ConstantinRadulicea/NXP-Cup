@@ -10,7 +10,8 @@ enable_pixy_vector_approximation = 0.0;
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
 enable_distance_sensor3 = 1.0;
-enable_remote_start_stop = 0.0
+enable_remote_start_stop = 0.0;
+enable_finish_line = 0.0;
 
 lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
@@ -51,7 +52,8 @@ values = [lane_width_vector_unit_real lookahead_min_distance_cm...
     car_speed_ki...
     car_speed_kd...
     car_speed_ki_min_max_impact...
-    finish_line_angle_tolerance];
+    finish_line_angle_tolerance...
+    enable_finish_line];
 
 outputString = '';
 

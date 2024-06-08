@@ -38,6 +38,7 @@ function read_callback_serialport(src, ~)
     finish_line_detected = str2double(raw_data(15,1));
     finish_line_left_segment_str = split(raw_data(16,1), ",");
     finish_line_right_segment_str = split(raw_data(17,1), ",");
+    finish_line_detected_now = str2double(raw_data(18,1));
     
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
@@ -95,6 +96,8 @@ function read_callback_serialport(src, ~)
     text(xmin, ymax-19, myText);
     myText = sprintf("FinishLine[1/0]: %d", finish_line_detected);
     text(xmin, ymax-23, myText);
+    myText = sprintf("FinishLineNow[1/0]: %d", finish_line_detected_now);
+    text(xmin, ymax-27, myText);
 
     
     xlim([xmin xmax])

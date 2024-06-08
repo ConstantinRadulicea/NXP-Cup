@@ -591,18 +591,20 @@ void loop() {
       }
 
       #if ENABLE_FINISH_LINE_DETECTION == 1
-        finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), FINISH_LINE_ANGLE_TOLERANCE);
-        if (VectorsProcessing::isFinishLineValid(finish_line)) {
-          consecutiveValidFinishLines += 1;
-          finish_line_detected_now = 1;
-          if (consecutiveValidFinishLines >= 5) {
-            finish_line_detected = 1;
+        if (ENABLE_FINISH_LINE_DETECTION_SOFT != 0) {
+          finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), FINISH_LINE_ANGLE_TOLERANCE);
+          if (VectorsProcessing::isFinishLineValid(finish_line)) {
+            consecutiveValidFinishLines += 1;
+            finish_line_detected_now = 1;
+            if (consecutiveValidFinishLines >= 5) {
+              finish_line_detected = 1;
+            }
           }
-        }
-        else{
-          consecutiveValidFinishLines = 0;
-          finish_line_detected_now = 0;
-          memset(&finish_line, 0, sizeof(finish_line));
+          else{
+            consecutiveValidFinishLines = 0;
+            finish_line_detected_now = 0;
+            memset(&finish_line, 0, sizeof(finish_line));
+          }
         }
       #endif
       
