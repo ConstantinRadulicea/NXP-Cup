@@ -34,7 +34,11 @@ function read_callback_serialport(src, ~)
     carAcceleration = str2double(raw_data(11,1));
     frontObstacleDistance = str2double(raw_data(12,1));
     lookAheadDistance = str2double(raw_data(13,1));
-    carSpeedRaw = str2double(raw_data(13,1));
+    carSpeedRaw = str2double(raw_data(14,1));
+    finish_line_detected = str2double(raw_data(15,1));
+    finish_line_left_segment_str = split(raw_data(16,1), ",");
+    finish_line_right_segment_str = split(raw_data(17,1), ",");
+    finish_line_detected_now = str2double(raw_data(18,1));
     
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
@@ -46,6 +50,8 @@ function read_callback_serialport(src, ~)
     middleLaneLine = str2double(middleLaneLine_str(:, 1))';
     carPosition = str2double(carPosition_str(:, 1))';
     newWayPointPosition = str2double(newWayPointPosition_str(:, 1))';
+    finish_line_left_segment = str2double(finish_line_left_segment_str(:, 1))';
+    finish_line_right_segment = str2double(finish_line_right_segment_str(:, 1))';
 
 %     f_leftLine = @(x,y) x.*leftLine(1) + y.*leftLine(2) + leftLine(3);
 %     f_rightLine = @(x,y) x.*rightLine(1) + y.*rightLine(2) + rightLine(3);
@@ -66,7 +72,14 @@ function read_callback_serialport(src, ~)
 %     plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
 %     hold on;
 %     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
-    plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*", [leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o", [rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
+    plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
+        [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], ...
+        x3, y3, carPosition(1), carPosition(2), "^", ...
+        newWayPointPosition(1), newWayPointPosition(2), "*", ...
+        [leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o", ...
+        [rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o", ...
+        [finish_line_left_segment(1) finish_line_left_segment(3)], [finish_line_left_segment(2) finish_line_left_segment(4)], "-.s", ...
+        [finish_line_right_segment(1) finish_line_right_segment(3)], [finish_line_right_segment(2) finish_line_right_segment(4)], "-.s");
     text(leftVector(1), leftVector(2), "1");
     text(leftVector(3), leftVector(4), "2");
     text(rightVector(1), rightVector(2), "1");
@@ -81,6 +94,10 @@ function read_callback_serialport(src, ~)
     text(xmin, ymax-15, myText);
     myText = sprintf("carSpeed[raw]: %.2f", carSpeedRaw);
     text(xmin, ymax-19, myText);
+    myText = sprintf("FinishLine[1/0]: %d", finish_line_detected);
+    text(xmin, ymax-23, myText);
+    myText = sprintf("FinishLineNow[1/0]: %d", finish_line_detected_now);
+    text(xmin, ymax-27, myText);
 
     
     xlim([xmin xmax])

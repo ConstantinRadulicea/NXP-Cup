@@ -60,8 +60,8 @@ steering_wheel_angle_offset = 0.0;
 #endif
 
 
-#define DEBUG_MODE 0
-#define RACE_MODE 1
+#define DEBUG_MODE 1
+#define RACE_MODE 0
 #define TEMP_MODE 0
 
 /*====================================================================================================================================*/
@@ -74,6 +74,7 @@ static int enable_distance_sensor1_soft = 1;
 static int enable_distance_sensor2_soft = 1;
 static int enable_distance_sensor3_soft = 1;
 static int enable_remote_start_stop_soft = 0;
+static int enable_finish_line_detection_soft = 1;
 
 static float lane_width_vector_unit_real = 53.0f;
 static float black_color_treshold = 0.2f; // 0=black, 1=white
@@ -91,6 +92,7 @@ static float max_speed_after_emergency_brake_delay = 107.0f;
 static float car_speed_ki = -0.02f;
 static float car_speed_kd = -0.2f;
 static float car_speed_ki_min_max_impact = 5.0f;
+static float finish_line_angle_tolerance = 15.0f;
 
 
 #if RACE_MODE == 1
@@ -194,6 +196,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
 #define ENABLE_REMOTE_START_STOP 1
 #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 1
+#define ENABLE_FINISH_LINE_DETECTION 1
 
 #define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
@@ -204,9 +207,9 @@ static float car_speed_ki_min_max_impact = 5.0f;
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
 #if CAR1 == 1
-  #define DEBUG_HOST_IPADDRESS "192.168.254.122"   // Daniel phone
+  #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // Daniel phone
 #else
-  #define DEBUG_HOST_IPADDRESS "192.168.254.227"   // edu
+  #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // edu
 #endif
 
 
@@ -240,6 +243,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
+  #define ENABLE_FINISH_LINE_DETECTION 1
 #endif
 
 #if RACE_MODE == 1
@@ -256,6 +260,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
+  #define ENABLE_FINISH_LINE_DETECTION 0
 #endif
 
 #if TEMP_MODE == 1
@@ -333,6 +338,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define CAR_SPEED_KI car_speed_ki
 #define CAR_SPEED_KD car_speed_kd
 #define CAR_SPEED_KI_MIN_MAX_IMPACT car_speed_ki_min_max_impact
+#define FINISH_LINE_ANGLE_TOLERANCE finish_line_angle_tolerance
 
 
 #define VECTOR_UNIT_PER_CM (float)((float)LANE_WIDTH_VECTOR_UNIT_REAL / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
@@ -372,8 +378,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define ENABLE_DISTANCE_SENSOR2_SOFT enable_distance_sensor2_soft
 #define ENABLE_DISTANCE_SENSOR3_SOFT enable_distance_sensor3_soft
 #define ENABLE_REMOTE_START_STOP_SOFT enable_remote_start_stop_soft
-
-
+#define ENABLE_FINISH_LINE_DETECTION_SOFT enable_finish_line_detection_soft
 #define ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT enable_pixy_vector_approximation_soft
 
 /*====================================================================================================================================*/
@@ -388,6 +393,9 @@ static float loop_time_ms = 0.0f;
 static float time_passed_ms = 0.0f;
 static float emergency_brake_enable_remaining_delay_s = 0.0f;
 static int emergency_brake_enable_delay_started_count = 0;
+static int finish_line_detected = 0;
+static int finish_line_detected_now = 0;
+FinishLine finish_line = {};
 
 /*====================================================================================================================================*/
 
@@ -425,6 +433,14 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
   SERIAL_PORT.print(String(purePersuitInfo.lookAheadDistance * CM_PER_VECTOR_UNIT));
   SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(carSpeed_));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line_detected));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line.leftSegment.m_x0) + commaCharStr + String(finish_line.leftSegment.m_y0) + commaCharStr + String(finish_line.leftSegment.m_x1) + commaCharStr + String(finish_line.leftSegment.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line.rightSegment.m_x0) + commaCharStr + String(finish_line.rightSegment.m_y0) + commaCharStr + String(finish_line.rightSegment.m_x1) + commaCharStr + String(finish_line.rightSegment.m_y1));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(finish_line_detected_now));
   SERIAL_PORT.println();
 }
 
@@ -658,8 +674,16 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   car_speed_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   car_speed_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   car_speed_ki_min_max_impact = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  finish_line_angle_tolerance = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
 
+  temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  if (temp_float >= 0.5f) {
+    enable_finish_line_detection_soft = 1;
+  }
+  else{
+    enable_finish_line_detection_soft = 0;
+  }
   car_length_vector_unit = car_length_cm * VECTOR_UNIT_PER_CM;
 
 }
@@ -719,6 +743,10 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(car_speed_kd));
   serialPort.print(separatorCharacter);
   serialPort.print(String(car_speed_ki_min_max_impact));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(finish_line_angle_tolerance));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(enable_finish_line_detection_soft));
 
 
   serialPort.println();
@@ -740,6 +768,8 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
                 LCDMENU_MAX_SPEED_CAR_SPEED_KD,
                 LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT,
 		            LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
+                LCDMENU_ENABLE_FINISH_LINE_DETECTION,
+                LCDMENU_FINISH_LINE_ANGLE_TOLERANCE,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
@@ -807,6 +837,19 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("STR_WHEEL_OFST");
         lcd_.setCursor(0, 1);
         lcd_.print(STEERING_WHEEL_ANGLE_OFFSET);
+      break;
+
+      case LCDMENU_FINISH_LINE_ANGLE_TOLERANCE:
+        if (incrementButton == HIGH) {
+          FINISH_LINE_ANGLE_TOLERANCE += 0.1f;
+        } else if (decrementButton == HIGH) {
+          FINISH_LINE_ANGLE_TOLERANCE -= 0.1f;
+          FINISH_LINE_ANGLE_TOLERANCE = MIN(FINISH_LINE_ANGLE_TOLERANCE, 0.0f);
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("FINISH_LIN_ANG");
+        lcd_.setCursor(0, 1);
+        lcd_.print(FINISH_LINE_ANGLE_TOLERANCE);
       break;
 
       case LCDMENU_MIN_XAXIS_ANGLE_VECTOR:
@@ -970,6 +1013,24 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
         lcd_.print("ENABLE_REMOTE");
         lcd_.setCursor(0, 1);
         if (ENABLE_REMOTE_START_STOP_SOFT != 0) {
+          lcd_.print("Enabled");
+        }
+        else{
+          lcd_.print("Disabled");
+        }
+      break;
+
+      case LCDMENU_ENABLE_FINISH_LINE_DETECTION:
+        if (incrementButton == HIGH) {
+          ENABLE_FINISH_LINE_DETECTION_SOFT = 1;
+        }
+        else if (decrementButton == HIGH) {
+          ENABLE_FINISH_LINE_DETECTION_SOFT = 0;
+        }
+        lcd_.setCursor(0, 0);
+        lcd_.print("ENABLE_FINSH_LN");
+        lcd_.setCursor(0, 1);
+        if (ENABLE_FINISH_LINE_DETECTION_SOFT != 0) {
           lcd_.print("Enabled");
         }
         else{

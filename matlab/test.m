@@ -16,5 +16,7 @@ rowValue = ServoMiddleAngle - (steeringDegrees * ServoAngleSpan_per_SteeringWhee
 
 cmd = 2216 * 0.034321 / 2.0
 
+plot([1 2], [3 4], "-.s")
+
 
 
