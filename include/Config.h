@@ -451,6 +451,8 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
 static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(initSequence);
+  serialPort.println(commentChar + String("SERVER"));
+  //serialPort.println(commentChar + String("CLIENT"));
   serialPort.println(commentChar + wifiSsid);
   serialPort.println(commentChar + wifiPassword);
   //serialPort.println(commentChar + hostname);
