@@ -118,7 +118,7 @@ void setup() {
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-    SERIAL_PORT.begin(115200);
+    SERIAL_PORT.begin(230400);
     #if RACE_MODE == 1
     #else
       while (!SERIAL_PORT){
@@ -754,11 +754,7 @@ void loop() {
         carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI, CAR_SPEED_KD, CAR_SPEED_KI_MIN_MAX_IMPACT);
       }
     }
-    
-    #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getRightVector()), middle_lane_line_pixy_1, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance, carSpeed);
-    #endif
-    
+        
     #if ENABLE_STEERING_SERVO == 1
       if (ENABLE_CAR_STEERING_WHEEL != 0) {
         steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN);
@@ -777,10 +773,16 @@ void loop() {
     loop_time_ms = ((float)millis()) - timeStart;
     loop_time_ms = MAX(loop_time_ms, 0.0f);
     time_passed_ms += loop_time_ms;
+
+    #if ENABLE_SERIAL_PRINT == 1
+        printDataToSerial(pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getRightVector()), middle_lane_line_pixy_1, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance, carSpeed);
+    #endif
     
+    /*
     #if ENABLE_SERIAL_PRINT == 1
       SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(loop_time_ms) + String(" ms"));
     #endif
+    */
   }
 }
 

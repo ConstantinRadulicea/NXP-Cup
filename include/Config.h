@@ -441,6 +441,8 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
   SERIAL_PORT.print(String(finish_line.rightSegment.m_x0) + commaCharStr + String(finish_line.rightSegment.m_y0) + commaCharStr + String(finish_line.rightSegment.m_x1) + commaCharStr + String(finish_line.rightSegment.m_y1));
   SERIAL_PORT.print(semicolonChar);
   SERIAL_PORT.print(String(finish_line_detected_now));
+  SERIAL_PORT.print(semicolonChar);
+  SERIAL_PORT.print(String(loop_time_ms));
   SERIAL_PORT.println();
 }
 
@@ -451,7 +453,7 @@ static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, 
   serialPort.print(initSequence);
   serialPort.println(commentChar + wifiSsid);
   serialPort.println(commentChar + wifiPassword);
-  serialPort.println(commentChar + hostname);
+  //serialPort.println(commentChar + hostname);
   serialPort.println(commentChar + String(port));
 }
 
