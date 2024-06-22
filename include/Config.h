@@ -218,6 +218,35 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
 
+#define ESP8266_ENABLE_SERVER 1
+#define ESP8266_ENABLE_CLIENT 0
+#define ESP8266_ENABLE_SSDP 1
+
+#if (ESP8266_ENABLE_SERVER == 1 && ESP8266_ENABLE_CLIENT == 1) || (ESP8266_ENABLE_SERVER == 0 && ESP8266_ENABLE_CLIENT == 0)
+#define ESP8266_ENABLE_SERVER 1
+#endif
+
+#define SSDP_ENABLE_STRING "ENABLE_SSDP"
+#define SSDP_NAME "NXP-CUP-CAR"
+#if CAR1 == 1
+  #define SSDP_SERIALNUMBER "1"
+#elif CAR2 == 1
+#define SSDP_SERIALNUMBER "2"
+#endif
+#define SSDP_MODELNAME "Model Name"
+#define SSDP_MODELNUMBER "Model Number"
+#define SSDP_MODELURL "Model URL"
+#define SSDP_MANUFACTURER "Manufacturer"
+#define SSDP_MANUFACTURERURL "Manufacturer URL"
+
+  #if ESP8266_ENABLE_SERVER == 1
+    #define ESP8266_CONFIGURATION "SERVER"
+  #endif
+  
+  #if ESP8266_ENABLE_CLIENT == 1
+    #define ESP8266_CONFIGURATION "CLIENT"
+  #endif
+
 
 #if ENABLE_WIRELESS_DEBUG == 1
   #if ENABLE_ARDUINO == 1
@@ -451,12 +480,27 @@ static void printDataToSerial(Vector leftVectorOld, Vector rightVectorOld, Vecto
 static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(initSequence);
-  serialPort.println(commentChar + String("SERVER"));
+  serialPort.println(commentChar + String(ESP8266_CONFIGURATION));
   //serialPort.println(commentChar + String("CLIENT"));
   serialPort.println(commentChar + wifiSsid);
   serialPort.println(commentChar + wifiPassword);
-  //serialPort.println(commentChar + hostname);
+  #if ESP8266_ENABLE_CLIENT == 1
+    Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(hostname));
+  #endif
   serialPort.println(commentChar + String(port));
+
+    #if ESP8266_ENABLE_SSDP == 1
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_ENABLE_STRING));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_NAME));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_SERIALNUMBER));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNAME));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNUMBER));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELURL));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MANUFACTURER));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MANUFACTURERURL));
+    #else
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String("DISABLE_SSDP"));
+    #endif
 }
 
 /*==============================================================================*/
