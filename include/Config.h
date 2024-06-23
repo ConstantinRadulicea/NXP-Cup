@@ -227,6 +227,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #endif
 
 #define SSDP_ENABLE_STRING "ENABLE_SSDP"
+#define SSDP_DEVICETYPE "urn:schemas-upnp-org:device:NXP-CAR:1"
 #define SSDP_NAME "NXP-CUP-CAR"
 #if CAR1 == 1
   #define SSDP_SERIALNUMBER "1"
@@ -491,6 +492,7 @@ static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, 
 
     #if ESP8266_ENABLE_SSDP == 1
       Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_ENABLE_STRING));
+      Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_DEVICETYPE));
       Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_NAME));
       Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_SERIALNUMBER));
       Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNAME));
