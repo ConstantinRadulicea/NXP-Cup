@@ -34,15 +34,13 @@ public:
 	
 	//carSpeed = calculateCarSpeed(), viteza dorita.
 	double sync_motors(double carSpeed, double measured_speed1) {
-		//long currentTime = micros();
-		//float deltaT = ((float)(currentTime - previousTime)) / 1.0e6;
+		long currentTime = micros();
+		float deltaT = ((float)(currentTime - previousTime)) / 1.0e6;
 
 		double error1 = carSpeed - measured_speed1;
-		//integral1 = integral1 + error1 * deltaT;
-		integral1 = integral1 + error1;
-		//double derivative1 = (error1 - previous_error1) / deltaT;
-		double derivative1 = error1 - previous_error1;
-		//previousTime = currentTime;
+		integral1 = integral1 + error1 * deltaT;
+		double derivative1 = (error1 - previous_error1) / deltaT;
+		previousTime = currentTime;
 		previous_error1 = error1;
 
 		double output_speed2 = (this->Kp * error1) + (this->Ki * integral1) + (this->Kd * derivative1);
