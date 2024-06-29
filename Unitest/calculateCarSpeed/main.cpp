@@ -4,72 +4,94 @@
 #include <stdlib.h>
 
 //TO DO:
-//int read_encoder(int wheel_id); functie de citire senzorul de rotatii/viteza
-void set_motor_speed(int motor_id, double carSpeed) {
-	printf("Motor %d set to speed %.2f (0-180) \n", motor_id, carSpeed);
-}
+//int read_encoder(int wheel_id); functie pentru encoder
+//void WriteToMotor(float speed)
 
-
-class EnginesSync 
+class EngineSync 
 {
-private:
-	double Kp;
-	double Ki;
-	double Kd;
-
-	long previousTime = 0;
-	double previous_error1;
-	double integral1;
-
 public:
-
-	void init_pid(double kp, double ki, double kd) {
-		this->Kp = kp;
-		this->Ki = ki;
-		this->Kd = kd;
-
-		this->previous_error1 = 0;
-		this->integral1 = 0;
+	EngineSync(float kP, float kI, float KD) {
+		this->Kp = kP;
+		this->Ki = kI;
+		this->Kd = KD;
 	}
-	
+
+	void SetDesiredCarSpeed(float speed) {
+		this->desiredCarSpeed = speed;
+	}
+
+	float GetDesiredCarSpeed() {
+		return this->desiredCarSpeed;
+	}
+
+	float GetMeasuredSpeed() {
+		return this->measuredSpeed;
+	}
+
+	//perioada de esantionare nu este constanta => timePassedFromLastSample1 din ISR
+	void SetMeasuredSpeed(float measuredSpeed, volatile float timePassedFromLastSample1) {
+		this->measuredSpeed = measuredSpeed;
+		this->timePassedFromLastSample = timePassedFromLastSample1;
+	}
+
+	float GetSpeedRequest() {
+		this->speedRequest = CalculateSpeedRequest();
+		return this->speedRequest;
+	}
+
+	void SetToMotorRequestSpeed() {
+		WriteToMotor(this->speedRequest);
+	}
+
+private:
 	//carSpeed = calculateCarSpeed(), viteza dorita.
-	double sync_motors(double carSpeed, double measured_speed1) {
-		//long currentTime = micros();
-		//float deltaT = ((float)(currentTime - previousTime)) / 1.0e6;
+	float CalculateSpeedRequest() {
+		float error = this->desiredCarSpeed - this->measuredSpeed;
+		this->integral += error * this->timePassedFromLastSample;
+		float derivative = (error - previous_error) / this->timePassedFromLastSample;
+		float output_speed = (this->Kp * error) + (this->Ki * this->integral) + (this->Kd * derivative);
+		previous_error = error;
 
-		double error1 = carSpeed - measured_speed1;
-		//integral1 = integral1 + error1 * deltaT;
-		integral1 = integral1 + error1;
-		//double derivative1 = (error1 - previous_error1) / deltaT;
-		double derivative1 = error1 - previous_error1;
-		//previousTime = currentTime;
-		previous_error1 = error1;
-
-		double output_speed2 = (this->Kp * error1) + (this->Ki * integral1) + (this->Kd * derivative1);
-		output_speed2 = fmax(0.0, fmin(output_speed2, 180.0));
-
-		set_motor_speed(2, output_speed2);//unul dintre motoare va fi Master iar al doilea Slave.
-
-		return output_speed2;
+		output_speed = fmax(0.0, fmin(output_speed, 180.0));
+		return output_speed;
 	}
 
+	//=================================TO DO================================================
+	void WriteToMotor(float speed) {
+		printf("Motor set to speed %.2f (0-180) \n", speed);
+	}
+	//=================================TO DO================================================
+
+	float desiredCarSpeed; //viteza calculata in raport cu camera
+	float measuredSpeed; //viteza de la roti
+	volatile float timePassedFromLastSample = 0; //perioada de esantionare
+	float speedRequest; //viteza sincronizata
+	float previous_error = 0;
+	float integral = 0;
+
+	float Kp;
+	float Ki;
+	float Kd; 
 };
 
 
 int main() {
-	EnginesSync engines;
-	engines.init_pid(1.0, 0.05, 0.1);
+	EngineSync engine(1.0, 0.1, 0.01);
 
-	// Viteze dorite pentru fiecare motor (0 - 180)
-	double carSpeed1 = 120.0;
-
-	// Viteza măsurată pentru simulație (0 - 180)
-	double measured_speed1 = 120.0;
+	//Viteze(0 - 180)
+	engine.SetDesiredCarSpeed(120.0);
+	engine.SetMeasuredSpeed(135.0, 1.0);
+	float output_speed;
 
 	for (int i = 0; i < 500; ++i) { 
-		double output_speed2 = engines.sync_motors(carSpeed1, measured_speed1);
-		// Simulăm măsurătoarea reală printr-o interpolare simplă
-		measured_speed1 += 0.1 * (output_speed2 - measured_speed1);
+		output_speed = engine.GetSpeedRequest();
+		engine.SetToMotorRequestSpeed();
+
+		// Simulare: actualizare viteza masurata (într-o situație reală, aceasta ar veni de la senzori)
+		float newMeasuredSpeed = engine.GetMeasuredSpeed() + (output_speed - engine.GetMeasuredSpeed()) * 0.1;
+		engine.SetMeasuredSpeed(newMeasuredSpeed, 1.0);
+
+		printf("Measured Speed: %.2f\n", engine.GetMeasuredSpeed());
 	}
 
 	return 0;
