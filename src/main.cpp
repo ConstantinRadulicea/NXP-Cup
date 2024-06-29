@@ -118,7 +118,7 @@ void setup() {
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-    SERIAL_PORT.begin(115200);
+    SERIAL_PORT.begin(230400);
     #if RACE_MODE == 1
     #else
       while (!SERIAL_PORT){
@@ -159,13 +159,6 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1.changeProg(line) = ") + String(pixyResult));
   #endif
-
-/*
-  pixyResult = pixy_2.changeProg("line");
-  #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_2.changeProg(line) = ") + String(pixyResult));
-  #endif
-  */
 
   #if ENABLE_DRIVERMOTOR == 1
     float startTime_ = (float)millis();
@@ -402,6 +395,8 @@ void loop() {
   float timeStart;
   float max_speed_original;
   MovingAverage movingAverage_speed(10);
+  
+  int consecutiveValidFinishLines = 0;
 
   pixy_1_result = PIXY_RESULT_ERROR;
   pixy_2_result = PIXY_RESULT_ERROR;
@@ -446,6 +441,9 @@ void loop() {
 
 
     if (ENABLE_CAR_ENGINE == 0) {
+      consecutiveValidFinishLines = 0;
+      finish_line_detected = 0;
+      finish_line_detected_now = 0;
       driverMotor.write((int)STANDSTILL_SPEED);
     }
     
@@ -473,10 +471,8 @@ void loop() {
         MAX_SPEED = MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY;
       }
     }
-      if (emergency_brake_enable_remaining_delay_s <= 0.0f)
-      {
-      
-      
+    if (emergency_brake_enable_remaining_delay_s <= 0.0f)
+    {
       
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
@@ -490,14 +486,12 @@ void loop() {
         #endif
 
         if (emergency_break_loops_count == 1) {
-          //emergencyBreakTimer.begin(TimerHandler1, (int)TIMER1_INTERVAL_MS * (int)1000);
 
           #if ENABLE_DRIVERMOTOR == 1 &&  ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE == 1 // use brakes to get to a near standstill
             if (ENABLE_CAR_ENGINE != 0) {
               float tempCarSpeed = movingAverage_speed.next(carSpeed);
               float startTime_ = (float)millis();
               float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (40.0f / (107.0f - 90.0f));
-              //float brakeTime_ = (uint32_t)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * expf((1.0f/5.5f)*fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)));
               int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
 
               while ((((float)millis()) - startTime_) < brakeTime_) {
@@ -561,22 +555,6 @@ void loop() {
     pixy_1_vectorsProcessing.clear();
 
     pixy_1_result = PIXY_RESULT_ERROR;
-    //pixy_2_result = PIXY_RESULT_ERROR;
-    
-    //while ((pixy_1_result < (int8_t)0) /*|| (pixy_2_result < (int8_t)0)*/) {
-    //  remote_control_routine();
-    //  if (ENABLE_CAR_ENGINE == 0) {
-    //    driverMotor.write((int)STANDSTILL_SPEED);
-    //  }
-    //  if (pixy_1_result < (int8_t)0) {
-    //    pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
-    //  }
-    //  /*
-    //  if (pixy_2_result < (int8_t)0) {
-    //    pixy_2_result = pixy_2.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION, false);
-    //  }
-    //  */
-    //}
 
     pixy_1_result = pixy_1.line.getAllFeatures(LINE_VECTOR /*| LINE_INTERSECTION*/, true);
     
@@ -608,6 +586,29 @@ void loop() {
       pixy_1_leftVectorOld = pixy_1_vectorsProcessing.getLeftVector();
       pixy_1_rightVectorOld = pixy_1_vectorsProcessing.getRightVector();
 
+      vectors.resize(pixy_1.line.numVectors);
+      for (size_t i = 0; i < pixy_1.line.numVectors; i++) {
+        vectors[i] = VectorsProcessing::mirrorVector(mirrorLine, pixy_1.line.vectors[i]);
+      }
+
+      #if ENABLE_FINISH_LINE_DETECTION == 1
+        if (ENABLE_FINISH_LINE_DETECTION_SOFT != 0) {
+          finish_line = VectorsProcessing::findStartFinishLine(vectors, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), pixy_1_vectorsProcessing.getMiddleLine(), FINISH_LINE_ANGLE_TOLERANCE);
+          if (VectorsProcessing::isFinishLineValid(finish_line)) {
+            consecutiveValidFinishLines += 1;
+            finish_line_detected_now = 1;
+            if (consecutiveValidFinishLines >= 5) {
+              finish_line_detected = 1;
+            }
+          }
+          else{
+            consecutiveValidFinishLines = 0;
+            finish_line_detected_now = 0;
+            memset(&finish_line, 0, sizeof(finish_line));
+          }
+        }
+      #endif
+      
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if(emergency_break_active == 0 && ENABLE_PIXY_VECTOR_APPROXIMATION_SOFT != 0){
         if (((int)pixy_1_vectorsProcessing.isVectorValid(pixy_1_rightVectorOld) + (int)pixy_1_vectorsProcessing.isVectorValid(pixy_1_leftVectorOld))==1){
@@ -754,11 +755,7 @@ void loop() {
         carSpeed = calculateCarSpeed((float)MIN_SPEED, MAX_SPEED, (float)STEERING_SERVO_MAX_ANGLE, purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN, middle_lane_line_pixy_1, CAR_SPEED_KI, CAR_SPEED_KD, CAR_SPEED_KI_MIN_MAX_IMPACT);
       }
     }
-    
-    #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getRightVector()), middle_lane_line_pixy_1, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance, carSpeed);
-    #endif
-    
+        
     #if ENABLE_STEERING_SERVO == 1
       if (ENABLE_CAR_STEERING_WHEEL != 0) {
         steeringWheel.setSteeringAngleDeg(purePersuitInfo.steeringAngle * DEGREES_PER_RADIAN);
@@ -777,10 +774,16 @@ void loop() {
     loop_time_ms = ((float)millis()) - timeStart;
     loop_time_ms = MAX(loop_time_ms, 0.0f);
     time_passed_ms += loop_time_ms;
+
+    #if ENABLE_SERIAL_PRINT == 1
+        printDataToSerial(pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_vectorsProcessing.getLeftVector(), pixy_1_vectorsProcessing.getRightVector(), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getLeftVector()), VectorsProcessing::vectorToLineABC(pixy_1_vectorsProcessing.getRightVector()), middle_lane_line_pixy_1, purePersuitInfo, (carSpeed - (float)STANDSTILL_SPEED) / (float)(MAX_SPEED - STANDSTILL_SPEED), frontObstacleDistance, carSpeed);
+    #endif
     
+    /*
     #if ENABLE_SERIAL_PRINT == 1
       SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("LoopTime: ") + String(loop_time_ms) + String(" ms"));
     #endif
+    */
   }
 }
 

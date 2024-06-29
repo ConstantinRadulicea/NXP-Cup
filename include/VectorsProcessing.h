@@ -21,6 +21,11 @@
 #include "geometry2D.h"
 #include <vector>
 
+typedef struct FinishLine{
+    Vector leftSegment;
+    Vector rightSegment;
+}FinishLine;
+
 class VectorsProcessing
 {
 private:
@@ -260,6 +265,43 @@ public:
         return true;
     }
 
+    static bool areVectorsEqual(Vector vec1, Vector vec2){
+        if (vec1.m_x0 == vec2.m_x0 &&
+            vec1.m_y0 == vec2.m_y0 &&
+            vec1.m_x1 == vec2.m_x1 &&
+            vec1.m_y1 == vec2.m_y1
+            ) {
+            return true;
+        }
+        if (vec1.m_x0 == vec2.m_x1 &&
+            vec1.m_y0 == vec2.m_y1 &&
+            vec1.m_x1 == vec2.m_x0 &&
+            vec1.m_y1 == vec2.m_y0
+            ) {
+            return true;
+        }
+        return false;
+    }
+
+    static bool isFinishLineValid(FinishLine finishLine){
+        if(isVectorValid(finishLine.leftSegment) || isVectorValid(finishLine.rightSegment)){
+            return true;
+        }
+        return false;
+    }
+
+    static LineSegment vectorToLineSegment(Vector vec){
+        return LineSegment{Point2D{(float)(vec.m_x0), (float)(vec.m_y0)}, Point2D{(float)(vec.m_x1), (float)(vec.m_y1)}};
+    }
+
+    static float minDistanceVectorToLine(Vector vec, LineABC line){
+        return minDistanceLineSegmentToLine(vectorToLineSegment(vec), line);
+    }
+
+    static float maxDistanceVectorToLine(Vector vec, LineABC line){
+        return maxDistanceLineSegmentToLine(vectorToLineSegment(vec), line);
+    }
+
     static Vector reComputeVectorStartEnd_basedOnproximityToPoint(Vector vec, Point2D point){
         float distanceStartVector, distanceEndVector;
         Point2D startVector, endVector, newVectorStart, newVectorEnd;
@@ -432,6 +474,91 @@ public:
         newVector.m_y1 = newVectorEnd.y;
         return newVector;
     }
+
+    static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees){
+        FinishLine finishLine;
+        LineABC leftLine, rightLine, tempVectorLine;
+        Point2D projectionOnLine;
+        float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev, laneWidth_max, laneWidth_min;
+        LineSegmentsDistancePoints laneWidth_;
+
+        memset(&finishLine, 0, sizeof(FinishLine));
+        if(!isVectorValid(leftLineVector) || !isVectorValid(rightLineVector)){
+            return finishLine;
+        }
+        
+        laneWidth_ = distancePointsBwSegments(vectorToLineSegment(leftLineVector), vectorToLineSegment(rightLineVector));
+        laneWidth_min = euclidianDistance(laneWidth_.min.A, laneWidth_.min.B);
+        laneWidth_max = euclidianDistance(laneWidth_.max.A, laneWidth_.max.B);
+        //Serial1.print("%");
+        //Serial1.println(laneWidth_min);
+
+        leftLine = vectorToLineABC(leftLineVector);
+        rightLine = vectorToLineABC(rightLineVector);
+
+        if (floatCmp(fabs(angleBetweenLinesABC(leftLine, rightLine)), radians(45.0f)) >= 0) {
+            return finishLine;
+        }
+
+        if (floatCmp(laneWidth_min, 0.0f) <= 0) {
+            return finishLine;
+        }
+
+        for (size_t i = 0; i < vectors.size(); i++) {
+            if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
+                continue;
+            }
+
+            tempVectorLine = vectorToLineABC(vectors[i]);
+
+            angleRadiansError = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, tempVectorLine))));
+            //angleRadiansError = angleBetweenLinesABC(middleLine, tempVectorLine);
+
+            if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees))) <= 0) {
+                //Serial1.print("%");
+                //Serial1.println(angleRadiansError);
+                minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
+                minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
+
+                if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
+                    continue;
+                }
+                //Serial1.print("%");
+                //Serial1.println(minDistanceVectorToLeftLine);
+                //Serial1.print("%");
+                //Serial1.println(minDistanceVectorToRightLine);
+                if ((floatCmp(minDistanceVectorToLeftLine, laneWidth_min) > 0) || (floatCmp(minDistanceVectorToRightLine, laneWidth_min) > 0)) {
+                    continue;
+                }
+
+                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
+                    if (isVectorValid(finishLine.leftSegment)) {
+                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment)))));
+                        if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
+                            finishLine.leftSegment = vectors[i];
+                        }
+                    }
+                    else{
+                        finishLine.leftSegment = vectors[i];
+                    }
+                }
+
+                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
+                    if (isVectorValid(finishLine.rightSegment)) {
+                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment)))));
+                        if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
+                            finishLine.rightSegment = vectors[i];
+                        }
+                    }
+                    else{
+                        finishLine.rightSegment = vectors[i];
+                    }
+                }
+            }
+        }
+        return finishLine;
+    }
+
 };
 
 
