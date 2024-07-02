@@ -45,10 +45,10 @@ public:
 //int read_encoder(int wheel_id); functie pentru encoder
 //void WriteToMotor(float speed)
 
-class EngineSync
+class Engine
 {
 public:
-	EngineSync(float kP, float kI, float KD) {
+	Engine(float kP, float kI, float KD) {
 		this->Kp = kP;
 		this->Ki = kI;
 		this->Kd = KD;
@@ -200,8 +200,8 @@ private:
 		return (((wheelDiameter / 2.0) * (2 * M_PI)) / 60.0) * speedRPM;
 	}
 
-	EngineSync leftEngine;
-	EngineSync rightEngine;
+	Engine leftEngine;
+	Engine rightEngine;
 	float wheelDiameter;
 };
 
