@@ -14,6 +14,12 @@ public:
 		this->Kp = kP;
 		this->Ki = kI;
 		this->Kd = KD;
+		this->desiredCarSpeed = 0;
+		this->measuredSpeed = 0;
+		this->timePassedFromLastSample = 0;
+		this->speedRequest = 0;
+		this->previous_error = 0;
+		this->integral = 0;
 	}
 
 	void SetDesiredCarSpeed(float speed) {
@@ -32,10 +38,10 @@ public:
 	void SetMeasuredSpeed(float measuredSpeed, volatile float timePassedFromLastSample1) {
 		this->measuredSpeed = measuredSpeed;
 		this->timePassedFromLastSample = timePassedFromLastSample1;
+		this->speedRequest = CalculateSpeedRequest();
 	}
 
 	float GetSpeedRequest() {
-		this->speedRequest = CalculateSpeedRequest();
 		return this->speedRequest;
 	}
 
@@ -64,35 +70,90 @@ private:
 
 	float desiredCarSpeed; //viteza calculata in raport cu camera
 	float measuredSpeed; //viteza de la roti
-	volatile float timePassedFromLastSample = 0; //perioada de esantionare
+	volatile float timePassedFromLastSample; //perioada de esantionare
 	float speedRequest; //viteza sincronizata
-	float previous_error = 0;
-	float integral = 0;
+	float previous_error;
+	float integral;
 
 	float Kp;
 	float Ki;
 	float Kd; 
 };
 
+class PowerTrain
+{
+public:
+	PowerTrain(float kP, float kI, float kD, float wheelDiameter) : leftEngine(kP, kI, kD), rightEngine(kP, kI, kD), wheelDiameter(wheelDiameter){ }
+
+	void SetSpeed(float speed, float leftWheelPercent, float rightWheelPercent) {
+		if (leftWheelPercent < -1 || leftWheelPercent > 1 || rightWheelPercent < -1 || rightWheelPercent > 1) {
+			printf("Error: wheel percent values must be in the range [-1, 1].\n");
+			return;
+		}
+		
+		float leftWheelSpeed = leftWheelPercent * speed;
+		float rightWheelSpeed = rightWheelPercent * speed;
+
+		float leftWheelSpeedRPM = MpsToRPM(leftWheelSpeed);
+		float rightWheelSpeedRPM = MpsToRPM(rightWheelSpeed);
+
+		leftEngine.SetDesiredCarSpeed(leftWheelSpeedRPM);
+		rightEngine.SetDesiredCarSpeed(rightWheelSpeedRPM);
+	}
+
+	//==========================SIMULATION FUNCTION==============================
+	void Simulate(float deltaTime, int cycles) {
+		for (int i = 0; i < cycles; ++i) {
+			float leftMeasuredSpeed = leftEngine.GetMeasuredSpeed();
+			float rightMeasuredSpeed = rightEngine.GetMeasuredSpeed();
+
+			leftEngine.SetMeasuredSpeed(leftMeasuredSpeed + (leftEngine.GetSpeedRequest() - leftMeasuredSpeed) * 0.1, deltaTime);
+			rightEngine.SetMeasuredSpeed(rightMeasuredSpeed + (rightEngine.GetSpeedRequest() - rightMeasuredSpeed) * 0.1, deltaTime);
+
+			printf("Cycle %d:\n", i);
+			printf("  Left Engine - Desired: %.2f RPM, Measured: %.2f RPM\n", leftEngine.GetDesiredCarSpeed(), leftEngine.GetMeasuredSpeed());
+			printf("  Right Engine - Desired: %.2f RPM, Measured: %.2f RPM\n", rightEngine.GetDesiredCarSpeed(), rightEngine.GetMeasuredSpeed());
+
+			leftEngine.SetToMotorRequestSpeed();
+			rightEngine.SetToMotorRequestSpeed();
+		}
+	}
+	//==========================SIMULATION FUNCTION==============================
+
+private:
+	float MpsToRPM(float speedMps) { //metri/s --> RPM
+		float wheelCircumference = M_PI * wheelDiameter; // wheel diameter is in meters!
+		float speedRPM = (speedMps / wheelCircumference) * 60.0;
+		
+		return speedRPM;
+	}
+
+	EngineSync leftEngine;
+	EngineSync rightEngine;
+	float wheelDiameter;
+};
+
+
 
 int main() {
-	EngineSync engine(1.0, 0.1, 0.01);
+	float kP = 1.0;
+	float kI = 0.1;
+	float kD = 0.01;
+	float wheelDiameter = 0.5; // exemplu: diametru roata in metri
 
-	//Viteze(0 - 180)
-	engine.SetDesiredCarSpeed(120.0);
-	engine.SetMeasuredSpeed(135.0, 1.0);
-	float output_speed;
+	PowerTrain powerTrain(kP, kI, kD, wheelDiameter);
 
-	for (int i = 0; i < 500; ++i) { 
-		output_speed = engine.GetSpeedRequest();
-		engine.SetToMotorRequestSpeed();
+	// Exemplu de setare a vitezei
+	float speed = 5.0; // viteza in metri/secunda
+	float leftWheelPercent = 0.8; // procentul rotii stangi
+	float rightWheelPercent = 0.7; // procentul rotii drepte
 
-		// Simulare: actualizare viteza masurata (într-o situație reală, aceasta ar veni de la senzori)
-		float newMeasuredSpeed = engine.GetMeasuredSpeed() + (output_speed - engine.GetMeasuredSpeed()) * 0.1;
-		engine.SetMeasuredSpeed(newMeasuredSpeed, 1.0);
+	powerTrain.SetSpeed(speed, leftWheelPercent, rightWheelPercent); // Setează viteza dorită pentru fiecare roată în funcție de procentajul specificat.
 
-		printf("Measured Speed: %.2f\n", engine.GetMeasuredSpeed());
-	}
+	float deltaTime = 0.1; // Perioada de eșantionare în secunde
+	int cycles = 100; // Număr de cicluri de simulare
+
+	powerTrain.Simulate(deltaTime, cycles);
 
 	return 0;
 }
