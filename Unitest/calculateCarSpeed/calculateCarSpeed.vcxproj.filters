@@ -23,5 +23,8 @@
     <ClInclude Include="geometry2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PowerTrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
