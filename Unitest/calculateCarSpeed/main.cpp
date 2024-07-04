@@ -1,4 +1,4 @@
-﻿//#define DEBUG_UNIT_TEST
+﻿#define DEBUG_UNIT_TEST
 #include "PowerTrain.h"
 
 // wheel diameter = 64mm
@@ -9,19 +9,19 @@ int main() {
 	float kD = 0.01;
 	float wheelDiameter = 0.064; // exemplu: diametru roata in metri
 
-	PowerTrain powerTrain(kP, kI, kD, wheelDiameter);
+	PowerTrain powerTrain(kP, kI, kD, 1.5, wheelDiameter, 2.2, 7.4, 930);
 
 	// Exemplu de setare a vitezei
 	float speed = 50.0; // viteza in metri/secunda
 	float leftWheelPercent = 0.8; // procentul rotii stangi
 	float rightWheelPercent = 0.7; // procentul rotii drepte
 
-	powerTrain.SetSpeed(speed, leftWheelPercent, rightWheelPercent); // Setează viteza dorită pentru fiecare roată în funcție de procentajul specificat.
+	powerTrain.SetLeftWheelAccelerationRequest(0.10);
 
 	float deltaTime = 0.1; // Perioada de eșantionare în secunde
-	int symulationTime_s = 1000.0; // Simulation time in seconds
+	int symulationTime_s = 100.0; // Simulation time in seconds
 
-	powerTrain.Simulate(deltaTime, symulationTime_s);
+	powerTrain.leftWheel.Simulate(deltaTime, symulationTime_s);
 
 	return 0;
 }
