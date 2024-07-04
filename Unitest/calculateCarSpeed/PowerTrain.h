@@ -10,6 +10,10 @@
 
 #define M_PI       3.14159265358979323846   // pi
 #define M_PI_2     1.57079632679489661923   // pi/2
+//TO DO:
+//-int read_encoder(int wheel_id); functie pentru encoder
+//-void WriteToMotor(float speed)
+//-Chose a better rolling resistance coefficient!
 
 #ifdef DEBUG_UNIT_TEST
 #include <stdio.h>
@@ -40,25 +44,35 @@ public:
 };
 #endif // DEBUG_UNIT_TEST
 
+float CalculateTorque(float mass, float speed_ms, float radius) {
+	const float gForce = 9.81; //Acceleration due to gravity (m/s^2)
+	const float C_rr = 0.015; //rolling resistance coefficient/coeficientul de frecare
+	
+	float fRolling = C_rr * mass * gForce;
+	float pRolling = fRolling * speed_ms;
 
-//TO DO:
-//int read_encoder(int wheel_id); functie pentru encoder
-//void WriteToMotor(float speed)
+	float acceleration;
+	float pAcceleration = 0.5 * mass * acceleration * speed_ms;
+
+	float pTotal = pRolling + pAcceleration;
+
+	float angularVelocity = speed_ms / radius;
+
+	float torque = pTotal / angularVelocity;
+	return torque;
+}
 
 class Engine
 {
 public:
-	Engine(float kP, float kI, float KD) {
-		this->Kp = kP;
-		this->Ki = kI;
-		this->Kd = KD;
+	Engine(float batteryAmperage, float batteryVoltage, float motorKV) {
 		this->torqueRequest = 0.0;
 		this->speedRequest_raw = 0.0;
 
-		this->batteryAmperage = 2.2;
-		this->batteryVoltage = 7.5;
-		this->motorKV = 930.0;
-		this->maxTorque = (60.0 * this->batteryAmperage) / (this->motorKV * 2.0 * M_PI);
+		this->batteryAmperage = batteryAmperage = 2.2;
+		this->batteryVoltage = batteryVoltage = 7.4;
+		this->motorKV = motorKV= 930.0;
+		this->maxTorque = (60.0 * this->batteryAmperage) / (this->motorKV * 2.0 * M_PI); // Torque max = 0.0226 Nm
 	}
 
 	void SetTorqueRequest(float torque) {
@@ -141,7 +155,11 @@ protected:
 class Wheel: protected Engine //read RPM and set torque
 {
 public:
-	Wheel(float kP, float kI, float kD, float wheelDiameter_meters): Wheel::Engine(kP, kI, kD), wheelDiameter(wheelDiameter_meters) { }
+	Wheel(float kP, float kI, float kD, float wheelDiameter_meters, float batteryAmperage, float batteryVoltage, float motorKV): Wheel::Engine(batteryAmperage, batteryVoltage, motorKV), wheelDiameter(wheelDiameter_meters) {
+		this->Kp = Kp;
+		this->Ki = Ki;
+		this->Kd = Kd;
+	}
 	
 	float GetSpeed() {
 		return this->RPMToMps(this->wheelRPM);
@@ -178,8 +196,8 @@ public:
 	//==========================SIMULATION FUNCTION==============================
 #endif // DEBUG_UNIT_TEST
 
-	void SetSpeed(float speed) {
-		this->speedRequest = speed;
+	void SetSpeed(float speed_mps) { // speed = mps!
+		this->speedRequest = speed_mps;
 		this->SetTorqueRequest(this->CalculateTorqueRequest());
 	}
 
@@ -203,15 +221,15 @@ private:
 	}
 
 	//carSpeed = calculateCarSpeed(), viteza dorita.
-	float CalculateTorqueRequest() {
-		float error = this->speedRequest - this->wheelRPM;
+	float CalculateTorqueRequest() { 
+		float error = this->speedRequest - this->RPMToMps(this->wheelRPM);
 		this->integral += error * this->timePassedFromLastSample;
 		float derivative = (error - previous_error) / this->timePassedFromLastSample;
 		float output_speed = (this->Kp * error) + (this->Ki * this->integral) + (this->Kd * derivative);
 		previous_error = error;
 
 		output_speed = fmax(0.0, fmin(output_speed, 180.0));
-		return output_speed;
+		return output_speed; 
 	}
 
 	float wheelRPM;
@@ -228,6 +246,10 @@ private:
 class PowerTrain
 {
 public:
+
+	PowerTrain(float kP, float kI, float kD, float wheelDiameter_meters, float batteryAmperage, float batteryVoltage, float motorKV)
+		:leftWheel(kP, kI, kD, wheelDiameter_meters, batteryAmperage, batteryVoltage, motorKV), 
+		rightWheel(kP, kI, kD, wheelDiameter_meters, batteryAmperage, batteryVoltage, motorKV) { }
 	
 	float GetRightWheelSpeed() {
 		return this->leftWheel.GetSpeed();
