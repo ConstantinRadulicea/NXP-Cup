@@ -1,4 +1,4 @@
-﻿#define DEBUG_UNIT_TEST
+﻿//#define DEBUG_UNIT_TEST
 #include "PowerTrain.h"
 
 // wheel diameter = 64mm
