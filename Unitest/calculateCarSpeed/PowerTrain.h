@@ -76,6 +76,8 @@ public:
 	}
 
 	void SetTorqueRequest(float torque) {
+		torque = MAX(torque, -this->maxTorque);
+		torque = MIN(torque, this->maxTorque);
 		this->torqueRequest = torque;
 		this->SetToMotorRawRequest(this->TorqueToRawValue(torque));
 	}
@@ -191,8 +193,8 @@ public:
 	void Simulate(float deltaTime, float cycles) {
 		float leftMeasuredSpeed, rightMeasuredSpeed;
 		// Parametrii funcției de transfer
-		double mass = 1.5; // kg
-		double friction = 1.0; // N*s/m
+		double mass = this->carWeight; // kg
+		double friction = 0.5; // N*s/m
 		CarModel carModel(mass, friction, this->wheelDiameter / 2.0);
 		for (int i = 0; i < (int)(cycles / deltaTime); ++i) {
 			//leftMeasuredSpeed = leftEngine.GetMeasuredSpeed();
@@ -204,7 +206,7 @@ public:
 			this->SetMeasuredRPM(carModel.calculateRPM(this->GetTorqueRequest(), i * deltaTime), deltaTime);
 
 			printf("Cycle %d:\n", i);
-			printf("acc: %.2f, Measured: %.2f RPM\n", this->GetAccelerationRequest(), this->GetAcceleration());
+			printf("acc: %.2f, Measured: %.2f m/^2\n", this->GetAccelerationRequest(), this->GetAcceleration());
 
 			//leftEngine.SetToMotorSpeedRequest();
 			//rightEngine.SetToMotorSpeedRequest();
@@ -243,7 +245,7 @@ public:
 private:
 
 	float WheelTorqueToEngineTorque(float wheelTorque) {
-		return wheelTorque * (14 / 85.0);
+		return wheelTorque * (14.0 / 85.0);
 	}
 
 	float MpsToRPM(float speedMps) { //metri/s --> RPM
