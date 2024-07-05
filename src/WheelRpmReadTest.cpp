@@ -26,7 +26,7 @@ volatile RpmSensorData RightWheelRpmData = {
 
 void ISR_RpmSensorLeftWheel() {
     unsigned long elapsed_time_us, time_now_us;
-    
+
     time_now_us = micros();
     elapsed_time_us = LeftWheelRpmData.LastSampleTimestamp_us;
     LeftWheelRpmData.LastSampleTimestamp_us = time_now_us;
