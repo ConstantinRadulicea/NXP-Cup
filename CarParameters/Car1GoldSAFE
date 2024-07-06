@@ -3,7 +3,7 @@ fieldTerminator = ';';
 % good bad
 % 17 - 3
 % 22 - 0
-enable_car_engine = 01.0;
+enable_car_engine = 0.0;
 enable_car_steering_wheel = 0.0;
 enable_emergency_brake = 0.0;
 enable_pixy_vector_approximation = 0.0;             
@@ -16,10 +16,10 @@ lane_width_vector_unit_real = 53.0;
 black_color_treshold = 0.2;
 car_length_cm = 17.5;
 lookahead_min_distance_cm = 22.0;                       % 22
-lookahead_max_distance_cm = 50.0;                       % 40
+lookahead_max_distance_cm = 45.0;                       % 40
 min_speed = 97.0;
-max_speed = 135.0;                                      % 
-car_speed_ki = -0.02;
+max_speed = 130.0;                                      % 
+car_speed_ki = -0.01;
 car_speed_kd = -0.2;
 car_speed_ki_min_max_impact = 5.0;
 emergency_break_distance_cm = 75.0;                     % 75
