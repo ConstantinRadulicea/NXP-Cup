@@ -18,8 +18,13 @@ car_length_cm = 17.5;
 lookahead_min_distance_cm = 22.0;                       % 22
 lookahead_max_distance_cm = 50.0;                       % 40
 min_speed = 97.0;
+<<<<<<< HEAD
+max_speed = 128.0;                                      % 
+car_speed_ki = -0.01;
+=======
 max_speed = 135.0;                                      % 
 car_speed_ki = -0.02;
+>>>>>>> 6876ebeacb7986081a9488929a22d38a9beb4415
 car_speed_kd = -0.2;
 car_speed_ki_min_max_impact = 5.0;
 emergency_break_distance_cm = 75.0;                     % 75
