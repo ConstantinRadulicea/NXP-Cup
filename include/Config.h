@@ -118,34 +118,20 @@ static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
 static float lookahead_max_distance_cm = 50.0f;
 static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-<<<<<<< HEAD
-static float max_speed = 127.0f  + CAR2_PARAMETERS_DIFFERENCE;
-=======
 static float max_speed = 125.0f  + CAR2_PARAMETERS_DIFFERENCE;
->>>>>>> main
 static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 static float emergency_brake_distance_from_obstacle_cm = 74.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
 static float min_axis_angle_vector = 15.0f;
-<<<<<<< HEAD
-static float max_speed_after_emergency_brake_delay = 110.0f;
-static float car_speed_ki = -0.02f;
-static float car_speed_kd = -0.2f;
-=======
 static float max_speed_after_emergency_brake_delay = 107.0f;
 static float car_speed_ki = -0.01f;
 static float car_speed_kd = -0.4f;
->>>>>>> main
 static float car_speed_ki_min_max_impact = 5.0f;
 
 
 #if RACE_MODE == 1
-<<<<<<< HEAD
-  static float emergency_brake_enable_delay_s = 0.0f;
-=======
   static float emergency_brake_enable_delay_s = 20.0f;
->>>>>>> main
 #elif DEBUG_MODE == 1
   static float emergency_brake_enable_delay_s = 0.0f;
 #else
@@ -220,10 +206,6 @@ static float car_speed_ki_min_max_impact = 5.0f;
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
-<<<<<<< HEAD
-#define DEBUG_HOST_IPADDRESS "172.20.10.7"   // Daniel phone
-//#define DEBUG_HOST_IPADDRESS "192.168.79.133"   // Alex
-=======
 #if CAR1 == 1
   #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // Daniel phone
 #else
@@ -232,7 +214,6 @@ static float car_speed_ki_min_max_impact = 5.0f;
 
 
 
->>>>>>> main
 #define DEBUG_HOST_PORT 6789
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
