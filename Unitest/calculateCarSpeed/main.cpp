@@ -4,9 +4,9 @@
 // wheel diameter = 64mm
 
 int main() {
-	float kP = 1.0;
-	float kI = 0.1;
-	float kD = 0.01;
+	float kP = 0.01;
+	float kI = 0.01;
+	float kD = 0.001;
 	float wheelDiameter = 0.064; // exemplu: diametru roata in metri
 
 	PowerTrain powerTrain(kP, kI, kD, 2.0, wheelDiameter, 2.2, 7.4, 930);
@@ -16,7 +16,7 @@ int main() {
 	float leftWheelPercent = 0.8; // procentul rotii stangi
 	float rightWheelPercent = 0.7; // procentul rotii drepte
 
-	powerTrain.SetLeftWheelAccelerationRequest(1.0);
+	powerTrain.SetLeftWheelSpeedRequest(7.0);
 
 	float deltaTime = 0.1; // Perioada de eșantionare în secunde
 	int symulationTime_s = 10; // Simulation time in seconds
