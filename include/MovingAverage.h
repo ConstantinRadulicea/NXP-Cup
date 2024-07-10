@@ -19,6 +19,10 @@ MovingAverage(size_t size) {
     
   }
 
+  MovingAverage() {
+    this->size = 0;
+  }
+
 float next(float val) {
     ++count;
     // calculate the new sum by shifting the window
@@ -29,6 +33,17 @@ float next(float val) {
     queue[head] = val;
     return ((float)windowSum) / ((float)MIN(size, count));
   }
+
+  float nextVolatile(float val) volatile {
+      ++count;
+      // calculate the new sum by shifting the window
+      size_t tail = (head + 1) % size;
+      windowSum = windowSum - queue[tail] + val;
+      // move on to the next head
+      head = (head + 1) % size;
+      queue[head] = val;
+      return ((float)windowSum) / ((float)MIN(size, count));
+    }
 
   ~MovingAverage(){
     delete this->queue;
