@@ -23,7 +23,7 @@ MovingAverage(size_t size) {
     this->size = 0;
   }
 
-float next(float val) {
+float next(float val){
     ++count;
     // calculate the new sum by shifting the window
     size_t tail = (head + 1) % size;

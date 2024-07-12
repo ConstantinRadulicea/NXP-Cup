@@ -1,27 +1,12 @@
 ﻿  main.cpp
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(75,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(109,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(115,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(132,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(222,46): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(210,28): warning C4101: 'rightMeasuredSpeed': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(210,9): warning C4101: 'leftMeasuredSpeed': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(270,22): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(274,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(275,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(281,56): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(292,20): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(293,20): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(321,38): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(324,43): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(123,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(128,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(129,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\PowerTrain.h(135,56): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(7,11): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(8,11): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(9,11): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(10,22): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(12,61): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(12,56): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(16,25): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(17,26): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(21,18): warning C4305: 'initializing': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(24,43): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(16,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\main.cpp(25,38): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   calculateCarSpeed.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\x64\Debug\calculateCarSpeed.exe

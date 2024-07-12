@@ -170,7 +170,7 @@ uint32_t PWMServo::attachedpins[(NUM_DIGITAL_PINS+31)/32]; // 1 bit per digital 
 
 PWMServo::PWMServo() : pin(255), angle(NO_ANGLE) {}
 
-uint8_t PWMServo::attach(int pinArg, int min, int max)
+uint8_t PWMServo::attach(int pinArg, int min, int max) volatile
 {
 	//Serial.printf("attach, pin=%d, min=%d, max=%d\n", pinArg, min, max);
 	if (pinArg < 0 || pinArg >= NUM_DIGITAL_PINS) return 0;
@@ -186,7 +186,7 @@ uint8_t PWMServo::attach(int pinArg, int min, int max)
 	return 1;
 }
 
-void PWMServo::write(int angleArg)
+void PWMServo::write(int angleArg) volatile
 {
 	//Serial.printf("write, pin=%d, angle=%d\n", pin, angleArg);
 	if (pin >= NUM_DIGITAL_PINS) return;

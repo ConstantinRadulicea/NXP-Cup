@@ -23,6 +23,7 @@ typedef struct RpmSensorData {
     float Rpm;
     unsigned long LastSampleTimestamp_us;
     MovingAverage RpmAverage;
+    void (*on_pulse)(volatile struct RpmSensorData *data);
 } RpmSensorData;
 
 static volatile RpmSensorData LeftWheelRpmData = {
@@ -30,7 +31,8 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(5)
+    .RpmAverage = MovingAverage(3),
+    .on_pulse = NULL
 };
 
 static volatile RpmSensorData RightWheelRpmData = {
@@ -38,7 +40,8 @@ static volatile RpmSensorData RightWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(20)
+    .RpmAverage = MovingAverage(3),
+    .on_pulse = NULL
 };
 
 static void ISR_RpmSensor(volatile RpmSensorData* data){
@@ -67,6 +70,10 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
         local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
         data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
         //data->Rpm = local_rpm;
+    }
+    
+    if (data->on_pulse != NULL) {
+        data->on_pulse(data);
     }
 }
 

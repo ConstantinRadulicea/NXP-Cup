@@ -1,6 +1,24 @@
-﻿#ifndef __POWERTRAIN_H__
+﻿/*
+* Copyright 2024 Constantin Dumitru Petre RĂDULICEA
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+
+#ifndef __POWERTRAIN_H__
 #define __POWERTRAIN_H__
+
 #include <math.h>
+#include "PID.h"
 //#include "geometry2D.h"
 
 
@@ -42,158 +60,36 @@ public:
 		return omega;
 	}
 };
-#endif // DEBUG_UNIT_TEST
-/*
-float CalculateTorque(float mass, float speed_ms, float radius) {
-	const float gForce = 9.81; //Acceleration due to gravity (m/s^2)
-	const float C_rr = 0.015; //rolling resistance coefficient/coeficientul de frecare
-	
-	float fRolling = C_rr * mass * gForce;
-	float pRolling = fRolling * speed_ms;
+#endif
 
-	float acceleration;
-	float pAcceleration = 0.5 * mass * acceleration * speed_ms;
-
-	float pTotal = pRolling + pAcceleration;
-
-	float angularVelocity = speed_ms / radius;
-
-	float torque = pTotal / angularVelocity;
-	return torque;
-}
-*/
-class Engine
+class Wheel
 {
 public:
-	Engine(float batteryAmperage, float batteryVoltage, float motorKV) {
-		this->torqueRequest = 0.0;
-		this->speedRequest_raw = 0.0;
-
-		this->batteryAmperage = batteryAmperage;	// 2.2A
-		this->batteryVoltage = batteryVoltage;		// 7.4V
-		this->motorKV = motorKV;					// 930kV
-		this->maxTorque = (60.0 * this->batteryAmperage) / (this->motorKV * 2.0 * M_PI); // Torque max = 0.0226 Nm
-	}
-
-	void SetTorqueRequest(float torque) {
-		torque = MAX(torque, -this->maxTorque);
-		torque = MIN(torque, this->maxTorque);
-		this->torqueRequest = torque;
-		this->SetToMotorRawRequest(this->TorqueToRawValue(torque));
-	}
-
-	void SetThrottleRequest(float throttle_percent) {
-		this->SetTorqueRequest(throttle_percent * this->maxTorque);
-	}
-
-	float GetThrottleRequest() {
-		return this->torqueRequest / this->maxTorque;
-	}
-
-	float GetTorqueRequest() {
-		return this->torqueRequest;
-	}
-
-	float GetThrottleRequest_raw() {
-		return this->speedRequest_raw;
-	}
-
-
-
-protected:
-	
-	float TorqueToRawValue(float torque) {
-		float rawValue;
-
-		rawValue = torque / this->maxTorque;
-		rawValue = (rawValue * 90.0) + 90.0;
-
-		return rawValue;
-	}
-
-	static float RPMtoTorque(float RPM, float voltage, float current) {
-		float angularSpeed = (RPM * 2 * M_PI) / 60.0; //rad/s
-
-		float power = voltage * current; //watts
-
-		float torqueFromPower = power / angularSpeed; //Nm (Newton-metri)
-
-		return torqueFromPower;
-	}
-
-	static float TorqueToRPM(float torque, float voltage, float current) {
-		// Calculate power in Watts
-		float power = voltage * current;
-
-		// Calculate angular speed in rad/s using torque
-		float angularSpeed = power / torque; // rad/s
-
-		// Convert angular speed to RPM
-		float RPM = (angularSpeed * 60.0) / (2 * M_PI); // RPM
-
-		return RPM;
-
-	}
-
-	void SetToMotorRawRequest(float value) {
-		this->speedRequest_raw = value;
-		WriteToMotor(value);
-	}
-
-	//=================================TO DO================================================
-	virtual void WriteToMotor(float speed) {
-		#ifdef DEBUG_UNIT_TEST
-			printf("Motor set to speed %.2f (0-180) \n", speed);
-		#endif // DEBUG_UNIT_TEST
-	}
-	//=================================TO DO================================================
-
-	float torqueRequest; 
-
-	float motorKV;
-	float batteryVoltage;
-	float batteryAmperage;
-	float speedRequest_raw;
-
-	float maxTorque;
-};
-
-class Wheel: protected Engine //read RPM and set torque
-{
-public:
-	Wheel(float kP_, float kI_, float kD_, float carWeight_, float wheelDiameter_meters, float batteryAmperage, float batteryVoltage, float motorKV): Wheel::Engine(batteryAmperage, batteryVoltage, motorKV) {
-		this->Kp = kP_;
-		this->Ki = kI_;
-		this->Kd = kD_;
-		this->carWeight = carWeight_;
+	Wheel(float kP_, float kI_, float kD_, float wheelDiameter_meters) {
+		_pid = PID(kP_, kI_, kD_, -1.0, 1.0);
 		this->wheelDiameter = wheelDiameter_meters;
 
-		this->accelerationRequest = 0.0;
 		this->prevWheelRPM = 0.0;
 		this->wheelRPM = 0.0;
 		this->timePassedFromLastSample = 0.0;
 	}
 
-	Wheel(float carWeight_, float wheelDiameter_meters, float batteryAmperage, float batteryVoltage, float motorKV): Wheel::Engine(batteryAmperage, batteryVoltage, motorKV) {
-		this->Kp = 0.0;
-		this->Ki = 0.0;
-		this->Kd = 0.0;
-		
-		this->wheelDiameter = wheelDiameter_meters;
-		this->carWeight = carWeight_;
+	Wheel(float wheelDiameter_meters) {
+		_pid = PID(0.0, 0.0, 0.0, -1.0, 1.0);
 
-		this->accelerationRequest = 0.0;
+		this->wheelDiameter = wheelDiameter_meters;
+
 		this->prevWheelRPM = 0.0;
 		this->wheelRPM = 0.0;
 		this->timePassedFromLastSample = 0.0;
 	}
 
 	void SetPID(float kP, float kI, float kD) {
-		this->Kp = Kp;
-		this->Ki = Ki;
-		this->Kd = Kd;
+		_pid.setKp(kP);
+		_pid.setKi(kI);
+		_pid.setKd(kD);
 	}
-	
+
 	float GetSpeed() {
 		return this->RPMToMps(this->wheelRPM);
 	}
@@ -201,53 +97,27 @@ public:
 	float GetRpm() {
 		return this->wheelRPM;
 	}
-	
 
-
-#ifdef DEBUG_UNIT_TEST
-	//==========================SIMULATION FUNCTION==============================
-	void Simulate(float deltaTime, float cycles) {
-		float leftMeasuredSpeed, rightMeasuredSpeed;
-		// Parametrii funcției de transfer
-		double mass = this->carWeight; // kg
-		double friction = 0.5; // N*s/m
-		CarModel carModel(mass, friction, this->wheelDiameter / 2.0);
-		for (int i = 0; i < (int)(cycles / deltaTime); ++i) {
-			//leftMeasuredSpeed = leftEngine.GetMeasuredSpeed();
-			//rightMeasuredSpeed = rightEngine.GetMeasuredSpeed();
-
-			//leftEngine.SetMeasuredSpeed(leftMeasuredSpeed + (leftEngine.GetSpeedRequest_raw() - leftMeasuredSpeed) * 0.1, deltaTime);
-			//rightEngine.SetMeasuredSpeed(rightMeasuredSpeed + (rightEngine.GetSpeedRequest_raw() - rightMeasuredSpeed) * 0.1, deltaTime);
-
-			this->SetMeasuredRPM(carModel.calculateRPM(this->GetTorqueRequest(), i * deltaTime), deltaTime);
-
-			printf("Cycle %d:\n", i);
-			printf("RPM: %.2f\n", this->GetRpm());
-			printf("speed: %.2f m/s\n", this->GetSpeed());
-
-			//leftEngine.SetToMotorSpeedRequest();
-			//rightEngine.SetToMotorSpeedRequest();
-		}
+	float GetRpmRequest() {
+		return this->MpsToRPM(this->GetSpeedRequest());
 	}
-	//==========================SIMULATION FUNCTION==============================
-#endif // DEBUG_UNIT_TEST
+
+	void SetToMotorRawRequest(float value) {
+		this->speedRequest_raw = value;
+	}
+
 
 	void SetSpeedRequest(float speed_mps) { // speed = mps!
 		this->speedRequest = speed_mps;
-		this->SetThrottleRequest(this->CalculateSpeedToTorqueRequest());
+		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(0.0)));
+	}
+
+	float GetSpeedRequest_raw() {
+		return this->speedRequest_raw;
 	}
 
 	float GetSpeedRequest() {
 		return this->speedRequest;
-	}
-
-	void SetAccelerationRequest(float acceleration_mps2) {
-		this->accelerationRequest = acceleration_mps2;
-		this->SetTorqueRequest(this->WheelTorqueToEngineTorque(this->AccelerationToTorque(this->accelerationRequest)));
-	}
-
-	float GetAccelerationRequest() {
-		return this->accelerationRequest;
 	}
 
 	float GetAcceleration() {
@@ -260,14 +130,14 @@ public:
 		this->prevWheelRPM = this->wheelRPM;
 		this->wheelRPM = measuredSpeed;
 		this->timePassedFromLastSample = timePassedFromLastSample1;
-		// this->SetTorqueRequest(this->CalculateTorqueRequestFromAcceleration());
-		this->SetThrottleRequest(this->CalculateSpeedToTorqueRequest());
+		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(timePassedFromLastSample1)));
 	}
 
 private:
 
-	float WheelTorqueToEngineTorque(float wheelTorque) {
-		return wheelTorque * (14.0 / 85.0);
+	float ThrottleToRawValue(float value) {
+		value = 90.0 + (value * 90.0);
+		return value;
 	}
 
 	float MpsToRPM(float speedMps) { //metri/s --> RPM
@@ -281,53 +151,11 @@ private:
 		return (((wheelDiameter / 2.0) * (2 * M_PI)) / 60.0) * speedRPM;
 	}
 
-	//carSpeed = calculateCarSpeed(), viteza dorita.
-	float CalculateSpeedToTorqueRequest() {
-		float error, derivative = 0, output_throttle;
 
-		error = this->GetSpeedRequest() - this->GetSpeed();
-
-		this->integral += error * this->timePassedFromLastSample;
-
-		this->integral = MAX(this->integral, -1.0);
-		this->integral = MIN(this->integral, 1.0);
-
-		if (this->timePassedFromLastSample > 0.0) {
-			derivative = (error - this->previous_error) / this->timePassedFromLastSample;
-		}
-
-		output_throttle = (error * this->Kp) + (this->integral * this->Ki) + (derivative * this->Kd);
-
-		return output_throttle;
+	float CalculateThrottle(double timePassedFromLastSample_) {
+		return (float)this->_pid.calculate(this->MpsToRPM(this->speedRequest), this->wheelRPM, timePassedFromLastSample_);
 	}
 
-
-	float CalculateTorqueRequestFromAcceleration() {
-		float output;
-		float gg1, gg2, gg3;
-		// output = this->GetTorqueRequest() + (this->AccelerationToTorque(this->GetAccelerationRequest() - this->GetAcceleration()));
-		gg1 = this->GetAcceleration();
-		gg2 = this->GetAccelerationRequest();
-		gg3 = this->WheelTorqueToEngineTorque(this->AccelerationToTorque(gg2 - gg1));
-		output = this->GetTorqueRequest() + gg3;
-		return output;
-	}
-
-
-
-	float AccelerationToTorque(float acceleration) {
-		float required_force, wheel_radius, linear_torque, moment_of_inertia, angular_acceleration, rotational_acceleration_torque, total_torque;
-
-		wheel_radius = this->wheelDiameter / 2.0;
-		required_force = this->carWeight * acceleration;
-		linear_torque = required_force * wheel_radius;
-		moment_of_inertia = 0.5*this->carWeight * (wheel_radius * wheel_radius);
-		angular_acceleration = acceleration / wheel_radius;
-		rotational_acceleration_torque = moment_of_inertia * angular_acceleration;
-		total_torque = linear_torque + rotational_acceleration_torque;
-
-		return total_torque;
-	}
 
 	float prevWheelRPM = 0.0;
 	float wheelRPM = 0.0;
@@ -335,33 +163,35 @@ private:
 
 	float timePassedFromLastSample = 0.0;
 	float speedRequest = 0.0;
-	float accelerationRequest = 0.0;
-	float previous_error = 0.0;
-	float integral = 0.0;
 
 	float carWeight = 0.0;
+	float speedRequest_raw = 90.0;
 
-	float Kp;
-	float Ki;
-	float Kd;
+	PID _pid;
 };
 
 class PowerTrain
 {
 public:
 
-	PowerTrain(float kP, float kI, float kD, float carWeight, float wheelDiameter_meters, float batteryAmperage, float batteryVoltage, float motorKV)
-		:leftWheel(kP, kI, kD, carWeight, wheelDiameter_meters, batteryAmperage, batteryVoltage, motorKV),
-		rightWheel(kP, kI, kD, carWeight, wheelDiameter_meters, batteryAmperage, batteryVoltage, motorKV) 
+	PowerTrain(float kP, float kI, float kD, float wheelDiameter_meters)
+		:leftWheel(kP, kI, kD, wheelDiameter_meters),
+		rightWheel(kP, kI, kD, wheelDiameter_meters)
 	{
-		this->carWeight = carWeight;
 	}
 
-	PowerTrain(float carWeight, float wheelDiameter_meters, float batteryAmperage, float batteryVoltage, float motorKV)
-		:leftWheel(carWeight, wheelDiameter_meters, batteryAmperage, batteryVoltage, motorKV),
-		rightWheel(carWeight, wheelDiameter_meters, batteryAmperage, batteryVoltage, motorKV)
+	PowerTrain(float wheelDiameter_meters)
+		:leftWheel(wheelDiameter_meters),
+		rightWheel(wheelDiameter_meters)
 	{
-		this->carWeight = carWeight;
+	}
+
+	void SetLeftWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
+		this->leftWheel.SetMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
+	}
+
+	void SetRightWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
+		this->rightWheel.SetMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
 	}
 
 	void SetLeftWheelPID(float kP, float kI, float kD) {
@@ -370,12 +200,12 @@ public:
 	void SetRightWheelPID(float kP, float kI, float kD) {
 		this->rightWheel.SetPID(kP, kI, kD);
 	}
-	
+
 	float GetRightWheelSpeed() {
-		return this->leftWheel.GetSpeed();
+		return this->rightWheel.GetSpeed();
 	}
 	float GetLeftWheelSpeed() {
-		return this->rightWheel.GetSpeed();
+		return this->leftWheel.GetSpeed();
 	}
 
 	void SetRightWheelSpeedRequest(float speed_mps) {
@@ -385,28 +215,32 @@ public:
 		this->leftWheel.SetSpeedRequest(speed_mps);
 	}
 
+	float GetRightWheelSpeedRequest_raw() {
+		return this->rightWheel.GetSpeedRequest_raw();
+	}
+	float GetLeftWheelSpeedRequest_raw() {
+		return this->leftWheel.GetSpeedRequest_raw();
+	}
+
+
 	float GetLeftWheelAcceleration() {
 		return this->leftWheel.GetAcceleration();
 	}
 	float GetRightWheelAcceleration() {
 		return this->rightWheel.GetAcceleration();
 	}
-
+	/*
 	void SetRightWheelAccelerationRequest(float speed_mps2) {
 		this->rightWheel.SetAccelerationRequest(speed_mps2);
 	}
 	void SetLeftWheelAccelerationRequest(float speed_mps2) {
 		this->leftWheel.SetAccelerationRequest(speed_mps2);
 	}
+	*/
 	Wheel leftWheel;
 	Wheel rightWheel;
 
 private:
-	
-	float carWeight;
-	//Wheel leftWheel;
-	//Wheel rightWheel;
-
 };
 
 
