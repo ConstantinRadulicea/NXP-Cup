@@ -32,13 +32,10 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        double maxImpact = MAX((ABS(max_output)), (ABS(min_output)));
-        this->_derivative_imact = maxImpact;
-        this->_integral_impact = maxImpact;
-        this->_proportional_impact = maxImpact;
+        this->_integral_impact = -1.0;
     }
 
-    PID(double Kp, double Ki, double Kd, double max_output, double min_output, double proportional_impact, double integrative_impact, double derivative_impact) :
+    PID(double Kp, double Ki, double Kd, double max_output, double min_output, double integrative_impact) :
         _max_output(max_output),
         _min_output(min_output),
         _Kp(Kp),
@@ -47,9 +44,7 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        this->_derivative_imact = derivative_impact;
-        this->_integral_impact = integrative_impact;
-        this->_proportional_impact = proportional_impact;
+        this->_integral_impact = ABS(integrative_impact);
     }
 
     PID() :
@@ -60,9 +55,7 @@ public:
         _Ki(0.0),
         _pre_error(0.0),
         _integral(0.0),
-        _derivative_imact(0.0),
-        _integral_impact(0.0),
-        _proportional_impact(0.0)
+        _integral_impact(-1.0)
     {
 
     }
@@ -74,21 +67,31 @@ public:
 
         // Proportional terms
         Pout = _Kp * error;
-        Pout = MAX(Pout, -this->_proportional_impact);
-        Pout = MIN(Pout, this->_proportional_impact);
+
 
         if (timePassedFromLastSample > 0.0) {
             // Integral term
-            _integral += error * timePassedFromLastSample;
+            _integral = _integral + (error * timePassedFromLastSample);
+            
+
+            // Restrict to max/min
+            if (this->_integral_impact > 0.0)
+            {
+                if (_integral > this->_integral_impact) {
+                    _integral = this->_integral_impact;
+                }
+                else if (_integral < -(this->_integral_impact)) {
+                    _integral = -(this->_integral_impact);
+                }
+            }
+
             Iout = _Ki * _integral;
-            Iout = MAX(Iout, -this->_integral_impact);
-            Iout = MIN(Iout, this->_integral_impact);
 
             // Derivative term
             derivative = (error - _pre_error) / timePassedFromLastSample;
             Dout = _Kd * derivative;
-            Dout = MAX(Dout, -this->_derivative_imact);
-            Dout = MIN(Dout, this->_derivative_imact);
+            
+
         }
         else {
             Dout = 0.0;
@@ -101,21 +104,22 @@ public:
         output = Pout + Iout + Dout;
 
         // Restrict to max/min
-        if (output > _max_output)
+        if (output > _max_output) {
             output = _max_output;
-        else if (output < _min_output)
+        }
+        else if (output < _min_output) {
             output = _min_output;
+        }
 
         // Save error to previous error
         _pre_error = error;
 
         return output;
     }
+
     ~PID() {
 
     }
-
-
 
     void setParameters(double Kp, double Ki, double Kd) {
         this->_Kp = Kp;
@@ -142,16 +146,6 @@ public:
         this->_Kd = val;
     }
 
-
-
-
-    void setProportionalImpact(double val) {
-        if (val < 0.0) {
-            val = -val;
-        }
-        this->_proportional_impact = val;
-    }
-
     void setIntegralImpact(double val) {
         if (val < 0.0) {
             val = -val;
@@ -159,26 +153,9 @@ public:
         this->_integral_impact = val;
     }
 
-    void setDerivativeImpact(double val) {
-        if (val < 0.0) {
-            val = -val;
-        }
-        this->_derivative_imact = val;
-    }
-
-
-    double getProportionalImpact(double val) {
-        return this->_proportional_impact;
-    }
-
     double getIntegralImpact(double val) {
         return this->_integral_impact;
     }
-
-    double getDerivativeImpact(double val) {
-        return this->_derivative_imact;
-    }
-
 
     double getMaxOutput(double val) {
         return this->_max_output;
@@ -210,11 +187,9 @@ private:
     double _Kp;
     double _Kd;
     double _Ki;
-    double _pre_error;
-    double _integral;
-    double _integral_impact;
-    double _derivative_imact;
-    double _proportional_impact;
+    double _pre_error = 0.0;
+    double _integral = 0.0;
+    double _integral_impact = 0.0;
 };
 
 #endif // !__PID_H__

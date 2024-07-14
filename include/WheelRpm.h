@@ -7,6 +7,10 @@
 
 #define RPM_SENSOR_PULSES_PER_REVOLUTION (20*2)
 #define MillisToMicros(val) (val*1000)
+#define MicrosToMillis(val) (val/1000)
+#define MicrosToSec(val) (val/1000000)
+#define SecToMicros(val) (val*1000000)
+
 
 void enableCpuCyclesCount(){
     ARM_DEMCR |= ARM_DEMCR_TRCENA;
@@ -24,6 +28,7 @@ typedef struct RpmSensorData {
     unsigned long LastSampleTimestamp_us;
     MovingAverage RpmAverage;
     void (*on_pulse)(volatile struct RpmSensorData *data);
+    float TimePassedFromLastSample_us;
 } RpmSensorData;
 
 static volatile RpmSensorData LeftWheelRpmData = {
@@ -32,7 +37,8 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
     .RpmAverage = MovingAverage(3),
-    .on_pulse = NULL
+    .on_pulse = NULL,
+    .TimePassedFromLastSample_us = 0.0
 };
 
 static volatile RpmSensorData RightWheelRpmData = {
@@ -41,7 +47,8 @@ static volatile RpmSensorData RightWheelRpmData = {
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
     .RpmAverage = MovingAverage(3),
-    .on_pulse = NULL
+    .on_pulse = NULL,
+    .TimePassedFromLastSample_us = 0.0
 };
 
 static void ISR_RpmSensor(volatile RpmSensorData* data){
@@ -67,12 +74,14 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
 
     // Calculate RPM only if elapsed_time_us is non-zero to prevent division by zero
     if (elapsed_time_us > 0) {
+        data->TimePassedFromLastSample_us = elapsed_time_us;
         local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
-        data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
-        //data->Rpm = local_rpm;
+        //data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
+        data->Rpm = local_rpm;
     }
     
     if (data->on_pulse != NULL) {
+        //Serial.println((unsigned long)data->on_pulse);
         data->on_pulse(data);
     }
 }
@@ -85,11 +94,19 @@ static RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
         temp_data.TotalRotations = data->TotalRotations;
         temp_data.TotalInterrupts = data->TotalInterrupts;
         temp_data.RpmAverage = MovingAverage(0);
+        temp_data.on_pulse = data->on_pulse;
+        temp_data.TimePassedFromLastSample_us = data->TimePassedFromLastSample_us;
     }
     return temp_data;
 }
 
 static float getRpm(volatile RpmSensorData* data){
+    RpmSensorData temp_WheelRpmData;
+    temp_WheelRpmData = getRpmSensorData(data);
+    return temp_WheelRpmData.Rpm;
+}
+
+static float getRpm_adjusted(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
     float result_rpm;
 
@@ -114,6 +131,23 @@ static float getRpm(volatile RpmSensorData* data){
     return result_rpm;
 }
 
+static float getTimePassedFromLastSample_us_adjusted(volatile RpmSensorData* data){
+    unsigned long elapsed_time_us, time_now_us;
+
+    RpmSensorData temp_WheelRpmData;
+    temp_WheelRpmData = getRpmSensorData(data);
+    
+    time_now_us = micros();
+
+    if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){
+        elapsed_time_us = (float)temp_WheelRpmData.LastSampleTimestamp_us - (float)time_now_us;
+    }
+    else{
+        elapsed_time_us = (float)time_now_us - (float)temp_WheelRpmData.LastSampleTimestamp_us;
+    }
+    return elapsed_time_us;
+}
+
 static float getTotalRotations(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRpmSensorData(data);
@@ -126,6 +160,8 @@ static void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData sr
         dst->Rpm = src.Rpm;
         dst->TotalRotations = src.TotalRotations;
         dst->TotalInterrupts = src.TotalInterrupts;
+        dst->TimePassedFromLastSample_us = src.TimePassedFromLastSample_us;
+        dst->on_pulse = src.on_pulse;
     }
 }
 

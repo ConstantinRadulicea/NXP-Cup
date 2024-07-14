@@ -29,9 +29,12 @@ void WriteToLeftMotor(float angle_arg){
 }
 
 void on_pulse_right_motor(volatile struct RpmSensorData *data){
-
 }
 void on_pulse_left_motor(volatile struct RpmSensorData *data){
+
+}
+
+void empty_function(){
 
 }
 
@@ -50,7 +53,8 @@ void setup() {
     pinMode(RPM_SENSOR_LEFT_WHEEL_PIN, INPUT);
     pinMode(RPM_SENSOR_RIGHT_WHEEL_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_LEFT_WHEEL_PIN), ISR_RpmSensorLeftWheel, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, RISING);
+    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, FALLING);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         RightMotor.attach(RIGHT_WHEEL_MOTOR_PIN, 1148, 1832);
@@ -71,13 +75,15 @@ int resultSuccess;
 float leftMotorRawSpeed = 90.0, rightMotorRawSpeed = 90.0;
 void loop() {
     if (readRecordFromSerial(Serial, "\r\n", line)) {
+        pEnd = line.data();
         leftMotorRawSpeed = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         rightMotorRawSpeed = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
+        line.clear();
     }
 
     temp_LeftWheelRpmData = getLeftWheelRpmData();
     temp_RightWheelRpmData = getRightWheelRpmData();
-
+/*
     WriteToLeftMotor(leftMotorRawSpeed);
     Serial.print("Left");
     Serial.print("\t");
@@ -90,7 +96,7 @@ void loop() {
     Serial.print("TotalRotations: ");
     Serial.print(getLeftWheelTotalRotations());
     Serial.println();
-
+*/
     WriteToRightMotor(rightMotorRawSpeed);
     Serial.print("Right");
     Serial.print("\t");
