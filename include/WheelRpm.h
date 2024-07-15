@@ -5,11 +5,18 @@
 #include <util/atomic.h>
 #include "MovingAverage.h"
 
-#define RPM_SENSOR_PULSES_PER_REVOLUTION (20*2)
-#define MillisToMicros(val) (val*1000)
-#define MicrosToMillis(val) (val/1000)
-#define MicrosToSec(val) (val/1000000)
-#define SecToMicros(val) (val*1000000)
+// Use ICACHE_RAM_ATTR for ISRs to prevent ESP8266 resets
+#if defined(ESP8266) || defined(ESP32)
+#define ENCODER_ISR_ATTR ICACHE_RAM_ATTR
+#else
+#define ENCODER_ISR_ATTR
+#endif
+
+#define RPM_SENSOR_PULSES_PER_REVOLUTION (20)
+#define MillisToMicros(val) ((val)*1000)
+#define MicrosToMillis(val) ((val)/1000)
+#define MicrosToSec(val) ((val)/1000000)
+#define SecToMicros(val) ((val)*1000000)
 
 
 void enableCpuCyclesCount(){
@@ -29,6 +36,7 @@ typedef struct RpmSensorData {
     MovingAverage RpmAverage;
     void (*on_pulse)(volatile struct RpmSensorData *data);
     float TimePassedFromLastSample_us;
+    int PulsePin;
 } RpmSensorData;
 
 static volatile RpmSensorData LeftWheelRpmData = {
@@ -38,7 +46,8 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .LastSampleTimestamp_us = micros(),
     .RpmAverage = MovingAverage(3),
     .on_pulse = NULL,
-    .TimePassedFromLastSample_us = 0.0
+    .TimePassedFromLastSample_us = 0.0,
+    .PulsePin = -1
 };
 
 static volatile RpmSensorData RightWheelRpmData = {
@@ -46,15 +55,15 @@ static volatile RpmSensorData RightWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(3),
+    .RpmAverage = MovingAverage(40),
     .on_pulse = NULL,
-    .TimePassedFromLastSample_us = 0.0
+    .TimePassedFromLastSample_us = 0.0,
+    .PulsePin = -1
 };
 
 static void ISR_RpmSensor(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
     float local_rpm;
-    
     
     time_now_us = micros();
     if(time_now_us < data->LastSampleTimestamp_us){
@@ -66,19 +75,16 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
         return;
     }
     
-    data->TotalInterrupts += 1,
+    data->TotalInterrupts += 1;
     data->LastSampleTimestamp_us = time_now_us;
 
     // Update the total rotations
     data->TotalRotations += (1.0 / (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
 
-    // Calculate RPM only if elapsed_time_us is non-zero to prevent division by zero
-    if (elapsed_time_us > 0) {
         data->TimePassedFromLastSample_us = elapsed_time_us;
         local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
         //data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
         data->Rpm = local_rpm;
-    }
     
     if (data->on_pulse != NULL) {
         //Serial.println((unsigned long)data->on_pulse);
@@ -96,6 +102,7 @@ static RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
         temp_data.RpmAverage = MovingAverage(0);
         temp_data.on_pulse = data->on_pulse;
         temp_data.TimePassedFromLastSample_us = data->TimePassedFromLastSample_us;
+        temp_data.PulsePin = data->PulsePin;
     }
     return temp_data;
 }
@@ -162,17 +169,19 @@ static void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData sr
         dst->TotalInterrupts = src.TotalInterrupts;
         dst->TimePassedFromLastSample_us = src.TimePassedFromLastSample_us;
         dst->on_pulse = src.on_pulse;
+        dst->PulsePin = src.PulsePin;
     }
 }
 
 /*===================================================================================================*/
 
-static void ISR_RpmSensorLeftWheel() {
+static ENCODER_ISR_ATTR void ISR_RpmSensorLeftWheel() {
     ISR_RpmSensor(&LeftWheelRpmData);
 }
 
-static void ISR_RpmSensorRightWheel() {
+static ENCODER_ISR_ATTR void ISR_RpmSensorRightWheel() {
     ISR_RpmSensor(&RightWheelRpmData);
+    asm("dsb");
 }
 
 static RpmSensorData getLeftWheelRpmData(){

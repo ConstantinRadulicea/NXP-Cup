@@ -6,8 +6,9 @@
 #include "PowerTrain.h"
 #include <vector>
 
-#define POWERTRAIN_PID_FREQUENCY_HZ 500
-#define HzToSec(hz) (1.0/hz)
+
+#define POWERTRAIN_PID_FREQUENCY_HZ 250
+#define HzToSec(hz) (1.0/(hz))
 
 IntervalTimer myTimer;
 
@@ -106,19 +107,20 @@ void setup() {
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRightWheelRpmData();
     temp_WheelRpmData.on_pulse = on_pulse_right_motor;
+    temp_WheelRpmData.PulsePin = RPM_SENSOR_RIGHT_WHEEL_PIN;
     setRightWheelRpmData(temp_WheelRpmData);
 
     temp_WheelRpmData = getLeftWheelRpmData();
     temp_WheelRpmData.on_pulse = on_pulse_left_motor;
+    temp_WheelRpmData.PulsePin = RPM_SENSOR_LEFT_WHEEL_PIN;
     setLeftWheelRpmData(temp_WheelRpmData);
 
     pinMode(RIGHT_WHEEL_MOTOR_PIN, OUTPUT);
     pinMode(LEFT_WHEEL_MOTOR_PIN, OUTPUT);
-    pinMode(RPM_SENSOR_LEFT_WHEEL_PIN, INPUT);
-    pinMode(RPM_SENSOR_RIGHT_WHEEL_PIN, INPUT);
+    pinMode(RPM_SENSOR_LEFT_WHEEL_PIN, INPUT_PULLUP);
+    pinMode(RPM_SENSOR_RIGHT_WHEEL_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_LEFT_WHEEL_PIN), ISR_RpmSensorLeftWheel, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, RISING);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, FALLING);
+    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, CHANGE);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         RightMotor.attach(RIGHT_WHEEL_MOTOR_PIN, 1148, 1832);

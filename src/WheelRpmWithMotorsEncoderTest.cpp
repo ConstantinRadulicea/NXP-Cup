@@ -4,11 +4,15 @@
 #include "Config.h"
 #include "ReadSerial.h"
 #include <vector>
+#define RPM_SENSOR_PULSES_PER_REVOLUTION (20)
+#include "RpmEncoder.h"
 
 #define RPM_SENSOR_LEFT_WHEEL_PIN 2
 #define RPM_SENSOR_RIGHT_WHEEL_PIN 3
 #define RIGHT_WHEEL_MOTOR_PIN 23
 #define LEFT_WHEEL_MOTOR_PIN 24
+
+RpmEncoder RpmEncoderLeftWheel(RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_LEFT_WHEEL_PIN);
 
 volatile PWMServo RightMotor;
 volatile PWMServo LeftMotor;
@@ -57,8 +61,8 @@ void setup() {
     pinMode(LEFT_WHEEL_MOTOR_PIN, OUTPUT);
     pinMode(RPM_SENSOR_LEFT_WHEEL_PIN, INPUT_PULLUP);
     pinMode(RPM_SENSOR_RIGHT_WHEEL_PIN, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_LEFT_WHEEL_PIN), ISR_RpmSensorLeftWheel, RISING);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, RISING);
+    //attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_LEFT_WHEEL_PIN), ISR_RpmSensorLeftWheel, RISING);
+    //attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, RISING);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         RightMotor.attach(RIGHT_WHEEL_MOTOR_PIN, 1148, 1832);
@@ -116,7 +120,8 @@ void loop() {
     Serial.println();
     */
 
-    Serial.println(temp_RightWheelRpmData.Rpm);
+    //Serial.println(temp_RightWheelRpmData.Rpm);
+    Serial.println(RpmEncoderLeftWheel.readRpm());
     
     delay(10);
 }
