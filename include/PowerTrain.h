@@ -262,6 +262,13 @@ public:
 		return this->leftWheel.GetSpeedRequest_raw();
 	}
 
+	float GetRightWheelSpeedRequest() {
+		return this->rightWheel.GetSpeedRequest();
+	}
+	float GetLeftWheelSpeedRequest() {
+		return this->leftWheel.GetSpeedRequest();
+	}
+
 
 	float GetLeftWheelAcceleration() {
 		return this->leftWheel.GetAcceleration();

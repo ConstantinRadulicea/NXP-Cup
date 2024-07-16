@@ -25,9 +25,10 @@
 
 int main() {
 
-    PID pid = PID(100, -100, 0.1, 0.5, 0.01);
+    PID pid = PID(0.0, 0.5, 0.00, -100, 100);
+    pid.setIntegralImpact(1000);
 
-    double val = 20;
+    double val = 2000;
     for (int i = 0; i < 200; i++) {
         double inc = pid.calculate(0, val, 0.1);
         printf("val:% 7.3f inc:% 7.3f\n", val, inc);

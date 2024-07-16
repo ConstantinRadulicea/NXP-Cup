@@ -44,7 +44,7 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        this->_integral_impact = ABS(integrative_impact);
+        this->_integral_impact = integrative_impact;
     }
 
     PID() :
@@ -75,7 +75,7 @@ public:
             
 
             // Restrict to max/min
-            if (this->_integral_impact > 0.0)
+            if (this->_integral_impact >= 0.0)
             {
                 if (_integral > this->_integral_impact) {
                     _integral = this->_integral_impact;

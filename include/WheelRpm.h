@@ -12,7 +12,7 @@
 #define ENCODER_ISR_ATTR
 #endif
 
-#define RPM_SENSOR_PULSES_PER_REVOLUTION (10)
+#define RPM_SENSOR_PULSES_PER_REVOLUTION (20)
 #define MillisToMicros(val) ((val)*1000)
 #define MicrosToMillis(val) ((val)/1000)
 #define MicrosToSec(val) ((val)/1000000)

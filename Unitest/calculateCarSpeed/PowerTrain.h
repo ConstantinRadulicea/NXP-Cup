@@ -62,19 +62,22 @@ public:
 };
 #endif
 
+typedef void (*MotorHandler) (float throttle);
+
 class Wheel
 {
 public:
-	Wheel(float kP_, float kI_, float kD_, float wheelDiameter_meters) {
+	Wheel(float kP_, float kI_, float kD_, float wheelDiameter_meters, MotorHandler motorHandler) {
 		_pid = PID(kP_, kI_, kD_, -1.0, 1.0);
 		this->wheelDiameter = wheelDiameter_meters;
 
 		this->prevWheelRPM = 0.0;
 		this->wheelRPM = 0.0;
 		this->timePassedFromLastSample = 0.0;
+		this->_motorHandler = motorHandler;
 	}
 
-	Wheel(float wheelDiameter_meters) {
+	Wheel(float wheelDiameter_meters, MotorHandler motorHandler) {
 		_pid = PID(0.0, 0.0, 0.0, -1.0, 1.0);
 
 		this->wheelDiameter = wheelDiameter_meters;
@@ -82,12 +85,18 @@ public:
 		this->prevWheelRPM = 0.0;
 		this->wheelRPM = 0.0;
 		this->timePassedFromLastSample = 0.0;
+		this->_motorHandler = motorHandler;
 	}
 
-	void SetPID(float kP, float kI, float kD) {
+	void SetMotorHandler(MotorHandler motorHandler) {
+		this->_motorHandler = motorHandler;
+	}
+
+	void SetPID(float kP, float kI, float kD, float integralImpact) {
 		_pid.setKp(kP);
 		_pid.setKi(kI);
 		_pid.setKd(kD);
+		_pid.setIntegralImpact(integralImpact);
 	}
 
 	float GetSpeed() {
@@ -104,6 +113,9 @@ public:
 
 	void SetToMotorRawRequest(float value) {
 		this->speedRequest_raw = value;
+		if (this->_motorHandler != NULL) {
+			this->_motorHandler(value);
+		}
 	}
 
 
@@ -127,16 +139,19 @@ public:
 
 	//perioada de esantionare nu este constanta => timePassedFromLastSample1 din ISR
 	void SetMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
+		//Serial.println(measuredSpeed);
+		//Serial.println(timePassedFromLastSample1);
 		this->prevWheelRPM = this->wheelRPM;
 		this->wheelRPM = measuredSpeed;
 		this->timePassedFromLastSample = timePassedFromLastSample1;
 		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(timePassedFromLastSample1)));
 	}
+	float timePassedFromLastSample = 0.0;
 
 private:
 
 	float ThrottleToRawValue(float value) {
-		value = 90.0 + (value * 90.0);
+		//value = 90.0 + (value * 90.0);
 		return value;
 	}
 
@@ -153,7 +168,7 @@ private:
 
 
 	float CalculateThrottle(double timePassedFromLastSample_) {
-		return (float)this->_pid.calculate(this->MpsToRPM(this->speedRequest), this->wheelRPM, timePassedFromLastSample_);
+		return (float)this->_pid.calculate(this->speedRequest, this->RPMToMps(this->wheelRPM), timePassedFromLastSample_ / 1000000.0);
 	}
 
 
@@ -161,11 +176,12 @@ private:
 	float wheelRPM = 0.0;
 	float wheelDiameter = 0.0;
 
-	float timePassedFromLastSample = 0.0;
+
 	float speedRequest = 0.0;
 
 	float carWeight = 0.0;
 	float speedRequest_raw = 90.0;
+	MotorHandler _motorHandler = NULL;
 
 	PID _pid;
 };
@@ -174,15 +190,15 @@ class PowerTrain
 {
 public:
 
-	PowerTrain(float kP, float kI, float kD, float wheelDiameter_meters)
-		:leftWheel(kP, kI, kD, wheelDiameter_meters),
-		rightWheel(kP, kI, kD, wheelDiameter_meters)
+	PowerTrain(float kP, float kI, float kD, float wheelDiameter_meters, MotorHandler LeftMotorHandler, MotorHandler RightMotorHandler)
+		:leftWheel(kP, kI, kD, wheelDiameter_meters, LeftMotorHandler),
+		rightWheel(kP, kI, kD, wheelDiameter_meters, RightMotorHandler)
 	{
 	}
 
-	PowerTrain(float wheelDiameter_meters)
-		:leftWheel(wheelDiameter_meters),
-		rightWheel(wheelDiameter_meters)
+	PowerTrain(float wheelDiameter_meters, MotorHandler LeftMotorHandler, MotorHandler RightMotorHandler)
+		:leftWheel(wheelDiameter_meters, LeftMotorHandler),
+		rightWheel(wheelDiameter_meters, RightMotorHandler)
 	{
 	}
 
@@ -194,11 +210,25 @@ public:
 		this->rightWheel.SetMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
 	}
 
-	void SetLeftWheelPID(float kP, float kI, float kD) {
-		this->leftWheel.SetPID(kP, kI, kD);
+
+
+
+	void SetLeftWheelMeasuredRPM_volatile(float measuredSpeed, float timePassedFromLastSample1) {
+		this->SetLeftWheelMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
 	}
-	void SetRightWheelPID(float kP, float kI, float kD) {
-		this->rightWheel.SetPID(kP, kI, kD);
+
+	void SetRightWheelMeasuredRPM_volatile(float measuredSpeed, float timePassedFromLastSample1) {
+		this->SetRightWheelMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
+	}
+
+
+
+
+	void SetLeftWheelPID(float kP, float kI, float kD, float integralImpact) {
+		this->leftWheel.SetPID(kP, kI, kD, integralImpact);
+	}
+	void SetRightWheelPID(float kP, float kI, float kD, float integralImpact) {
+		this->rightWheel.SetPID(kP, kI, kD, integralImpact);
 	}
 
 	float GetRightWheelSpeed() {
@@ -220,6 +250,13 @@ public:
 	}
 	float GetLeftWheelSpeedRequest_raw() {
 		return this->leftWheel.GetSpeedRequest_raw();
+	}
+
+	float GetRightWheelSpeedRequest() {
+		return this->rightWheel.GetSpeedRequest();
+	}
+	float GetLeftWheelSpeedRequest() {
+		return this->leftWheel.GetSpeedRequest();
 	}
 
 
