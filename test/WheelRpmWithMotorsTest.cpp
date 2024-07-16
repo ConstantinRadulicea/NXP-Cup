@@ -31,7 +31,7 @@ void WriteToLeftMotor(float angle_arg){
 void on_pulse_right_motor(volatile struct RpmSensorData *data){
     RpmSensorData temp_RightWheelRpmData;
     temp_RightWheelRpmData = getRightWheelRpmData();
-    Serial.println(temp_RightWheelRpmData.Rpm);
+    //Serial.println(temp_RightWheelRpmData.Rpm);
 }
 void on_pulse_left_motor(volatile struct RpmSensorData *data){
 
@@ -119,5 +119,5 @@ void loop() {
     Serial.println(temp_RightWheelRpmData.Rpm);
     //Serial.println(digitalRead(RPM_SENSOR_RIGHT_WHEEL_PIN));
     
-    delay(50);
+    delay(10);
 }

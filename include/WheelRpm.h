@@ -45,7 +45,7 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(3),
+    .RpmAverage = MovingAverage(50),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
@@ -57,7 +57,7 @@ static volatile RpmSensorData RightWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(40),
+    .RpmAverage = MovingAverage(50),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
@@ -121,7 +121,7 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
         data->TimePassedFromLastSample_us = elapsed_time_us;
         local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
         //data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
-        data->Rpm = local_rpm;
+        //data->Rpm = local_rpm;
     
     if (data->on_pulse != NULL) {
         //Serial.println((unsigned long)data->on_pulse);
