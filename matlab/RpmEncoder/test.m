@@ -1,7 +1,7 @@
 clear;
 clc;
 format long g
-sample = readtable('samples/100speed_leftmotor_13.txt');
+sample = readtable('samples/150speed_leftmotor_14.txt');
 
 sample = table2array(sample);
 sample = transpose(sample);

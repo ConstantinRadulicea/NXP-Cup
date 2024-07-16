@@ -58,7 +58,7 @@
 #define ENCODER_ISR_ATTR
 #endif
 
-#define RPM_SENSOR_PULSES_PER_REVOLUTION (20*2)
+#define RPM_SENSOR_PULSES_PER_REVOLUTION (10*2)
 #define MillisToMicros(val) ((val)*1000)
 #define MicrosToMillis(val) ((val)/1000)
 #define MicrosToSec(val) ((val)/1000000)
@@ -79,6 +79,7 @@ typedef struct {
 	uint32_t		       LastSampleTimestamp_us;
 	uint32_t               TimePassedFromLastSample_us;
 	float				   TotalRotations;
+	uint8_t				   temp;
 } RpmEncoder_internal_state_t;
 
 
@@ -104,6 +105,7 @@ public:
 		encoder.rpm = 0.0;
 		encoder.TimePassedFromLastSample_us = 0;
 		encoder.TotalRotations = 0.0;
+		encoder.temp = 0;
 		// allow time for a passive R-C filter to charge
 		// through the pullup resistors, before reading
 		// the initial state
@@ -326,9 +328,10 @@ public:
 		: : "x" (arg) : "r22", "r23", "r24", "r25", "r30", "r31");
 #else
     	unsigned long elapsed_time_us, time_now_us;
-    
+		    
 		uint8_t p1val = DIRECT_PIN_READ(arg->pin1_register, arg->pin1_bitmask);
 		uint8_t p2val = DIRECT_PIN_READ(arg->pin2_register, arg->pin2_bitmask);
+		
 		uint8_t state = arg->state & 3;
 		if (p1val) state |= 4;
 		if (p2val) state |= 8;
@@ -337,6 +340,10 @@ public:
 			case 0: case 5: case 10: case 15:
 				return;
 			case 2: case 4: case 11: case 13:
+				return;
+			case 1: case 7: case 8: case 14:
+				return;
+			case 6: case 9:
 				return;
 		}
 

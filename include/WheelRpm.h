@@ -12,7 +12,7 @@
 #define ENCODER_ISR_ATTR
 #endif
 
-#define RPM_SENSOR_PULSES_PER_REVOLUTION (20)
+#define RPM_SENSOR_PULSES_PER_REVOLUTION (10)
 #define MillisToMicros(val) ((val)*1000)
 #define MicrosToMillis(val) ((val)/1000)
 #define MicrosToSec(val) ((val)/1000000)
@@ -37,6 +37,7 @@ typedef struct RpmSensorData {
     void (*on_pulse)(volatile struct RpmSensorData *data);
     float TimePassedFromLastSample_us;
     int PulsePin;
+    uint8_t LastState;  
 } RpmSensorData;
 
 static volatile RpmSensorData LeftWheelRpmData = {
@@ -47,7 +48,8 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .RpmAverage = MovingAverage(3),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
-    .PulsePin = -1
+    .PulsePin = -1,
+    .LastState = 0
 };
 
 static volatile RpmSensorData RightWheelRpmData = {
@@ -58,14 +60,48 @@ static volatile RpmSensorData RightWheelRpmData = {
     .RpmAverage = MovingAverage(40),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
-    .PulsePin = -1
+    .PulsePin = -1,
+    .LastState = 0
 };
 
 static void ISR_RpmSensor(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
+    uint8_t curValue;
     float local_rpm;
-    
     time_now_us = micros();
+    /*
+    curValue = digitalRead(data->PulsePin);
+
+
+    //Serial.print(data->LastState);
+    //Serial.print("\t");
+    //Serial.println(curValue);
+
+    switch (data->LastState)
+    {
+    case 0:
+        if (curValue == LOW){
+            return;
+        }
+        else{
+            data->LastState = 1;
+        }        
+        break;
+    case 1:
+        if (curValue == HIGH){
+            return;
+        }
+        else{
+            data->LastState = 0;
+        } 
+        break;
+    
+    default:
+        return;
+    }
+
+*/
+    
     if(time_now_us < data->LastSampleTimestamp_us){
         data->LastSampleTimestamp_us = time_now_us;
         return;
@@ -76,6 +112,7 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
     }
     
     data->TotalInterrupts += 1;
+    //Serial.println(data->TotalInterrupts);
     data->LastSampleTimestamp_us = time_now_us;
 
     // Update the total rotations
@@ -181,7 +218,7 @@ static ENCODER_ISR_ATTR void ISR_RpmSensorLeftWheel() {
 
 static ENCODER_ISR_ATTR void ISR_RpmSensorRightWheel() {
     ISR_RpmSensor(&RightWheelRpmData);
-    asm("dsb");
+    //asm("dsb");
 }
 
 static RpmSensorData getLeftWheelRpmData(){
