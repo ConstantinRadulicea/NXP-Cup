@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <util/atomic.h>
-#include "MovingAverage.h"
+#include "MedianFilter.h"
 
 // Use ICACHE_RAM_ATTR for ISRs to prevent ESP8266 resets
 #if defined(ESP8266) || defined(ESP32)
@@ -33,11 +33,12 @@ typedef struct RpmSensorData {
     float TotalRotations;
     float Rpm;
     unsigned long LastSampleTimestamp_us;
-    MovingAverage RpmAverage;
+    MedianFilter RpmAverage;
     void (*on_pulse)(volatile struct RpmSensorData *data);
     float TimePassedFromLastSample_us;
     int PulsePin;
-    uint8_t LastState;  
+    uint8_t LastState;
+    float RpmFiltered; 
 } RpmSensorData;
 
 static volatile RpmSensorData LeftWheelRpmData = {
@@ -45,11 +46,12 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(50),
+    .RpmAverage = MedianFilter(10),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
-    .LastState = 0
+    .LastState = 0,
+    .RpmFiltered = 0.0
 };
 
 static volatile RpmSensorData RightWheelRpmData = {
@@ -57,11 +59,12 @@ static volatile RpmSensorData RightWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MovingAverage(50),
+    .RpmAverage = MedianFilter(10),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
-    .LastState = 0
+    .LastState = 0,
+    .RpmFiltered = 0.0
 };
 
 static void ISR_RpmSensor(volatile RpmSensorData* data){
@@ -121,7 +124,8 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
         data->TimePassedFromLastSample_us = elapsed_time_us;
         local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
         //data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
-        //data->Rpm = local_rpm;
+        data->Rpm = local_rpm;
+        data->RpmFiltered = data->RpmAverage.nextVolatile(local_rpm);
     
     if (data->on_pulse != NULL) {
         //Serial.println((unsigned long)data->on_pulse);
@@ -136,10 +140,12 @@ static RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
         temp_data.Rpm = data->Rpm;
         temp_data.TotalRotations = data->TotalRotations;
         temp_data.TotalInterrupts = data->TotalInterrupts;
-        temp_data.RpmAverage = MovingAverage(0);
+        temp_data.RpmAverage = MedianFilter(0);
         temp_data.on_pulse = data->on_pulse;
         temp_data.TimePassedFromLastSample_us = data->TimePassedFromLastSample_us;
         temp_data.PulsePin = data->PulsePin;
+        temp_data.LastState = data->LastState;
+        temp_data.RpmFiltered = data->RpmFiltered;
     }
     return temp_data;
 }
@@ -148,6 +154,12 @@ static float getRpm(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRpmSensorData(data);
     return temp_WheelRpmData.Rpm;
+}
+
+static float getRpmFiltered(volatile RpmSensorData* data){
+    RpmSensorData temp_WheelRpmData;
+    temp_WheelRpmData = getRpmSensorData(data);
+    return temp_WheelRpmData.RpmFiltered;
 }
 
 static float getRpm_adjusted(volatile RpmSensorData* data){
@@ -171,6 +183,31 @@ static float getRpm_adjusted(volatile RpmSensorData* data){
     }
     else{
         result_rpm = temp_WheelRpmData.Rpm;
+    }
+    return result_rpm;
+}
+
+static float getRpmFiltered_adjusted(volatile RpmSensorData* data){
+    unsigned long elapsed_time_us, time_now_us;
+    float result_rpm;
+
+    RpmSensorData temp_WheelRpmData;
+    temp_WheelRpmData = getRpmSensorData(data);
+    
+    time_now_us = micros();
+
+    if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){
+        elapsed_time_us = temp_WheelRpmData.LastSampleTimestamp_us - time_now_us;
+    }
+    else{
+        elapsed_time_us = time_now_us - temp_WheelRpmData.LastSampleTimestamp_us;
+    }
+
+    if (elapsed_time_us > 0) {
+        result_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
+    }
+    else{
+        result_rpm = temp_WheelRpmData.RpmFiltered;
     }
     return result_rpm;
 }
@@ -207,6 +244,8 @@ static void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData sr
         dst->TimePassedFromLastSample_us = src.TimePassedFromLastSample_us;
         dst->on_pulse = src.on_pulse;
         dst->PulsePin = src.PulsePin;
+        dst->RpmFiltered = src.RpmFiltered;
+        dst->LastState = src.LastState;
     }
 }
 
