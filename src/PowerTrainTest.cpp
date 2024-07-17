@@ -23,7 +23,7 @@ float wheelDiameter = 0.064; // exemplu: diametru roata in metri
 volatile PWMServo RightMotor;
 volatile PWMServo LeftMotor;
 
-float kp = 0.075, ki = 0.0, kd = 0.0, ki_sum = 0.0;
+float kp = 0.1, ki = 3.0, kd = 0.0, ki_sum = 0.3;
 
 void WriteToMotor(volatile PWMServo* motor_, float angle_arg){
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
@@ -73,24 +73,33 @@ void power_train_sampling(){
 
     rpm = temp_WheelRpmData.RpmFiltered;
     timePassed = temp_WheelRpmData.TimePassedFromLastSample_us;
-    if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (3.0*timePassed)) {
+
+    if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (10.0*timePassed))
+    {
+        timePassed = getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData);
+        rpm = 0.0;
+    }
+    else if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (2.0*timePassed)) {
         timePassed = getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData);
         rpm = getRpmFiltered_adjusted(&RightWheelRpmData);
     }
+    
 
     
-    if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > MillisToMicros(2000)) {
-        rpm = 0.0;
-    }
+    //if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > MillisToMicros(1000)) {
+    //    rpm = 0.0;
+    //}
     powerTrain.SetRightWheelMeasuredRPM_volatile(rpm, timePassed);
 
-    //Serial.print(powerTrain.GetRightWheelSpeed());
-    //Serial.print(';');
-    //Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
-    //Serial.print(';');
-    //Serial.print(RightMotor.read());
-    //Serial.print(';');
+    Serial.print(powerTrain.GetRightWheelSpeed());
+    Serial.print(';');
+    Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
+    Serial.print(';');
+    Serial.print(RightMotor.read());
+    Serial.print(';');
     Serial.print(rpm);
+    Serial.print(';');
+    Serial.print(temp_WheelRpmData.Rpm);
     Serial.println();
 
 

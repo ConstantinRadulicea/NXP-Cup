@@ -110,7 +110,7 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
         return;
     }
     elapsed_time_us = time_now_us - data->LastSampleTimestamp_us;
-    if (elapsed_time_us < MillisToMicros(0.5)) {
+    if (elapsed_time_us < MillisToMicros(1)) {
         return;
     }
     
@@ -218,11 +218,10 @@ static float getRpmFiltered_adjusted(volatile RpmSensorData* data){
 
 static float getTimePassedFromLastSample_us_adjusted(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
-
     RpmSensorData temp_WheelRpmData;
-    temp_WheelRpmData = getRpmSensorData(data);
-    
+
     time_now_us = micros();
+    temp_WheelRpmData = getRpmSensorData(data);
 
     if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){
         elapsed_time_us = (float)temp_WheelRpmData.LastSampleTimestamp_us - (float)time_now_us + temp_WheelRpmData.TimePassedFromLastSample_us;
