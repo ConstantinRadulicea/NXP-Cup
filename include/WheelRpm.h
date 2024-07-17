@@ -188,13 +188,16 @@ static float getRpm_adjusted(volatile RpmSensorData* data){
 }
 
 static float getRpmFiltered_adjusted(volatile RpmSensorData* data){
-    unsigned long elapsed_time_us, time_now_us;
+    unsigned long elapsed_time_us, time_now_us, micros_per_rpm;
     float result_rpm;
-
     RpmSensorData temp_WheelRpmData;
-    temp_WheelRpmData = getRpmSensorData(data);
-    
+
     time_now_us = micros();
+    temp_WheelRpmData = getRpmSensorData(data);
+
+    micros_per_rpm = (unsigned long)((1.0/(temp_WheelRpmData.RpmFiltered/60.0))*1000000.0);
+    
+    
 
     if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){
         elapsed_time_us = temp_WheelRpmData.LastSampleTimestamp_us - time_now_us;
@@ -204,7 +207,8 @@ static float getRpmFiltered_adjusted(volatile RpmSensorData* data){
     }
 
     if (elapsed_time_us > 0) {
-        result_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
+        micros_per_rpm = micros_per_rpm + elapsed_time_us;
+        result_rpm = (float)MillisToMicros(60*1000) / (float)((micros_per_rpm));
     }
     else{
         result_rpm = temp_WheelRpmData.RpmFiltered;
@@ -221,10 +225,10 @@ static float getTimePassedFromLastSample_us_adjusted(volatile RpmSensorData* dat
     time_now_us = micros();
 
     if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){
-        elapsed_time_us = (float)temp_WheelRpmData.LastSampleTimestamp_us - (float)time_now_us;
+        elapsed_time_us = (float)temp_WheelRpmData.LastSampleTimestamp_us - (float)time_now_us + temp_WheelRpmData.TimePassedFromLastSample_us;
     }
     else{
-        elapsed_time_us = (float)time_now_us - (float)temp_WheelRpmData.LastSampleTimestamp_us;
+        elapsed_time_us = (float)time_now_us - (float)temp_WheelRpmData.LastSampleTimestamp_us + temp_WheelRpmData.TimePassedFromLastSample_us;
     }
     return elapsed_time_us;
 }

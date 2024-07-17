@@ -44,7 +44,7 @@ void WriteToRightMotorThrottle(float throttle){
     float rawValue;
     rawValue = 90.0 + (throttle * 90.0);
     rawValue = MAX(rawValue, 90.0);
-    rawValue = MIN(rawValue, 150.0);
+    rawValue = MIN(rawValue, 180.0);
     WriteToRightMotor(rawValue);
 }
 
@@ -52,7 +52,7 @@ void WriteToLeftMotorThrottle(float throttle){
     float rawValue;
     rawValue = 90.0 + (throttle * 90.0);
     rawValue = MAX(rawValue, 90.0);
-    rawValue = MIN(rawValue, 150.0);
+    rawValue = MIN(rawValue, 180.0);
     WriteToLeftMotor(rawValue);
 }
 
@@ -69,29 +69,27 @@ void on_pulse_left_motor(volatile struct RpmSensorData *data){
 void power_train_sampling(){
     float rpm, timePassed;
     RpmSensorData temp_WheelRpmData;
-    static volatile MovingAverage movinAverageRightWheel(10);
     temp_WheelRpmData = getRightWheelRpmData();
 
     rpm = temp_WheelRpmData.RpmFiltered;
     timePassed = temp_WheelRpmData.TimePassedFromLastSample_us;
-    if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (timePassed + timePassed*0.1)) {
+    if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (3.0*timePassed)) {
         timePassed = getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData);
         rpm = getRpmFiltered_adjusted(&RightWheelRpmData);
     }
 
-    //rpm = movinAverageRightWheel.nextVolatile(rpm);
     
     if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > MillisToMicros(2000)) {
         rpm = 0.0;
     }
     powerTrain.SetRightWheelMeasuredRPM_volatile(rpm, timePassed);
 
-    Serial.print(powerTrain.GetRightWheelSpeed());
-    Serial.print(';');
-    Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
-    Serial.print(';');
-    Serial.print(RightMotor.read());
-    Serial.print(';');
+    //Serial.print(powerTrain.GetRightWheelSpeed());
+    //Serial.print(';');
+    //Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
+    //Serial.print(';');
+    //Serial.print(RightMotor.read());
+    //Serial.print(';');
     Serial.print(rpm);
     Serial.println();
 
