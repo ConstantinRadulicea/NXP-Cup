@@ -71,19 +71,8 @@ void power_train_sampling(){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRightWheelRpmData();
 
-    rpm = temp_WheelRpmData.RpmFiltered;
-    timePassed = temp_WheelRpmData.TimePassedFromLastSample_us;
-
-    if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (10.0*timePassed))
-    {
-        timePassed = getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData);
-        rpm = 0.0;
-    }
-    else if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > (2.0*timePassed)) {
-        timePassed = getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData);
-        rpm = getRpmFiltered_adjusted(&RightWheelRpmData);
-    }
-    
+    rpm = getCurrentRpm_adjusted(&temp_WheelRpmData);
+    timePassed = getRpmPulsePeriod_us(rpm);
 
     
     //if (getTimePassedFromLastSample_us_adjusted(&RightWheelRpmData) > MillisToMicros(1000)) {
@@ -104,11 +93,9 @@ void power_train_sampling(){
 
 
     temp_WheelRpmData = getLeftWheelRpmData();
-    rpm = temp_WheelRpmData.RpmFiltered;
-    timePassed = temp_WheelRpmData.TimePassedFromLastSample_us;
-    if (getTimePassedFromLastSample_us_adjusted(&LeftWheelRpmData) > MillisToMicros(1000)) {
-        rpm = 0.0;
-    }
+    
+    rpm = getCurrentRpm_adjusted(&temp_WheelRpmData);
+    timePassed = getRpmPulsePeriod_us(rpm);
     
     powerTrain.SetLeftWheelMeasuredRPM_volatile(rpm, timePassed);
 

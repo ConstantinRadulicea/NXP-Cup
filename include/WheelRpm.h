@@ -46,7 +46,7 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MedianFilter(10),
+    .RpmAverage = MedianFilter(6),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
@@ -59,7 +59,7 @@ static volatile RpmSensorData RightWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MedianFilter(10),
+    .RpmAverage = MedianFilter(6),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
@@ -150,6 +150,12 @@ static RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
     return temp_data;
 }
 
+static float getRpmPulsePeriod_us(float Rpm){
+    float period;
+    period =(1.0/(Rpm/60.0))*1000000.0;
+    return period;
+}
+
 static float getRpm(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRpmSensorData(data);
@@ -231,6 +237,30 @@ static float getTimePassedFromLastSample_us_adjusted(volatile RpmSensorData* dat
     }
     return elapsed_time_us;
 }
+
+
+float getCurrentRpm_adjusted(volatile RpmSensorData* data){
+    float rpm, timePassed, timePassedAdjusted;
+    RpmSensorData temp_WheelRpmData;
+    temp_WheelRpmData = getRpmSensorData(data);
+    timePassedAdjusted = getTimePassedFromLastSample_us_adjusted(data);
+
+    rpm = temp_WheelRpmData.RpmFiltered;
+    timePassed = temp_WheelRpmData.TimePassedFromLastSample_us;
+
+    if (/*(timePassedAdjusted > (5.0*timePassed)) || */timePassedAdjusted > MillisToMicros(500))
+    {
+        timePassed = timePassedAdjusted;
+        rpm = 0.0;
+    }
+    else if (timePassedAdjusted > (5.0*timePassed)) {
+        timePassed = timePassedAdjusted;
+        rpm = getRpmFiltered_adjusted(data);
+    }
+    return rpm;
+}
+
+
 
 static float getTotalRotations(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;

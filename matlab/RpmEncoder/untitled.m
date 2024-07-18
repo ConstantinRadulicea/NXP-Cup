@@ -1,59 +1,38 @@
-% Kalman Filter for RPM Estimation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MATLAB Code Generated with Fuzzy Logic Designer App                     %
+%                                                                         %
+% Date: 18-Jul-2024 19:08:43                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Initialize variables
-dt = 0.01; % Time step (seconds)
-n = 100; % Number of measurements
-
-% Simulate some true RPM data (for example purposes)
-true_rpm = 100 + 2 * (1:n); % True RPM increases linearly
-
-% Simulate noisy measurements
-measurement_noise_std = 5; % Standard deviation of measurement noise
-measurements = true_rpm + measurement_noise_std * randn(size(true_rpm));
-
-measurements = sample;
-measurement_std = 30000;
-n = length(measurements);
-% Kalman Filter initialization
-% State vector: [RPM; RPM_rate]
-x = [0; 0]; % Initial state estimate (RPM, RPM_rate)
-P = eye(2); % Initial estimate error covariance matrix
-A = [1 dt; 0 1]; % State transition matrix
-H = [1 0]; % Measurement matrix
-Q = [1 0; 0 1]; % Process noise covariance matrix
-R = measurement_std^2; % Measurement noise covariance matrix
-
-% Preallocate arrays for storing the filter results
-x_estimates = zeros(2, n); % Estimated states
-
-% Kalman Filter loop
-for k = 1:n
-    if k == 851
-        ff = 1;
-    end
-    % Prediction step
-    x = A * x;
-    P = A * P * A' + Q;
-    
-    % Measurement update step
-    z = measurements(k); % Current measurement
-    y = z - H * x; % Measurement residual
-    S = H * P * H' + R; % Residual covariance
-    K = P * H' / S; % Kalman gain
-    x = x + K * y; % Updated state estimate
-    P = (eye(2) - K * H) * P; % Updated estimate error covariance
-    
-    % Store the results
-    x_estimates(:, k) = x;
-end
-
-% Plot the results
-figure;
-plot(1:n, measurements, 'g-', 'LineWidth', 2); hold on;
-plot(1:n, measurements, 'r.', 'MarkerSize', 10);
-plot(1:n, x_estimates(1, :), 'b-', 'LineWidth', 2);
-legend('True RPM', 'Measurements', 'Kalman Filter Estimate');
-xlabel('Time step');
-ylabel('RPM');
-title('Kalman Filter RPM Estimation');
-grid on;
+% Construct FIS
+fis_tuned_tuned = sugfis(Name="fis_tuned_tuned");
+% Input 1
+fis_tuned_tuned = addInput(fis_tuned_tuned,[0 1214.58],Name="in1");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"in1","gaussmf",[143.983 311.155], ...
+    Name="in1cluster1",VariableType="input");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"in1","gaussmf",[196.409 1103.11], ...
+    Name="in1cluster2",VariableType="input");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"in1","gaussmf",[133.24 576.833], ...
+    Name="in1cluster3",VariableType="input");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"in1","gaussmf",[192.036 48.1219], ...
+    Name="in1cluster4",VariableType="input");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"in1","gaussmf",[149.485 847.449], ...
+    Name="in1cluster5",VariableType="input");
+% Output 1
+fis_tuned_tuned = addOutput(fis_tuned_tuned,[0 1],Name="out1");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"out1","linear",[0.00173137 -0.385464], ...
+    Name="out1cluster1",VariableType="output");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"out1","linear",[0.00103918 -0.252586], ...
+    Name="out1cluster2",VariableType="output");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"out1","linear",[0.0014121 -0.342761], ...
+    Name="out1cluster3",VariableType="output");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"out1","linear",[0.00190051 0.0572006], ...
+    Name="out1cluster4",VariableType="output");
+fis_tuned_tuned = addMF(fis_tuned_tuned,"out1","linear",[0.00119104 -0.301991], ...
+    Name="out1cluster5",VariableType="output");
+% Rules
+fis_tuned_tuned = addRule(fis_tuned_tuned,[1 1 1 1; ...
+    2 2 1 1; ...
+    3 3 1 1; ...
+    4 4 1 1; ...
+    5 5 1 1]);

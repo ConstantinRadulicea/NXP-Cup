@@ -13,6 +13,8 @@
 volatile PWMServo RightMotor;
 volatile PWMServo LeftMotor;
 
+unsigned int timeNow = 0;
+
 void WriteToMotor(volatile PWMServo* motor_, float angle_arg){
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         motor_->write((int)angle_arg);
@@ -67,7 +69,11 @@ void setup() {
         LeftMotor.write((int)90);
     }
     
-    Serial.begin(115200);
+    Serial.begin(25600);
+    while (!Serial) {
+        delay(100);
+    }
+    timeNow = millis();
 }
 
 
@@ -76,7 +82,8 @@ RpmSensorData temp_RightWheelRpmData;
 std::vector<char> line;
 char* pEnd;
 int resultSuccess;
-float leftMotorRawSpeed = 90.0, rightMotorRawSpeed = 90.0;
+float leftMotorRawSpeed = 0, rightMotorRawSpeed = 90.0;
+
 void loop() {
     if (readRecordFromSerial(Serial, "\r\n", line)) {
         pEnd = line.data();
@@ -102,6 +109,15 @@ void loop() {
     Serial.println();
 */
     WriteToRightMotor(rightMotorRawSpeed);
+
+if(((millis() - timeNow) >= 5000) && leftMotorRawSpeed > 0.5){
+    timeNow = millis();
+    rightMotorRawSpeed++;
+    if (rightMotorRawSpeed >= 180) {
+        rightMotorRawSpeed = 180;
+    }
+}
+
     /*
     Serial.print("Right");
     Serial.print("\t");
@@ -115,8 +131,16 @@ void loop() {
     Serial.print(getRightWheelTotalRotations());
     Serial.println();
     */
-
-    Serial.println(temp_RightWheelRpmData.RpmFiltered);
+    Serial.print(rightMotorRawSpeed, 1);
+    Serial.print(";");
+    Serial.print(temp_RightWheelRpmData.Rpm, 3);
+    Serial.print(";");
+    Serial.print(temp_RightWheelRpmData.RpmFiltered, 3);
+    Serial.print(";");
+    Serial.print(getCurrentRpm_adjusted(&temp_RightWheelRpmData), 3);
+    Serial.print(";");
+    Serial.print(((rightMotorRawSpeed - 90.0f) / 90.0), 4);
+    Serial.println();
     //Serial.println(digitalRead(RPM_SENSOR_RIGHT_WHEEL_PIN));
     
     delay(10);
