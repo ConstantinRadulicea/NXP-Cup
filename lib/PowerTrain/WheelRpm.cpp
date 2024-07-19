@@ -17,7 +17,7 @@ unsigned long getCpuCycles(){
 
 
 volatile RpmSensorData LeftWheelRpmData = {
-    .TotalInterrupts = 0,
+   .TotalInterrupts = 0,
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),

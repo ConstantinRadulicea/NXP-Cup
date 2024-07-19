@@ -30,6 +30,13 @@
 #define M_PI       3.14159265358979323846   // pi
 #define M_PI_2     1.57079632679489661923   // pi/2
 
+#define POWERTRAIN_PID_FREQUENCY_HZ 100
+#define RPM_SENSOR_LEFT_WHEEL_PIN 2
+#define RPM_SENSOR_RIGHT_WHEEL_PIN 4
+#define RIGHT_WHEEL_MOTOR_PIN 23
+#define LEFT_WHEEL_MOTOR_PIN 22
+#define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
+
 
 //TO DO:
 //-int read_encoder(int wheel_id); functie pentru encoder

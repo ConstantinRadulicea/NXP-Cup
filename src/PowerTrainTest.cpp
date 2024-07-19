@@ -31,20 +31,17 @@ void loop() {
         // 1;2;3;4;5
         pEnd = line.data();
         Serial.println(line.data());
+        leftMotorRawSpeed = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         rightMotorRawSpeed = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         kp = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         ki = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         kd = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         ki_sum = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
 
-        //Serial.println(rightMotorRawSpeed);
-        //Serial.println(kp);
-        //Serial.println(ki);
-        //Serial.println(kd);
-        //Serial.println(ki_sum);
-
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+            powerTrain.SetLeftWheelPID(kp, ki, kd, ki_sum);
             powerTrain.SetRightWheelPID(kp, ki, kd, ki_sum);
+            powerTrain.SetLeftWheelSpeedRequest_volatile(leftMotorRawSpeed);
             powerTrain.SetRightWheelSpeedRequest_volatile(rightMotorRawSpeed);
         }
         line.clear();

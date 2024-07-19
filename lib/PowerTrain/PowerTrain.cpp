@@ -5,16 +5,10 @@
 #include "PowerTrain.h"
 
 
-#define POWERTRAIN_PID_FREQUENCY_HZ 100
+
 
 IntervalTimer myTimer;
 
-#define RPM_SENSOR_LEFT_WHEEL_PIN 3
-#define RPM_SENSOR_RIGHT_WHEEL_PIN 4
-#define RIGHT_WHEEL_MOTOR_PIN 23
-#define LEFT_WHEEL_MOTOR_PIN 24
-
-static float wheelDiameter = 0.064; // exemplu: diametru roata in metri
 
 volatile PWMServo RightMotor;
 volatile PWMServo LeftMotor;
@@ -55,7 +49,7 @@ void WriteToLeftMotorThrottle(float throttle){
     WriteToLeftMotor(rawValue);
 }
 
-volatile PowerTrain powerTrain(0.0, 0.0, 0.0, wheelDiameter, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
+volatile PowerTrain powerTrain(0.0, 0.0, 0.0, WHEEL_DIAMETER_M, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
 
 
 void on_pulse_right_motor(volatile struct RpmSensorData *data){
@@ -84,7 +78,7 @@ void power_train_sampling(){
     Serial.print(rpm);
     Serial.print(';');
     Serial.print(temp_WheelRpmData.Rpm);
-    Serial.println();
+    Serial.print(';');
 
 
     temp_WheelRpmData = getLeftWheelRpmData();
@@ -93,6 +87,16 @@ void power_train_sampling(){
     timePassed = getTimePassedFromLastSample_us_adjusted(&temp_WheelRpmData);
     powerTrain.SetLeftWheelMeasuredRPM_volatile(rpm, timePassed);
 
+    Serial.print(powerTrain.GetLeftWheelSpeed());
+    Serial.print(';');
+    Serial.print(powerTrain.GetLeftWheelSpeedRequest_raw());
+    Serial.print(';');
+    Serial.print(LeftMotor.read());
+    Serial.print(';');
+    Serial.print(rpm);
+    Serial.print(';');
+    Serial.print(temp_WheelRpmData.Rpm);
+    Serial.println();
 }
 
 void PowerTrainSetup(){
