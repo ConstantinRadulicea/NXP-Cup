@@ -1,6 +1,4 @@
-#ifndef __ESC_RAW_H__
-#define __ESC_RAW_H__
-
+#include "esc_raw.h"
 
 float _raw_to_rpm_correlation[] = {
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -25,11 +23,11 @@ float _raw_to_rpm_correlation[] = {
 };
 
 
-static float rawToRpm(float raw_value) {
+float rawToRpm(float raw_value) {
     return _raw_to_rpm_correlation[(unsigned int)raw_value];
 }
 
-static float RpmToRaw(float rpm) {
+float RpmToRaw(float rpm) {
     int len = (sizeof(_raw_to_rpm_correlation) / sizeof(*_raw_to_rpm_correlation));
     int i = 0;
     if (rpm >= -1) {
@@ -50,8 +48,8 @@ static float RpmToRaw(float rpm) {
     }
 }
 
-static float RpmToThrottle(float rpm) {
+float RpmToThrottle(float rpm) {
     return (RpmToRaw(rpm) - 90.0) / 90.0;
 }
 
-#endif
+

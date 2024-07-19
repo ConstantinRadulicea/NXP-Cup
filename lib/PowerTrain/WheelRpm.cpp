@@ -1,22 +1,9 @@
-#ifndef __WHEELRPM_H__
-#define __WHEELRPM_H__
+#include "WheelRpm.h"
+
 
 #include <Arduino.h>
 #include <util/atomic.h>
 #include "MedianFilter.h"
-
-// Use ICACHE_RAM_ATTR for ISRs to prevent ESP8266 resets
-#if defined(ESP8266) || defined(ESP32)
-#define ENCODER_ISR_ATTR ICACHE_RAM_ATTR
-#else
-#define ENCODER_ISR_ATTR
-#endif
-
-#define RPM_SENSOR_PULSES_PER_REVOLUTION (20)
-#define MillisToMicros(val) ((val)*1000)
-#define MicrosToMillis(val) ((val)/1000)
-#define MicrosToSec(val) ((val)/1000000)
-#define SecToMicros(val) ((val)*1000000)
 
 
 void enableCpuCyclesCount(){
@@ -28,20 +15,8 @@ unsigned long getCpuCycles(){
     return ARM_DWT_CYCCNT;
 }
 
-typedef struct RpmSensorData {
-    unsigned long TotalInterrupts;
-    float TotalRotations;
-    float Rpm;
-    unsigned long LastSampleTimestamp_us;
-    MedianFilter RpmAverage;
-    void (*on_pulse)(volatile struct RpmSensorData *data);
-    float TimePassedFromLastSample_us;
-    int PulsePin;
-    uint8_t LastState;
-    float RpmFiltered; 
-} RpmSensorData;
 
-static volatile RpmSensorData LeftWheelRpmData = {
+volatile RpmSensorData LeftWheelRpmData = {
     .TotalInterrupts = 0,
     .TotalRotations = 0.0,
     .Rpm = 0.0,
@@ -54,7 +29,7 @@ static volatile RpmSensorData LeftWheelRpmData = {
     .RpmFiltered = 0.0
 };
 
-static volatile RpmSensorData RightWheelRpmData = {
+ volatile RpmSensorData RightWheelRpmData = {
     .TotalInterrupts = 0,
     .TotalRotations = 0.0,
     .Rpm = 0.0,
@@ -67,7 +42,7 @@ static volatile RpmSensorData RightWheelRpmData = {
     .RpmFiltered = 0.0
 };
 
-static void ISR_RpmSensor(volatile RpmSensorData* data){
+ void ISR_RpmSensor(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
     uint8_t curValue;
     float local_rpm;
@@ -133,7 +108,7 @@ static void ISR_RpmSensor(volatile RpmSensorData* data){
     }
 }
 
-static RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
+ RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
     RpmSensorData temp_data;
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         temp_data.LastSampleTimestamp_us = data->LastSampleTimestamp_us;
@@ -150,25 +125,25 @@ static RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
     return temp_data;
 }
 
-static float getRpmPulsePeriod_us(float Rpm){
+ float getRpmPulsePeriod_us(float Rpm){
     float period;
     period =(1.0/(Rpm/60.0))*1000000.0;
     return period;
 }
 
-static float getRpm(volatile RpmSensorData* data){
+ float getRpm(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRpmSensorData(data);
     return temp_WheelRpmData.Rpm;
 }
 
-static float getRpmFiltered(volatile RpmSensorData* data){
+ float getRpmFiltered(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRpmSensorData(data);
     return temp_WheelRpmData.RpmFiltered;
 }
 
-static float getRpm_adjusted(volatile RpmSensorData* data){
+ float getRpm_adjusted(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
     float result_rpm;
 
@@ -193,7 +168,7 @@ static float getRpm_adjusted(volatile RpmSensorData* data){
     return result_rpm;
 }
 
-static float getRpmFiltered_adjusted(volatile RpmSensorData* data){
+ float getRpmFiltered_adjusted(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us, micros_per_rpm;
     float result_rpm;
     RpmSensorData temp_WheelRpmData;
@@ -222,7 +197,7 @@ static float getRpmFiltered_adjusted(volatile RpmSensorData* data){
     return result_rpm;
 }
 
-static float getTimePassedFromLastSample_us_adjusted(volatile RpmSensorData* data){
+ float getTimePassedFromLastSample_us_adjusted(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
     RpmSensorData temp_WheelRpmData;
 
@@ -262,13 +237,13 @@ float getCurrentRpm_adjusted(volatile RpmSensorData* data){
 
 
 
-static float getTotalRotations(volatile RpmSensorData* data){
+ float getTotalRotations(volatile RpmSensorData* data){
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRpmSensorData(data);
     return temp_WheelRpmData.TotalRotations;
 }
 
-static void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData src){
+ void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData src){
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         dst->LastSampleTimestamp_us = src.LastSampleTimestamp_us;
         dst->Rpm = src.Rpm;
@@ -284,42 +259,42 @@ static void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData sr
 
 /*===================================================================================================*/
 
-static ENCODER_ISR_ATTR void ISR_RpmSensorLeftWheel() {
+ ENCODER_ISR_ATTR void ISR_RpmSensorLeftWheel() {
     ISR_RpmSensor(&LeftWheelRpmData);
 }
 
-static ENCODER_ISR_ATTR void ISR_RpmSensorRightWheel() {
+ ENCODER_ISR_ATTR void ISR_RpmSensorRightWheel() {
     ISR_RpmSensor(&RightWheelRpmData);
     //asm("dsb");
 }
 
-static RpmSensorData getLeftWheelRpmData(){
+ RpmSensorData getLeftWheelRpmData(){
     return getRpmSensorData(&LeftWheelRpmData);
 }
 
-static float getLeftWheelRpm(){
+ float getLeftWheelRpm(){
     return getRpm(&LeftWheelRpmData);
 }
 
-static float getRightWheelRpm(){
+ float getRightWheelRpm(){
     return getRpm(&RightWheelRpmData);
 }
 
-static float getLeftWheelTotalRotations(){
+ float getLeftWheelTotalRotations(){
     return getTotalRotations(&LeftWheelRpmData);
 }
 
-static float getRightWheelTotalRotations(){
+ float getRightWheelTotalRotations(){
     return getTotalRotations(&RightWheelRpmData);
 }
 
-static RpmSensorData getRightWheelRpmData(){
+ RpmSensorData getRightWheelRpmData(){
     return getRpmSensorData(&RightWheelRpmData);
 }
-static void setLeftWheelRpmData(const RpmSensorData val){
+ void setLeftWheelRpmData(const RpmSensorData val){
     setRpmSensorData(&LeftWheelRpmData, val);
 }
-static void setRightWheelRpmData(const RpmSensorData val){
+ void setRightWheelRpmData(const RpmSensorData val){
     setRpmSensorData(&RightWheelRpmData, val);
 }
-#endif
+

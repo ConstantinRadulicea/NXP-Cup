@@ -20,15 +20,17 @@
 #include <math.h>
 #include "PID.h"
 #include "esc_raw.h"
-//#include "geometry2D.h"
 
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
+#define HzToSec(hz) (1.0/(hz))
 
 
 #define M_PI       3.14159265358979323846   // pi
 #define M_PI_2     1.57079632679489661923   // pi/2
+
+
 //TO DO:
 //-int read_encoder(int wheel_id); functie pentru encoder
 //-void WriteToMotor(float speed)
@@ -294,6 +296,7 @@ public:
 private:
 };
 
-
+void PowerTrainSetup();
+extern volatile PowerTrain powerTrain;
 
 #endif // !__POWERTRAIN_H__
