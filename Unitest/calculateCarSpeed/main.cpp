@@ -1,13 +1,25 @@
 ﻿#define DEBUG_UNIT_TEST
 #include "PowerTrain.h"
+#include "esc_raw.h"
 
 // wheel diameter = 64mm
 
+static float getRpmPulsePeriod_us(float Rpm) {
+	float period;
+	period = (1.0 / (Rpm / 60.0)) * 1000000.0;
+	return period;
+}
+
 int main() {
+	float temp;
 	float kP = 0.074;
 	float kI = 0.1;
 	float kD = 0.000;
 	float wheelDiameter = 0.064; // exemplu: diametru roata in metri
+
+	temp = getRpmPulsePeriod_us(300);
+	temp = RpmToRaw(-1);
+	temp = RpmToThrottle(300);
 
 	PowerTrain powerTrain(kP, kI, kD, wheelDiameter, NULL, NULL);
 	powerTrain.SetLeftWheelPID(kP, kI, kD, 1);
@@ -32,6 +44,8 @@ int main() {
 			powerTrain.leftWheel.GetRpmRequest();
 		}
 	}
+
+	
 
 	return 0;
 }

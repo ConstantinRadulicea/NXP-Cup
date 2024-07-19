@@ -130,6 +130,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="esc_raw.h" />
     <ClInclude Include="geometry2D.h" />
     <ClInclude Include="PID.h" />
     <ClInclude Include="PowerTrain.h" />

@@ -19,6 +19,7 @@
 
 #include <math.h>
 #include "PID.h"
+#include "esc_raw.h"
 //#include "geometry2D.h"
 
 
@@ -168,7 +169,10 @@ private:
 
 
 	float CalculateThrottle(double timePassedFromLastSample_) {
-		return (float)this->_pid.calculate(this->speedRequest, this->RPMToMps(this->wheelRPM), timePassedFromLastSample_ / 1000000.0);
+		float throttle_request_temp;
+		throttle_request_temp = RpmToThrottle(this->MpsToRPM(this->speedRequest));
+		throttle_request_temp = throttle_request_temp + (float)this->_pid.calculate(this->speedRequest, this->RPMToMps(this->wheelRPM), timePassedFromLastSample_ / 1000000.0);
+		return throttle_request_temp;
 	}
 
 
