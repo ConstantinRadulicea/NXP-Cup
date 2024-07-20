@@ -1,10 +1,4 @@
-#include <Arduino.h>
-#include "util/atomic.h"
-#include <WheelRpm.h>
-#include <PWMServo.h>
 #include "PowerTrain.h"
-
-
 
 
 IntervalTimer myTimer;
@@ -49,7 +43,7 @@ void WriteToLeftMotorThrottle(float throttle){
     WriteToLeftMotor(rawValue);
 }
 
-volatile PowerTrain powerTrain(0.0, 0.0, 0.0, WHEEL_DIAMETER_M, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
+volatile PowerTrain powerTrain(0.0, 0.0, 0.0, 0.0, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
 
 
 void on_pulse_right_motor(volatile struct RpmSensorData *data){
@@ -99,41 +93,57 @@ void power_train_sampling(){
     Serial.println();
 }
 
-void PowerTrainSetup(){
+int PowerTrainfloatCmp(float num1, float num2) {
+	if (fabs(num1 - num2) < FLT_EPSILON) {
+		return 0;
+	}
+	else if (num1 > num2) {
+		return 1;
+	}
+	return -1;
+}
+
+
+void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin)
+{
     float kp = 0.0;
-    float ki = 3.0;
+    float ki = 0.0;
     float kd = 0.0;
-    float ki_sum = 0.3;
+    float ki_sum = 0.0;
 
     powerTrain.SetRightWheelPID(kp, ki, kd, ki_sum);
+    powerTrain.SetRightWheelDiameter(wheel_diameter_m);
+    powerTrain.SetLeftWheelDiameter(wheel_diameter_m);
+    powerTrain.SetDistanceBetweenWheels(distance_between_wheels_m);
+
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRightWheelRpmData();
     temp_WheelRpmData.on_pulse = on_pulse_right_motor;
-    temp_WheelRpmData.PulsePin = RPM_SENSOR_RIGHT_WHEEL_PIN;
+    temp_WheelRpmData.PulsePin = right_rpm_sensor_pin;
     setRightWheelRpmData(temp_WheelRpmData);
 
     temp_WheelRpmData = getLeftWheelRpmData();
     temp_WheelRpmData.on_pulse = on_pulse_left_motor;
-    temp_WheelRpmData.PulsePin = RPM_SENSOR_LEFT_WHEEL_PIN;
+    temp_WheelRpmData.PulsePin = left_rpm_sensor_pin;
     setLeftWheelRpmData(temp_WheelRpmData);
 
-    pinMode(RIGHT_WHEEL_MOTOR_PIN, OUTPUT);
-    pinMode(LEFT_WHEEL_MOTOR_PIN, OUTPUT);
-    pinMode(RPM_SENSOR_LEFT_WHEEL_PIN, INPUT_PULLDOWN);
-    pinMode(RPM_SENSOR_RIGHT_WHEEL_PIN, INPUT_PULLDOWN);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_LEFT_WHEEL_PIN), ISR_RpmSensorLeftWheel, RISING);
-    attachInterrupt(digitalPinToInterrupt(RPM_SENSOR_RIGHT_WHEEL_PIN), ISR_RpmSensorRightWheel, RISING);
+    pinMode(left_motor_pin, OUTPUT);
+    pinMode(right_motor_pin, OUTPUT);
+    pinMode(left_rpm_sensor_pin, INPUT_PULLDOWN);
+    pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
+    attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);
+    attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, RISING);
 
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        RightMotor.attach(RIGHT_WHEEL_MOTOR_PIN, 1148, 1832);
-        LeftMotor.attach(LEFT_WHEEL_MOTOR_PIN, 1148, 1832);
+        RightMotor.attach(right_motor_pin, 1148, 1832);
+        LeftMotor.attach(left_motor_pin, 1148, 1832);
         RightMotor.write((int)90);
         LeftMotor.write((int)90);
     }
     powerTrain.SetLeftWheelSpeedRequest_volatile(0.0);
     powerTrain.SetRightWheelSpeedRequest_volatile(0.0);
     
-    myTimer.begin(power_train_sampling, SecToMicros(HzToSec(POWERTRAIN_PID_FREQUENCY_HZ)));  // blinkLED to run every 0.15 seconds
+    myTimer.begin(power_train_sampling, SecToMicros(HzToSec(pid_frequency_hz)));  // blinkLED to run every 0.15 seconds
 }
 
 

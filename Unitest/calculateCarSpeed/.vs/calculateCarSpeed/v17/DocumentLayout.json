@@ -39,8 +39,7 @@
               "ViewState": "AQIAAD8AAAAAzczMzMwTwE0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2024-07-12T09:58:30.002Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Bookmark",
@@ -68,8 +67,7 @@
               "RelativeToolTip": "esc_raw.h",
               "ViewState": "AQIAACYAAAAAAAAAAAAmwCsAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-07-19T10:13:27.715Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-19T10:13:27.715Z"
             },
             {
               "$type": "Document",
@@ -81,8 +79,7 @@
               "RelativeToolTip": "PowerTrain.h",
               "ViewState": "AQIAAAUBAAAAAAAAAAAkwBsBAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-07-06T12:28:41.632Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-07-06T12:28:41.632Z"
             },
             {
               "$type": "Document",
@@ -92,7 +89,7 @@
               "RelativeDocumentMoniker": "main.cpp",
               "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAArAAAA",
+              "ViewState": "AQIAADIAAAAAAAAAAAAwwD4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-07-06T12:28:41.757Z",
               "EditorCaption": ""

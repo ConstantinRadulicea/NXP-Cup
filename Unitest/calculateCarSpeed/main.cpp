@@ -1,13 +1,65 @@
 ﻿#define DEBUG_UNIT_TEST
 #include "PowerTrain.h"
 #include "esc_raw.h"
+#include <float.h>
+#include <math.h>
 
 // wheel diameter = 64mm
+
+int PowerTrainfloatCmp(float num1, float num2) {
+	if (fabs(num1 - num2) < FLT_EPSILON) {
+		return 0;
+	}
+	else if (num1 > num2) {
+		return 1;
+	}
+	return -1;
+}
 
 static float getRpmPulsePeriod_us(float Rpm) {
 	float period;
 	period = (1.0 / (Rpm / 60.0)) * 1000000.0;
 	return period;
+}
+
+// left_right_turn: negative if turning left, positive if turning right
+void SetSpeedRequest(float speed_ms, float turn_radius, int left_right_turn) {
+	float left_wheel_turn_radius;
+	float right_wheel_turn_radius;
+	float left_wheel_turn_circonference;
+	float right_wheel_turn_circonference;
+	float car_trun_circonference;
+	float left_wheel_speed_request_m;
+	float right_wheel_speed_request_m;
+	float _distanceBwWheels_m = 0.145;
+
+	if (PowerTrainfloatCmp(turn_radius, 0.0) == 0 || left_right_turn == 0)	// going straight
+	{
+		left_wheel_speed_request_m = speed_ms;
+		right_wheel_speed_request_m = speed_ms;
+	}
+	else {
+		if (left_right_turn < 0)	// left turn
+		{
+			left_wheel_turn_radius = turn_radius - (_distanceBwWheels_m / 2.0);
+			right_wheel_turn_radius = turn_radius + (_distanceBwWheels_m / 2.0);
+		}
+		else if (left_right_turn > 0)	// right turn
+		{
+			left_wheel_turn_radius = turn_radius + (_distanceBwWheels_m / 2.0);
+			right_wheel_turn_radius = turn_radius - (_distanceBwWheels_m / 2.0);
+		}
+
+		left_wheel_turn_circonference = (2.0 * left_wheel_turn_radius) * M_PI;
+		right_wheel_turn_circonference = (2.0 * right_wheel_turn_radius) * M_PI;
+		car_trun_circonference = (2.0 * turn_radius) * M_PI;
+
+		left_wheel_speed_request_m = (left_wheel_turn_circonference / car_trun_circonference) * speed_ms;
+		right_wheel_speed_request_m = (right_wheel_turn_circonference / car_trun_circonference) * speed_ms;
+	}
+
+	//this->SetLeftWheelSpeedRequest(left_wheel_speed_request_m);
+	//this->SetRightWheelSpeedRequest(right_wheel_speed_request_m);
 }
 
 int main() {
@@ -20,6 +72,8 @@ int main() {
 	temp = getRpmPulsePeriod_us(300);
 	temp = RpmToRaw(-1);
 	temp = RpmToThrottle(300);
+
+	SetSpeedRequest(1, 1, 1);
 
 	PowerTrain powerTrain(kP, kI, kD, wheelDiameter, NULL, NULL);
 	powerTrain.SetLeftWheelPID(kP, kI, kD, 1);

@@ -17,25 +17,24 @@
 #ifndef __POWERTRAIN_H__
 #define __POWERTRAIN_H__
 
+#include <Arduino.h>
 #include <math.h>
+#include <float.h>
 #include "PID.h"
 #include "esc_raw.h"
+#include "util/atomic.h"
+#include <WheelRpm.h>
+#include <PWMServo.h>
 
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define HzToSec(hz) (1.0/(hz))
 
-
 #define M_PI       3.14159265358979323846   // pi
 #define M_PI_2     1.57079632679489661923   // pi/2
 
-#define POWERTRAIN_PID_FREQUENCY_HZ 100
-#define RPM_SENSOR_LEFT_WHEEL_PIN 2
-#define RPM_SENSOR_RIGHT_WHEEL_PIN 4
-#define RIGHT_WHEEL_MOTOR_PIN 23
-#define LEFT_WHEEL_MOTOR_PIN 22
-#define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
+int PowerTrainfloatCmp(float num1, float num2);
 
 
 //TO DO:
@@ -156,7 +155,13 @@ public:
 		this->timePassedFromLastSample = timePassedFromLastSample1;
 		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(timePassedFromLastSample1)));
 	}
-	float timePassedFromLastSample = 0.0;
+
+	void SetDiameter(float wheel_diameter){
+		this->wheelDiameter = wheel_diameter;
+	}
+	float GetDiameter(){
+		return this->wheelDiameter;
+	}
 
 private:
 
@@ -194,6 +199,7 @@ private:
 
 	float carWeight = 0.0;
 	float speedRequest_raw = 90.0;
+	float timePassedFromLastSample = 0.0;
 	MotorHandler _motorHandler = NULL;
 
 	PID _pid;
@@ -213,6 +219,57 @@ public:
 		:leftWheel(wheelDiameter_meters, LeftMotorHandler),
 		rightWheel(wheelDiameter_meters, RightMotorHandler)
 	{
+	}
+
+	void SetDistanceBetweenWheels(float distance_between_wheels){
+		this->_distanceBwWheels_m = distance_between_wheels;
+	}
+
+	float GetDistanceBetweenWheels(){
+		return this->_distanceBwWheels_m;
+	}
+
+	// left_right_turn: negative if turning left, positive if turning right
+	void SetSpeedRequest(float speed_ms, float turn_radius, int left_right_turn){
+		float left_wheel_turn_radius;
+		float right_wheel_turn_radius;
+		float left_wheel_turn_circonference;
+		float right_wheel_turn_circonference;
+		float car_trun_circonference;
+		float left_wheel_speed_request_m;
+		float right_wheel_speed_request_m;
+
+		if (PowerTrainfloatCmp(turn_radius, 0.0) == 0 || left_right_turn == 0)	// going straight
+		{
+			left_wheel_speed_request_m = speed_ms;
+			right_wheel_speed_request_m = speed_ms;
+		}
+		else{
+			if (left_right_turn < 0)	// left turn
+			{
+				left_wheel_turn_radius = turn_radius - (this->_distanceBwWheels_m / 2.0);
+				right_wheel_turn_radius = turn_radius + (this->_distanceBwWheels_m / 2.0);
+			}
+			else if (left_right_turn > 0)	// right turn
+			{
+				left_wheel_turn_radius = turn_radius + (this->_distanceBwWheels_m / 2.0);
+				right_wheel_turn_radius = turn_radius - (this->_distanceBwWheels_m / 2.0);
+			}
+
+			left_wheel_turn_circonference = (2.0 * left_wheel_turn_radius) * M_PI;
+			right_wheel_turn_circonference = (2.0 * right_wheel_turn_radius) * M_PI;
+			car_trun_circonference = (2.0 * turn_radius) * M_PI;
+			
+			left_wheel_speed_request_m =(left_wheel_turn_circonference / car_trun_circonference) * speed_ms;
+			right_wheel_speed_request_m =(right_wheel_turn_circonference / car_trun_circonference) * speed_ms;
+		}
+		
+		this->SetLeftWheelSpeedRequest(left_wheel_speed_request_m);
+		this->SetRightWheelSpeedRequest(right_wheel_speed_request_m);
+	}
+
+	void SetSpeedRequest_volatile(float speed_ms, float turn_radius, int left_right_turn) volatile{
+		this->SetSpeedRequest(speed_ms, turn_radius, left_right_turn);
 	}
 
 	void SetLeftWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
@@ -242,6 +299,14 @@ public:
 	}
 	void SetRightWheelPID(float kP, float kI, float kD, float integralImpact) {
 		this->rightWheel.SetPID(kP, kI, kD, integralImpact);
+	}
+
+	void SetRightWheelDiameter(float wheel_diameter) {
+		this->rightWheel.SetDiameter(wheel_diameter);
+	}
+
+	void SetLeftWheelDiameter(float wheel_diameter) {
+		this->leftWheel.SetDiameter(wheel_diameter);
 	}
 
 	float GetRightWheelSpeed() volatile {
@@ -299,11 +364,13 @@ public:
 	*/
 	Wheel leftWheel;
 	Wheel rightWheel;
+	float _distanceBwWheels_m = 0.0;
 
 private:
 };
 
-void PowerTrainSetup();
+void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin);
 extern volatile PowerTrain powerTrain;
+
 
 #endif // !__POWERTRAIN_H__

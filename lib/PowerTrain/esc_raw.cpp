@@ -30,13 +30,18 @@ float rawToRpm(float raw_value) {
 float RpmToRaw(float rpm) {
     int len = (sizeof(_raw_to_rpm_correlation) / sizeof(*_raw_to_rpm_correlation));
     int i = 0;
+    float rpm_step = 0.0;
+    float raw_value;
     if (rpm >= -1) {
         i = 90;
     }
     for (; i < (len - 1); i++)
     {
         if (rpm >= _raw_to_rpm_correlation[i] && rpm < _raw_to_rpm_correlation[i + 1]) {
-            return (float)i;
+            rpm_step = (_raw_to_rpm_correlation[i + 1] - _raw_to_rpm_correlation[i]);
+
+            raw_value =  (float)i + (((rpm - _raw_to_rpm_correlation[i]) / rpm_step) * 1.0);
+            return raw_value;
         }
     }
 
