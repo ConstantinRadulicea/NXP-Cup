@@ -127,19 +127,25 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     temp_WheelRpmData.PulsePin = left_rpm_sensor_pin;
     setLeftWheelRpmData(temp_WheelRpmData);
 
-    pinMode(left_motor_pin, OUTPUT);
-    pinMode(right_motor_pin, OUTPUT);
-    pinMode(left_rpm_sensor_pin, INPUT_PULLDOWN);
-    pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-    attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);
-    attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, RISING);
-
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        RightMotor.attach(right_motor_pin, 1148, 1832);
+    if (left_motor_pin >= 0) {
+        pinMode(left_motor_pin, OUTPUT);
         LeftMotor.attach(left_motor_pin, 1148, 1832);
-        RightMotor.write((int)90);
         LeftMotor.write((int)90);
     }
+    if (right_motor_pin >= 0) {
+        pinMode(right_motor_pin, OUTPUT);
+        RightMotor.attach(right_motor_pin, 1148, 1832);
+        RightMotor.write((int)90);
+    }
+    if (left_rpm_sensor_pin >= 0) {
+        pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
+        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);
+    }
+    if (left_motor_pin >= 0) {
+        pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
+        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, RISING);
+    }
+    
     powerTrain.SetLeftWheelSpeedRequest_volatile(0.0);
     powerTrain.SetRightWheelSpeedRequest_volatile(0.0);
     

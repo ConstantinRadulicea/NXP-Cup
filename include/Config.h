@@ -81,17 +81,17 @@ static float black_color_treshold = 0.2f; // 0=black, 1=white
 static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
 static float lookahead_max_distance_cm = 50.0f;
-static float min_speed = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-static float max_speed = 135.0f  + CAR2_PARAMETERS_DIFFERENCE;
+static float min_speed = 0.2f + CAR2_PARAMETERS_DIFFERENCE;   // m/s
+static float max_speed = 5.0f  + CAR2_PARAMETERS_DIFFERENCE;  // m/s
 static float emergency_break_distance_cm = 75.0f;
-static float emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
+static float emergency_brake_min_speed = 0.2f + CAR2_PARAMETERS_DIFFERENCE; // m/s
 static float emergency_brake_distance_from_obstacle_cm = 9.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
 static float min_axis_angle_vector = 15.0f;
-static float max_speed_after_emergency_brake_delay = 107.0f;
+static float max_speed_after_emergency_brake_delay = 5.0f; // m/s
 static float car_speed_ki = -0.02f;
 static float car_speed_kd = -0.2f;
-static float car_speed_ki_min_max_impact = 5.0f;
+static float car_speed_ki_min_max_impact = 0.2f;
 static float finish_line_angle_tolerance = 15.0f;
 
 
@@ -158,7 +158,7 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #include "MovingAverage.h"
 #include "ReadSerial.h"
 #include <vector>
-
+#include "PowerTrain.h"
 
 #ifdef I2C
   #include <pixy2_libs/host/arduino/libraries/Pixy2/Pixy2I2C.h>
@@ -397,9 +397,9 @@ static float car_speed_ki_min_max_impact = 5.0f;
 #define MIN_SPEED min_speed
 #define MAX_SPEED max_speed
 #if CAR1 == 1
-  #define STANDSTILL_SPEED 90.0f      //(car1: 90)  (car2: 83)
+  #define STANDSTILL_SPEED 0.0f
 #elif CAR2 == 1
-  #define STANDSTILL_SPEED 83.0f      //(car1: 90)  (car2: 83)
+  #define STANDSTILL_SPEED 0.0f
 #endif
 
 #define ENABLE_CAR_ENGINE enable_car_engine
