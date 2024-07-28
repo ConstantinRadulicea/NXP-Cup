@@ -469,31 +469,6 @@ void loop() {
         #if ENABLE_SERIAL_PRINT == 1
           SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK loop: ") + String(emergency_break_loops_count));
         #endif
-
-        if (emergency_break_loops_count == 1) {
-
-          #if ENABLE_DRIVERMOTOR == 1 &&  ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE == 1 // use brakes to get to a near standstill
-            if (ENABLE_CAR_ENGINE != 0) {
-              float tempCarSpeed = movingAverage_speed.next(carSpeed);
-              float startTime_ = (float)millis();
-              float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (40.0f / (107.0f - 90.0f));
-              int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
-
-              while ((((float)millis()) - startTime_) < brakeTime_) {
-                if (purePersuitInfo.steeringAngle > 0.0) {
-                  powerTrain.SetSpeedRequest_volatile(brakeSpeed_, purePersuitInfo.turnRadius, 1);
-                }
-                else if(purePersuitInfo.steeringAngle < 0.0){
-                  powerTrain.SetSpeedRequest_volatile(brakeSpeed_, purePersuitInfo.turnRadius, -1);
-                }
-                else {
-                  powerTrain.SetSpeedRequest_volatile(brakeSpeed_, purePersuitInfo.turnRadius, 0);
-                }
-              }
-            }
-          #endif
-          carSpeed = (float)EMERGENCY_BRAKE_MIN_SPEED;  
-        }
         
         if(frontObstacleDistance <= EMERGENCY_BREAK_MAX_DISTANCE_FROM_OBSTACLE_CM){
           carSpeed = (float)STANDSTILL_SPEED;
@@ -504,10 +479,10 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (ENABLE_CAR_ENGINE != 0) {
             if (purePersuitInfo.steeringAngle > 0.0) {
-              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
+              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
             }
             else if(purePersuitInfo.steeringAngle < 0.0){
-              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
+              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
             }
             else {
               powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 0);
@@ -619,10 +594,10 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1
             if (ENABLE_CAR_ENGINE != 0) {
               if (purePersuitInfo.steeringAngle > 0.0) {
-                powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
+                powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
               }
               else if(purePersuitInfo.steeringAngle < 0.0){
-                powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
+                powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
               }
               else {
                 powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 0);
@@ -756,10 +731,10 @@ void loop() {
       #if ENABLE_DRIVERMOTOR == 1
         if (ENABLE_CAR_ENGINE != 0) {
             if (purePersuitInfo.steeringAngle > 0.0) {
-              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
+              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
             }
             else if(purePersuitInfo.steeringAngle < 0.0){
-              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
+              powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
             }
             else {
               powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 0);
@@ -782,10 +757,10 @@ void loop() {
     #if ENABLE_DRIVERMOTOR == 1
       if (ENABLE_CAR_ENGINE != 0) {
         if (purePersuitInfo.steeringAngle > 0.0) {
-          powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
+          powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
         }
         else if(purePersuitInfo.steeringAngle < 0.0){
-          powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, -1);
+          powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 1);
         }
         else {
           powerTrain.SetSpeedRequest_volatile(carSpeed, purePersuitInfo.turnRadius, 0);

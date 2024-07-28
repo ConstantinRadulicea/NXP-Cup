@@ -33,14 +33,14 @@ RpmSensorData temp_RightWheelRpmData;
 std::vector<char> line;
 char* pEnd;
 int resultSuccess;
-float leftMotorRawSpeed = 0.0, rightMotorRawSpeed = 0.0, carTurnRadius = 0.0;
+float leftMotorRawSpeed = 0.0, direction = 0.0, carTurnRadius = 0.0;
 void loop() {
     if (readRecordFromSerial(Serial, "\r\n", line)) {
-        // 1;1;1;0;0.1;0;0.5\r\n
+        // 1;0;0;0;0.1;0;0.5\r\n
         pEnd = line.data();
         Serial.println(line.data());
         leftMotorRawSpeed = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
-        rightMotorRawSpeed = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
+        direction = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         carTurnRadius = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         kp = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
         ki = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
@@ -52,7 +52,7 @@ void loop() {
             powerTrain.SetRightWheelPID(kp, ki, kd, ki_sum);
             //powerTrain.SetLeftWheelSpeedRequest_volatile(leftMotorRawSpeed);
             //powerTrain.SetRightWheelSpeedRequest_volatile(rightMotorRawSpeed);
-            powerTrain.SetSpeedRequest_volatile(leftMotorRawSpeed, rightMotorRawSpeed, carTurnRadius);
+            powerTrain.SetSpeedRequest_volatile(leftMotorRawSpeed, carTurnRadius, direction);
         }
         line.clear();
     }

@@ -82,13 +82,13 @@ static float car_length_cm = 17.5f;
 static float lookahead_min_distance_cm = 22.0f;
 static float lookahead_max_distance_cm = 50.0f;
 static float min_speed = 0.2f + CAR2_PARAMETERS_DIFFERENCE;   // m/s
-static float max_speed = 5.0f  + CAR2_PARAMETERS_DIFFERENCE;  // m/s
+static float max_speed = 2.0f  + CAR2_PARAMETERS_DIFFERENCE;  // m/s
 static float emergency_break_distance_cm = 75.0f;
 static float emergency_brake_min_speed = 0.2f + CAR2_PARAMETERS_DIFFERENCE; // m/s
 static float emergency_brake_distance_from_obstacle_cm = 9.0f;   // 13.5f
 static float steering_wheel_angle_offset = 0.0f;
 static float min_axis_angle_vector = 15.0f;
-static float max_speed_after_emergency_brake_delay = 5.0f; // m/s
+static float max_speed_after_emergency_brake_delay = 2.0f; // m/s
 static float car_speed_ki = -0.02f;
 static float car_speed_kd = -0.2f;
 static float car_speed_ki_min_max_impact = 0.2f;
@@ -266,15 +266,15 @@ static float car_speed_ki_min_max_impact = 5.0f;
   #define ENABLE_STEERING_SERVO 1
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
-  #define ENABLE_EMERGENCY_BREAKING 1
-  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
-  #define ENABLE_DISTANCE_SENSOR1 1
-  #define ENABLE_DISTANCE_SENSOR2 1
-  #define ENABLE_DISTANCE_SENSOR3 1
-  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
+  #define ENABLE_EMERGENCY_BREAKING 0
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 0
+  #define ENABLE_DISTANCE_SENSOR1 0
+  #define ENABLE_DISTANCE_SENSOR2 0
+  #define ENABLE_DISTANCE_SENSOR3 0
+  #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
-  #define ENABLE_FINISH_LINE_DETECTION 1
+  #define ENABLE_FINISH_LINE_DETECTION 0
 #endif
 
 #if RACE_MODE == 1
