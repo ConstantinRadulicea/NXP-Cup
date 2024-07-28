@@ -32,6 +32,11 @@
 
 #define radians(deg) ((deg)*DEG_TO_RAD)
 #define degrees(rad) ((rad)*RAD_TO_DEG)
+#define HzToSec(hz) (1.0/(hz))
+#define MilliToMicro(val) ((val)*1000)
+#define MicroToMilli(val) ((val)/1000)
+#define MicroToUnit(val) ((val)/1000000)
+#define UnitToMicro(val) ((val)*1000000)
 
 #define INCONSISTENT_ECUATION_SYSTEM 1
 #define CONSISTENT_ECUATION_SYSTEM 2

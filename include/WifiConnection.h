@@ -1,0 +1,118 @@
+#ifndef __WIFICONNECTION_H__
+#define __WIFICONNECTION_H__
+
+#include <HardwareSerial.h>
+
+//#define DEBUG_WIFI_SSID "Off Limits3"
+//#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
+#define DEBUG_WIFI_SSID "wifi"
+#define DEBUG_WIFI_PASSWORD "b020a314"
+
+//#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
+//#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
+//#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
+#if CAR1 == 1
+  #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // Daniel phone
+#else
+  #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // edu
+#endif
+
+#define DEBUG_HOST_PORT 6789
+
+#define SSDP_ENABLE_STRING "ENABLE_SSDP"
+#define SSDP_DEVICETYPE "urn:schemas-upnp-org:device:NXP-CAR:1"
+#define SSDP_NAME "NXP-CUP-CAR"
+
+#if CAR1 == 1
+  #define SSDP_SERIALNUMBER "1"
+#elif CAR2 == 1
+    #define SSDP_SERIALNUMBER "2"
+#else
+    #define SSDP_SERIALNUMBER "0"
+#endif
+
+#define SSDP_MODELNAME "Model Name"
+#define SSDP_MODELNUMBER "Model Number"
+#define SSDP_MODELURL "Model URL"
+#define SSDP_MANUFACTURER "Manufacturer"
+#define SSDP_MANUFACTURERURL "Manufacturer URL"
+
+
+
+
+#define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
+#define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
+#define ESP8266_ENABLE_SSDP 1
+#define ESP8266_ENABLE_SERVER 1
+
+
+#ifndef ESP8266_ENABLE_SERVER
+    #define ESP8266_ENABLE_SERVER 0
+#endif
+
+#ifndef ESP8266_ENABLE_CLIENT
+    #define ESP8266_ENABLE_CLIENT 0
+#endif
+
+#if (ESP8266_ENABLE_SERVER == 1 && ESP8266_ENABLE_CLIENT == 1) || (ESP8266_ENABLE_SERVER == 0 && ESP8266_ENABLE_CLIENT == 0)
+    #define ESP8266_ENABLE_SERVER 1
+#endif
+
+#if ESP8266_ENABLE_SERVER == 1
+  #define ESP8266_CONFIGURATION "SERVER"
+#endif
+  
+#if ESP8266_ENABLE_CLIENT == 1
+  #define ESP8266_CONFIGURATION "CLIENT"
+#endif
+
+#ifndef ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING
+    #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING ""
+#endif
+
+#ifndef ESP8266_ENABLE_SSDP
+    #define ESP8266_ENABLE_SSDP 0
+#endif
+
+
+static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+  String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+  serialPort.print(initSequence);
+  serialPort.println(commentChar + String(ESP8266_CONFIGURATION));
+  //serialPort.println(commentChar + String("CLIENT"));
+  serialPort.println(commentChar + wifiSsid);
+  serialPort.println(commentChar + wifiPassword);
+  #if ESP8266_ENABLE_CLIENT != 0
+    Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(hostname));
+  #endif
+  serialPort.println(commentChar + String(port));
+
+    #if ESP8266_ENABLE_SSDP != 0
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_ENABLE_STRING));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_DEVICETYPE));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_NAME));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_SERIALNUMBER));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNAME));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNUMBER));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELURL));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MANUFACTURER));
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MANUFACTURERURL));
+    #else
+      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String("DISABLE_SSDP"));
+    #endif
+}
+
+/*==============================================================================*/
+
+static void printSerial2WifiInfo(HardwareSerial &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+  
+  String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+  serialPort.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);
+  serialPort.println(commentChar + String("SSID: ") + wifiSsid);
+  serialPort.println(commentChar + String("PASSWORD: ") + wifiPassword);
+  serialPort.println(commentChar + String("HOSTNAME: ") + hostname);
+  serialPort.println(commentChar + String("PORT: ") + String(port));
+  
+}
+
+#endif
