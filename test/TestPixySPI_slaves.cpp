@@ -1,6 +1,6 @@
 #include "Config.h"
 
-Pixy2SPI_SS pixy_1;
+Pixy2SPI_SS g_pixy_1;
 Pixy2SPI_SS pixy_2;
 
 int8_t pixyResult;
@@ -19,14 +19,14 @@ void setup() {
   Serial.print("pixy_2.init=");
   Serial.println(pixyResult);
 
-  pixyResult = pixy_1.init(SPI_SS_PIXY_1_PIN);
-  Serial.print("pixy_1.init=");
+  pixyResult = g_pixy_1.init(SPI_SS_PIXY_1_PIN);
+  Serial.print("g_pixy_1.init=");
   Serial.println(pixyResult);
 
 
 
-  pixyResult = pixy_1.changeProg("line");
-  Serial.print("pixy_1.changeProg=");
+  pixyResult = g_pixy_1.changeProg("line");
+  Serial.print("g_pixy_1.changeProg=");
   Serial.println(pixyResult);
 
   pixyResult = pixy_2.changeProg("line");
@@ -36,15 +36,15 @@ void setup() {
 
 
 void loop() {
-    pixyResult = pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION);
+    pixyResult = g_pixy_1.line.getAllFeatures(LINE_VECTOR | LINE_INTERSECTION);
     if(pixyResult >= (int8_t)0) {
-        for (size_t i = 0; i < pixy_1.line.numVectors; i++) {
-            Serial.print("pixy_1: ");
-            pixy_1.line.vectors[i].print();
+        for (size_t i = 0; i < g_pixy_1.line.numVectors; i++) {
+            Serial.print("g_pixy_1: ");
+            g_pixy_1.line.vectors[i].print();
         }
     }
     else{
-        Serial.print("ERROR: pixy_1.line.getAllFeatures=");
+        Serial.print("ERROR: g_pixy_1.line.getAllFeatures=");
         Serial.println(pixyResult);
     }
 

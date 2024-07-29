@@ -14,14 +14,6 @@ static float g_max_speed = 112.0f;
 static float g_black_color_treshold = 0.2f; // 0=black, 1=white
 static float g_car_length_cm = 17.5f;
 
-#define g_lane_width_vector_unit g_lane_width_vector_unit
-#define g_lookahead_min_distance_cm g_lookahead_min_distance_cm
-#define g_lookahead_max_distance_cm g_lookahead_max_distance_cm
-#define g_car_length_cm g_car_length_cm
-#define g_black_color_treshold g_black_color_treshold // 0=black, 1=white
-#define g_emergency_break_distance_cm g_emergency_break_distance_cm
-#define g_min_speed g_min_speed
-#define g_max_speed g_max_speed
 
 #define MENU_RIGHT_ARROW_BUTTON_PIN 14
 #define MENU_LEFT_ARROW_BUTTON_PIN 15

@@ -16,6 +16,7 @@
 
 
 #include "log.h"
+#include "GlobalVariables.h"
 
 void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
@@ -48,7 +49,7 @@ void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector 
   serialPort.print(semicolonChar);
   serialPort.print(String(frontObstacleDistance));
   serialPort.print(semicolonChar);
-  serialPort.print(String(purePersuitInfo.lookAheadDistance * CM_PER_VECTOR_UNIT));
+  serialPort.print(String(VectorUnitToMeter(purePersuitInfo.lookAheadDistance) / 100.0f));
   serialPort.print(semicolonChar);
   serialPort.print(String(carSpeed_));
   serialPort.print(semicolonChar);

@@ -103,6 +103,7 @@ g_steering_wheel_angle_offset = 0.0;
 #define ENABLE_FINISH_LINE_DETECTION 1
 
 
+#define SERIAL_PORT_BAUD_RATE 230400
 #define SERIAL_PORT Serial1
 
 #if DEBUG_MODE == 1

@@ -18,7 +18,7 @@
 float servoAngle = 50;
 int servoTimeout = 7;
 int servoAngleIncrease = 4;
-SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
+SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
 PWMServo driverMotor;
 Pixy2 pixy;
 int8_t res;
@@ -71,7 +71,7 @@ void setup() {
     Serial.begin(115200);
     while (!Serial);
     //Serial.println("Starting...");
-    steeringWheel.attach(STEERING_SERVO_PIN);
+    g_steering_wheel.attach(STEERING_SERVO_PIN);
     driverMotor.attach(DRIVER_MOTOR_PIN, 1000, 2000);
     // we must initialize the pixy object
     res = pixy.init();
@@ -93,10 +93,10 @@ void loop() {
       input_buffer = "";
     }
     //res = pixy.line.getAllFeatures();
-    //steeringWheel.SlowWrite(servoAngle, servoTimeout, servoAngleIncrease);
-    //steeringWheel.write(servoAngle);
-    //steeringWheel.setSteeringAngle(servoAngle);
-    //Serial.println("servoTempAngle: " + String(steeringWheel.getTempAngle()) + "\tservoFinalAngle: " + String(steeringWheel.getFinalAngle()) + "\tsteerANgle: " + String(steeringWheel.getSteeringAngle()));
+    //g_steering_wheel.SlowWrite(servoAngle, servoTimeout, servoAngleIncrease);
+    //g_steering_wheel.write(servoAngle);
+    //g_steering_wheel.setSteeringAngle(servoAngle);
+    //Serial.println("servoTempAngle: " + String(g_steering_wheel.getTempAngle()) + "\tservoFinalAngle: " + String(g_steering_wheel.getFinalAngle()) + "\tsteerANgle: " + String(g_steering_wheel.getSteeringAngle()));
     
 
     for (i = 0; i < pixy.frameWidth; i++)

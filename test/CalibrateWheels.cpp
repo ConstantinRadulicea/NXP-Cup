@@ -7,7 +7,7 @@
   #define STEERING_SERVO_ANGLE_MAX_RIGHT  0    // 0 max right // 30
   #define STEERING_SERVO_ANGLE_MAX_LEFT   180   // 180 max left // 210
 
-SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
+SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
 
 float increment = 1.0f;
 float potValue = 0.0f;
@@ -19,12 +19,12 @@ void setup(){
       delay(100);
     }
 
-    steeringWheel.attach(STEERING_SERVO_PIN);
-    steeringWheel.setSteeringAngleDeg(potValue);
+    g_steering_wheel.attach(STEERING_SERVO_PIN);
+    g_steering_wheel.setSteeringAngleDeg(potValue);
     float startTimer = (float)millis();
 
     while (((float)millis() - startTimer) < 2000) {
-        steeringWheel.setSteeringAngleDeg(potValue);
+        g_steering_wheel.setSteeringAngleDeg(potValue);
     }
 }
 
@@ -35,11 +35,11 @@ float time1;
 void loop(){
     time1 = (float)millis();
     while (((float)millis() - time1) < 2000) {
-        steeringWheel.setSteeringAngleDeg((30.0f));
+        g_steering_wheel.setSteeringAngleDeg((30.0f));
     }
     time1 = (float)millis();
     while (((float)millis() - time1) < 2000) {
-        steeringWheel.setSteeringAngleDeg((-30.0f));
+        g_steering_wheel.setSteeringAngleDeg((-30.0f));
     }
 }
 */
@@ -57,7 +57,7 @@ void loop() {
   time1 = (float)millis();
   while ((float)millis() - time1 < 200)
   {
-    steeringWheel.setSteeringAngleDeg(potValue);    // Send the signal to the ESC
+    g_steering_wheel.setSteeringAngleDeg(potValue);    // Send the signal to the ESC
     delay(1);
   }
   potValue += increment;

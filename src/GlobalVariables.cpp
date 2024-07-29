@@ -30,7 +30,6 @@ int g_enable_finish_line_detection = 1;
 
 float g_lane_width_vector_unit = 53.0f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white
-float g_car_length_cm = 17.5f;
 float g_lookahead_min_distance_cm = 22.0f;
 float g_lookahead_max_distance_cm = 50.0f;
 float g_min_speed = 0.2f;   // m/s
@@ -97,7 +96,7 @@ float g_car_speed_ki_min_max_impact = 5.0f;
 
 
 
-float car_length_vector_unit = (float)g_car_length_cm * (float)VECTOR_UNIT_PER_CM;
+float g_car_length_vector_unit = (float)MeterToVectorUnit(CAR_LENGTH_M);
 int g_emergency_break_active =(int) 0;
 unsigned int g_emergency_break_loops_count = (int)0;
 float g_car_speed = (float)STANDSTILL_SPEED;
@@ -113,11 +112,11 @@ int g_finish_line_detected_now = 0;
 FinishLine g_finish_line = {};
 
 
-SteeringWheel steeringWheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
+SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
 
-VectorsProcessing pixy_1_vectorsProcessing;
+VectorsProcessing g_pixy_1_vectors_processing;
 //VectorsProcessing pixy_2_vectorsProcessing;
-Pixy2SPI_SS pixy_1;
+Pixy2SPI_SS g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
@@ -136,7 +135,7 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   g_min_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	g_max_speed = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	g_black_color_treshold = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-	g_car_length_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	//g_car_length_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   
   temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   if (temp_float >= 0.5f) {
@@ -224,8 +223,6 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   else{
     g_enable_finish_line_detection = 0;
   }
-  car_length_vector_unit = g_car_length_cm * VECTOR_UNIT_PER_CM;
-
 }
 
 /*==============================================================================*/
@@ -250,8 +247,8 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_black_color_treshold));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_length_cm));
-  serialPort.print(separatorCharacter);
+  //serialPort.print(String(g_car_length_cm));
+  //serialPort.print(separatorCharacter);
   serialPort.print(String(g_enable_car_engine));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_enable_car_steering_wheel));

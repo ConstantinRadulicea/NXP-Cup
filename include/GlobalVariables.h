@@ -44,7 +44,6 @@ extern int g_enable_finish_line_detection;
 
 extern float g_lane_width_vector_unit;
 extern float g_black_color_treshold; // 0=black, 1=white
-extern float g_car_length_cm;
 extern float g_lookahead_min_distance_cm;
 extern float g_lookahead_max_distance_cm;
 extern float g_min_speed;   // m/s
@@ -71,13 +70,10 @@ extern float g_emergency_brake_enable_delay_s;
 #define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
 #define SCREEN_CENTER_Y ((float)IMAGE_MAX_Y / 2.0f)
 
-#define LANE_WIDTH_CM 53.5f
+#define LANE_WIDTH_M 0.535f
 
-#define VECTOR_UNIT_PER_CM (float)((float)g_lane_width_vector_unit / (float)LANE_WIDTH_CM)   // CM * VECTOR_UNIT_PER_CM = VECTOR_UNIT
-#define CM_PER_VECTOR_UNIT (float)((float)LANE_WIDTH_CM / (float)g_lane_width_vector_unit)   // VECTOR_UNIT_PER_CM * CM = CM
-#define RADIANS_PER_DEGREE (float)((float)M_PI / 180.0f) // DEGREE * RADIAN_PER_DEGREE = RADIAN
-#define DEGREES_PER_RADIAN (float)(180.0f / (float)M_PI) // RADIAN * DEGREE_PER_RADIAN = DEGREE
-
+#define MeterToVectorUnit(m) ((float)m * ((float)g_lane_width_vector_unit / (float)LANE_WIDTH_M))
+#define VectorUnitToMeter(v_unit) ((float)v_unit * ((float)LANE_WIDTH_M / (float)g_lane_width_vector_unit))
 
 #if CAR1 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120
@@ -93,13 +89,14 @@ extern float g_emergency_brake_enable_delay_s;
 
 #define STANDSTILL_SPEED 0.0f
 
+#define CAR_LENGTH_M 0.175
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
 #define DISTANCE_BETWEEN_WHEELS_M 0.145	//distance between wheels
 #define POWERTRAIN_PID_FREQUENCY_HZ 100
 
 
 /*====================================================================================================================================*/
-extern float car_length_vector_unit;
+extern float g_car_length_vector_unit;
 extern int g_emergency_break_active;
 extern unsigned int g_emergency_break_loops_count;
 extern float g_car_speed;
@@ -115,11 +112,11 @@ extern int g_finish_line_detected_now;
 extern FinishLine g_finish_line;
 
 
-extern SteeringWheel steeringWheel;
+extern SteeringWheel g_steering_wheel;
 
-extern VectorsProcessing pixy_1_vectorsProcessing;
+extern VectorsProcessing g_pixy_1_vectors_processing;
 //VectorsProcessing pixy_2_vectorsProcessing;
-extern Pixy2SPI_SS pixy_1;
+extern Pixy2SPI_SS g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
