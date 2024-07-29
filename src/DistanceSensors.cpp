@@ -1,0 +1,157 @@
+#include "DistanceSensors.h"
+
+int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
+int distance_sensor2_trig_pin, distance_sensor2_echo_pin;
+int distance_sensor3_trig_pin, distance_sensor3_echo_pin;
+
+void DistanceSensorsSetup(
+int _distance_sensor1_trig_pin, int _distance_sensor1_echo_pin,
+int _distance_sensor2_trig_pin, int _distance_sensor2_echo_pin,
+int _distance_sensor3_trig_pin, int _distance_sensor3_echo_pin)
+{
+distance_sensor1_trig_pin = _distance_sensor1_trig_pin;
+distance_sensor2_trig_pin = _distance_sensor2_trig_pin;
+distance_sensor3_trig_pin = _distance_sensor3_trig_pin;
+
+distance_sensor1_echo_pin = _distance_sensor1_echo_pin;
+distance_sensor2_echo_pin = _distance_sensor2_echo_pin;
+distance_sensor3_echo_pin = _distance_sensor3_echo_pin;
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    pinMode(distance_sensor1_trig_pin, OUTPUT); 
+    pinMode(distance_sensor1_echo_pin, INPUT); 
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    pinMode(distance_sensor2_trig_pin, OUTPUT); 
+    pinMode(distance_sensor2_echo_pin, INPUT); 
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    pinMode(distance_sensor3_trig_pin, OUTPUT); 
+    pinMode(distance_sensor3_echo_pin, INPUT); 
+  #endif
+
+}
+
+
+float getFrontObstacleDistance_cm(){
+  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    static MovingAverage movingAverage_sensor1(3);
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    static MovingAverage movingAverage_sensor2(3);
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    static MovingAverage movingAverage_sensor3(3);
+  #endif
+  
+  // calculations were made in centimeters
+  static uint32_t pulseInTimeout_us = (uint32_t)((200.0f / 34300.0f) * 1000000.0f);
+
+  float duration;
+  float measured_distance = 0.0f;
+  float estimated_distance = 0.0f;
+  float estimated_distance_sensor1 = 400.0f, estimated_distance_sensor2 = 400.0f, estimated_distance_sensor3 = 400.0f;
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (g_enable_distance_sensor1 != 0)
+    {
+      digitalWrite(distance_sensor1_trig_pin, LOW);
+      delayMicroseconds(2);
+      // Sets the trigPin on HIGH state for 10 micro seconds
+      digitalWrite(distance_sensor1_trig_pin, HIGH);
+      delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+      digitalWrite(distance_sensor1_trig_pin, LOW);
+      // Reads the echoPin, returns the sound wave travel time in microseconds
+      duration = (float)(pulseIn(distance_sensor1_echo_pin, HIGH, pulseInTimeout_us));
+      // Calculating the distance
+      measured_distance = duration * 0.034321f / 2.0f;
+
+      if (measured_distance <= 0.0f) {
+        measured_distance = 400.0f;
+      }
+
+      measured_distance = MIN(measured_distance, 400.0f);
+
+      //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+      estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance);
+      //estimated_distance = measured_distance;
+    }
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1 && ENABLE_DISTANCE_SENSOR2 == 1
+  if ((g_enable_distance_sensor1 != 0) && (g_enable_distance_sensor2 != 0)) {
+    delay(1);
+  }
+  #endif
+  
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+  if (g_enable_distance_sensor2 != 0)
+  {
+    
+    digitalWrite(distance_sensor2_trig_pin, LOW);
+    delayMicroseconds(2);
+    // Sets the trigPin on HIGH state for 10 micro seconds
+    digitalWrite(distance_sensor2_trig_pin, HIGH);
+    delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+    digitalWrite(distance_sensor2_trig_pin, LOW);
+    // Reads the echoPin, returns the sound wave travel time in microseconds
+    duration = (float)(pulseIn(distance_sensor2_echo_pin, HIGH, pulseInTimeout_us));
+    // Calculating the distance
+    measured_distance = (duration * 0.034321f / 2.0f);
+
+    if (measured_distance <= 0.0f) {
+      measured_distance = 400.0f;
+    }
+
+    measured_distance = MIN(measured_distance, 400.0f);
+
+    //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+    estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance);
+    //estimated_distance = measured_distance;
+  }
+  #endif
+
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1 && (ENABLE_DISTANCE_SENSOR2 == 1 || ENABLE_DISTANCE_SENSOR1 == 1)
+  if ((g_enable_distance_sensor3 != 0) && ((g_enable_distance_sensor1 != 0) || (g_enable_distance_sensor2 != 0))) {
+    delay(1);
+  }
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    if (g_enable_distance_sensor3 != 0)
+    {
+      digitalWrite(distance_sensor3_trig_pin, LOW);
+      delayMicroseconds(2);
+      // Sets the trigPin on HIGH state for 10 micro seconds
+      digitalWrite(distance_sensor3_trig_pin, HIGH);
+      delayMicroseconds(10); //This pin should be set to HIGH for 10 μs, at which point the HC­SR04 will send out an eight cycle sonic burst at 40 kHZ
+      digitalWrite(distance_sensor3_trig_pin, LOW);
+      // Reads the echoPin, returns the sound wave travel time in microseconds
+      duration = (float)(pulseIn(distance_sensor3_echo_pin, HIGH, pulseInTimeout_us));
+      // Calculating the distance
+      measured_distance = duration * 0.034321f / 2.0f;
+
+      if (measured_distance <= 0.0f) {
+        measured_distance = 400.0f;
+      }
+
+      measured_distance = MIN(measured_distance, 400.0f);
+
+      //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
+      estimated_distance_sensor3 = movingAverage_sensor3.next(measured_distance);
+      //estimated_distance = measured_distance;
+    }
+  #endif
+
+
+  estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+  estimated_distance = MIN(estimated_distance, estimated_distance_sensor3);
+
+  return estimated_distance;
+}

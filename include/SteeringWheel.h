@@ -19,9 +19,13 @@
 #ifndef _STEERINGWHEEL_H_
 #define _STEERINGWHEEL_H_
 
-#include "SlowServo.h" // smoother control over the servo
+#include <PWMServo.h>
+#include <math.h>
 
-class SteeringWheel : public SlowServo
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+class SteeringWheel : public PWMServo
 {
 private:
     int ServoMaxLeftAngle;
@@ -36,8 +40,7 @@ private:
     /* data */
 public:
     //                                              130                                    90                                       40
-    SteeringWheel(unsigned int servo_max_left_angle = 0, unsigned int servo_middle_angle = 90, unsigned int servo_max_right_angle = 180, unsigned int milliseconds = 0) : SlowServo(){
-        this->setUpdateTimeout_ms(milliseconds);
+    SteeringWheel(unsigned int servo_max_left_angle = 0, unsigned int servo_middle_angle = 90, unsigned int servo_max_right_angle = 180, unsigned int milliseconds = 0) : PWMServo(){
         this->SteeringWheelAngle = 0;
         this->ServoMaxLeftAngle = (int) servo_max_left_angle;
         this->ServoMiddleAngle = (int) servo_middle_angle;
@@ -87,7 +90,7 @@ public:
             this->SteeringWheelAngle = 0;
             new_servo_angle = this->ServoMiddleAngle;
         }
-        this->SlowWrite(new_servo_angle);
+        this->write(new_servo_angle);
     }
 
 
@@ -113,10 +116,10 @@ public:
 
     float getWheelAngle(){
         if(ServoMaxRightAngle > ServoMiddleAngle){  // going right
-            return ServoMiddleAngle - this->getTempAngle();
+            return ServoMiddleAngle - this->read();
         }
         else{                                       // going left
-            return this->getTempAngle() - ServoMiddleAngle;
+            return this->read() - ServoMiddleAngle;
         }
         
     }

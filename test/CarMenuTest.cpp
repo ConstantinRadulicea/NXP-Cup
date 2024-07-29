@@ -5,23 +5,23 @@
 #define ENABLE_SETTINGS_MENU 1
 
 
-static float lane_width_vector_unit_real = 60.0f;
-static float lookahead_min_distance_cm = 16.0f;
-static float lookahead_max_distance_cm = 30.0f;
-static float emergency_break_distance_cm = 60.0f;
-static float min_speed = 96.0f;
-static float max_speed = 112.0f;
-static float black_color_treshold = 0.2f; // 0=black, 1=white
-static float car_length_cm = 17.5f;
+static float g_lane_width_vector_unit = 60.0f;
+static float g_lookahead_min_distance_cm = 16.0f;
+static float g_lookahead_max_distance_cm = 30.0f;
+static float g_emergency_break_distance_cm = 60.0f;
+static float g_min_speed = 96.0f;
+static float g_max_speed = 112.0f;
+static float g_black_color_treshold = 0.2f; // 0=black, 1=white
+static float g_car_length_cm = 17.5f;
 
-#define LANE_WIDTH_VECTOR_UNIT_REAL lane_width_vector_unit_real
-#define LOOKAHEAD_MIN_DISTANCE_CM lookahead_min_distance_cm
-#define LOOKAHEAD_MAX_DISTANCE_CM lookahead_max_distance_cm
-#define CAR_LENGTH_CM car_length_cm
-#define BLACK_COLOR_TRESHOLD black_color_treshold // 0=black, 1=white
-#define EMERGENCY_BREAK_DISTANCE_CM emergency_break_distance_cm
-#define MIN_SPEED min_speed
-#define MAX_SPEED max_speed
+#define g_lane_width_vector_unit g_lane_width_vector_unit
+#define g_lookahead_min_distance_cm g_lookahead_min_distance_cm
+#define g_lookahead_max_distance_cm g_lookahead_max_distance_cm
+#define g_car_length_cm g_car_length_cm
+#define g_black_color_treshold g_black_color_treshold // 0=black, 1=white
+#define g_emergency_break_distance_cm g_emergency_break_distance_cm
+#define g_min_speed g_min_speed
+#define g_max_speed g_max_speed
 
 #define MENU_RIGHT_ARROW_BUTTON_PIN 14
 #define MENU_LEFT_ARROW_BUTTON_PIN 15
@@ -87,86 +87,86 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
     switch (lcdMenuIndex) {
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
-          MIN_SPEED += 0.5f;
+          g_min_speed += 0.5f;
         } else if (decrementButton == HIGH) {
-          MIN_SPEED -= 0.5f;
+          g_min_speed -= 0.5f;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("MIN_SPEED: ");
+        lcd_.print("g_min_speed: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(MIN_SPEED);
+        lcd_.print(g_min_speed);
         break;
 
       case LCDMENU_MAX_SPEED:
         if (incrementButton == HIGH) {
-          MAX_SPEED += 0.5f;
+          g_max_speed += 0.5f;
         } else if (decrementButton == HIGH) {
-          MAX_SPEED -= 0.5f;
+          g_max_speed -= 0.5f;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("MAX_SPEED: ");
+        lcd_.print("g_max_speed: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(MAX_SPEED);
+        lcd_.print(g_max_speed);
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:
         if (incrementButton == HIGH) {
-          LOOKAHEAD_MIN_DISTANCE_CM += 0.5f;
+          g_lookahead_min_distance_cm += 0.5f;
         } else if (decrementButton == HIGH) {
-          LOOKAHEAD_MIN_DISTANCE_CM -= 0.5f;
+          g_lookahead_min_distance_cm -= 0.5f;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("LOOKAHEAD_MIN: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(LOOKAHEAD_MIN_DISTANCE_CM);
+        lcd_.print(g_lookahead_min_distance_cm);
         break;
 
       case LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM:
         if (incrementButton == HIGH) {
-          LOOKAHEAD_MAX_DISTANCE_CM += 0.5f;
+          g_lookahead_max_distance_cm += 0.5f;
         } else if (decrementButton == HIGH) {
-          LOOKAHEAD_MAX_DISTANCE_CM -= 0.5f;
+          g_lookahead_max_distance_cm -= 0.5f;
         }
         lcd_.setCursor(0, 0);
         lcd_.print("LOOKAHEAD_MAX: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(LOOKAHEAD_MAX_DISTANCE_CM);
+        lcd_.print(g_lookahead_max_distance_cm);
         break;
       
       case LCDMENU_EMERGENCY_BREAK_DISTANCE_CM:
         if (incrementButton == HIGH) {
-          EMERGENCY_BREAK_DISTANCE_CM += 0.5f;
+          g_emergency_break_distance_cm += 0.5f;
         } else if (decrementButton == HIGH) {
-          EMERGENCY_BREAK_DISTANCE_CM -= 0.5f;
+          g_emergency_break_distance_cm -= 0.5f;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("EMERGENCY_BREAK_DISTANCE_CM: ");
+        lcd_.print("g_emergency_break_distance_cm: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(EMERGENCY_BREAK_DISTANCE_CM);
+        lcd_.print(g_emergency_break_distance_cm);
         break;
       
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
         if (incrementButton == HIGH) {
-          LANE_WIDTH_VECTOR_UNIT_REAL += 0.5f;
+          g_lane_width_vector_unit += 0.5f;
         } else if (decrementButton == HIGH) {
-          LANE_WIDTH_VECTOR_UNIT_REAL -= 0.5f;
+          g_lane_width_vector_unit -= 0.5f;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("LANE_WIDTH_VECTOR_UNIT_REAL: ");
+        lcd_.print("g_lane_width_vector_unit: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(LANE_WIDTH_VECTOR_UNIT_REAL);
+        lcd_.print(g_lane_width_vector_unit);
         break;
       
       case LCDMENU_BLACK_COLOR_TRESHOLD:
         if (incrementButton == HIGH) {
-          BLACK_COLOR_TRESHOLD += 0.01f;
+          g_black_color_treshold += 0.01f;
         } else if (decrementButton == HIGH) {
-          BLACK_COLOR_TRESHOLD -= 0.01f;
+          g_black_color_treshold -= 0.01f;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("BLACK_COLOR_TRESHOLD: ");
+        lcd_.print("g_black_color_treshold: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(BLACK_COLOR_TRESHOLD);
+        lcd_.print(g_black_color_treshold);
         break;
     }
   }

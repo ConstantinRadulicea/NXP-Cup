@@ -35,11 +35,11 @@ function read_callback_serialport(src, ~)
     frontObstacleDistance = str2double(raw_data(12,1));
     lookAheadDistance = str2double(raw_data(13,1));
     carSpeedRaw = str2double(raw_data(14,1));
-    finish_line_detected = str2double(raw_data(15,1));
+    g_finish_line_detected = str2double(raw_data(15,1));
     finish_line_left_segment_str = split(raw_data(16,1), ",");
     finish_line_right_segment_str = split(raw_data(17,1), ",");
-    finish_line_detected_now = str2double(raw_data(18,1));
-    loop_time_ms = str2double(raw_data(19,1));
+    g_finish_line_detected_now = str2double(raw_data(18,1));
+    g_loop_time_ms = str2double(raw_data(19,1));
     
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
@@ -93,13 +93,13 @@ function read_callback_serialport(src, ~)
     text(xmin, ymax-11, myText);
     myText = sprintf("LookAheadDistance[cm]: %.2f", lookAheadDistance);
     text(xmin, ymax-15, myText);
-    myText = sprintf("carSpeed[raw]: %.2f", carSpeedRaw);
+    myText = sprintf("g_car_speed[raw]: %.2f", carSpeedRaw);
     text(xmin, ymax-19, myText);
-    myText = sprintf("FinishLine[1/0]: %d", finish_line_detected);
+    myText = sprintf("FinishLine[1/0]: %d", g_finish_line_detected);
     text(xmin, ymax-23, myText);
-    myText = sprintf("FinishLineNow[1/0]: %d", finish_line_detected_now);
+    myText = sprintf("FinishLineNow[1/0]: %d", g_finish_line_detected_now);
     text(xmin, ymax-27, myText);
-    myText = sprintf("LoopTime[ms]: %d", loop_time_ms);
+    myText = sprintf("LoopTime[ms]: %d", g_loop_time_ms);
     text(xmin, ymax-31, myText);
 
     
