@@ -18,6 +18,7 @@
 #define __DISTANCESENSORS_H__
 
 #include <stdint.h>
+#include "Config.h"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))

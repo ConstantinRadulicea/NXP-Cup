@@ -15,6 +15,7 @@
 */
 
 #include "DistanceSensors.h"
+#include "MedianFilter.h"
 
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
 int distance_sensor2_trig_pin, distance_sensor2_echo_pin;
@@ -55,14 +56,14 @@ float getFrontObstacleDistance_cm(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    static MovingAverage movingAverage_sensor1(3);
+    static MedianFilter filter_sensor1(5);
   #endif
   #if ENABLE_DISTANCE_SENSOR2 == 1
-    static MovingAverage movingAverage_sensor2(3);
+    static MedianFilter filter_sensor2(5);
   #endif
 
   #if ENABLE_DISTANCE_SENSOR3 == 1
-    static MovingAverage movingAverage_sensor3(3);
+    static MedianFilter filter_sensor3(5);
   #endif
   
   // calculations were made in centimeters
@@ -94,7 +95,7 @@ float getFrontObstacleDistance_cm(){
       measured_distance = MIN(measured_distance, 400.0f);
 
       //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
-      estimated_distance_sensor1 = movingAverage_sensor1.next(measured_distance);
+      estimated_distance_sensor1 = filter_sensor1.next(measured_distance);
       //estimated_distance = measured_distance;
     }
   #endif
@@ -127,7 +128,7 @@ float getFrontObstacleDistance_cm(){
     measured_distance = MIN(measured_distance, 400.0f);
 
     //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
-    estimated_distance_sensor2 = movingAverage_sensor2.next(measured_distance);
+    estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
     //estimated_distance = measured_distance;
   }
   #endif
@@ -160,7 +161,7 @@ float getFrontObstacleDistance_cm(){
       measured_distance = MIN(measured_distance, 400.0f);
 
       //estimated_distance = simpleKalmanFilter.updateEstimate(measured_distance);
-      estimated_distance_sensor3 = movingAverage_sensor3.next(measured_distance);
+      estimated_distance_sensor3 = filter_sensor3.next(measured_distance);
       //estimated_distance = measured_distance;
     }
   #endif

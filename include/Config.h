@@ -65,7 +65,6 @@ g_steering_wheel_angle_offset = 0.0;
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
 #include "strtod_.h"
-#include "SimpleKalmanFilter.h"
 #include "MovingAverage.h"
 #include "ReadSerial.h"
 #include <vector>
