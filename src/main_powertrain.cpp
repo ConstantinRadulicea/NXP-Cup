@@ -17,12 +17,6 @@
 #include "Config.h"
 
 
-
-//IntervalTimer emergencyBreakTimer;
-
-
-
-
 /*====================================================================================================================================*/
 
 void FailureModeMessage(Pixy2SPI_SS &pixy, int iteration, String errorText){
