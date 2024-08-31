@@ -35,13 +35,23 @@
   #define ENABLE_DISTANCE_SENSOR3 0
 #endif
 
-void DistanceSensorsSetup(
+void DistanceSensorsSetupHCSR04(
 int _distance_sensor1_trig_pin, int _distance_sensor1_echo_pin,
 int _distance_sensor2_trig_pin, int _distance_sensor2_echo_pin,
 int _distance_sensor3_trig_pin, int _distance_sensor3_echo_pin);
 
+void DistanceSensorsSetupAnalog(
+int _distance_sensor1_analog_pin,
+int _distance_sensor2_analog_pin,
+int _distance_sensor3_analog_pin);
 
-float getFrontObstacleDistance_cm();
+
+float getFrontObstacleDistanceHCSR04_m();
+
+
+float AnalogToDistance_m(int analogValue);
+
+float getFrontObstacleDistanceAnalog_m();
 
 
 

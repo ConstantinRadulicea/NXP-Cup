@@ -476,7 +476,7 @@ void loop() {
       
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
-      if (frontObstacleDistance <= g_emergency_break_distance_cm ) {
+      if (frontObstacleDistance <= g_emergency_brake_distance_m ) {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
         g_emergency_break_active = 1;
         g_emergency_break_loops_count++;
@@ -502,7 +502,7 @@ void loop() {
           g_car_speed = (float)g_emergency_brake_min_speed;  
         }
         
-        if(frontObstacleDistance <= g_emergency_brake_distance_from_obstacle_cm){
+        if(frontObstacleDistance <= g_emergency_brake_distance_from_obstacle_m){
           g_car_speed = (float)STANDSTILL_SPEED;
         }
         else{

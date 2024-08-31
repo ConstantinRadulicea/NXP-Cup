@@ -27,10 +27,10 @@ void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow)
     right_arrow_btn = right_arrow;
     increment_btn = up_arrow;
     decrement_btn = down_arrow;
-    pinMode(left_arrow, INPUT);
-    pinMode(right_arrow, INPUT);
-    pinMode(up_arrow, INPUT);
-    pinMode(down_arrow, INPUT);
+    pinMode(left_arrow, INPUT_PULLUP);
+    pinMode(right_arrow, INPUT_PULLUP);
+    pinMode(up_arrow, INPUT_PULLUP);
+    pinMode(down_arrow, INPUT_PULLUP);
 }
 
 void settingsMenuRoutine() {
@@ -51,13 +51,13 @@ void settingsMenuRoutine() {
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
-                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM,
+                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M,
                 LCDMENU_ENABLE_REMOTE_START_STOP,
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_ENABLE_DISTANCE_SENSOR1,
                 LCDMENU_ENABLE_DISTANCE_SENSOR2,
                 LCDMENU_ENABLE_DISTANCE_SENSOR3,
-                LCDMENU_EMERGENCY_BREAK_DISTANCE_CM,
+                LCDMENU_EMERGENCY_BREAK_DISTANCE_M,
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
@@ -68,11 +68,11 @@ void settingsMenuRoutine() {
   
   
   static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
-  static int leftArrowButtonState=LOW;
-  static int rightArrowButtonState=LOW;
+  static int leftArrowButtonState;
+  static int rightArrowButtonState;
   static float lcd_print_timeont = 0.0f;
-  int incrementButton=LOW;
-  int decrementButton=LOW;
+  int incrementButton;
+  int decrementButton;
   int leftArrowButtonPrevState, rightArrowButtonPrevState;
 
   #if ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE == 1
@@ -82,10 +82,10 @@ void settingsMenuRoutine() {
   leftArrowButtonPrevState = leftArrowButtonState;
   rightArrowButtonPrevState = rightArrowButtonState;
 
-  leftArrowButtonState = digitalRead(left_arrow_btn);
-  rightArrowButtonState = digitalRead(right_arrow_btn);
-  incrementButton = digitalRead(increment_btn);
-  decrementButton = digitalRead(decrement_btn);
+  leftArrowButtonState = !digitalRead(left_arrow_btn);
+  rightArrowButtonState = !digitalRead(right_arrow_btn);
+  incrementButton = !digitalRead(increment_btn);
+  decrementButton = !digitalRead(decrement_btn);
 
   if (!(leftArrowButtonPrevState == HIGH && leftArrowButtonState == HIGH) && !(rightArrowButtonPrevState == HIGH && rightArrowButtonState == HIGH)) {
     if (rightArrowButtonState == HIGH && lcdMenuIndex >= ((int)LCDMENU_LAST_VALUE) - 1) {
@@ -420,30 +420,30 @@ void settingsMenuRoutine() {
         lcd.print(g_lookahead_max_distance_cm);
         break;
       
-      case LCDMENU_EMERGENCY_BREAK_DISTANCE_CM:
+      case LCDMENU_EMERGENCY_BREAK_DISTANCE_M:
         if (incrementButton == HIGH) {
-          g_emergency_break_distance_cm += 0.5f;
+          g_emergency_brake_distance_m += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_emergency_break_distance_cm -= 0.5f;
+          g_emergency_brake_distance_m -= 0.005f;
         }
-        g_emergency_break_distance_cm = MAX(g_emergency_break_distance_cm, 0.0f);
+        g_emergency_brake_distance_m = MAX(g_emergency_brake_distance_m, 0.0f);
         lcd.setCursor(0, 0);
         lcd.print("EMER_BRK_DIST_CM");
         lcd.setCursor(0, 1);
-        lcd.print(g_emergency_break_distance_cm);
+        lcd.print(g_emergency_brake_distance_m);
         break;
       
-      case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_CM:
+      case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M:
         if (incrementButton == HIGH) {
-          g_emergency_brake_distance_from_obstacle_cm += 0.5f;
+          g_emergency_brake_distance_from_obstacle_m += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_emergency_brake_distance_from_obstacle_cm -= 0.5f;
+          g_emergency_brake_distance_from_obstacle_m -= 0.005f;
         }
-        g_emergency_brake_distance_from_obstacle_cm = MAX(g_emergency_brake_distance_from_obstacle_cm, 0.0f);
+        g_emergency_brake_distance_from_obstacle_m = MAX(g_emergency_brake_distance_from_obstacle_m, 0.0f);
         lcd.setCursor(0, 0);
         lcd.print("EMR_BR_DIST_OBST");
         lcd.setCursor(0, 1);
-        lcd.print(g_emergency_brake_distance_from_obstacle_cm);
+        lcd.print(g_emergency_brake_distance_from_obstacle_m);
       break;
 
       case LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S:

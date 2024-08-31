@@ -17,11 +17,17 @@
 #include "DistanceSensors.h"
 #include "MedianFilter.h"
 
+#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
+
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
 int distance_sensor2_trig_pin, distance_sensor2_echo_pin;
 int distance_sensor3_trig_pin, distance_sensor3_echo_pin;
 
-void DistanceSensorsSetup(
+int distance_sensor1_analog_pin;
+int distance_sensor2_analog_pin;
+int distance_sensor3_analog_pin;
+
+void DistanceSensorsSetupHCSR04(
 int _distance_sensor1_trig_pin, int _distance_sensor1_echo_pin,
 int _distance_sensor2_trig_pin, int _distance_sensor2_echo_pin,
 int _distance_sensor3_trig_pin, int _distance_sensor3_echo_pin)
@@ -52,18 +58,41 @@ distance_sensor3_echo_pin = _distance_sensor3_echo_pin;
 }
 
 
-float getFrontObstacleDistance_cm(){
-  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
+void DistanceSensorsSetupAnalog(
+int _distance_sensor1_analog_pin,
+int _distance_sensor2_analog_pin,
+int _distance_sensor3_analog_pin){
+
+distance_sensor1_analog_pin = _distance_sensor1_analog_pin;
+distance_sensor2_analog_pin = _distance_sensor2_analog_pin;
+distance_sensor3_analog_pin = _distance_sensor3_analog_pin;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    static MedianFilter filter_sensor1(5);
+    pinMode(distance_sensor1_analog_pin, INPUT); 
   #endif
+
   #if ENABLE_DISTANCE_SENSOR2 == 1
-    static MedianFilter filter_sensor2(5);
+    pinMode(distance_sensor2_analog_pin, INPUT); 
   #endif
 
   #if ENABLE_DISTANCE_SENSOR3 == 1
-    static MedianFilter filter_sensor3(5);
+    pinMode(distance_sensor3_analog_pin, INPUT); 
+  #endif
+
+}
+
+float getFrontObstacleDistanceHCSR04_m(){
+  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    static MedianFilter filter_sensor1(OBSTACLE_DISTANCE_MEDIANFILTER_SIZE);
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    static MedianFilter filter_sensor2(OBSTACLE_DISTANCE_MEDIANFILTER_SIZE);
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    static MedianFilter filter_sensor3(OBSTACLE_DISTANCE_MEDIANFILTER_SIZE);
   #endif
   
   // calculations were made in centimeters
@@ -170,5 +199,70 @@ float getFrontObstacleDistance_cm(){
   estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
   estimated_distance = MIN(estimated_distance, estimated_distance_sensor3);
 
+  return estimated_distance / 100.0f;
+}
+
+
+float AnalogToDistance_m(int analogValue){
+  // distance_mm = ([V_observed / (Vcc/ 1024)] * 6) - 300
+  float distance_m = (((float)analogValue * 6.0f) - 300.0f)/1000;
+  return distance_m;
+}
+
+float getFrontObstacleDistanceAnalog_m(){
+  //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    static MedianFilter filter_sensor1(OBSTACLE_DISTANCE_MEDIANFILTER_SIZE);
+  #endif
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+    static MedianFilter filter_sensor2(OBSTACLE_DISTANCE_MEDIANFILTER_SIZE);
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    static MedianFilter filter_sensor3(OBSTACLE_DISTANCE_MEDIANFILTER_SIZE);
+  #endif
+
+  int analogValue;
+  float measured_distance = 0.0f;
+  float estimated_distance = 0.0f;
+  float estimated_distance_sensor1 = 5.0f, estimated_distance_sensor2 = 5.0f, estimated_distance_sensor3 = 5.0f;
+
+  #if ENABLE_DISTANCE_SENSOR1 == 1
+    if (g_enable_distance_sensor1 != 0)
+    {
+      analogValue = analogRead(distance_sensor1_analog_pin);
+      measured_distance = AnalogToDistance_m(analogValue);
+      estimated_distance_sensor1 = filter_sensor1.next(measured_distance);
+      //estimated_distance = measured_distance;
+    }
+  #endif
+  
+  #if ENABLE_DISTANCE_SENSOR2 == 1
+  if (g_enable_distance_sensor2 != 0)
+  {
+    analogValue = analogRead(distance_sensor2_analog_pin);
+    measured_distance = AnalogToDistance_m(analogValue);
+    estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
+    //estimated_distance = measured_distance;
+  }
+  #endif
+
+  #if ENABLE_DISTANCE_SENSOR3 == 1
+    if (g_enable_distance_sensor3 != 0)
+    {
+      analogValue = analogRead(distance_sensor3_analog_pin);
+      measured_distance = AnalogToDistance_m(analogValue);
+      estimated_distance_sensor3 = filter_sensor3.next(measured_distance);
+      //estimated_distance = measured_distance;
+    }
+  #endif
+
+
+  estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
+  estimated_distance = MIN(estimated_distance, estimated_distance_sensor3);
+
   return estimated_distance;
 }
+
+

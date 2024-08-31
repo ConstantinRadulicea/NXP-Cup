@@ -48,9 +48,9 @@ extern float g_lookahead_min_distance_cm;
 extern float g_lookahead_max_distance_cm;
 extern float g_min_speed;   // m/s
 extern float g_max_speed;  // m/s
-extern float g_emergency_break_distance_cm;
+extern float g_emergency_brake_distance_m;
 extern float g_emergency_brake_min_speed; // m/s
-extern float g_emergency_brake_distance_from_obstacle_cm;   // 13.5f
+extern float g_emergency_brake_distance_from_obstacle_m;   // 13.5f
 extern float g_steering_wheel_angle_offset;
 extern float g_min_x_axis_angle_vector;
 extern float g_max_speed_after_emergency_brake_delay; // m/s
@@ -116,7 +116,7 @@ extern SteeringWheel g_steering_wheel;
 
 extern VectorsProcessing g_pixy_1_vectors_processing;
 //VectorsProcessing pixy_2_vectorsProcessing;
-extern Pixy2SPI_SS g_pixy_1;
+extern Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 

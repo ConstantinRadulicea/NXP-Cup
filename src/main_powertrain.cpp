@@ -19,7 +19,7 @@
 
 /*====================================================================================================================================*/
 
-void FailureModeMessage(Pixy2SPI_SS &pixy, int iteration, String errorText){
+void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
 
@@ -55,10 +55,10 @@ void setup() {
 
   #if ENABLE_EMERGENCY_BREAKING == 1
 
-   DistanceSensorsSetup(
-    DISTANCE_SENSOR1_TRIG_PIN, DISTANCE_SENSOR1_ECHO_PIN,
-    DISTANCE_SENSOR2_TRIG_PIN, DISTANCE_SENSOR2_ECHO_PIN, 
-    DISTANCE_SENSOR3_TRIG_PIN, DISTANCE_SENSOR3_ECHO_PIN
+   DistanceSensorsSetupAnalog(
+    DISTANCE_SENSOR1_ANALOG_PIN,
+    DISTANCE_SENSOR2_ANALOG_PIN,
+    DISTANCE_SENSOR3_ANALOG_PIN
     );
    
    pinMode(EMERGENCY_BREAK_LIGHT_PIN, OUTPUT);
@@ -90,11 +90,8 @@ void setup() {
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
     printSerial2WifiInfo(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
-    
-  pinMode(SPI_SS_PIXY_1_PIN, OUTPUT);
-  pinMode(SPI_SS_PIXY_2_PIN, OUTPUT);
 
-  pixyResult = g_pixy_1.init(SPI_SS_PIXY_1_PIN);
+  pixyResult = g_pixy_1.init();
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
   #endif
@@ -208,7 +205,7 @@ void loop() {
   
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
-  float laneWidth, lookAheadDistance, frontObstacleDistance;
+  float laneWidth, lookAheadDistance, frontObstacleDistance_m;
   float timeStart;
   float max_speed_original;
   MovingAverage movingAverage_speed(10);
@@ -223,7 +220,7 @@ void loop() {
   pixy_1_loopIterationsCountNoVectorDetected = 0;
   max_speed_original = g_max_speed;
 
-  frontObstacleDistance = 0.0f;
+  frontObstacleDistance_m = 0.0f;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
@@ -291,9 +288,9 @@ void loop() {
     if (g_emergency_brake_enable_remaining_delay_s <= 0.0f)
     {
       
-      frontObstacleDistance = getFrontObstacleDistance_cm();
+      frontObstacleDistance_m = getFrontObstacleDistanceAnalog_m();
 
-      if (frontObstacleDistance <= g_emergency_break_distance_cm ) {
+      if (frontObstacleDistance_m <= g_emergency_brake_distance_m ) {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
         g_emergency_break_active = 1;
         g_emergency_break_loops_count++;
@@ -302,7 +299,7 @@ void loop() {
           SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK loop: ") + String(g_emergency_break_loops_count));
         #endif
         
-        if(frontObstacleDistance <= g_emergency_brake_distance_from_obstacle_cm){
+        if(frontObstacleDistance_m <= g_emergency_brake_distance_from_obstacle_m){
           g_car_speed = (float)STANDSTILL_SPEED;
         }
         else{
@@ -527,7 +524,7 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance, g_car_speed);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance_m, g_car_speed);
     #endif
   }
 }

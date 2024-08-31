@@ -8,7 +8,7 @@
 static float g_lane_width_vector_unit = 60.0f;
 static float g_lookahead_min_distance_cm = 16.0f;
 static float g_lookahead_max_distance_cm = 30.0f;
-static float g_emergency_break_distance_cm = 60.0f;
+static float g_emergency_brake_distance_m = 60.0f;
 static float g_min_speed = 96.0f;
 static float g_max_speed = 112.0f;
 static float g_black_color_treshold = 0.2f; // 0=black, 1=white
@@ -127,14 +127,14 @@ void settingsMenuRoutine(LiquidCrystal_I2C &lcd_, int left_arrow_btn, int right_
       
       case LCDMENU_EMERGENCY_BREAK_DISTANCE_CM:
         if (incrementButton == HIGH) {
-          g_emergency_break_distance_cm += 0.5f;
+          g_emergency_brake_distance_m += 0.5f;
         } else if (decrementButton == HIGH) {
-          g_emergency_break_distance_cm -= 0.5f;
+          g_emergency_brake_distance_m -= 0.5f;
         }
         lcd_.setCursor(0, 0);
-        lcd_.print("g_emergency_break_distance_cm: ");
+        lcd_.print("g_emergency_brake_distance_m: ");
         lcd_.setCursor(0, 1);
-        lcd_.print(g_emergency_break_distance_cm);
+        lcd_.print(g_emergency_brake_distance_m);
         break;
       
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:

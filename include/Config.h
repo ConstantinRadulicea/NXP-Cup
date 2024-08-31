@@ -35,9 +35,9 @@ g_lookahead_min_distance_cm = 16.0;                       % 22
 g_lookahead_max_distance_cm = 40.0;                       % 40
 g_min_speed = 97.0;
 g_max_speed = 115.0;                                      % 
-g_emergency_break_distance_cm = 75.0;                     % 75
+g_emergency_brake_distance_m = 75.0;                     % 75
 g_emergency_brake_min_speed = 94.0;
-g_emergency_brake_distance_from_obstacle_cm = 14.0;       % 14
+g_emergency_brake_distance_from_obstacle_m = 14.0;       % 14
 emergency_brake_enable_delay = 0.0;
 g_steering_wheel_angle_offset = 0.0;
 
@@ -114,8 +114,8 @@ g_steering_wheel_angle_offset = 0.0;
   #define ENABLE_EMERGENCY_BREAKING 1
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 0
   #define ENABLE_DISTANCE_SENSOR1 1
-  #define ENABLE_DISTANCE_SENSOR2 1
-  #define ENABLE_DISTANCE_SENSOR3 1
+  #define ENABLE_DISTANCE_SENSOR2 0
+  #define ENABLE_DISTANCE_SENSOR3 0
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
@@ -131,8 +131,8 @@ g_steering_wheel_angle_offset = 0.0;
   #define ENABLE_EMERGENCY_BREAKING 1
   #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
   #define ENABLE_DISTANCE_SENSOR1 1
-  #define ENABLE_DISTANCE_SENSOR2 1
-  #define ENABLE_DISTANCE_SENSOR3 1
+  #define ENABLE_DISTANCE_SENSOR2 0
+  #define ENABLE_DISTANCE_SENSOR3 0
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 1
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
@@ -165,35 +165,24 @@ g_steering_wheel_angle_offset = 0.0;
   (_x > 0) ? (_x) : (-_x); \
 })
 
-#define STEERING_SERVO_PIN  22 // 3
-#define DRIVER_MOTOR_PIN  23
+#define STEERING_SERVO_PIN  7
 
-#define REMOTE_START_PIN 20
-#define REMOTE_STOP_PIN 10
+#define DISTANCE_SENSOR1_ANALOG_PIN 14
+#define DISTANCE_SENSOR2_ANALOG_PIN 15
+#define DISTANCE_SENSOR3_ANALOG_PIN 16
 
-#define DISTANCE_SENSOR1_TRIG_PIN 7
-#define DISTANCE_SENSOR1_ECHO_PIN 6
-#define DISTANCE_SENSOR2_TRIG_PIN 5
-#define DISTANCE_SENSOR2_ECHO_PIN 4
-#define DISTANCE_SENSOR3_TRIG_PIN 3
-#define DISTANCE_SENSOR3_ECHO_PIN 2
+#define MENU_RIGHT_ARROW_BUTTON_PIN 22
+#define MENU_LEFT_ARROW_BUTTON_PIN 23
+#define MENU_DECREMENT_BUTTON_PIN 21
+#define MENU_INCREMENT_BUTTON_PIN 20
 
-#define MENU_RIGHT_ARROW_BUTTON_PIN 14
-#define MENU_LEFT_ARROW_BUTTON_PIN 15
-#define MENU_DECREMENT_BUTTON_PIN 16
-#define MENU_INCREMENT_BUTTON_PIN 17
-
-#define EMERGENCY_BREAK_LIGHT_PIN 21
-
-#define SPI_SS_PIXY_1_PIN 8
-#define SPI_SS_PIXY_2_PIN 9
-
+#define EMERGENCY_BREAK_LIGHT_PIN 8
 
 
 #define RPM_SENSOR_LEFT_WHEEL_PIN 2
-#define RPM_SENSOR_RIGHT_WHEEL_PIN 4
-#define RIGHT_WHEEL_MOTOR_PIN 23
-#define LEFT_WHEEL_MOTOR_PIN 22
+#define RPM_SENSOR_RIGHT_WHEEL_PIN 3
+#define RIGHT_WHEEL_MOTOR_PIN 5
+#define LEFT_WHEEL_MOTOR_PIN 4
 
 
 
