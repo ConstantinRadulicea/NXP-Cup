@@ -5,10 +5,10 @@
 #include "ReadSerial.h"
 #include <vector>
 
-#define RPM_SENSOR_LEFT_WHEEL_PIN 3
-#define RPM_SENSOR_RIGHT_WHEEL_PIN 4
-#define RIGHT_WHEEL_MOTOR_PIN 23
-#define LEFT_WHEEL_MOTOR_PIN 24
+//#define RPM_SENSOR_LEFT_WHEEL_PIN 3
+//#define RPM_SENSOR_RIGHT_WHEEL_PIN 4
+//#define RIGHT_WHEEL_MOTOR_PIN 23
+//#define LEFT_WHEEL_MOTOR_PIN 24
 
 volatile PWMServo RightMotor;
 volatile PWMServo LeftMotor;
@@ -69,7 +69,7 @@ void setup() {
         LeftMotor.write((int)90);
     }
     
-    Serial.begin(25600);
+    Serial.begin(115200);
     while (!Serial) {
         delay(100);
     }
