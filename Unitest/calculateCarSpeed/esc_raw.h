@@ -25,7 +25,7 @@ float _raw_to_rpm_correlation[] = {
 };
 
 
-static float rawToRpm(float raw_value) {
+static float RawToRpm(float raw_value) {
     return _raw_to_rpm_correlation[(unsigned int)raw_value];
 }
 

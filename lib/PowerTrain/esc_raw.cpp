@@ -15,6 +15,9 @@
 */
 
 #include "esc_raw.h"
+#define BATTERY_VOLTAGE_V 8.0
+#define MOTOR_RPM_PER_VOLT 850.0
+/*
 
 float _raw_to_rpm_correlation[] = {
     0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -39,7 +42,7 @@ float _raw_to_rpm_correlation[] = {
 };
 
 
-float rawToRpm(float raw_value) {
+float RawToRpm(float raw_value) {
     return _raw_to_rpm_correlation[(unsigned int)raw_value];
 }
 
@@ -67,6 +70,22 @@ float RpmToRaw(float rpm) {
     else {
         return 0.0;
     }
+}
+*/
+
+
+
+float RawToThrottle(float raw_value){
+    return ((raw_value - 90.0f) / 90.0f);
+}
+
+float RawToRpm(float raw_value) {
+    if(raw_value < 0.0f) return 0.0;
+    return ((RawToThrottle(raw_value) * BATTERY_VOLTAGE_V * MOTOR_RPM_PER_VOLT) * 12.0) / 87.0;
+}
+
+float RpmToRaw(float rpm){
+    return 90.0 + (((rpm * (87.0 / 12.0)) / (BATTERY_VOLTAGE_V * MOTOR_RPM_PER_VOLT)) * 90.0);
 }
 
 float RpmToThrottle(float rpm) {

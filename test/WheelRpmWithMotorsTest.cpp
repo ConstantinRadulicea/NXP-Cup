@@ -82,7 +82,7 @@ RpmSensorData temp_RightWheelRpmData;
 std::vector<char> line;
 char* pEnd;
 int resultSuccess;
-float leftMotorRawSpeed = 0, rightMotorRawSpeed = 90.0;
+float leftMotorRawSpeed = 90, rightMotorRawSpeed = 90.0;
 
 void loop() {
     if (readRecordFromSerial(Serial, "\r\n", line)) {
@@ -94,22 +94,10 @@ void loop() {
 
     temp_LeftWheelRpmData = getLeftWheelRpmData();
     temp_RightWheelRpmData = getRightWheelRpmData();
-/*
-    WriteToLeftMotor(leftMotorRawSpeed);
-    Serial.print("Left");
-    Serial.print("\t");
-    Serial.print("Raw Speed: ");
-    Serial.print(leftMotorRawSpeed);
-    Serial.print("\t");
-    Serial.print("Rpm: ");
-    Serial.print(temp_LeftWheelRpmData.Rpm);
-    Serial.print("\t");
-    Serial.print("TotalRotations: ");
-    Serial.print(getLeftWheelTotalRotations());
-    Serial.println();
-*/
     WriteToRightMotor(rightMotorRawSpeed);
+    WriteToLeftMotor(leftMotorRawSpeed);
 
+/*
 if(((millis() - timeNow) >= 5000) && leftMotorRawSpeed > 0.5){
     timeNow = millis();
     rightMotorRawSpeed++;
@@ -117,20 +105,8 @@ if(((millis() - timeNow) >= 5000) && leftMotorRawSpeed > 0.5){
         rightMotorRawSpeed = 180;
     }
 }
+*/
 
-    /*
-    Serial.print("Right");
-    Serial.print("\t");
-    Serial.print("Raw Speed: ");
-    Serial.print(rightMotorRawSpeed);
-    Serial.print("\t");
-    Serial.print("Rpm: ");
-    Serial.print(temp_RightWheelRpmData.Rpm);
-    Serial.print("\t");
-    Serial.print("TotalRotations: ");
-    Serial.print(getRightWheelTotalRotations());
-    Serial.println();
-    */
     Serial.print(rightMotorRawSpeed, 1);
     Serial.print(";");
     Serial.print(temp_RightWheelRpmData.Rpm, 3);
@@ -139,7 +115,13 @@ if(((millis() - timeNow) >= 5000) && leftMotorRawSpeed > 0.5){
     Serial.print(";");
     Serial.print(getCurrentRpm_adjusted(&temp_RightWheelRpmData), 3);
     Serial.print(";");
-    Serial.print(((rightMotorRawSpeed - 90.0f) / 90.0), 4);
+    Serial.print(leftMotorRawSpeed, 1);
+    Serial.print(";");
+    Serial.print(temp_LeftWheelRpmData.Rpm, 3);
+    Serial.print(";");
+    Serial.print(temp_LeftWheelRpmData.RpmFiltered, 3);
+    Serial.print(";");
+    Serial.print(getCurrentRpm_adjusted(&temp_LeftWheelRpmData), 3);
     Serial.println();
     //Serial.println(digitalRead(RPM_SENSOR_RIGHT_WHEEL_PIN));
     
