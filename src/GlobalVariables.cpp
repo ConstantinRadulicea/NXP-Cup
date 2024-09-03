@@ -46,13 +46,13 @@ float g_car_speed_ki_min_max_impact = 0.2f;
 float g_finish_line_angle_tolerance = 15.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
-float g_powertrain_left_wheel_ki = 0.0;
+float g_powertrain_left_wheel_ki = 0.1;
 float g_powertrain_left_wheel_kd = 0.0;
-float g_powertrain_left_wheel_ki_max_sum = 0.0;
+float g_powertrain_left_wheel_ki_max_sum = 0.4;
 float g_powertrain_right_wheel_kp = 0.0;
-float g_powertrain_right_wheel_ki = 0.0;
+float g_powertrain_right_wheel_ki = 0.1;
 float g_powertrain_right_wheel_kd = 0.0;
-float g_powertrain_right_wheel_ki_max_sum = 0.0;
+float g_powertrain_right_wheel_ki_max_sum = 0.4;
 
 
 #if RACE_MODE == 1

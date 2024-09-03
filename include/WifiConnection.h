@@ -19,10 +19,14 @@
 
 #include <HardwareSerial.h>
 
+#define ESP8266_ENABLE_SSDP 1
+#define ESP8266_ENABLE_SERVER 1
+#define ESP8266_ENABLE_CLIENT 0
+
 //#define DEBUG_WIFI_SSID "Off Limits3"
 //#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-#define DEBUG_WIFI_SSID "wifi"
-#define DEBUG_WIFI_PASSWORD "b020a314"
+#define DEBUG_WIFI_SSID "Off Limits2"
+#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
@@ -58,9 +62,6 @@
 
 #define DEBUG_WIFI_INIT_SEQUENCE "%SERIAL2WIFI\r\n"
 #define ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING '%'
-#define ESP8266_ENABLE_SSDP 1
-#define ESP8266_ENABLE_SERVER 1
-
 
 #ifndef ESP8266_ENABLE_SERVER
     #define ESP8266_ENABLE_SERVER 0
@@ -120,7 +121,7 @@ static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, 
 
 /*==============================================================================*/
 
-static void printSerial2WifiInfo(HardwareSerial &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+static void printSerial2WifiInfo(usb_serial_class &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);

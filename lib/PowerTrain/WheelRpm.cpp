@@ -21,6 +21,8 @@
 #include <util/atomic.h>
 #include "MedianFilter.h"
 
+#define MEDIAN_FILTER_SIZE 6
+
 
 void enableCpuCyclesCount(){
     ARM_DEMCR |= ARM_DEMCR_TRCENA;
@@ -37,7 +39,7 @@ volatile RpmSensorData LeftWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MedianFilter(6),
+    .RpmAverage = MedianFilter(MEDIAN_FILTER_SIZE),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,
@@ -50,7 +52,7 @@ volatile RpmSensorData LeftWheelRpmData = {
     .TotalRotations = 0.0,
     .Rpm = 0.0,
     .LastSampleTimestamp_us = micros(),
-    .RpmAverage = MedianFilter(6),
+    .RpmAverage = MedianFilter(MEDIAN_FILTER_SIZE),
     .on_pulse = NULL,
     .TimePassedFromLastSample_us = 0.0,
     .PulsePin = -1,

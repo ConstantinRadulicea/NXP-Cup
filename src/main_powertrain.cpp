@@ -79,19 +79,24 @@ void setup() {
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
+
+    //Serial.begin(SERIAL_PORT_BAUD_RATE);
+    //while (!Serial){
+    //  delay(50);
+    //}
+    //Serial.println("hello");
+
     SERIAL_PORT.begin(SERIAL_PORT_BAUD_RATE);
-    #if RACE_MODE == 1
-    #else
-      while (!SERIAL_PORT){
+    while (!SERIAL_PORT){
       delay(50);
     }
-    #endif
+
 
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
-    printSerial2WifiInfo(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
+    //printSerial2WifiInfo(Serial, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
 
   pixyResult = g_pixy_1.init();
