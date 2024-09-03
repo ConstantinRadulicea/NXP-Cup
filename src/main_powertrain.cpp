@@ -240,7 +240,7 @@ void loop() {
 
   laneWidth = (float)g_lane_width_vector_unit;
   
-  lookAheadDistance = (float)MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f)*100.0f;
+  lookAheadDistance = (float)MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f);
   
   g_pixy_1_vectors_processing.setCarPosition(carPosition);
   g_pixy_1_vectors_processing.setLaneWidth(laneWidth);
@@ -474,7 +474,7 @@ void loop() {
 
 
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
-    lookAheadDistance = calculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f)*100.0f, MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f)*100.0f, g_middle_lane_line_pixy_1);
+    lookAheadDistance = calculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_car_length_vector_unit, lookAheadDistance);
     purePersuitInfo.steeringAngle -= (radians(g_steering_wheel_angle_offset));
 
@@ -487,13 +487,13 @@ void loop() {
       #if ENABLE_DRIVERMOTOR == 1
         if (g_enable_car_engine != 0) {
             if (purePersuitInfo.steeringAngle > 0.0) {
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, -1);
+              powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
             }
             else if(purePersuitInfo.steeringAngle < 0.0){
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 1);
+              powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
             }
             else {
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 0);
+              powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
             }
         }
       #endif
@@ -513,13 +513,13 @@ void loop() {
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         if (purePersuitInfo.steeringAngle > 0.0) {
-          powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, -1);
+          powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
         }
         else if(purePersuitInfo.steeringAngle < 0.0){
-          powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 1);
+          powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
         }
         else {
-          powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 0);
+          powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
         }
       }
     #endif

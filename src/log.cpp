@@ -50,9 +50,9 @@ void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector 
   serialPort.print(semicolonChar);
   serialPort.print(String(carAcceleration));
   serialPort.print(semicolonChar);
-  serialPort.print(String(frontObstacleDistance));
+  serialPort.print(String(frontObstacleDistance, 3));
   serialPort.print(semicolonChar);
-  serialPort.print(String(VectorUnitToMeter(purePersuitInfo.lookAheadDistance) / 100.0f));
+  serialPort.print(String(VectorUnitToMeter(purePersuitInfo.lookAheadDistance) * 100.0f));
   serialPort.print(semicolonChar);
   serialPort.print(String(carSpeed_));
   serialPort.print(semicolonChar);

@@ -72,8 +72,8 @@ extern float g_emergency_brake_enable_delay_s;
 
 #define LANE_WIDTH_M 0.535f
 
-#define MeterToVectorUnit(m) ((float)m * ((float)g_lane_width_vector_unit / (float)LANE_WIDTH_M))
-#define VectorUnitToMeter(v_unit) ((float)v_unit * ((float)LANE_WIDTH_M / (float)g_lane_width_vector_unit))
+#define MeterToVectorUnit(m) ((float)(m) * ((float)g_lane_width_vector_unit / (float)LANE_WIDTH_M))
+#define VectorUnitToMeter(v_unit) ((float)(v_unit) * ((float)LANE_WIDTH_M / (float)g_lane_width_vector_unit))
 
 #if CAR1 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     90    // 90 middle // 120

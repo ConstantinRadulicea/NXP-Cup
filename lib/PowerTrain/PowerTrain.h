@@ -239,6 +239,8 @@ public:
 		float left_wheel_speed_request_m;
 		float right_wheel_speed_request_m;
 
+		turn_radius = fabs(turn_radius);
+
 		if (PowerTrainfloatCmp(turn_radius, 0.0) == 0 || left_right_turn == 0)	// going straight
 		{
 			left_wheel_speed_request_m = speed_ms;

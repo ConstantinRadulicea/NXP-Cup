@@ -59,7 +59,7 @@ function read_callback_serialport(src, ~)
     src.UserData.wheels_rpm.right.adjusted_rpm(end+1) = right_wheel_adjusted_rpm;
     src.UserData.wheels_rpm.right.adjusted_rpm = src.UserData.wheels_rpm.right.adjusted_rpm(end - sample_batch_size + 1:end);
     
-    if(toc(startTime) < 1)
+    if(toc(startTime) < 0.5)
         return;
     end
     startTime = tic;
@@ -125,7 +125,7 @@ plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
     text(xmin, ymax-3, myText);
     myText = sprintf("Gas: %.2f%%", carAcceleration * 100);
     text(xmin, ymax-7, myText);
-    myText = sprintf("Obstacle distance [cm]: %.2f", frontObstacleDistance);
+    myText = sprintf("Obstacle distance [m]: %.3f", frontObstacleDistance);
     text(xmin, ymax-11, myText);
     myText = sprintf("LookAheadDistance[cm]: %.2f", lookAheadDistance);
     text(xmin, ymax-15, myText);

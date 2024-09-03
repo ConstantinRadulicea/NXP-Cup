@@ -17,7 +17,7 @@
 #include "DistanceSensors.h"
 #include "MedianFilter.h"
 
-#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
+#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 1
 
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
 int distance_sensor2_trig_pin, distance_sensor2_echo_pin;
@@ -243,8 +243,8 @@ float getFrontObstacleDistanceAnalog_m(){
   {
     analogValue = analogRead(distance_sensor2_analog_pin);
     measured_distance = AnalogToDistance_m(analogValue);
-    estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
-    //estimated_distance = measured_distance;
+    //estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
+    estimated_distance_sensor2 = measured_distance;
   }
   #endif
 

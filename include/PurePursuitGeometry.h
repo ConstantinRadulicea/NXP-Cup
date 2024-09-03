@@ -112,7 +112,7 @@ static PurePursuitInfo purePursuitComputeMQ(Point2D carPos, LineMQ wayPoints, fl
 	info.nextWayPoint = nextWayPoint;
 	info.lookAheadDistance = lookAheadDistance;
 	info.carLength = carLength;
-	info.turnRadius = turnRadius(info.TrajectoryToWayPointAngle, carLength, lookAheadDistance);
+	info.turnRadius = fabs(turnRadius(info.TrajectoryToWayPointAngle, carLength, lookAheadDistance));
 	info.manouvreLength = fabsf(((2.0f * M_PI * info.turnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
 	info.turnPoint = carPos;
 
@@ -154,7 +154,7 @@ static PurePursuitInfo purePursuitComputeABC(Point2D carPos, LineABC wayPoints, 
 	info.nextWayPoint = nextWayPoint;
 	info.lookAheadDistance = lookAheadDistance;
 	info.carLength = carLength;
-	info.turnRadius = turnRadius(info.TrajectoryToWayPointAngle, carLength, lookAheadDistance);
+	info.turnRadius = fabs(turnRadius(info.TrajectoryToWayPointAngle, carLength, lookAheadDistance));
 	info.manouvreLength = fabsf(((2.0f * M_PI * info.turnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
 	info.turnPoint = carPos;
 
