@@ -79,16 +79,16 @@ void power_train_sampling(){
     timePassed = getTimePassedFromLastSample_us_adjusted(&temp_WheelRpmData);
     powerTrain.SetRightWheelMeasuredRPM_volatile(rpm, timePassed);
 
-    Serial.print(powerTrain.GetRightWheelSpeed());
-    Serial.print(';');
-    Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
-    Serial.print(';');
-    Serial.print(RightMotor.read());
-    Serial.print(';');
-    Serial.print(rpm);
-    Serial.print(';');
-    Serial.print(temp_WheelRpmData.Rpm);
-    Serial.print(';');
+    //Serial.print(powerTrain.GetRightWheelSpeed());
+    //Serial.print(';');
+    //Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
+    //Serial.print(';');
+    //Serial.print(RightMotor.read());
+    //Serial.print(';');
+    //Serial.print(rpm);
+    //Serial.print(';');
+    //Serial.print(temp_WheelRpmData.Rpm);
+    //Serial.print(';');
 
 
     temp_WheelRpmData = getLeftWheelRpmData();
@@ -97,16 +97,16 @@ void power_train_sampling(){
     timePassed = getTimePassedFromLastSample_us_adjusted(&temp_WheelRpmData);
     powerTrain.SetLeftWheelMeasuredRPM_volatile(rpm, timePassed);
 
-    Serial.print(powerTrain.GetLeftWheelSpeed());
-    Serial.print(';');
-    Serial.print(powerTrain.GetLeftWheelSpeedRequest_raw());
-    Serial.print(';');
-    Serial.print(LeftMotor.read());
-    Serial.print(';');
-    Serial.print(rpm);
-    Serial.print(';');
-    Serial.print(temp_WheelRpmData.Rpm);
-    Serial.println();
+    //Serial.print(powerTrain.GetLeftWheelSpeed());
+    //Serial.print(';');
+    //Serial.print(powerTrain.GetLeftWheelSpeedRequest_raw());
+    //Serial.print(';');
+    //Serial.print(LeftMotor.read());
+    //Serial.print(';');
+    //Serial.print(rpm);
+    //Serial.print(';');
+    //Serial.print(temp_WheelRpmData.Rpm);
+    //Serial.println();
 }
 
 int PowerTrainfloatCmp(float num1, float num2) {

@@ -17,10 +17,13 @@
 
 #include "log.h"
 #include "GlobalVariables.h"
+#include "WheelRpm.h"
 
 void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
+  RpmSensorData temp_rpmData;
+  float adjusted_rpm, raw_rpm;
 
   commaCharStr = String(',');
   semicolonChar = ';';
@@ -62,5 +65,21 @@ void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector 
   serialPort.print(String(g_finish_line_detected_now));
   serialPort.print(semicolonChar);
   serialPort.print(String(g_loop_time_ms));
+
+  temp_rpmData = getLeftWheelRpmData();
+  adjusted_rpm = getCurrentRpm_adjusted(&temp_rpmData);
+  serialPort.print(semicolonChar);
+  serialPort.print(String(temp_rpmData.Rpm));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(adjusted_rpm));
+
+  temp_rpmData = getRightWheelRpmData();
+  adjusted_rpm = getCurrentRpm_adjusted(&temp_rpmData);
+  serialPort.print(semicolonChar);
+  serialPort.print(String(temp_rpmData.Rpm));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(adjusted_rpm));
+
+
   serialPort.println();
 }

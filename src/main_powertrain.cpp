@@ -44,14 +44,17 @@ void setup() {
   int8_t pixyResult;
   // Initialization and attachment of the servo and motor
   #if ENABLE_STEERING_SERVO == 1
-    pinMode(STEERING_SERVO_PIN, OUTPUT); 
+    pinMode(STEERING_SERVO_PIN, OUTPUT);
     g_steering_wheel.attach(STEERING_SERVO_PIN);
     g_steering_wheel.setSteeringAngleDeg(0.0f);
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
     PowerTrainSetup(WHEEL_DIAMETER_M, DISTANCE_BETWEEN_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
+    powerTrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
+    powerTrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
   #endif
+
 
   #if ENABLE_EMERGENCY_BREAKING == 1
 

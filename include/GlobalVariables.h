@@ -111,6 +111,15 @@ extern int g_finish_line_detected;
 extern int g_finish_line_detected_now;
 extern FinishLine g_finish_line;
 
+extern float g_powertrain_left_wheel_kp;
+extern float g_powertrain_left_wheel_ki;
+extern float g_powertrain_left_wheel_kd;
+extern float g_powertrain_left_wheel_ki_max_sum;
+extern float g_powertrain_right_wheel_kp;
+extern float g_powertrain_right_wheel_ki;
+extern float g_powertrain_right_wheel_kd;
+extern float g_powertrain_right_wheel_ki_max_sum;
+
 
 extern SteeringWheel g_steering_wheel;
 

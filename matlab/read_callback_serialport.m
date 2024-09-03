@@ -40,7 +40,32 @@ function read_callback_serialport(src, ~)
     finish_line_right_segment_str = split(raw_data(17,1), ",");
     g_finish_line_detected_now = str2double(raw_data(18,1));
     g_loop_time_ms = str2double(raw_data(19,1));
+
+    left_wheel_raw_rpm = str2double(raw_data(20,1));
+    left_wheel_adjusted_rpm = str2double(raw_data(21,1));
+    right_wheel_raw_rpm = str2double(raw_data(22,1));
+    right_wheel_adjusted_rpm = str2double(raw_data(23,1));
     
+    sample_batch_size = 1500;
+    src.UserData.wheels_rpm.left.raw_rpm(end+1) = left_wheel_raw_rpm;
+    src.UserData.wheels_rpm.left.raw_rpm = src.UserData.wheels_rpm.left.raw_rpm(end-sample_batch_size:end);
+    src.UserData.wheels_rpm.left.adjusted_rpm(end+1) = left_wheel_adjusted_rpm;
+    src.UserData.wheels_rpm.left.adjusted_rpm = src.UserData.wheels_rpm.left.adjusted_rpm(end-sample_batch_size:end);
+    src.UserData.wheels_rpm.right.raw_rpm(end+1) = right_wheel_raw_rpm;
+    src.UserData.wheels_rpm.right.raw_rpm = src.UserData.wheels_rpm.right.raw_rpm(end-sample_batch_size:end);
+    src.UserData.wheels_rpm.right.adjusted_rpm(end+1) = right_wheel_adjusted_rpm;
+    src.UserData.wheels_rpm.right.adjusted_rpm = src.UserData.wheels_rpm.right.adjusted_rpm(end-sample_batch_size:end);
+    
+    y_array = 1:1:length(src.UserData.wheels_rpm.left.raw_rpm);
+    figure(src.UserData.wheelRpm_figure);
+    plot( ...
+        src.UserData.wheels_rpm.left.raw_rpm, y_array, 'DisplayName','LeftWheel_RawRpm', ...
+        src.UserData.wheels_rpm.left.adjusted_rpm, y_array, 'DisplayName','LeftWheel_AdjustedRpm', ...
+        src.UserData.wheels_rpm.right.raw_rpm, y_array, 'DisplayName','RightWheel_RawRpm', ...
+        src.UserData.wheels_rpm.right.adjusted_rpm, y_array, 'DisplayName','RightWheel_AdjustedRpm'...
+        );
+
+
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
     rightVectorOld = str2double(rightVectorOld_str(:, 1))';
@@ -73,7 +98,8 @@ function read_callback_serialport(src, ~)
 %     plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
 %     hold on;
 %     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
-    plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
+figure('Name','Camera view'); 
+plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
         [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], ...
         x3, y3, carPosition(1), carPosition(2), "^", ...
         newWayPointPosition(1), newWayPointPosition(2), "*", ...

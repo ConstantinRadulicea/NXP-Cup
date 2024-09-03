@@ -45,6 +45,16 @@ float g_car_speed_kd = -0.2f;
 float g_car_speed_ki_min_max_impact = 0.2f;
 float g_finish_line_angle_tolerance = 15.0f;
 
+float g_powertrain_left_wheel_kp = 0.0;
+float g_powertrain_left_wheel_ki = 0.0;
+float g_powertrain_left_wheel_kd = 0.0;
+float g_powertrain_left_wheel_ki_max_sum = 0.0;
+float g_powertrain_right_wheel_kp = 0.0;
+float g_powertrain_right_wheel_ki = 0.0;
+float g_powertrain_right_wheel_kd = 0.0;
+float g_powertrain_right_wheel_ki_max_sum = 0.0;
+
+
 #if RACE_MODE == 1
   float g_emergency_brake_enable_delay_s = 15.0f;
 #elif DEBUG_MODE == 1
@@ -223,6 +233,16 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   else{
     g_enable_finish_line_detection = 0;
   }
+
+
+  g_powertrain_left_wheel_kp = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_left_wheel_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_left_wheel_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_left_wheel_ki_max_sum = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_right_wheel_kp = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_right_wheel_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_right_wheel_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_powertrain_right_wheel_ki_max_sum = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 }
 
 /*==============================================================================*/
@@ -284,7 +304,23 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.print(String(g_finish_line_angle_tolerance));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_enable_finish_line_detection));
+  serialPort.print(separatorCharacter);
 
+  serialPort.print(String(g_powertrain_left_wheel_kp));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_left_wheel_ki));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_left_wheel_kd));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_left_wheel_ki_max_sum));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_right_wheel_kp));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_right_wheel_ki));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_right_wheel_kd));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_powertrain_right_wheel_ki_max_sum));
 
   serialPort.println();
 }
