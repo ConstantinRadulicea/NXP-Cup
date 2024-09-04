@@ -17,7 +17,7 @@
 #include "DistanceSensors.h"
 #include "MedianFilter.h"
 
-#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 1
+#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
 
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
 int distance_sensor2_trig_pin, distance_sensor2_echo_pin;
@@ -58,6 +58,13 @@ distance_sensor3_echo_pin = _distance_sensor3_echo_pin;
 }
 
 
+
+/*
+https://maxbotix.com/blogs/blog/using-multiple-ultrasonic-sensors?srsltid=AfmBOop7wNWDCYEO1pBa_BS5Sa0NgRTmjuTkSKhbaqd6VbN60W_Q2xZz
+To enable the AN Output Constantly Looping:
+connect (Pin 2- Pulse Width Output) to (Pin 4- Ranging Start/Stop)
+
+*/
 void DistanceSensorsSetupAnalog(
 int _distance_sensor1_analog_pin,
 int _distance_sensor2_analog_pin,
@@ -68,7 +75,7 @@ distance_sensor2_analog_pin = _distance_sensor2_analog_pin;
 distance_sensor3_analog_pin = _distance_sensor3_analog_pin;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
-    pinMode(distance_sensor1_analog_pin, INPUT); 
+    pinMode(distance_sensor1_analog_pin, INPUT);
   #endif
 
   #if ENABLE_DISTANCE_SENSOR2 == 1
@@ -243,8 +250,8 @@ float getFrontObstacleDistanceAnalog_m(){
   {
     analogValue = analogRead(distance_sensor2_analog_pin);
     measured_distance = AnalogToDistance_m(analogValue);
-    //estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
-    estimated_distance_sensor2 = measured_distance;
+    estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
+    //estimated_distance_sensor2 = measured_distance;
   }
   #endif
 
