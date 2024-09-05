@@ -19,9 +19,24 @@
 
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
 #include "GlobalVariables.h"
 
-extern LiquidCrystal_I2C lcd;
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define SCREEN_ADDRESS 0x3D ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+#define PARAMETER_NAME_TEXT_SIZE 2
+#define PARAMETER_VALUE_TEXT_SIZE 1
+#define PARAMETER_NAME_TEXT_COLOR WHITE
+#define PARAMETER_VALUE_TEXT_COLOR WHITE
+
+
+extern Adafruit_SSD1306 display;
+
 
 void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow);
 void settingsMenuRoutine();

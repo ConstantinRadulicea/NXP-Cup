@@ -17,12 +17,40 @@
 
 #include "LcdMenu.h"
 
-LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+void displayParameterValue(String parameter, String value){
+        display.clearDisplay();
+        display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
+        display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+        display.setCursor(0, 0);
+        display.print(parameter);
+        display.setTextSize(PARAMETER_VALUE_TEXT_SIZE);
+        display.setTextColor(PARAMETER_VALUE_TEXT_COLOR);
+        display.setCursor(0, 1);
+        display.print(value);
+        display.display();
+}
+
+
 int left_arrow_btn, right_arrow_btn, increment_btn, decrement_btn;
 
 void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow){
-    lcd.init();  //display initialization
-    lcd.backlight();  // activate the backlight
+    // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
+    if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+      //Serial.println(F("SSD1306 allocation failed"));
+      //for(;;); // Don't proceed, loop forever
+    }
+
+    // Show initial display buffer contents on the screen --
+    // the library initializes this with an Adafruit splash screen.
+    display.display();
+    delay(500);
+    // Clear the buffer
+    display.clearDisplay();
+    display.display();
+
     left_arrow_btn = left_arrow;
     right_arrow_btn = right_arrow;
     increment_btn = up_arrow;
@@ -103,7 +131,7 @@ void settingsMenuRoutine() {
   ///lcd_print_timeont -= fabsf(g_loop_time_ms);
   if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH /*|| lcd_print_timeont <= 0.0f*/) {
     //lcd_print_timeont = 500.0f;
-    lcd.clear();
+    display.clearDisplay();
     switch (lcdMenuIndex) {
       case LCDMENU_STEERING_WHEEL_ANGLE_OFFSET:
         if (incrementButton == HIGH) {
@@ -111,10 +139,8 @@ void settingsMenuRoutine() {
         } else if (decrementButton == HIGH) {
           g_steering_wheel_angle_offset -= 0.1f;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("STR_WHEEL_OFST");
-        lcd.setCursor(0, 1);
-        lcd.print(g_steering_wheel_angle_offset);
+
+        displayParameterValue(String("STR_WHEEL_OFST"), String(g_steering_wheel_angle_offset));
       break;
 
       case LCDMENU_FINISH_LINE_ANGLE_TOLERANCE:
@@ -124,10 +150,8 @@ void settingsMenuRoutine() {
           g_finish_line_angle_tolerance -= 0.1f;
           g_finish_line_angle_tolerance = MIN(g_finish_line_angle_tolerance, 0.0f);
         }
-        lcd.setCursor(0, 0);
-        lcd.print("FINISH_LIN_ANG");
-        lcd.setCursor(0, 1);
-        lcd.print(g_finish_line_angle_tolerance);
+
+        displayParameterValue(String("FINISH_LIN_ANG"), String(g_finish_line_angle_tolerance));
       break;
 
       case LCDMENU_MIN_XAXIS_ANGLE_VECTOR:
@@ -136,20 +160,12 @@ void settingsMenuRoutine() {
         } else if (decrementButton == HIGH) {
           g_min_x_axis_angle_vector -= 0.1f;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("XAXIS_ANGL_VECT");
-        lcd.setCursor(0, 1);
-        lcd.print(g_min_x_axis_angle_vector);
+
+        displayParameterValue(String("XAXIS_ANGL_VECT"), String(g_min_x_axis_angle_vector));
       break;
 
       case LCDMENU_MAIN_VIEW:
-        lcd.setCursor(0, 0);
-        lcd.print("Loop ms: ");
-        lcd.print(g_loop_time_ms);
-
-        lcd.setCursor(0, 1);
-        lcd.print("Timer s: ");
-        lcd.print((g_time_passed_ms / 1000.0f));
+        displayParameterValue(String("Loop ms: ")+String(g_loop_time_ms), String("Timer s: ")+String((g_time_passed_ms / 1000.0f)));
       break;
 
       case LCDMENU_ENABLE_CAR_ENGINE:
@@ -161,14 +177,11 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_car_engine = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_ENGINE");
-        lcd.setCursor(0, 1);
         if (g_enable_car_engine != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_ENGINE"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_ENGINE"), String("Disabled"));
         }
         break;
       
@@ -179,14 +192,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_car_steering_wheel = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_STEERING");
-        lcd.setCursor(0, 1);
+
         if (g_enable_car_steering_wheel != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_STEERING"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_STEERING"), String("Disabled"));
         }
         break;
       
@@ -197,14 +208,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_emergency_brake = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_EMERG_BRK");
-        lcd.setCursor(0, 1);
+
         if (g_enable_emergency_brake != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_EMERG_BRK"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_EMERG_BRK"), String("Disabled"));
         }
       break;
 
@@ -215,14 +224,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_pixy_vector_approximation = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_VEC_APRX");
-        lcd.setCursor(0, 1);
+
         if (g_enable_pixy_vector_approximation != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_VEC_APRX"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_VEC_APRX"), String("Disabled"));
         }
       break;
 
@@ -233,14 +240,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_distance_sensor1 = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_DIST_SNS1");
-        lcd.setCursor(0, 1);
+
         if (g_enable_distance_sensor1 != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_DIST_SNS1"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_DIST_SNS1"), String("Disabled"));
         }
       break;
 
@@ -251,14 +256,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_distance_sensor2 = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_DIST_SNS2");
-        lcd.setCursor(0, 1);
+
         if (g_enable_distance_sensor2 != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_DIST_SNS2"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_DIST_SNS2"), String("Disabled"));
         }
       break;
 
@@ -269,14 +272,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_distance_sensor3 = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_DIST_SNS3");
-        lcd.setCursor(0, 1);
+
         if (g_enable_distance_sensor3 != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_DIST_SNS3"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_DIST_SNS3"), String("Disabled"));
         }
       break;
 
@@ -287,14 +288,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_remote_start_stop = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_REMOTE");
-        lcd.setCursor(0, 1);
+
         if (g_enable_remote_start_stop != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_REMOTE"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_REMOTE"), String("Disabled"));
         }
       break;
 
@@ -305,14 +304,12 @@ void settingsMenuRoutine() {
         else if (decrementButton == HIGH) {
           g_enable_finish_line_detection = 0;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("ENABLE_FINSH_LN");
-        lcd.setCursor(0, 1);
+
         if (g_enable_finish_line_detection != 0) {
-          lcd.print("Enabled");
+          displayParameterValue(String("ENABLE_FINSH_LN"), String("Enabled"));
         }
         else{
-          lcd.print("Disabled");
+          displayParameterValue(String("ENABLE_FINSH_LN"), String("Disabled"));
         }
       break;
 
@@ -323,10 +320,7 @@ void settingsMenuRoutine() {
           g_min_speed -= 0.5f;
         }
         g_min_speed = MAX(g_min_speed, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("g_min_speed");
-        lcd.setCursor(0, 1);
-        lcd.print(g_min_speed);
+        displayParameterValue(String("g_min_speed"), String(g_min_speed));
         break;
 
 
@@ -336,10 +330,7 @@ void settingsMenuRoutine() {
         } else if (decrementButton == HIGH) {
           g_car_speed_ki -= 0.0001f;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("SPEED_KI");
-        lcd.setCursor(0, 1);
-        lcd.print(g_car_speed_ki);
+        displayParameterValue(String("SPEED_KI"), String(g_car_speed_ki));
       break;
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KD:
@@ -348,10 +339,8 @@ void settingsMenuRoutine() {
         } else if (decrementButton == HIGH) {
           g_car_speed_kd -= 0.0001f;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("SPEED_KD");
-        lcd.setCursor(0, 1);
-        lcd.print(g_car_speed_kd);
+
+        displayParameterValue(String("SPEED_KD"), String(g_car_speed_kd));
       break;
 
 
@@ -361,10 +350,8 @@ void settingsMenuRoutine() {
         } else if (decrementButton == HIGH) {
           g_car_speed_ki_min_max_impact -= 0.1f;
         }
-        lcd.setCursor(0, 0);
-        lcd.print("SPD_KI_MIN_MAX");
-        lcd.setCursor(0, 1);
-        lcd.print(g_car_speed_ki_min_max_impact);
+
+        displayParameterValue(String("SPD_KI_MIN_MAX"), String(g_car_speed_ki_min_max_impact));
       break;
 
 
@@ -375,10 +362,8 @@ void settingsMenuRoutine() {
           g_max_speed -= 0.5f;
         }
         g_max_speed = MAX(g_max_speed, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("g_max_speed");
-        lcd.setCursor(0, 1);
-        lcd.print(g_max_speed);
+
+        displayParameterValue(String("g_max_speed"), String(g_max_speed));
         break;
 
       case LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY:
@@ -388,10 +373,8 @@ void settingsMenuRoutine() {
           g_max_speed_after_emergency_brake_delay -= 0.5f;
         }
         g_max_speed_after_emergency_brake_delay = MAX(g_max_speed_after_emergency_brake_delay, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("MS_AFT_EMBRK_DLY");
-        lcd.setCursor(0, 1);
-        lcd.print(g_max_speed_after_emergency_brake_delay);
+
+        displayParameterValue(String("MS_AFT_EMBRK_DLY"), String(g_max_speed_after_emergency_brake_delay));
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:
@@ -401,10 +384,8 @@ void settingsMenuRoutine() {
           g_lookahead_min_distance_cm -= 0.5f;
         }
         g_lookahead_min_distance_cm = MAX(g_lookahead_min_distance_cm, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("LOOKAHEAD_MIN");
-        lcd.setCursor(0, 1);
-        lcd.print(g_lookahead_min_distance_cm);
+
+        displayParameterValue(String("LOOKAHEAD_MIN"), String(g_lookahead_min_distance_cm));
         break;
 
       case LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM:
@@ -414,10 +395,8 @@ void settingsMenuRoutine() {
           g_lookahead_max_distance_cm -= 0.5f;
         }
         g_lookahead_max_distance_cm = MAX(g_lookahead_max_distance_cm, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("LOOKAHEAD_MAX");
-        lcd.setCursor(0, 1);
-        lcd.print(g_lookahead_max_distance_cm);
+
+        displayParameterValue(String("LOOKAHEAD_MAX"), String(g_lookahead_max_distance_cm));
         break;
       
       case LCDMENU_EMERGENCY_BREAK_DISTANCE_M:
@@ -427,10 +406,8 @@ void settingsMenuRoutine() {
           g_emergency_brake_distance_m -= 0.005f;
         }
         g_emergency_brake_distance_m = MAX(g_emergency_brake_distance_m, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("EMER_BRK_DIST_CM");
-        lcd.setCursor(0, 1);
-        lcd.print(g_emergency_brake_distance_m);
+
+        displayParameterValue(String("EMER_BRK_DIST_CM"), String(g_emergency_brake_distance_m));
         break;
       
       case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M:
@@ -440,10 +417,8 @@ void settingsMenuRoutine() {
           g_emergency_brake_distance_from_obstacle_m -= 0.005f;
         }
         g_emergency_brake_distance_from_obstacle_m = MAX(g_emergency_brake_distance_from_obstacle_m, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("EMR_BR_DIST_OBST");
-        lcd.setCursor(0, 1);
-        lcd.print(g_emergency_brake_distance_from_obstacle_m);
+
+        displayParameterValue(String("EMR_BR_DIST_OBST"), String(g_emergency_brake_distance_from_obstacle_m));
       break;
 
       case LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S:
@@ -453,10 +428,8 @@ void settingsMenuRoutine() {
           g_emergency_brake_enable_delay_s -= 0.5f;
         }
         g_emergency_brake_enable_delay_s = MAX(g_emergency_brake_enable_delay_s, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("EMER_BRK_DELY_S");
-        lcd.setCursor(0, 1);
-        lcd.print(g_emergency_brake_enable_delay_s);
+
+        displayParameterValue(String("EMER_BRK_DELY_S"), String(g_emergency_brake_enable_delay_s));
         break;
       
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
@@ -466,10 +439,8 @@ void settingsMenuRoutine() {
           g_lane_width_vector_unit -= 0.5f;
         }
         g_lane_width_vector_unit = MAX(g_lane_width_vector_unit, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("LANE_W_VECT_UNIT");
-        lcd.setCursor(0, 1);
-        lcd.print(g_lane_width_vector_unit);
+
+        displayParameterValue(String("LANE_W_VECT_UNIT"), String(g_lane_width_vector_unit));
         break;
 
       case LCDMENU_EMERGENCY_BRAKE_MIN_SPEED:
@@ -479,10 +450,8 @@ void settingsMenuRoutine() {
           g_emergency_brake_min_speed -= 0.5f;
         }
         g_emergency_brake_min_speed = MAX(g_emergency_brake_min_speed, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("EMER_BRK_MIN_SPD");
-        lcd.setCursor(0, 1);
-        lcd.print(g_emergency_brake_min_speed);
+
+        displayParameterValue(String("EMER_BRK_MIN_SPD"), String(g_emergency_brake_min_speed));
         break;
       
       case LCDMENU_BLACK_COLOR_TRESHOLD:
@@ -492,10 +461,8 @@ void settingsMenuRoutine() {
           g_black_color_treshold -= 0.01f;
         }
         g_black_color_treshold = MAX(g_black_color_treshold, 0.0f);
-        lcd.setCursor(0, 0);
-        lcd.print("BLACK_TRESHOLD");
-        lcd.setCursor(0, 1);
-        lcd.print(g_black_color_treshold);
+
+        displayParameterValue(String("BLACK_TRESHOLD"), String(g_black_color_treshold));
         break;
 
       case LCDMENU_CALIBRATION_VIEW:
@@ -511,16 +478,10 @@ void settingsMenuRoutine() {
         lower_intersection = intersectionLinesABC(g_middle_lane_line_pixy_1, lower_line);
 
         if (upper_intersection.info != 0) {
-          lcd.setCursor(0, 0);
-          lcd.print("inf");
-          lcd.setCursor(0, 1);
-          lcd.print("inf");
+          displayParameterValue(String("inf"), String("inf"));
         }
         else{
-          lcd.setCursor(0, 0);
-          lcd.print(upper_intersection.point.x - SCREEN_CENTER_X, 2);
-          lcd.setCursor(0, 1);
-          lcd.print(lower_intersection.point.x - SCREEN_CENTER_X, 2);
+          displayParameterValue(String((upper_intersection.point.x - SCREEN_CENTER_X), 2), String((lower_intersection.point.x - SCREEN_CENTER_X), 2));
         }
 
         middle_line = xAxisABC();
@@ -529,16 +490,23 @@ void settingsMenuRoutine() {
         left_lane_line_intersection = intersectionLinesABC(g_left_lane_line_pixy_1, middle_line);
         right_lane_line_intersection = intersectionLinesABC(g_right_lane_line_pixy_1, middle_line);
 
-        lcd.setCursor(8, 0);
-        lcd.print("LaneWdth");
-        lcd.setCursor(8, 1);
+
+        display.clearDisplay();
+        display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
+        display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+        display.setCursor(8, 0);
+        display.print("LaneWdth");
+        display.setTextSize(PARAMETER_VALUE_TEXT_SIZE);
+        display.setTextColor(PARAMETER_VALUE_TEXT_COLOR);
+        display.setCursor(8, 1);
         if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
           lane_width_ = euclidianDistance(left_lane_line_intersection.point, right_lane_line_intersection.point);
-          lcd.print(lane_width_);
+          display.print(String(lane_width_));
         }
         else{
-          lcd.print("NO_LINE");
+          display.print("NO_LINE");
         }
+        display.display();
       }
         break;
 
@@ -568,10 +536,7 @@ void settingsMenuRoutine() {
           calibration_line = g_right_lane_line_pixy_1;
         }
         else{
-          lcd.setCursor(0, 0);
-          lcd.print("NO_LINE");
-          lcd.setCursor(0, 1);
-          lcd.print("NO_LINE");
+          displayParameterValue(String("NO_LINE"), String("NO_LINE"));
           break;
         }
 
@@ -583,16 +548,11 @@ void settingsMenuRoutine() {
         lower_intersection = intersectionLinesABC(calibration_line, lower_line);
 
         if (upper_intersection.info != 0) {
-          lcd.setCursor(0, 0);
-          lcd.print("inf");
-          lcd.setCursor(0, 1);
-          lcd.print("inf");
+          displayParameterValue(String("inf"), String("inf"));
         }
         else{
-          lcd.setCursor(0, 0);
-          lcd.print(upper_intersection.point.x - SCREEN_CENTER_X, 2);
-          lcd.setCursor(0, 1);
-          lcd.print(lower_intersection.point.x - SCREEN_CENTER_X, 2);
+          displayParameterValue(String((upper_intersection.point.x - SCREEN_CENTER_X), 2), String((lower_intersection.point.x - SCREEN_CENTER_X), 2));
+
         }
         }
         break;
