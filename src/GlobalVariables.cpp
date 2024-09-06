@@ -130,6 +130,126 @@ Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
+void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
+  float temp_float;
+    std::stringstream ss(rawData);
+    std::vector<std::string> fields;
+ SERIAL_PORT.print("%");
+    int i = 0;
+    while (ss.good()) {
+        std::string substr;
+        getline(ss, substr, variableTerminator);
+        fields.push_back(substr);
+        SERIAL_PORT.print(String("[") + String(i)+ String("]") + String(substr.c_str()) + String(";"));
+        i++;
+    }
+    SERIAL_PORT.println();
+
+    g_lane_width_vector_unit = std::stof(fields[0]);
+    g_lookahead_min_distance_cm = std::stof(fields[1]);
+    g_lookahead_max_distance_cm = std::stof(fields[2]);
+    g_emergency_brake_distance_m = std::stof(fields[3]);
+    g_min_speed = std::stof(fields[4]);
+    g_max_speed = std::stof(fields[5]);
+    g_black_color_treshold = std::stof(fields[6]);
+    
+    temp_float = std::stof(fields[7]);
+    if (temp_float >= 0.5f) {
+      g_enable_car_engine = 1;
+    }
+    else{
+      g_enable_car_engine = 0;
+    }
+
+    temp_float = std::stof(fields[8]);
+    if (temp_float >= 0.5f) {
+      g_enable_car_steering_wheel = 1;
+    }
+    else{
+      g_enable_car_steering_wheel = 0;
+    }
+
+    g_emergency_brake_min_speed = std::stof(fields[9]);
+    g_emergency_brake_distance_from_obstacle_m = std::stof(fields[10]);
+    
+    temp_float = std::stof(fields[11]);
+    if (temp_float >= 0.5f) {
+      g_enable_emergency_brake = 1;
+    }
+    else{
+      g_enable_emergency_brake = 0;
+    }
+
+    temp_float = std::stof(fields[12]);
+    if (temp_float >= 0.5f) {
+      g_enable_pixy_vector_approximation = 1;
+    }
+    else{
+      g_enable_pixy_vector_approximation = 0;
+    }
+
+    temp_float = std::stof(fields[13]);
+    if (temp_float >= 0.5f) {
+      g_enable_distance_sensor1 = 1;
+    }
+    else{
+      g_enable_distance_sensor1 = 0;
+    }
+
+    temp_float = std::stof(fields[14]);
+    if (temp_float >= 0.5f) {
+      g_enable_distance_sensor2 = 1;
+    }
+    else{
+      g_enable_distance_sensor2 = 0;
+    }
+
+    g_emergency_brake_enable_delay_s = std::stof(fields[15]);
+    g_steering_wheel_angle_offset = std::stof(fields[16]);
+
+
+    temp_float = std::stof(fields[17]);
+    if (temp_float >= 0.5f) {
+      g_enable_distance_sensor3 = 1;
+    }
+    else{
+      g_enable_distance_sensor3 = 0;
+    }
+
+    g_min_x_axis_angle_vector = std::stof(fields[18]);
+    g_max_speed_after_emergency_brake_delay = std::stof(fields[19]);
+
+    temp_float = std::stof(fields[20]);
+    if (temp_float >= 0.5f) {
+      g_enable_remote_start_stop = 1;
+    }
+    else{
+      g_enable_remote_start_stop = 0;
+    }
+
+    g_car_speed_ki = std::stof(fields[21]);
+    g_car_speed_kd = std::stof(fields[22]);
+    g_car_speed_ki_min_max_impact = std::stof(fields[23]);
+    g_finish_line_angle_tolerance = std::stof(fields[24]);
+
+    temp_float = std::stof(fields[25]);
+    if (temp_float >= 0.5f) {
+      g_enable_finish_line_detection = 1;
+    }
+    else{
+      g_enable_finish_line_detection = 0;
+    }
+
+    g_powertrain_left_wheel_kp = std::stof(fields[26]);
+    g_powertrain_left_wheel_ki = std::stof(fields[27]);
+    g_powertrain_left_wheel_kd = std::stof(fields[28]);
+    g_powertrain_left_wheel_ki_max_sum = std::stof(fields[29]);
+
+    g_powertrain_right_wheel_kp = std::stof(fields[30]);
+    g_powertrain_right_wheel_ki = std::stof(fields[31]);
+    g_powertrain_right_wheel_kd = std::stof(fields[32]);
+    g_powertrain_right_wheel_ki_max_sum = std::stof(fields[33]);
+}
 
 
 void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = ';') {
@@ -254,78 +374,81 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
 
 void printGlobalVariables(SERIAL_TYPE &serialPort){
   char separatorCharacter;
+  int n_decimals = 3;
   separatorCharacter = ';';
 
   serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING));
 
-  serialPort.print(String(g_lane_width_vector_unit));
+  serialPort.print(String(g_lane_width_vector_unit, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_lookahead_min_distance_cm));
+  serialPort.print(String(g_lookahead_min_distance_cm, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_lookahead_max_distance_cm));
+  serialPort.print(String(g_lookahead_max_distance_cm, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_distance_m));
+  serialPort.print(String(g_emergency_brake_distance_m, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_min_speed));
+  serialPort.print(String(g_min_speed, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_max_speed));
+  serialPort.print(String(g_max_speed, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_black_color_treshold));
+  serialPort.print(String(g_black_color_treshold, n_decimals));
   serialPort.print(separatorCharacter);
   //serialPort.print(String(g_car_length_cm));
   //serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_car_engine));
+  serialPort.print(String(g_enable_car_engine, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_car_steering_wheel));
+  serialPort.print(String(g_enable_car_steering_wheel, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_min_speed));
+  serialPort.print(String(g_emergency_brake_min_speed, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_distance_from_obstacle_m));
+  serialPort.print(String(g_emergency_brake_distance_from_obstacle_m, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_emergency_brake));
+  serialPort.print(String(g_enable_emergency_brake, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_pixy_vector_approximation));
+  serialPort.print(String(g_enable_pixy_vector_approximation, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_distance_sensor1));
+  serialPort.print(String(g_enable_distance_sensor1, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_distance_sensor2));
+  serialPort.print(String(g_enable_distance_sensor2, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_enable_delay_s));
+  serialPort.print(String(g_emergency_brake_enable_delay_s, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_distance_sensor3));
+  serialPort.print(String(g_steering_wheel_angle_offset, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_min_x_axis_angle_vector));
+  serialPort.print(String(g_enable_distance_sensor3, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_max_speed_after_emergency_brake_delay));
+  serialPort.print(String(g_min_x_axis_angle_vector, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_remote_start_stop));
+  serialPort.print(String(g_max_speed_after_emergency_brake_delay, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_ki));
+  serialPort.print(String(g_enable_remote_start_stop, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_kd));
+  serialPort.print(String(g_car_speed_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_ki_min_max_impact));
+  serialPort.print(String(g_car_speed_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_finish_line_angle_tolerance));
+  serialPort.print(String(g_car_speed_ki_min_max_impact, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_finish_line_detection));
+  serialPort.print(String(g_finish_line_angle_tolerance, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_enable_finish_line_detection, n_decimals));
   serialPort.print(separatorCharacter);
 
-  serialPort.print(String(g_powertrain_left_wheel_kp));
+  serialPort.print(String(g_powertrain_left_wheel_kp, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_left_wheel_ki));
+  serialPort.print(String(g_powertrain_left_wheel_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_left_wheel_kd));
+  serialPort.print(String(g_powertrain_left_wheel_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_left_wheel_ki_max_sum));
+  serialPort.print(String(g_powertrain_left_wheel_ki_max_sum, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_kp));
+  serialPort.print(String(g_powertrain_right_wheel_kp, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_ki));
+  serialPort.print(String(g_powertrain_right_wheel_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_kd));
+  serialPort.print(String(g_powertrain_right_wheel_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_ki_max_sum));
+  serialPort.print(String(g_powertrain_right_wheel_ki_max_sum, n_decimals));
 
   serialPort.println();
 }
@@ -333,10 +456,11 @@ void printGlobalVariables(SERIAL_TYPE &serialPort){
 void parseInputGlobalVariablesRoutine(SERIAL_TYPE &serialPort){
   std::string serialInputBuffer;
   if(readRecordFromSerial(serialPort, String("\r\n"), serialInputBuffer)){
-    serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
-    serialPort.println(serialInputBuffer.c_str());
-    parseAndSetGlobalVariables(serialInputBuffer, ';');
+    //serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
+    //serialPort.println(serialInputBuffer.c_str());
+    parseAndSetGlobalVariables_2(serialInputBuffer, ';');
+    //parseAndSetGlobalVariables(serialInputBuffer, ';');
+    //g_enable_car_engine = 1;
     printGlobalVariables(serialPort);
-    serialInputBuffer.clear();
   }
 }

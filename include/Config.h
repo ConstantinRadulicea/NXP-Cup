@@ -55,11 +55,11 @@ g_steering_wheel_angle_offset = 0.0;
 #define TEMP_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
-//#define SERIAL_PORT Serial1
-//#define SERIAL_TYPE HardwareSerialIMXRT
+#define SERIAL_PORT Serial1
+#define SERIAL_TYPE HardwareSerialIMXRT
 
-#define SERIAL_PORT Serial
-#define SERIAL_TYPE usb_serial_class
+//#define SERIAL_PORT Serial
+//#define SERIAL_TYPE usb_serial_class
 
 
 

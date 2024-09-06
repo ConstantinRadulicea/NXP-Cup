@@ -1,4 +1,3 @@
-% delete(arduinoObj)
 clc;
 clear;
 close all;

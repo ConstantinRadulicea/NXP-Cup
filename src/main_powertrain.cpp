@@ -94,8 +94,8 @@ void setup() {
     //}
     //Serial.println("hello");
 
-    //SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
-    //SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
+    SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
+    SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
     SERIAL_PORT.begin(SERIAL_PORT_BAUD_RATE);
     while (!SERIAL_PORT){
       delay(50);
@@ -265,6 +265,16 @@ void loop() {
   for (;;)
   {
     timeStart = (float)millis();
+
+    #if ENABLE_SERIAL_PRINT == 1
+    parseInputGlobalVariablesRoutine(SERIAL_PORT);
+    #endif
+
+    #if ENABLE_SETTINGS_MENU == 1
+      settingsMenuRoutine();
+    #endif
+
+
     movingAverage_speed.next(g_car_speed);
     g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
     //pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
@@ -362,13 +372,6 @@ void loop() {
 
     #endif
 
-    #if ENABLE_SERIAL_PRINT == 1
-    parseInputGlobalVariablesRoutine(SERIAL_PORT);
-    #endif
-
-    #if ENABLE_SETTINGS_MENU == 1
-      settingsMenuRoutine();
-    #endif
 
     if (g_enable_car_steering_wheel == 0 && g_enable_car_engine != 0) {
       g_enable_car_steering_wheel = 1;
@@ -490,39 +493,26 @@ void loop() {
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = calculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_car_length_vector_unit, lookAheadDistance);
-    purePersuitInfo.steeringAngle -= (radians(g_steering_wheel_angle_offset));
-
+    //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
 
     if (pixy_1_loopIterationsCountNoVectorDetected > 15)
     {
+      #if ENABLE_SERIAL_PRINT != 0
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(pixy_1_loopIterationsCountNoVectorDetected));
+      #endif
       if (g_emergency_break_active == 0) {
         g_car_speed = (float)g_min_speed;
       }
-      #if ENABLE_DRIVERMOTOR == 1
-        if (g_enable_car_engine != 0) {
-          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              if (purePersuitInfo.steeringAngle > 0.0) {
-                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
-              }
-              else if(purePersuitInfo.steeringAngle < 0.0){
-                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
-              }
-              else {
-                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
-              }
-          }
-        }
-      #endif
     }
     else{
       if (g_emergency_break_active == 0){
         g_car_speed = calculateCarSpeed((float)g_min_speed, g_max_speed, (float)STEERING_SERVO_MAX_ANGLE, degrees(purePersuitInfo.steeringAngle), g_middle_lane_line_pixy_1, g_car_speed_ki, g_car_speed_kd, g_car_speed_ki_min_max_impact);
       }
     }
-        
+    
     #if ENABLE_STEERING_SERVO == 1
       if (g_enable_car_steering_wheel != 0) {
-        g_steering_wheel.setSteeringAngleDeg(degrees(purePersuitInfo.steeringAngle));
+        g_steering_wheel.setSteeringAngleDeg(degrees(purePersuitInfo.steeringAngle) - g_steering_wheel_angle_offset);
       }
     #endif
 
@@ -550,6 +540,8 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
+        //SERIAL_PORT.println(String("%g_car_speed: ") + String(g_car_speed, 5));
+        //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Speed: ") + String(g_car_speed));
         printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance_m, g_car_speed);
     #endif
   }

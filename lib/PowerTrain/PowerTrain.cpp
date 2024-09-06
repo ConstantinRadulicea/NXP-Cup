@@ -31,7 +31,7 @@ void empty_function(){
 void WriteToMotor(volatile PWMServo* motor_, float angle_arg) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         motor_->write((int)angle_arg);
-    }   
+    }
 }
 
 void WriteToRightMotor(float angle_arg){
@@ -49,6 +49,7 @@ void WriteToRightMotorThrottle(float throttle){
     rawValue = MAX(rawValue, 90.0);
     rawValue = MIN(rawValue, 180.0);
     WriteToRightMotor(rawValue);
+    //Serial.println(String("%Right: ") + String(throttle, 2) + String(";") + String(rawValue));
 }
 
 void WriteToLeftMotorThrottle(float throttle){
@@ -57,6 +58,7 @@ void WriteToLeftMotorThrottle(float throttle){
     rawValue = MAX(rawValue, 90.0);
     rawValue = MIN(rawValue, 180.0);
     WriteToLeftMotor(rawValue);
+    //Serial.println(String("%Left: ") + String(throttle, 2) + String(";") + String(rawValue));
 }
 
 volatile PowerTrain g_powertrain(0.0, 0.0, 0.0, 0.0, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
