@@ -80,6 +80,17 @@ void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector 
   serialPort.print(semicolonChar);
   serialPort.print(String(adjusted_rpm));
 
+ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+  serialPort.print(semicolonChar);
+  serialPort.print(String(powerTrain.GetLeftWheelSpeedRequest_raw()));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(powerTrain.GetRightWheelSpeedRequest_raw()));
+
+  //Serial.print(semicolonChar);
+  //Serial.print(String(powerTrain.GetLeftWheelSpeedRequest_raw()));
+  //Serial.print(semicolonChar);
+  //Serial.println(String(powerTrain.GetRightWheelSpeedRequest_raw()));
+}
 
   serialPort.println();
 }

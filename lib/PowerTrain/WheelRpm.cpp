@@ -16,11 +16,6 @@
 
 #include "WheelRpm.h"
 
-
-#include <Arduino.h>
-#include <util/atomic.h>
-#include "MedianFilter.h"
-
 #define MEDIAN_FILTER_SIZE 6
 
 
@@ -194,8 +189,12 @@ volatile RpmSensorData LeftWheelRpmData = {
     time_now_us = micros();
     temp_WheelRpmData = getRpmSensorData(data);
 
-    micros_per_rpm = (unsigned long)((1.0/(temp_WheelRpmData.RpmFiltered/60.0))*1000000.0);
+    if (floatCmp(temp_WheelRpmData.RpmFiltered, 0.0) == 0) {
+        return 0.0f;
+    }
     
+
+    micros_per_rpm = (unsigned long)((1.0/(temp_WheelRpmData.RpmFiltered/60.0))*1000000.0);
     
 
     if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){

@@ -134,7 +134,7 @@ void PWMServo::detach()
   #endif
 }
 
-void PWMServo::write(int angleArg)
+void PWMServo::write(int angleArg) volatile
 {
   uint16_t p;
 

@@ -17,7 +17,10 @@
 #ifndef __WHEELRPM_H__
 #define __WHEELRPM_H__
 
+#include <Arduino.h>
+#include <util/atomic.h>
 #include "MedianFilter.h"
+#include <geometry2D.h>
 
 
 // Use ICACHE_RAM_ATTR for ISRs to prevent ESP8266 resets

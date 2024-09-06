@@ -155,11 +155,11 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     }
     if (left_rpm_sensor_pin >= 0) {
         pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);
+        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, FALLING);
     }
     if (left_motor_pin >= 0) {
         pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, RISING);
+        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, FALLING);
     }
     
     powerTrain.SetLeftWheelSpeedRequest_volatile(0.0);
