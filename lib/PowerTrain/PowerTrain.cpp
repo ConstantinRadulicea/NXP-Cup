@@ -28,7 +28,7 @@ void empty_function(){
 
 }
 
-void WriteToMotor(volatile PWMServo* motor_, float angle_arg){
+void WriteToMotor(volatile PWMServo* motor_, float angle_arg) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         motor_->write((int)angle_arg);
     }   
@@ -59,7 +59,7 @@ void WriteToLeftMotorThrottle(float throttle){
     WriteToLeftMotor(rawValue);
 }
 
-volatile PowerTrain powerTrain(0.0, 0.0, 0.0, 0.0, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
+volatile PowerTrain g_powertrain(0.0, 0.0, 0.0, 0.0, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
 
 
 void on_pulse_right_motor(volatile struct RpmSensorData *data){
@@ -77,11 +77,11 @@ void power_train_sampling(){
     rpm = getCurrentRpm_adjusted(&temp_WheelRpmData);
     //timePassed = getRpmPulsePeriod_us(rpm);
     timePassed = getTimePassedFromLastSample_us_adjusted(&temp_WheelRpmData);
-    powerTrain.SetRightWheelMeasuredRPM_volatile(rpm, timePassed);
+    g_powertrain.SetRightWheelMeasuredRPM(rpm, timePassed);
 
-    //Serial.print(powerTrain.GetRightWheelSpeed());
+    //Serial.print(g_powertrain.GetRightWheelSpeed());
     //Serial.print(';');
-    //Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
+    //Serial.print(g_powertrain.GetRightWheelSpeedRequest_raw());
     //Serial.print(';');
     //Serial.print(RightMotor.read());
     //Serial.print(';');
@@ -95,11 +95,11 @@ void power_train_sampling(){
     rpm = getCurrentRpm_adjusted(&temp_WheelRpmData);
     //timePassed = getRpmPulsePeriod_us(rpm);
     timePassed = getTimePassedFromLastSample_us_adjusted(&temp_WheelRpmData);
-    powerTrain.SetLeftWheelMeasuredRPM_volatile(rpm, timePassed);
+    g_powertrain.SetLeftWheelMeasuredRPM(rpm, timePassed);
 
-    //Serial.print(powerTrain.GetLeftWheelSpeed());
+    //Serial.print(g_powertrain.GetLeftWheelSpeed());
     //Serial.print(';');
-    //Serial.print(powerTrain.GetLeftWheelSpeedRequest_raw());
+    //Serial.print(g_powertrain.GetLeftWheelSpeedRequest_raw());
     //Serial.print(';');
     //Serial.print(LeftMotor.read());
     //Serial.print(';');
@@ -127,10 +127,10 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     float kd = 0.0;
     float ki_sum = 0.0;
 
-    powerTrain.SetRightWheelPID(kp, ki, kd, ki_sum);
-    powerTrain.SetRightWheelDiameter(wheel_diameter_m);
-    powerTrain.SetLeftWheelDiameter(wheel_diameter_m);
-    powerTrain.SetDistanceBetweenWheels(distance_between_wheels_m);
+    g_powertrain.SetRightWheelPID(kp, ki, kd, ki_sum);
+    g_powertrain.SetRightWheelDiameter(wheel_diameter_m);
+    g_powertrain.SetLeftWheelDiameter(wheel_diameter_m);
+    g_powertrain.SetDistanceBetweenWheels(distance_between_wheels_m);
 
     RpmSensorData temp_WheelRpmData;
     temp_WheelRpmData = getRightWheelRpmData();
@@ -155,15 +155,15 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     }
     if (left_rpm_sensor_pin >= 0) {
         pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);
+        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, FALLING);
     }
     if (left_motor_pin >= 0) {
         pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, RISING);
+        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, FALLING);
     }
     
-    powerTrain.SetLeftWheelSpeedRequest_volatile(0.0);
-    powerTrain.SetRightWheelSpeedRequest_volatile(0.0);
+    g_powertrain.SetLeftWheelSpeedRequest(0.0);
+    g_powertrain.SetRightWheelSpeedRequest(0.0);
     
     myTimer.begin(power_train_sampling, SecToMicros(HzToSec(pid_frequency_hz)));  // blinkLED to run every 0.15 seconds
 }

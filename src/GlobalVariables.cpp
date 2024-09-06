@@ -20,19 +20,19 @@
 #if CAR1 == 1
 int g_enable_car_engine = 0;
 int g_enable_car_steering_wheel = 0;
-int g_enable_emergency_brake = 1;
+int g_enable_emergency_brake = 0;
 int g_enable_pixy_vector_approximation = 0;
 int g_enable_distance_sensor1 = 1;
 int g_enable_distance_sensor2 = 1;
 int g_enable_distance_sensor3 = 1;
 int g_enable_remote_start_stop = 0;
-int g_enable_finish_line_detection = 1;
+int g_enable_finish_line_detection = 0;
 
 float g_lane_width_vector_unit = 53.0f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white
 float g_lookahead_min_distance_cm = 22.0f;
 float g_lookahead_max_distance_cm = 50.0f;
-float g_min_speed = 0.2f;   // m/s
+float g_min_speed = 0.5f;   // m/s
 float g_max_speed = 2.0f;  // m/s
 float g_emergency_brake_distance_m = 1.0f;
 float g_emergency_brake_min_speed = 0.2f; // m/s
@@ -132,7 +132,7 @@ Pixy2 g_pixy_1;
 
 
 
-void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';') {
+void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = ';') {
 	char* pEnd;
 	int resultSuccess;
   float temp_float;
@@ -243,11 +243,16 @@ void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTermina
   g_powertrain_right_wheel_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   g_powertrain_right_wheel_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   g_powertrain_right_wheel_ki_max_sum = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
+    g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
+  }
 }
 
 /*==============================================================================*/
 
-void printGlobalVariables(HardwareSerial& serialPort){
+void printGlobalVariables(SERIAL_TYPE &serialPort){
   char separatorCharacter;
   separatorCharacter = ';';
 
@@ -325,10 +330,11 @@ void printGlobalVariables(HardwareSerial& serialPort){
   serialPort.println();
 }
 
-void parseInputGlobalVariablesRoutine(HardwareSerial& serialPort){
-  std::vector<char> serialInputBuffer;
+void parseInputGlobalVariablesRoutine(SERIAL_TYPE &serialPort){
+  std::string serialInputBuffer;
   if(readRecordFromSerial(serialPort, String("\r\n"), serialInputBuffer)){
-    serialPort.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: ") + String(serialInputBuffer.data()));
+    serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
+    serialPort.println(serialInputBuffer.c_str());
     parseAndSetGlobalVariables(serialInputBuffer, ';');
     printGlobalVariables(serialPort);
     serialInputBuffer.clear();

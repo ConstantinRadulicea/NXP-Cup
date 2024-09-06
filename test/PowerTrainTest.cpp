@@ -50,28 +50,28 @@ void loop() {
         ki_sum = parseNextFloat(pEnd, (line.size() + line.data()) - pEnd, ';', &pEnd, &resultSuccess);
 
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-            powerTrain.SetLeftWheelPID(kp, ki, kd, ki_sum);
-            powerTrain.SetRightWheelPID(kp, ki, kd, ki_sum);
-            //powerTrain.SetLeftWheelSpeedRequest_volatile(leftMotorRawSpeed);
-            //powerTrain.SetRightWheelSpeedRequest_volatile(rightMotorRawSpeed);
-            powerTrain.SetSpeedRequest_volatile(leftMotorRawSpeed, carTurnRadius, direction);
+            g_powertrain.SetLeftWheelPID(kp, ki, kd, ki_sum);
+            g_powertrain.SetRightWheelPID(kp, ki, kd, ki_sum);
+            //g_powertrain.SetLeftWheelSpeedRequest_volatile(leftMotorRawSpeed);
+            //g_powertrain.SetRightWheelSpeedRequest_volatile(rightMotorRawSpeed);
+            g_powertrain.SetSpeedRequest_volatile(leftMotorRawSpeed, carTurnRadius, direction);
         }
         line.clear();
     }
 
 
     temp_WheelRpmData = getLeftWheelRpmData();
-    Serial.print(powerTrain.GetLeftWheelSpeed());
+    Serial.print(g_powertrain.GetLeftWheelSpeed());
     Serial.print(';');
-    Serial.print(powerTrain.GetLeftWheelSpeedRequest_raw());
+    Serial.print(g_powertrain.GetLeftWheelSpeedRequest_raw());
     Serial.print(';');
     Serial.print(temp_WheelRpmData.Rpm);
     Serial.print(';');
     
     temp_WheelRpmData = getRightWheelRpmData();
-    Serial.print(powerTrain.GetRightWheelSpeed());
+    Serial.print(g_powertrain.GetRightWheelSpeed());
     Serial.print(';');
-    Serial.print(powerTrain.GetRightWheelSpeedRequest_raw());
+    Serial.print(g_powertrain.GetRightWheelSpeedRequest_raw());
     Serial.print(';');
     Serial.print(temp_WheelRpmData.Rpm);
 

@@ -27,6 +27,7 @@
 #include <PWMServo.h>
 
 
+
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define HzToSec(hz) (1.0/(hz))
@@ -97,30 +98,30 @@ public:
 		this->_motorHandler = motorHandler;
 	}
 
-	void SetMotorHandler(MotorHandler motorHandler){
+	void SetMotorHandler(MotorHandler motorHandler) volatile {
 		this->_motorHandler = motorHandler;
 	}
 
-	void SetPID(float kP, float kI, float kD, float integralImpact) {
+	void SetPID(float kP, float kI, float kD, float integralImpact) volatile {
 		_pid.setKp(kP);
 		_pid.setKi(kI);
 		_pid.setKd(kD);
 		_pid.setIntegralImpact(integralImpact);
 	}
 
-	float GetSpeed() {
+	float GetSpeed() volatile{
 		return this->RPMToMps(this->wheelRPM);
 	}
 
-	float GetRpm() {
+	float GetRpm() volatile {
 		return this->wheelRPM;
 	}
 
-	float GetRpmRequest() {
+	float GetRpmRequest() volatile {
 		return this->MpsToRPM(this->GetSpeedRequest());
 	}
 
-	void SetToMotorRawRequest(float value) {
+	void SetToMotorRawRequest(float value) volatile {
 		this->speedRequest_raw = value;
 		if (this->_motorHandler != NULL) {
 			this->_motorHandler(value);
@@ -128,26 +129,26 @@ public:
 	}
 
 
-	void SetSpeedRequest(float speed_mps) { // speed = mps!
+	void SetSpeedRequest(float speed_mps) volatile{ // speed = mps!
 		this->speedRequest = speed_mps;
 		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(0.0)));
 	}
 
-	float GetSpeedRequest_raw() {
+	float GetSpeedRequest_raw() volatile {
 		return this->speedRequest_raw;
 	}
 
-	float GetSpeedRequest() {
+	float GetSpeedRequest()  volatile{
 		return this->speedRequest;
 	}
 
-	float GetAcceleration() {
+	float GetAcceleration() volatile {
 		float accel = (RPMToMps(this->wheelRPM) - RPMToMps(this->prevWheelRPM)) / this->timePassedFromLastSample;
 		return accel;
 	}
 
 	//perioada de esantionare nu este constanta => timePassedFromLastSample1 din ISR
-	void SetMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
+	void SetMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) volatile {
 		//Serial.println(measuredSpeed);
 		//Serial.println(timePassedFromLastSample1);
 		this->prevWheelRPM = this->wheelRPM;
@@ -156,33 +157,35 @@ public:
 		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(timePassedFromLastSample1)));
 	}
 
-	void SetDiameter(float wheel_diameter){
+	void SetDiameter(float wheel_diameter)  volatile {
 		this->wheelDiameter = wheel_diameter;
 	}
-	float GetDiameter(){
+	float GetDiameter() volatile {
 		return this->wheelDiameter;
 	}
 
 private:
 
-	float ThrottleToRawValue(float value) {
+	float ThrottleToRawValue(float value) volatile {
+		value = MAX(0.0, value);
+		value = MIN(1.0, value);
 		//value = 90.0 + (value * 90.0);
 		return value;
 	}
 
-	float MpsToRPM(float speedMps) { //metri/s --> RPM
+	float MpsToRPM(float speedMps) volatile{ //metri/s --> RPM
 		float wheelCircumference = M_PI * wheelDiameter; // wheel diameter is in meters!
 		float speedRPM = (speedMps / wheelCircumference) * 60.0;
 
 		return speedRPM;
 	}
 
-	float RPMToMps(float speedRPM) { //RPM --> metri/s
+	float RPMToMps(float speedRPM) volatile { //RPM --> metri/s
 		return (((wheelDiameter / 2.0) * (2 * M_PI)) / 60.0) * speedRPM;
 	}
 
 
-	float CalculateThrottle(double timePassedFromLastSample_) {
+	float CalculateThrottle(double timePassedFromLastSample_) volatile{
 		float throttle_request_temp;
 		throttle_request_temp = RpmToThrottle(this->MpsToRPM(this->speedRequest));
 		throttle_request_temp = throttle_request_temp + (float)this->_pid.calculate(this->speedRequest, this->RPMToMps(this->wheelRPM), timePassedFromLastSample_ / 1000000.0);
@@ -198,7 +201,7 @@ private:
 	float speedRequest = 0.0;
 
 	float carWeight = 0.0;
-	float speedRequest_raw = 90.0;
+	float speedRequest_raw = 0.0;
 	float timePassedFromLastSample = 0.0;
 	MotorHandler _motorHandler = NULL;
 
@@ -221,16 +224,16 @@ public:
 	{
 	}
 
-	void SetDistanceBetweenWheels(float distance_between_wheels){
+	void SetDistanceBetweenWheels(float distance_between_wheels) volatile {
 		this->_distanceBwWheels_m = distance_between_wheels;
 	}
 
-	float GetDistanceBetweenWheels(){
+	float GetDistanceBetweenWheels() volatile{
 		return this->_distanceBwWheels_m;
 	}
 
 	// left_right_turn: negative if turning left, positive if turning right
-	void SetSpeedRequest(float speed_ms, float turn_radius, int left_right_turn){
+	void SetSpeedRequest(float speed_ms, float turn_radius, int left_right_turn) volatile{
 		float left_wheel_turn_radius;
 		float right_wheel_turn_radius;
 		float left_wheel_turn_circonference;
@@ -270,90 +273,64 @@ public:
 		this->SetRightWheelSpeedRequest(right_wheel_speed_request_m);
 	}
 
-	void SetSpeedRequest_volatile(float speed_ms, float turn_radius, int left_right_turn) volatile{
-		this->SetSpeedRequest(speed_ms, turn_radius, left_right_turn);
-	}
-
-	void SetLeftWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
+	void SetLeftWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) volatile {
 		this->leftWheel.SetMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
 	}
 
-	void SetRightWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) {
+	void SetRightWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) volatile {
 		this->rightWheel.SetMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
 	}
 
 
-
-
-	void SetLeftWheelMeasuredRPM_volatile(float measuredSpeed, float timePassedFromLastSample1) {
-		this->SetLeftWheelMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
-	}
-
-	void SetRightWheelMeasuredRPM_volatile(float measuredSpeed, float timePassedFromLastSample1) {
-		this->SetRightWheelMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
-	}
-
-
-
-
-	void SetLeftWheelPID(float kP, float kI, float kD, float integralImpact) {
+	void SetLeftWheelPID(float kP, float kI, float kD, float integralImpact) volatile {
 		this->leftWheel.SetPID(kP, kI, kD, integralImpact);
 	}
-	void SetRightWheelPID(float kP, float kI, float kD, float integralImpact) {
+	void SetRightWheelPID(float kP, float kI, float kD, float integralImpact) volatile {
 		this->rightWheel.SetPID(kP, kI, kD, integralImpact);
 	}
 
-	void SetRightWheelDiameter(float wheel_diameter) {
+	void SetRightWheelDiameter(float wheel_diameter) volatile {
 		this->rightWheel.SetDiameter(wheel_diameter);
 	}
 
-	void SetLeftWheelDiameter(float wheel_diameter) {
+	void SetLeftWheelDiameter(float wheel_diameter) volatile {
 		this->leftWheel.SetDiameter(wheel_diameter);
 	}
 
 	float GetRightWheelSpeed() volatile {
 		return this->rightWheel.GetSpeed();
 	}
-	float GetLeftWheelSpeed() {
+	float GetLeftWheelSpeed() volatile {
 		return this->leftWheel.GetSpeed();
 	}
 
-	void SetRightWheelSpeedRequest(float speed_mps) {
+	void SetRightWheelSpeedRequest(float speed_mps) volatile {
 		this->rightWheel.SetSpeedRequest(speed_mps);
 	}
-	void SetLeftWheelSpeedRequest(float speed_mps) {
+	void SetLeftWheelSpeedRequest(float speed_mps) volatile {
 		this->leftWheel.SetSpeedRequest(speed_mps);
 	}
-
-
-	void SetRightWheelSpeedRequest_volatile(float speed_mps) volatile{
-		this->SetRightWheelSpeedRequest(speed_mps);
-	}
-	void SetLeftWheelSpeedRequest_volatile(float speed_mps) volatile {
-		this->SetLeftWheelSpeedRequest(speed_mps);
-	}
-
 
 
 	float GetRightWheelSpeedRequest_raw() volatile {
 		return this->rightWheel.GetSpeedRequest_raw();
 	}
-	float GetLeftWheelSpeedRequest_raw() {
+	float GetLeftWheelSpeedRequest_raw()  volatile{
 		return this->leftWheel.GetSpeedRequest_raw();
 	}
 
-	float GetRightWheelSpeedRequest() {
+	float GetRightWheelSpeedRequest() volatile {
 		return this->rightWheel.GetSpeedRequest();
 	}
-	float GetLeftWheelSpeedRequest() {
+	float GetLeftWheelSpeedRequest() volatile {
 		return this->leftWheel.GetSpeedRequest();
 	}
 
 
-	float GetLeftWheelAcceleration() {
+	float GetLeftWheelAcceleration() volatile {
 		return this->leftWheel.GetAcceleration();
 	}
-	float GetRightWheelAcceleration() {
+	float GetRightWheelAcceleration() volatile {
 		return this->rightWheel.GetAcceleration();
 	}
 	/*
@@ -372,7 +349,7 @@ private:
 };
 
 void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin);
-extern volatile PowerTrain powerTrain;
+extern volatile PowerTrain g_powertrain;
 
 
 #endif // !__POWERTRAIN_H__

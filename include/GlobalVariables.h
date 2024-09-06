@@ -19,6 +19,7 @@
 
 #include <HardwareSerial.h>
 #include <vector>
+#include <string>
 #include "parseNextFloat.h"
 #include "geometry2D.h"
 #include "Config.h"
@@ -130,10 +131,9 @@ extern Pixy2 g_pixy_1;
 
 
 
-
+void parseInputGlobalVariablesRoutine(SERIAL_TYPE &serialPort);
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';');
-void printGlobalVariables(HardwareSerial& serialPort);
-void parseInputGlobalVariablesRoutine(HardwareSerial& serialPort);
+void printGlobalVariables(SERIAL_TYPE &serialPort);
 
 
 #endif

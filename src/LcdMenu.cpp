@@ -25,11 +25,11 @@ void displayParameterValue(String parameter, String value){
         display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
         display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
         display.setCursor(0, 0);
-        display.print(parameter);
+        display.println(parameter);
         display.setTextSize(PARAMETER_VALUE_TEXT_SIZE);
         display.setTextColor(PARAMETER_VALUE_TEXT_COLOR);
-        display.setCursor(0, 1);
-        display.print(value);
+        //display.setCursor(0, 1);
+        display.println(value);
         display.display();
 }
 
@@ -80,19 +80,20 @@ void settingsMenuRoutine() {
                 LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
                 LCDMENU_ENABLE_EMERGENCY_BRAKE,
                 LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M,
-                LCDMENU_ENABLE_REMOTE_START_STOP,
-                LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
                 LCDMENU_ENABLE_DISTANCE_SENSOR1,
                 LCDMENU_ENABLE_DISTANCE_SENSOR2,
                 LCDMENU_ENABLE_DISTANCE_SENSOR3,
                 LCDMENU_EMERGENCY_BREAK_DISTANCE_M,
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
-                LCDMENU_BLACK_COLOR_TRESHOLD,
 		            LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
                 LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
-                LCDMENU_LAST_VALUE};
+                LCDMENU_LAST_VALUE,
+                LCDMENU_ENABLE_REMOTE_START_STOP,
+                LCDMENU_BLACK_COLOR_TRESHOLD,
+                LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
+                };
   
   
   static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
@@ -114,6 +115,16 @@ void settingsMenuRoutine() {
   rightArrowButtonState = !digitalRead(right_arrow_btn);
   incrementButton = !digitalRead(increment_btn);
   decrementButton = !digitalRead(decrement_btn);
+
+  //Serial.print(" ");
+  //Serial.print(leftArrowButtonState);
+  //Serial.print(" ");
+  //Serial.print(rightArrowButtonState);
+  //Serial.print(" ");
+  //Serial.print(incrementButton);
+  //Serial.print(" ");
+  //Serial.print(decrementButton);
+  //Serial.println();
 
   if (!(leftArrowButtonPrevState == HIGH && leftArrowButtonState == HIGH) && !(rightArrowButtonPrevState == HIGH && rightArrowButtonState == HIGH)) {
     if (rightArrowButtonState == HIGH && lcdMenuIndex >= ((int)LCDMENU_LAST_VALUE) - 1) {
@@ -140,7 +151,7 @@ void settingsMenuRoutine() {
           g_steering_wheel_angle_offset -= 0.1f;
         }
 
-        displayParameterValue(String("STR_WHEEL_OFST"), String(g_steering_wheel_angle_offset));
+        displayParameterValue(String("STR_WHEEL_OFST"), String(g_steering_wheel_angle_offset, 2));
       break;
 
       case LCDMENU_FINISH_LINE_ANGLE_TOLERANCE:
@@ -151,7 +162,7 @@ void settingsMenuRoutine() {
           g_finish_line_angle_tolerance = MIN(g_finish_line_angle_tolerance, 0.0f);
         }
 
-        displayParameterValue(String("FINISH_LIN_ANG"), String(g_finish_line_angle_tolerance));
+        displayParameterValue(String("FINISH_LIN_ANG"), String(g_finish_line_angle_tolerance, 2));
       break;
 
       case LCDMENU_MIN_XAXIS_ANGLE_VECTOR:
@@ -161,11 +172,11 @@ void settingsMenuRoutine() {
           g_min_x_axis_angle_vector -= 0.1f;
         }
 
-        displayParameterValue(String("XAXIS_ANGL_VECT"), String(g_min_x_axis_angle_vector));
+        displayParameterValue(String("XAXIS_ANGL_VECT"), String(g_min_x_axis_angle_vector, 2));
       break;
 
       case LCDMENU_MAIN_VIEW:
-        displayParameterValue(String("Loop ms: ")+String(g_loop_time_ms), String("Timer s: ")+String((g_time_passed_ms / 1000.0f)));
+        displayParameterValue(String("Loop ms: ")+String(g_loop_time_ms, 2), String("Timer s: ")+String((g_time_passed_ms / 1000.0f), 2));
       break;
 
       case LCDMENU_ENABLE_CAR_ENGINE:
@@ -315,32 +326,32 @@ void settingsMenuRoutine() {
 
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
-          g_min_speed += 0.5f;
+          g_min_speed += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_min_speed -= 0.5f;
+          g_min_speed -= 0.01f;
         }
         g_min_speed = MAX(g_min_speed, 0.0f);
-        displayParameterValue(String("g_min_speed"), String(g_min_speed));
+        displayParameterValue(String("g_min_speed"), String(g_min_speed, 3));
         break;
 
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KI:
         if (incrementButton == HIGH) {
-          g_car_speed_ki += 0.0001f;
+          g_car_speed_ki += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_car_speed_ki -= 0.0001f;
+          g_car_speed_ki -= 0.005f;
         }
-        displayParameterValue(String("SPEED_KI"), String(g_car_speed_ki));
+        displayParameterValue(String("SPEED_KI"), String(g_car_speed_ki, 4));
       break;
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KD:
         if (incrementButton == HIGH) {
-          g_car_speed_kd += 0.0001f;
+          g_car_speed_kd += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_car_speed_kd -= 0.0001f;
+          g_car_speed_kd -= 0.005f;
         }
 
-        displayParameterValue(String("SPEED_KD"), String(g_car_speed_kd));
+        displayParameterValue(String("SPEED_KD"), String(g_car_speed_kd, 4));
       break;
 
 
@@ -351,19 +362,19 @@ void settingsMenuRoutine() {
           g_car_speed_ki_min_max_impact -= 0.1f;
         }
 
-        displayParameterValue(String("SPD_KI_MIN_MAX"), String(g_car_speed_ki_min_max_impact));
+        displayParameterValue(String("SPD_KI_MIN_MAX"), String(g_car_speed_ki_min_max_impact, 3));
       break;
 
 
       case LCDMENU_MAX_SPEED:
         if (incrementButton == HIGH) {
-          g_max_speed += 0.5f;
+          g_max_speed += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_max_speed -= 0.5f;
+          g_max_speed -= 0.01f;
         }
         g_max_speed = MAX(g_max_speed, 0.0f);
 
-        displayParameterValue(String("g_max_speed"), String(g_max_speed));
+        displayParameterValue(String("g_max_speed"), String(g_max_speed, 3));
         break;
 
       case LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY:
@@ -374,7 +385,7 @@ void settingsMenuRoutine() {
         }
         g_max_speed_after_emergency_brake_delay = MAX(g_max_speed_after_emergency_brake_delay, 0.0f);
 
-        displayParameterValue(String("MS_AFT_EMBRK_DLY"), String(g_max_speed_after_emergency_brake_delay));
+        displayParameterValue(String("MS_AFT_EMBRK_DLY"), String(g_max_speed_after_emergency_brake_delay, 2));
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:
@@ -385,7 +396,7 @@ void settingsMenuRoutine() {
         }
         g_lookahead_min_distance_cm = MAX(g_lookahead_min_distance_cm, 0.0f);
 
-        displayParameterValue(String("LOOKAHEAD_MIN"), String(g_lookahead_min_distance_cm));
+        displayParameterValue(String("LOOKAHEAD_MIN"), String(g_lookahead_min_distance_cm, 2));
         break;
 
       case LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM:
@@ -396,7 +407,7 @@ void settingsMenuRoutine() {
         }
         g_lookahead_max_distance_cm = MAX(g_lookahead_max_distance_cm, 0.0f);
 
-        displayParameterValue(String("LOOKAHEAD_MAX"), String(g_lookahead_max_distance_cm));
+        displayParameterValue(String("LOOKAHEAD_MAX"), String(g_lookahead_max_distance_cm, 2));
         break;
       
       case LCDMENU_EMERGENCY_BREAK_DISTANCE_M:
@@ -407,7 +418,7 @@ void settingsMenuRoutine() {
         }
         g_emergency_brake_distance_m = MAX(g_emergency_brake_distance_m, 0.0f);
 
-        displayParameterValue(String("EMER_BRK_DIST_CM"), String(g_emergency_brake_distance_m));
+        displayParameterValue(String("EMER_BRK_DIST_M"), String(g_emergency_brake_distance_m, 3));
         break;
       
       case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M:
@@ -418,7 +429,7 @@ void settingsMenuRoutine() {
         }
         g_emergency_brake_distance_from_obstacle_m = MAX(g_emergency_brake_distance_from_obstacle_m, 0.0f);
 
-        displayParameterValue(String("EMR_BR_DIST_OBST"), String(g_emergency_brake_distance_from_obstacle_m));
+        displayParameterValue(String("EMR_BR_DIST_OBST"), String(g_emergency_brake_distance_from_obstacle_m, 3));
       break;
 
       case LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S:
@@ -429,7 +440,7 @@ void settingsMenuRoutine() {
         }
         g_emergency_brake_enable_delay_s = MAX(g_emergency_brake_enable_delay_s, 0.0f);
 
-        displayParameterValue(String("EMER_BRK_DELY_S"), String(g_emergency_brake_enable_delay_s));
+        displayParameterValue(String("EMER_BRK_DELY_S"), String(g_emergency_brake_enable_delay_s, 2));
         break;
       
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
@@ -440,18 +451,18 @@ void settingsMenuRoutine() {
         }
         g_lane_width_vector_unit = MAX(g_lane_width_vector_unit, 0.0f);
 
-        displayParameterValue(String("LANE_W_VECT_UNIT"), String(g_lane_width_vector_unit));
+        displayParameterValue(String("LANE_W_VECT_UNIT"), String(g_lane_width_vector_unit, 2));
         break;
 
       case LCDMENU_EMERGENCY_BRAKE_MIN_SPEED:
         if (incrementButton == HIGH) {
-          g_emergency_brake_min_speed += 0.5f;
+          g_emergency_brake_min_speed += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_emergency_brake_min_speed -= 0.5f;
+          g_emergency_brake_min_speed -= 0.01f;
         }
         g_emergency_brake_min_speed = MAX(g_emergency_brake_min_speed, 0.0f);
 
-        displayParameterValue(String("EMER_BRK_MIN_SPD"), String(g_emergency_brake_min_speed));
+        displayParameterValue(String("EMER_BRK_MIN_SPD"), String(g_emergency_brake_min_speed, 3));
         break;
       
       case LCDMENU_BLACK_COLOR_TRESHOLD:
@@ -462,7 +473,7 @@ void settingsMenuRoutine() {
         }
         g_black_color_treshold = MAX(g_black_color_treshold, 0.0f);
 
-        displayParameterValue(String("BLACK_TRESHOLD"), String(g_black_color_treshold));
+        displayParameterValue(String("BLACK_TRESHOLD"), String(g_black_color_treshold, 2));
         break;
 
       case LCDMENU_CALIBRATION_VIEW:
@@ -489,22 +500,14 @@ void settingsMenuRoutine() {
 
         left_lane_line_intersection = intersectionLinesABC(g_left_lane_line_pixy_1, middle_line);
         right_lane_line_intersection = intersectionLinesABC(g_right_lane_line_pixy_1, middle_line);
-
-
-        display.clearDisplay();
-        display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
-        display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
-        display.setCursor(8, 0);
-        display.print("LaneWdth");
-        display.setTextSize(PARAMETER_VALUE_TEXT_SIZE);
-        display.setTextColor(PARAMETER_VALUE_TEXT_COLOR);
-        display.setCursor(8, 1);
+        display.println();
+        display.println(String("LaneWdth [vUnit]: "));
         if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
           lane_width_ = euclidianDistance(left_lane_line_intersection.point, right_lane_line_intersection.point);
-          display.print(String(lane_width_));
+          display.println(String(lane_width_, 2));
         }
         else{
-          display.print("NO_LINE");
+          display.println(String("NO_LINE"));
         }
         display.display();
       }
@@ -552,7 +555,6 @@ void settingsMenuRoutine() {
         }
         else{
           displayParameterValue(String((upper_intersection.point.x - SCREEN_CENTER_X), 2), String((lower_intersection.point.x - SCREEN_CENTER_X), 2));
-
         }
         }
         break;

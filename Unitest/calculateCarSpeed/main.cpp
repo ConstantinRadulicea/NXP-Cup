@@ -75,27 +75,27 @@ int main() {
 
 	SetSpeedRequest(1, 1, 1);
 
-	PowerTrain powerTrain(kP, kI, kD, wheelDiameter, NULL, NULL);
-	powerTrain.SetLeftWheelPID(kP, kI, kD, 1);
+	PowerTrain g_powertrain(kP, kI, kD, wheelDiameter, NULL, NULL);
+	g_powertrain.SetLeftWheelPID(kP, kI, kD, 1);
 
-	powerTrain.SetLeftWheelSpeedRequest(1.0);
+	g_powertrain.SetLeftWheelSpeedRequest(1.0);
 
 	float deltaTime = 0.1; // Perioada de eșantionare în secunde
 	int symulationTime_s = 1000; // Simulation time in seconds
 
-	double val = 0.0;//powerTrain.leftWheel.GetRpmRequest();
+	double val = 0.0;//g_powertrain.leftWheel.GetRpmRequest();
 	double inc;
 	double prev_err;
-	double ggg = powerTrain.leftWheel.GetRpmRequest();
+	double ggg = g_powertrain.leftWheel.GetRpmRequest();
 	for (int i = 0; i < (int)(symulationTime_s / deltaTime); i++) {
-		prev_err = powerTrain.GetLeftWheelSpeedRequest_raw();
-		powerTrain.SetLeftWheelMeasuredRPM(val, deltaTime * 1000000);
-		inc = powerTrain.GetLeftWheelSpeedRequest_raw() - prev_err;
-		printf("raw:%f m/s:%f\n", powerTrain.GetLeftWheelSpeedRequest_raw(), powerTrain.GetLeftWheelSpeed());
-		val += (powerTrain.GetLeftWheelSpeedRequest_raw());
-		if (powerTrain.GetLeftWheelSpeedRequest_raw() == 0.0f)
+		prev_err = g_powertrain.GetLeftWheelSpeedRequest_raw();
+		g_powertrain.SetLeftWheelMeasuredRPM(val, deltaTime * 1000000);
+		inc = g_powertrain.GetLeftWheelSpeedRequest_raw() - prev_err;
+		printf("raw:%f m/s:%f\n", g_powertrain.GetLeftWheelSpeedRequest_raw(), g_powertrain.GetLeftWheelSpeed());
+		val += (g_powertrain.GetLeftWheelSpeedRequest_raw());
+		if (g_powertrain.GetLeftWheelSpeedRequest_raw() == 0.0f)
 		{
-			powerTrain.leftWheel.GetRpmRequest();
+			g_powertrain.leftWheel.GetRpmRequest();
 		}
 	}
 

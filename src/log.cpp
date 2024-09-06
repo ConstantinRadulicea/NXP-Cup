@@ -19,7 +19,7 @@
 #include "GlobalVariables.h"
 #include "WheelRpm.h"
 
-void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
+void printDataToSerial(SERIAL_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
   RpmSensorData temp_rpmData;
@@ -80,6 +80,17 @@ void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector 
   serialPort.print(semicolonChar);
   serialPort.print(String(adjusted_rpm));
 
+ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_powertrain.GetLeftWheelSpeedRequest_raw()));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_powertrain.GetRightWheelSpeedRequest_raw()));
+
+  //Serial.print(semicolonChar);
+  //Serial.print(String(g_powertrain.GetLeftWheelSpeedRequest_raw()));
+  //Serial.print(semicolonChar);
+  //Serial.println(String(g_powertrain.GetRightWheelSpeedRequest_raw()));
+}
 
   serialPort.println();
 }

@@ -3,32 +3,32 @@ fieldTerminator = ';';
 % good bad
 % 17 - 3
 % 22 - 0
-g_enable_car_engine = 0.0;
+g_enable_car_engine = 1.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 1.0;
+g_enable_emergency_brake = 0.0;
 enable_pixy_vector_approximation = 0.0;             
 enable_distance_sensor1 = 1.0;
 enable_distance_sensor2 = 1.0;
 enable_distance_sensor3 = 1.0;
-enable_remote_start_stop = 0.0
-g_enable_finish_line_detection = 1;
+enable_remote_start_stop = 0.0;
+g_enable_finish_line_detection = 0;
 
 g_lane_width_vector_unit = 53.0;
 g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 22.0;                       % 22
-g_lookahead_max_distance_cm = 50.0;                       % 40
-g_min_speed = 0.3;
-g_max_speed = 0.5;                                      % 
-g_car_speed_ki = -0.02;
-g_car_speed_kd = -0.2;
+g_lookahead_max_distance_cm = 40.0;                       % 40
+g_min_speed = 1.0;
+g_max_speed = 1.0;                                      % 
+g_car_speed_ki = -0.02;                                      %-0.02;
+g_car_speed_kd = -0.2;                                      %-0.2;
 g_car_speed_ki_min_max_impact = 5.0;
-g_emergency_brake_distance_m = 0.5;                     % 75
-g_emergency_brake_min_speed = 0.5;
+g_emergency_brake_distance_m = 1.0;                     % 75
+g_emergency_brake_min_speed = 0.2;
 g_emergency_brake_distance_from_obstacle_m = 0.20;       % 14
-emergency_brake_enable_delay = 10.0;
-g_steering_wheel_angle_offset = 0.0;
+emergency_brake_enable_delay = 0.0;
+g_steering_wheel_angle_offset = 10.6;
 g_min_x_axis_angle_vector = 15.0;
-g_max_speed_after_emergency_brake_delay = 1;
+g_max_speed_after_emergency_brake_delay = 0.3;
 g_finish_line_angle_tolerance = 15.0;
 
 g_powertrain_left_wheel_kp = 0.0;
@@ -44,7 +44,8 @@ values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...
     g_lookahead_max_distance_cm...
     g_emergency_brake_distance_m...
-    g_min_speed g_max_speed...
+    g_min_speed...
+    g_max_speed...
     g_black_color_treshold...
     g_enable_car_engine...
     g_enable_car_steering_wheel...
@@ -86,6 +87,6 @@ end
 
 outputString = [outputString recordTerminator];
 
-server.write(outputString)
+server.write(outputString, "string")
 
 

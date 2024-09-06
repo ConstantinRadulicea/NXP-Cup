@@ -54,6 +54,14 @@ g_steering_wheel_angle_offset = 0.0;
 #define RACE_MODE 0
 #define TEMP_MODE 0
 
+#define SERIAL_PORT_BAUD_RATE 230400  //230400
+//#define SERIAL_PORT Serial1
+//#define SERIAL_TYPE HardwareSerialIMXRT
+
+#define SERIAL_PORT Serial
+#define SERIAL_TYPE usb_serial_class
+
+
 
 
 //#define SPI_SS
@@ -102,8 +110,6 @@ g_steering_wheel_angle_offset = 0.0;
 #define ENABLE_FINISH_LINE_DETECTION 1
 
 
-#define SERIAL_PORT_BAUD_RATE 230400
-#define SERIAL_PORT Serial1
 
 #if DEBUG_MODE == 1
   #define ENABLE_SERIAL_PRINT 1
@@ -119,7 +125,7 @@ g_steering_wheel_angle_offset = 0.0;
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
-  #define ENABLE_FINISH_LINE_DETECTION 1
+  #define ENABLE_FINISH_LINE_DETECTION 0
 #endif
 
 #if RACE_MODE == 1
@@ -166,13 +172,16 @@ g_steering_wheel_angle_offset = 0.0;
 })
 
 #define STEERING_SERVO_PIN  7
+#define RIGHT_WHEEL_MOTOR_PIN 5
+#define LEFT_WHEEL_MOTOR_PIN 4
+#define EDF_MOTOR_PIN 6
 
 #define DISTANCE_SENSOR1_ANALOG_PIN 14
 #define DISTANCE_SENSOR2_ANALOG_PIN 15
 #define DISTANCE_SENSOR3_ANALOG_PIN 16
 
 #define MENU_RIGHT_ARROW_BUTTON_PIN 22
-#define MENU_LEFT_ARROW_BUTTON_PIN 23
+#define MENU_LEFT_ARROW_BUTTON_PIN 17
 #define MENU_DECREMENT_BUTTON_PIN 21
 #define MENU_INCREMENT_BUTTON_PIN 20
 
@@ -181,8 +190,6 @@ g_steering_wheel_angle_offset = 0.0;
 
 #define RPM_SENSOR_LEFT_WHEEL_PIN 2
 #define RPM_SENSOR_RIGHT_WHEEL_PIN 3
-#define RIGHT_WHEEL_MOTOR_PIN 5
-#define LEFT_WHEEL_MOTOR_PIN 4
 
 
 

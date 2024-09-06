@@ -17,10 +17,11 @@
 #ifndef __READSERIAL_H__
 #define __READSERIAL_H__
 #include <Arduino.h>
-#include <vector>
+#include <string>
+#include "Config.h"
 
-template<typename T> bool readRecordFromSerial(T& serialPort, String recordTermintor, std::vector<char> &record){
-  static std::vector<char> inputBuffer = std::vector<char>();
+static bool readRecordFromSerial(SERIAL_TYPE &serialPort, String recordTermintor, std::string& record){
+  static std::string inputBuffer = std::string();
   static bool terminatorFound = false;
 
   char tempChar, lastTerminatorCharacter;
@@ -58,17 +59,16 @@ template<typename T> bool readRecordFromSerial(T& serialPort, String recordTermi
       // If vector has less than n number of elements,
       // then delete all elements
       inputBuffer.clear();
-    //record = std::vector<char>();
+    //record = std::string();
     return false;
     }
     // parse the inputBuffer and load the new global variables
     record = inputBuffer;
-    record.push_back('\0');
     terminatorFound = false;
     inputBuffer.clear();
     return true;
   }
-  record = std::vector<char>();
+  record = std::string();
   return false;
 }
 

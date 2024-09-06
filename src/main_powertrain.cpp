@@ -15,7 +15,10 @@
 */
 
 #include "Config.h"
-
+#define RX_BUFFER_SIZE 4092
+#define TX_BUFFER_SIZE 16384
+static char RX_BUFFER[RX_BUFFER_SIZE];
+static char TX_BUFFER[TX_BUFFER_SIZE];
 
 /*====================================================================================================================================*/
 
@@ -28,7 +31,9 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
     g_car_speed = (float)STANDSTILL_SPEED;
  do{
 #if ENABLE_DRIVERMOTOR == 1
-   powerTrain.SetSpeedRequest_volatile((int)STANDSTILL_SPEED, 0.0, 0);
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    g_powertrain.SetSpeedRequest((int)STANDSTILL_SPEED, 0.0, 0);
+  }
 #endif
 #if ENABLE_STEERING_SERVO == 1
     g_steering_wheel.setSteeringAngleDeg(0.0f);
@@ -42,6 +47,7 @@ delay(10);
 
 void setup() {
   int8_t pixyResult;
+  //Serial.begin(SERIAL_PORT_BAUD_RATE);
   // Initialization and attachment of the servo and motor
   #if ENABLE_STEERING_SERVO == 1
     pinMode(STEERING_SERVO_PIN, OUTPUT);
@@ -50,9 +56,11 @@ void setup() {
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
-    PowerTrainSetup(WHEEL_DIAMETER_M, DISTANCE_BETWEEN_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
-    powerTrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
-    powerTrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+      PowerTrainSetup(WHEEL_DIAMETER_M, DISTANCE_BETWEEN_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
+      g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
+      g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
+    }
   #endif
 
 
@@ -86,6 +94,8 @@ void setup() {
     //}
     //Serial.println("hello");
 
+    //SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
+    //SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
     SERIAL_PORT.begin(SERIAL_PORT_BAUD_RATE);
     while (!SERIAL_PORT){
       delay(50);
@@ -103,7 +113,7 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
   #endif
-  g_pixy_1.setLamp(1,1);
+  //g_pixy_1.setLamp(1,1);
     
   // Getting the RGB pixel values requires the 'video' program
   pixyResult = g_pixy_1.changeProg("line");
@@ -266,7 +276,9 @@ void loop() {
       consecutiveValidFinishLines = 0;
       g_finish_line_detected = 0;
       g_finish_line_detected_now = 0;
-      powerTrain.SetSpeedRequest_volatile(STANDSTILL_SPEED, 0.0, 0);
+      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        g_powertrain.SetSpeedRequest(STANDSTILL_SPEED, 0.0, 0);
+      }
     }
     
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
@@ -315,14 +327,16 @@ void loop() {
         }
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
-            if (purePersuitInfo.steeringAngle > 0.0) {
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, -1);
-            }
-            else if(purePersuitInfo.steeringAngle < 0.0){
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 1);
-            }
-            else {
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 0);
+            ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+              if (purePersuitInfo.steeringAngle > 0.0) {
+                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, -1);
+              }
+              else if(purePersuitInfo.steeringAngle < 0.0){
+                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 1);
+              }
+              else {
+                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 0);
+              }
             }
           }
         #endif
@@ -426,13 +440,13 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
               if (purePersuitInfo.steeringAngle > 0.0) {
-                powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, -1);
+                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, -1);
               }
               else if(purePersuitInfo.steeringAngle < 0.0){
-                powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 1);
+                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 1);
               }
               else {
-                powerTrain.SetSpeedRequest_volatile(g_car_speed, purePersuitInfo.turnRadius, 0);
+                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 0);
               }
             }
           #endif
@@ -486,15 +500,17 @@ void loop() {
       }
       #if ENABLE_DRIVERMOTOR == 1
         if (g_enable_car_engine != 0) {
-            if (purePersuitInfo.steeringAngle > 0.0) {
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
-            }
-            else if(purePersuitInfo.steeringAngle < 0.0){
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
-            }
-            else {
-              powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
-            }
+          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+              if (purePersuitInfo.steeringAngle > 0.0) {
+                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
+              }
+              else if(purePersuitInfo.steeringAngle < 0.0){
+                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
+              }
+              else {
+                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
+              }
+          }
         }
       #endif
     }
@@ -512,14 +528,16 @@ void loop() {
 
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
-        if (purePersuitInfo.steeringAngle > 0.0) {
-          powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
-        }
-        else if(purePersuitInfo.steeringAngle < 0.0){
-          powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
-        }
-        else {
-          powerTrain.SetSpeedRequest_volatile(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+          if (purePersuitInfo.steeringAngle > 0.0) {
+            g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
+          }
+          else if(purePersuitInfo.steeringAngle < 0.0){
+            g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
+          }
+          else {
+            g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
+          }
         }
       }
     #endif

@@ -45,6 +45,8 @@ function read_callback_serialport(src, ~)
     left_wheel_adjusted_rpm = str2double(raw_data(21,1));
     right_wheel_raw_rpm = str2double(raw_data(22,1));
     right_wheel_adjusted_rpm = str2double(raw_data(23,1));
+    left_wheel_speed_request_raw = str2double(raw_data(24,1));
+    right_wheel_speed_request_raw = str2double(raw_data(25,1));
     
     sample_batch_size = length(src.UserData.wheels_rpm.left.raw_rpm) + 1;
     sample_batch_max_size = 1500;
@@ -58,8 +60,12 @@ function read_callback_serialport(src, ~)
     src.UserData.wheels_rpm.right.raw_rpm = src.UserData.wheels_rpm.right.raw_rpm(end - sample_batch_size + 1:end);
     src.UserData.wheels_rpm.right.adjusted_rpm(end+1) = right_wheel_adjusted_rpm;
     src.UserData.wheels_rpm.right.adjusted_rpm = src.UserData.wheels_rpm.right.adjusted_rpm(end - sample_batch_size + 1:end);
+    src.UserData.left_wheel_speed_request_raw(end+1) = left_wheel_speed_request_raw;
+    src.UserData.left_wheel_speed_request_raw = src.UserData.left_wheel_speed_request_raw(end - sample_batch_size + 1:end);
+    src.UserData.right_wheel_speed_request_raw(end+1) = right_wheel_speed_request_raw;
+    src.UserData.right_wheel_speed_request_raw = src.UserData.right_wheel_speed_request_raw(end - sample_batch_size + 1:end);
     
-    if(toc(startTime) < 0.5)
+    if(toc(startTime) < 0.2)
         return;
     end
     startTime = tic;
@@ -73,6 +79,13 @@ function read_callback_serialport(src, ~)
     % plot(y_array, src.UserData.wheels_rpm.right.raw_rpm, 'DisplayName', 'RightWheel_RawRpm');
     % hold on;
     plot(y_array, src.UserData.wheels_rpm.right.adjusted_rpm, 'DisplayName', 'RightWheel_AdjustedRpm');
+    hold off;
+    legend show;
+
+    set(0, 'CurrentFigure', src.UserData.wheelSpeedRequestRaw_figure)
+    plot(y_array, src.UserData.left_wheel_speed_request_raw, 'DisplayName', 'LeftWheel speed request RAW');
+    hold on;
+    plot(y_array, src.UserData.right_wheel_speed_request_raw, 'DisplayName', 'RightWheel speed request RAW');
     hold off;
     legend show;
 

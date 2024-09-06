@@ -3,9 +3,23 @@ clc;
 clear;
 close all;
 
+server = serialport("COM4",230400);
+server.UserData.lastFlushed = 1;
+server.UserData.cameraView_figure = figure('Name','cameraView');
+server.UserData.wheelRpm_figure = figure('Name','Wheels Rpm');
+server.UserData.wheelSpeedRequestRaw_figure = figure('Name','Wheels speed request Raw');
 
-arduinoObj = serialport("COM4",115200);
-configureTerminator(arduinoObj,"CR/LF");
-flush(arduinoObj);
-configureCallback(arduinoObj,"terminator",@read_callback_serialport);
+
+
+server.UserData.wheels_rpm.left.raw_rpm = [];
+server.UserData.wheels_rpm.left.adjusted_rpm = [];
+server.UserData.wheels_rpm.right.raw_rpm = [];
+server.UserData.wheels_rpm.right.adjusted_rpm = [];
+
+
+server.UserData.left_wheel_speed_request_raw = [];
+server.UserData.right_wheel_speed_request_raw = [];
+
+server.configureTerminator("CR/LF");
+server.configureCallback("terminator", @read_callback_serialport);
 

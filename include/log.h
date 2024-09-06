@@ -23,7 +23,7 @@
 #include "PurePursuitGeometry.h"
 #include "GlobalVariables.h"
 
-void printDataToSerial(HardwareSerial &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_);
+void printDataToSerial(SERIAL_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_);
 
 
 #endif

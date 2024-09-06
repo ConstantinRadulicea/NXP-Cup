@@ -134,7 +134,7 @@ void PWMServo::detach()
   #endif
 }
 
-void PWMServo::write(int angleArg)
+void PWMServo::write(int angleArg) volatile
 {
   uint16_t p;
 
@@ -203,7 +203,7 @@ void PWMServo::write(int angleArg) volatile
 	analogWrite(pin, duty);
 }
 
-uint8_t PWMServo::attached()
+uint8_t PWMServo::attached() volatile
 {
 	if (pin >= NUM_DIGITAL_PINS) return 0;
 	return (attachedpins[pin >> 5] & (1 << (pin & 31))) ? 1 : 0;

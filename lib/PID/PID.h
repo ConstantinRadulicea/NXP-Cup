@@ -59,7 +59,7 @@ public:
     {
 
     }
-    double calculate(double setpoint, double pv, double timePassedFromLastSample=1.0)
+    double calculate(double setpoint, double pv, double timePassedFromLastSample=1.0) volatile
     {
         double error, Pout, Iout, Dout, derivative, output;
         // Calculate error
@@ -121,50 +121,50 @@ public:
 
     }
 
-    void setParameters(double Kp, double Ki, double Kd) {
+    void setParameters(double Kp, double Ki, double Kd) volatile{
         this->_Kp = Kp;
         this->_Kd = Kd;
         this->_Ki = Ki;
     }
 
-    void setMaxOutput(double val) {
+    void setMaxOutput(double val) volatile{
         this->_max_output = val;
     }
-    void setMinOutput(double val) {
+    void setMinOutput(double val) volatile{
         this->_min_output = val;
     }
 
-    void setKp(double val) {
+    void setKp(double val) volatile {
         this->_Kp = val;
     }
 
-    void setKi(double val) {
+    void setKi(double val) volatile {
         this->_Ki = val;
     }
 
-    void setKd(double val) {
+    void setKd(double val) volatile {
         this->_Kd = val;
     }
 
-    void setIntegralImpact(double val) {
+    void setIntegralImpact(double val) volatile {
         if (val < 0.0) {
             val = -val;
         }
         this->_integral_impact = val;
     }
 
-    double getIntegralImpact(double val) {
+    double getIntegralImpact(double val) volatile {
         return this->_integral_impact;
     }
 
-    double getMaxOutput(double val) {
+    double getMaxOutput(double val) volatile {
         return this->_max_output;
     }
     double getMinOutput(double val) {
         return this->_min_output;
     }
 
-    double getKp(double val) {
+    double getKp(double val) volatile {
         return this->_Kp;
     }
 

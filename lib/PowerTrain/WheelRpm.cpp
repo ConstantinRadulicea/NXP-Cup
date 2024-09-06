@@ -16,11 +16,6 @@
 
 #include "WheelRpm.h"
 
-
-#include <Arduino.h>
-#include <util/atomic.h>
-#include "MedianFilter.h"
-
 #define MEDIAN_FILTER_SIZE 6
 
 
@@ -65,38 +60,7 @@ volatile RpmSensorData LeftWheelRpmData = {
     uint8_t curValue;
     float local_rpm;
     time_now_us = micros();
-    /*
-    curValue = digitalRead(data->PulsePin);
 
-
-    //Serial.print(data->LastState);
-    //Serial.print("\t");
-    //Serial.println(curValue);
-
-    switch (data->LastState)
-    {
-    case 0:
-        if (curValue == LOW){
-            return;
-        }
-        else{
-            data->LastState = 1;
-        }        
-        break;
-    case 1:
-        if (curValue == HIGH){
-            return;
-        }
-        else{
-            data->LastState = 0;
-        } 
-        break;
-    
-    default:
-        return;
-    }
-
-*/
     
     if(time_now_us < data->LastSampleTimestamp_us){
         data->LastSampleTimestamp_us = time_now_us;
@@ -108,7 +72,6 @@ volatile RpmSensorData LeftWheelRpmData = {
     }
     
     data->TotalInterrupts += 1;
-    //Serial.println(data->TotalInterrupts);
     data->LastSampleTimestamp_us = time_now_us;
 
     // Update the total rotations
@@ -116,12 +79,10 @@ volatile RpmSensorData LeftWheelRpmData = {
 
         data->TimePassedFromLastSample_us = elapsed_time_us;
         local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
-        //data->Rpm = data->RpmAverage.nextVolatile(local_rpm);
         data->Rpm = local_rpm;
         data->RpmFiltered = data->RpmAverage.nextVolatile(local_rpm);
     
     if (data->on_pulse != NULL) {
-        //Serial.println((unsigned long)data->on_pulse);
         data->on_pulse(data);
     }
 }
@@ -194,8 +155,12 @@ volatile RpmSensorData LeftWheelRpmData = {
     time_now_us = micros();
     temp_WheelRpmData = getRpmSensorData(data);
 
-    micros_per_rpm = (unsigned long)((1.0/(temp_WheelRpmData.RpmFiltered/60.0))*1000000.0);
+    if (floatCmp(temp_WheelRpmData.RpmFiltered, 0.0) == 0) {
+        return 0.0f;
+    }
     
+
+    micros_per_rpm = (unsigned long)((1.0/(temp_WheelRpmData.RpmFiltered/60.0))*1000000.0);
     
 
     if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){

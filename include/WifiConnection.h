@@ -25,7 +25,7 @@
 
 //#define DEBUG_WIFI_SSID "Off Limits3"
 //#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-#define DEBUG_WIFI_SSID "Off Limits2"
+#define DEBUG_WIFI_SSID "Off Limits"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
@@ -92,7 +92,7 @@
 #endif
 
 
-static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+static void serial2WifiConnect(SERIAL_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(initSequence);
   serialPort.println(commentChar + String(ESP8266_CONFIGURATION));
@@ -121,7 +121,7 @@ static void serial2WifiConnect(HardwareSerial &serialPort, String initSequence, 
 
 /*==============================================================================*/
 
-static void printSerial2WifiInfo(usb_serial_class &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+static void printSerial2WifiInfo(SERIAL_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);
