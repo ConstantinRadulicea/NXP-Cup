@@ -251,6 +251,7 @@ float getFrontObstacleDistanceAnalog_m(){
     analogValue = analogRead(distance_sensor2_analog_pin);
     measured_distance = AnalogToDistance_m(analogValue);
     estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
+    //Serial.println(String("%") + String(analogValue));
     //estimated_distance_sensor2 = measured_distance;
   }
   #endif

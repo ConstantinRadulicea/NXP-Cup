@@ -3,13 +3,13 @@ fieldTerminator = ';';
 % good bad
 % 17 - 3
 % 22 - 0
-g_enable_car_engine = 1.0;
+g_enable_car_engine = 0.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 0.0;
+g_enable_emergency_brake = 1.0;
 g_enable_pixy_vector_approximation = 0.0;             
-g_enable_distance_sensor1 = 1.0;
+g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
-g_enable_distance_sensor3 = 1.0;
+g_enable_distance_sensor3 = 0.0;
 g_enable_remote_start_stop = 0.0;
 g_enable_finish_line_detection = 0;
 
@@ -17,8 +17,8 @@ g_lane_width_vector_unit = 53.0;
 g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 22.0;                       % 22
 g_lookahead_max_distance_cm = 40.0;                       % 40
-g_min_speed = 1.0;
-g_max_speed = 3.0;                                      % 
+g_min_speed = 4.0;
+g_max_speed = 4.0;                                      % 
 g_car_speed_ki = -0.02;                                      %-0.02;
 g_car_speed_kd = -0.2;                                      %-0.2;
 g_car_speed_ki_min_max_impact = 5.0;

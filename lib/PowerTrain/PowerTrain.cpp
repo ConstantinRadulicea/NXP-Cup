@@ -156,12 +156,12 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
         RightMotor.write((int)90);
     }
     if (left_rpm_sensor_pin >= 0) {
-        pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, FALLING);
+        pinMode(right_rpm_sensor_pin, INPUT_PULLUP);
+        attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);
     }
     if (left_motor_pin >= 0) {
-        pinMode(right_rpm_sensor_pin, INPUT_PULLDOWN);
-        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, FALLING);
+        pinMode(right_rpm_sensor_pin, INPUT_PULLUP);
+        attachInterrupt(digitalPinToInterrupt(right_rpm_sensor_pin), ISR_RpmSensorRightWheel, RISING);
     }
     
     g_powertrain.SetLeftWheelSpeedRequest(0.0);

@@ -21,6 +21,7 @@
 
 #include <PWMServo.h>
 #include <math.h>
+#include <geometry2D.h>
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -96,6 +97,20 @@ public:
 
     float getSteeringAngle(){
         return this->SteeringWheelAngle;
+    }
+
+    // -1: left, 0: forward, 1: right
+    static int AngleToDirection(float angle){
+        int cmp_result = floatCmp(angle, 0.0);
+        if (cmp_result > 0) {
+            return -1;
+        }
+        else if(cmp_result < 0.0){
+            return 1;
+        }
+        else {
+            return 0;
+        }
     }
 
 

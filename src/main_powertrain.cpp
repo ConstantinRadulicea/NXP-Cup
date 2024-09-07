@@ -94,8 +94,8 @@ void setup() {
     //}
     //Serial.println("hello");
 
-    SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
-    SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
+    //SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
+    //SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
     SERIAL_PORT.begin(SERIAL_PORT_BAUD_RATE);
     while (!SERIAL_PORT){
       delay(50);
@@ -338,15 +338,7 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              if (purePersuitInfo.steeringAngle > 0.0) {
-                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, -1);
-              }
-              else if(purePersuitInfo.steeringAngle < 0.0){
-                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 1);
-              }
-              else {
-                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 0);
-              }
+              g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirection(purePersuitInfo.steeringAngle));
             }
           }
         #endif
@@ -442,15 +434,9 @@ void loop() {
           }
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
-              if (purePersuitInfo.steeringAngle > 0.0) {
-                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, -1);
-              }
-              else if(purePersuitInfo.steeringAngle < 0.0){
-                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 1);
-              }
-              else {
-                g_powertrain.SetSpeedRequest(g_car_speed, purePersuitInfo.turnRadius, 0);
-              }
+              ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirection(purePersuitInfo.steeringAngle));
+              }            
             }
           #endif
 
@@ -519,15 +505,7 @@ void loop() {
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          if (purePersuitInfo.steeringAngle > 0.0) {
-            g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), -1);
-          }
-          else if(purePersuitInfo.steeringAngle < 0.0){
-            g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 1);
-          }
-          else {
-            g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), 0);
-          }
+          g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirection(purePersuitInfo.steeringAngle));
         }
       }
     #endif
