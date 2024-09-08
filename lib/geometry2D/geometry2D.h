@@ -27,8 +27,8 @@
 
 #define M_PI       3.14159265358979323846   // pi
 #define M_PI_2     1.57079632679489661923   // pi/2
-#define DEG_TO_RAD 0.017//45329251994329576
-#define RAD_TO_DEG 57.29//57795130823208767
+#define DEG_TO_RAD 0.01745329251994329576
+#define RAD_TO_DEG 57.2957795130823208767
 
 #define radians(deg) ((deg)*DEG_TO_RAD)
 #define degrees(rad) ((rad)*RAD_TO_DEG)
