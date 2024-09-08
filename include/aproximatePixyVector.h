@@ -88,7 +88,7 @@ static Vector vectorApproximationSelectionLogic(Vector vec, Point2D approximated
 }
 
 // return 0 on success
-static int approximatePixyVectorVector(Pixy2SPI_SS& pixy, Vector& vec, float blackTreshold, Point2D carPosition) {
+static int approximatePixyVectorVector(Pixy2& pixy, Vector& vec, float blackTreshold, Point2D carPosition) {
     RGBcolor pixel;
 	Point2D midPoint_, pointFound;
 	LineABC perpendicularLine, vectorLine;

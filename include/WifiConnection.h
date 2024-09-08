@@ -92,7 +92,7 @@
 #endif
 
 
-static void serial2WifiConnect(SERIAL_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+static void serial2WifiConnect(SERIAL_PORT_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(initSequence);
   serialPort.println(commentChar + String(ESP8266_CONFIGURATION));
@@ -121,7 +121,7 @@ static void serial2WifiConnect(SERIAL_TYPE &serialPort, String initSequence, Str
 
 /*==============================================================================*/
 
-static void printSerial2WifiInfo(SERIAL_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
+static void printSerial2WifiInfo(SERIAL_PORT_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
   
   String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
   serialPort.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);

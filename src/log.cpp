@@ -19,7 +19,7 @@
 #include "GlobalVariables.h"
 #include "WheelRpm.h"
 
-void printDataToSerial(SERIAL_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
+void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
   RpmSensorData temp_rpmData;

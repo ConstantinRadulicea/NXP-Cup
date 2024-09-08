@@ -36,7 +36,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   }
 #endif
 #if ENABLE_STEERING_SERVO == 1
-    g_steering_wheel.setSteeringAngleDeg(0.0f);
+    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset);
   #endif
 delay(10);
     } while (pixy.init() != PIXY_RESULT_OK);
@@ -52,7 +52,7 @@ void setup() {
   #if ENABLE_STEERING_SERVO == 1
     pinMode(STEERING_SERVO_PIN, OUTPUT);
     g_steering_wheel.attach(STEERING_SERVO_PIN);
-    g_steering_wheel.setSteeringAngleDeg(0.0f);
+    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset);
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
@@ -87,21 +87,14 @@ void setup() {
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-
-    //Serial.begin(SERIAL_PORT_BAUD_RATE);
-    //while (!Serial){
-    //  delay(50);
-    //}
-    //Serial.println("hello");
-
-    //SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
-    //SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
+  #if SERIAL_PORT_TYPE_CONFIGURATION == 1
+    SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
+    SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
+  #endif
     SERIAL_PORT.begin(SERIAL_PORT_BAUD_RATE);
     while (!SERIAL_PORT){
       delay(50);
     }
-
-
   #endif
 
   #if ENABLE_WIRELESS_DEBUG == 1
@@ -113,7 +106,12 @@ void setup() {
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
   #endif
-  //g_pixy_1.setLamp(1,1);
+
+  #if CAMERA_ILLUMINATION_LIGHT != 0
+    g_pixy_1.setLamp(1,1);
+  #else
+    g_pixy_1.setLamp(0,0);
+  #endif
     
   // Getting the RGB pixel values requires the 'video' program
   pixyResult = g_pixy_1.changeProg("line");

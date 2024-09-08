@@ -132,10 +132,10 @@ extern Pixy2 g_pixy_1;
 
 
 
-void parseInputGlobalVariablesRoutine(SERIAL_TYPE &serialPort);
+void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort);
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';');
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';');
-void printGlobalVariables(SERIAL_TYPE &serialPort);
+void printGlobalVariables(SERIAL_PORT_TYPE &serialPort);
 
 
 #endif

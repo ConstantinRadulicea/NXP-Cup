@@ -20,7 +20,7 @@
 #include <string>
 #include "Config.h"
 
-static bool readRecordFromSerial(SERIAL_TYPE &serialPort, String recordTermintor, std::string& record){
+static bool readRecordFromSerial(SERIAL_PORT_TYPE &serialPort, String recordTermintor, std::string& record){
   static std::string inputBuffer = std::string();
   static bool terminatorFound = false;
 

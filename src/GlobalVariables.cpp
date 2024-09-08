@@ -372,7 +372,7 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
 
 /*==============================================================================*/
 
-void printGlobalVariables(SERIAL_TYPE &serialPort){
+void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   char separatorCharacter;
   int n_decimals = 3;
   separatorCharacter = ';';
@@ -453,7 +453,7 @@ void printGlobalVariables(SERIAL_TYPE &serialPort){
   serialPort.println();
 }
 
-void parseInputGlobalVariablesRoutine(SERIAL_TYPE &serialPort){
+void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){
   std::string serialInputBuffer;
   if(readRecordFromSerial(serialPort, String("\r\n"), serialInputBuffer)){
     //serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
