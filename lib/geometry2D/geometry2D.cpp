@@ -19,20 +19,6 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-
-#define M_PI       3.14159265358979323846   // pi
-#define M_PI_2     1.57079632679489661923   // pi/2
-#define DEG_TO_RAD 0.017453292519943295769236907684886
-#define RAD_TO_DEG 57.295779513082320876798154814105
-
-#define radians(deg) ((deg)*DEG_TO_RAD)
-#define degrees(rad) ((rad)*RAD_TO_DEG)
-#define HzToSec(hz) (1.0/(hz))
-#define MilliToMicro(val) ((val)*1000)
-#define MicroToMilli(val) ((val)/1000)
-#define MicroToUnit(val) ((val)/1000000)
-#define UnitToMicro(val) ((val)*1000000)
-
 LineABC xAxisABC() {
 	LineABC line;
 	line.Ax = 0.0f;
@@ -731,6 +717,10 @@ float triangleAngleA(float AC, float CB, float BA) {
 	return angle;
 }
 
+float angleBw3Points2D(Point2D origin, Point2D point_b, Point2D point_c) {
+	return triangleAngleA(euclidianDistance(origin, point_c), euclidianDistance(point_c, point_b), euclidianDistance(point_b, origin));
+}
+
 float distanceBwLinesABC(LineABC line1, LineABC line2, Point2D pointOnLine) {
 	IntersectionLines intersLine;
 	float circle_Radius, lines_distance_1, lines_distance_2;
@@ -1041,4 +1031,86 @@ float maxDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line) {
 	point2Distance = distance2lineABC(vectorSegment.B, line);
 
 	return MAX(point1Distance, point2Distance);
+}
+
+
+Point2D circleAngleToPoint2D(Point2D circleCenter, float circleRadius, float angleRad) {
+	Point2D result_point = circleCenter;
+	circleRadius = fabs(circleRadius);
+	result_point.x += (circleRadius * cosf(angleRad));
+	result_point.y += (circleRadius * sinf(angleRad));
+
+	return result_point;
+}
+
+float circlePoint2DToAngle(Point2D circleCenter, Point2D point) {
+	float result_angle;
+	result_angle = atan2f(point.y - circleCenter.y, point.x - circleCenter.x);
+	result_angle = NormalizePiToNegPi(result_angle);
+
+	return result_angle;
+}
+
+
+// https://mathworld.wolfram.com/Circle-CircleIntersection.html
+IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circleRadius_1, Point2D circleCenter_2, float circleRadius_2) {
+	IntersectionPoints2D_2 intersections_result = IntersectionPoints2D_2{};
+	LineABC line_passing_through_intersections;
+	int cmp_result_1, cmp_result_2;
+	float distance_between_centers;
+
+	circleRadius_1 = fabs(circleRadius_1);
+	circleRadius_2 = fabs(circleRadius_2);
+
+	distance_between_centers = euclidianDistance(circleCenter_1, circleCenter_2);
+
+	cmp_result_1 = floatCmp(distance_between_centers, 0.0f);
+	cmp_result_2 = floatCmp(circleRadius_1, circleRadius_2);
+	if (cmp_result_1 == 0 && cmp_result_2 != 0) {
+		// the 2 circles does not intersect, one circle is inside another
+		intersections_result = IntersectionPoints2D_2{};
+		return intersections_result;
+	}
+	else if (cmp_result_1 == 0 && cmp_result_2 == 0) {
+		// the 2 circles are the same
+		intersections_result = IntersectionPoints2D_2{};
+		intersections_result.sameEquation = 1;
+		intersections_result.numPoints = 3;
+		return intersections_result;
+	}
+
+	cmp_result_1 = floatCmp(distance_between_centers, circleRadius_1 + circleRadius_2);
+	if (cmp_result_1 > 0) {
+		// circles does not intersect, they are too far apart
+		intersections_result = IntersectionPoints2D_2{};
+		return intersections_result;
+	}
+
+	line_passing_through_intersections.By = -(2.0f * (circleCenter_1.y - circleCenter_2.y));
+	line_passing_through_intersections.Ax = 2.0f * (circleCenter_2.x - circleCenter_1.x);
+	line_passing_through_intersections.C = ((circleCenter_1.x * circleCenter_1.x) + (circleCenter_1.y * circleCenter_1.y) + (circleRadius_2 * circleRadius_2) - ((circleCenter_2.x * circleCenter_2.x) + (circleCenter_2.y * circleCenter_2.y) + (circleRadius_1 * circleRadius_1)));
+
+
+
+	intersections_result = intersectionLineCircleABC(circleCenter_1, circleRadius_1, line_passing_through_intersections);
+
+	return intersections_result;
+}
+
+
+float NormalizePiToNegPi(float angle)
+{
+	float newAngle = angle;
+	while (newAngle <= -M_PI) newAngle += (2.0f*M_PI);
+	while (newAngle > M_PI) newAngle -= (2.0f * M_PI);
+	return newAngle;
+}
+
+
+float NormalizeZeroToPi(float angle) {
+	angle = fmodf(angle, (M_PI * 2.0f));  // Get the remainder of the division
+	if (angle < 0) {
+		angle += (M_PI * 2.0f);  // Adjust for negative angles
+	}
+	return angle;
 }

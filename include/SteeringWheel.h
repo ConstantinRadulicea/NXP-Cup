@@ -94,6 +94,17 @@ public:
         this->write(new_servo_angle);
     }
 
+    float vaildSteeringAngleDeg(float angle){
+        float valid_angle;
+        float min_steering_angle;
+        float max_steering_angle;
+        min_steering_angle = MIN(this->SteeringWheel_MaxLeftAngle, this->SteeringWheel_MaxRightAngle);
+        max_steering_angle = MAX(this->SteeringWheel_MaxLeftAngle, this->SteeringWheel_MaxRightAngle);
+
+        valid_angle = MAX(MIN(angle, max_steering_angle), min_steering_angle);
+        return valid_angle;
+    }
+
 
     float getSteeringAngle(){
         return this->SteeringWheelAngle;

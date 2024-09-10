@@ -119,6 +119,7 @@ float g_emergency_brake_enable_remaining_delay_s = 0.0f;
 int g_emergency_brake_enable_delay_started_count = 0;
 int g_finish_line_detected = 0;
 int g_finish_line_detected_now = 0;
+float g_steering_angle = 0.0f;
 FinishLine g_finish_line = {};
 
 

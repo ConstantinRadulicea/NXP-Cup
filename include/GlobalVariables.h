@@ -87,7 +87,11 @@ extern float g_emergency_brake_enable_delay_s;
   #define STEERING_SERVO_ANGLE_MAX_LEFT   (35)   // 180 max left // 90 + 58
 #endif
 
+
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
+#define STEERING_SERVO_MIN_ANGLE MIN(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
+
+#define VALID_STEERING_SERVO_ANGLE(angle) (MIN(MAX(angle, MIN(STEERING_SERVO_ANGLE_MAX_RIGHT, STEERING_SERVO_ANGLE_MAX_LEFT)), MAX(STEERING_SERVO_ANGLE_MAX_RIGHT, STEERING_SERVO_ANGLE_MAX_LEFT)))
 
 #define STANDSTILL_SPEED 0.0f
 
@@ -111,6 +115,7 @@ extern float g_emergency_brake_enable_remaining_delay_s;
 extern int g_emergency_brake_enable_delay_started_count;
 extern int g_finish_line_detected;
 extern int g_finish_line_detected_now;
+extern float g_steering_angle;
 extern FinishLine g_finish_line;
 
 extern float g_powertrain_left_wheel_kp;

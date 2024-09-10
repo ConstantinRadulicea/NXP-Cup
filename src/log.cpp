@@ -46,7 +46,7 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
   serialPort.print(semicolonChar);
   serialPort.print(String(purePersuitInfo.nextWayPoint.x) + commaCharStr + String(purePersuitInfo.nextWayPoint.y));
   serialPort.print(semicolonChar);
-  serialPort.print(String(purePersuitInfo.steeringAngle));
+  serialPort.print(String(g_steering_angle));
   serialPort.print(semicolonChar);
   serialPort.print(String(carAcceleration));
   serialPort.print(semicolonChar);
