@@ -27,7 +27,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
 
   #endif
-  if (iteration >= 5){  
+  if (iteration >= 10){  
     g_car_speed = (float)STANDSTILL_SPEED;
  do{
 #if ENABLE_DRIVERMOTOR == 1
@@ -37,7 +37,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
 #endif
 #if ENABLE_STEERING_SERVO == 1
     g_steering_angle = 0.0f;
-    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset);
+    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
   #endif
 delay(10);
     } while (pixy.init() != PIXY_RESULT_OK);
@@ -54,7 +54,7 @@ void setup() {
     pinMode(STEERING_SERVO_PIN, OUTPUT);
     g_steering_wheel.attach(STEERING_SERVO_PIN);
     g_steering_angle = 0.0f;
-    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset);
+    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
@@ -303,7 +303,7 @@ void loop() {
     else if(g_emergency_brake_enable_delay_started_count != 0 && g_enable_car_engine == 0){
       g_max_speed = max_speed_original;
       g_emergency_brake_enable_remaining_delay_s = 0.0f;
-      g_emergency_brake_enable_delay_started_count = 0.0f;
+      g_emergency_brake_enable_delay_started_count = 0;
     }
     
     if (g_enable_car_engine != 0 && g_emergency_brake_enable_remaining_delay_s > 0.0f) {
@@ -338,7 +338,7 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirection(g_steering_angle));
+              g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
             }
           }
         #endif
@@ -435,7 +435,7 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
               ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirection(g_steering_angle));
+                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
               }            
             }
           #endif
@@ -446,7 +446,7 @@ void loop() {
             FailureModeMessage(g_pixy_1, loopIterationsCountPixyChangeProgramError,"pixy video");
             delay(10);
           }
-          delay(40);
+          //delay(40);
 
           vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_leftVectorOld);
           approximatePixyVectorVector(g_pixy_1, vec, g_black_color_treshold, mirrorImageABC(mirrorLine, carPosition));
@@ -464,7 +464,7 @@ void loop() {
             FailureModeMessage(g_pixy_1, loopIterationsCountPixyChangeProgramError,"pixy line");
             delay(10);
           }
-          delay(40);
+          //delay(40);
         }
       }
       #endif
@@ -499,14 +499,14 @@ void loop() {
     
     #if ENABLE_STEERING_SERVO == 1
       if (g_enable_car_steering_wheel != 0) {
-        g_steering_wheel.setSteeringAngleDeg(degrees(g_steering_angle) - g_steering_wheel_angle_offset);
+        g_steering_wheel.setSteeringAngleDeg(degrees(g_steering_angle) - g_steering_wheel_angle_offset_deg);
       }
     #endif
 
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirection(g_steering_angle));
+          g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle)));
         }
       }
     #endif

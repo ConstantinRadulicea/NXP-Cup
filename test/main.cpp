@@ -736,7 +736,7 @@ void loop() {
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = calculateLookAheadDistance(g_lookahead_min_distance_cm * VECTOR_UNIT_PER_CM, g_lookahead_max_distance_cm * VECTOR_UNIT_PER_CM, g_middle_lane_line_pixy_1);
     purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_car_length_vector_unit, lookAheadDistance);
-    purePersuitInfo.steeringAngle -= (g_steering_wheel_angle_offset * RADIANS_PER_DEGREE);
+    purePersuitInfo.steeringAngle -= (g_steering_wheel_angle_offset_deg * RADIANS_PER_DEGREE);
 
 
     if (pixy_1_loopIterationsCountNoVectorDetected > 15)

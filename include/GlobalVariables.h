@@ -53,7 +53,7 @@ extern float g_max_speed;  // m/s
 extern float g_emergency_brake_distance_m;
 extern float g_emergency_brake_min_speed; // m/s
 extern float g_emergency_brake_distance_from_obstacle_m;   // 13.5f
-extern float g_steering_wheel_angle_offset;
+extern float g_steering_wheel_angle_offset_deg;
 extern float g_min_x_axis_angle_vector;
 extern float g_max_speed_after_emergency_brake_delay; // m/s
 extern float g_car_speed_ki;

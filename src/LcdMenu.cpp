@@ -146,12 +146,12 @@ void settingsMenuRoutine() {
     switch (lcdMenuIndex) {
       case LCDMENU_STEERING_WHEEL_ANGLE_OFFSET:
         if (incrementButton == HIGH) {
-          g_steering_wheel_angle_offset += 0.1f;
+          g_steering_wheel_angle_offset_deg += 0.1f;
         } else if (decrementButton == HIGH) {
-          g_steering_wheel_angle_offset -= 0.1f;
+          g_steering_wheel_angle_offset_deg -= 0.1f;
         }
 
-        displayParameterValue(String("STR_WHEEL_OFST"), String(g_steering_wheel_angle_offset, 2));
+        displayParameterValue(String("STR_WHEEL_OFST"), String(g_steering_wheel_angle_offset_deg, 2));
       break;
 
       case LCDMENU_FINISH_LINE_ANGLE_TOLERANCE:

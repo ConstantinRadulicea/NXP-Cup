@@ -37,7 +37,7 @@ float g_max_speed = 2.0f;  // m/s
 float g_emergency_brake_distance_m = 1.0f;
 float g_emergency_brake_min_speed = 0.2f; // m/s
 float g_emergency_brake_distance_from_obstacle_m = 0.09f;   // 13.5f
-float g_steering_wheel_angle_offset = 0.0f;
+float g_steering_wheel_angle_offset_deg = 0.0f;
 float g_min_x_axis_angle_vector = 15.0f;
 float g_max_speed_after_emergency_brake_delay = 2.0f; // m/s
 float g_car_speed_ki = -0.02f;
@@ -84,7 +84,7 @@ float g_max_speed = 125.0f  + CAR2_PARAMETERS_DIFFERENCE;
 float g_emergency_brake_distance_m = 1.0f;
 float g_emergency_brake_min_speed = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 float g_emergency_brake_distance_from_obstacle_m = 1.0f;   // 13.5f
-float g_steering_wheel_angle_offset = 0.0f;
+float g_steering_wheel_angle_offset_deg = 0.0f;
 float g_min_x_axis_angle_vector = 15.0f;
 float g_max_speed_after_emergency_brake_delay = 107.0f;
 float g_car_speed_ki = -0.01f;
@@ -206,7 +206,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     }
 
     g_emergency_brake_enable_delay_s = std::stof(fields[15]);
-    g_steering_wheel_angle_offset = std::stof(fields[16]);
+    g_steering_wheel_angle_offset_deg = std::stof(fields[16]);
 
 
     temp_float = std::stof(fields[17]);
@@ -320,7 +320,7 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
   }
 
   g_emergency_brake_enable_delay_s = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-  g_steering_wheel_angle_offset = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_steering_wheel_angle_offset_deg = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
   temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   if (temp_float >= 0.5f) {
@@ -414,7 +414,7 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_emergency_brake_enable_delay_s, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_steering_wheel_angle_offset, n_decimals));
+  serialPort.print(String(g_steering_wheel_angle_offset_deg, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_enable_distance_sensor3, n_decimals));
   serialPort.print(separatorCharacter);

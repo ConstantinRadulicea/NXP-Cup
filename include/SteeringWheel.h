@@ -111,7 +111,7 @@ public:
     }
 
     // -1: left, 0: forward, 1: right
-    static int AngleToDirection(float angle){
+    static int AngleToDirectionDeg(float angle){
         int cmp_result = floatCmp(angle, 0.0);
         if (cmp_result > 0) {
             return -1;

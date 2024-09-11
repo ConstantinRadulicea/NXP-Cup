@@ -39,7 +39,7 @@ g_emergency_brake_distance_m = 75.0;                     % 75
 g_emergency_brake_min_speed = 94.0;
 g_emergency_brake_distance_from_obstacle_m = 14.0;       % 14
 emergency_brake_enable_delay = 0.0;
-g_steering_wheel_angle_offset = 0.0;
+g_steering_wheel_angle_offset_deg = 0.0;
 
 */
 
@@ -120,7 +120,7 @@ g_steering_wheel_angle_offset = 0.0;
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
   #define ENABLE_EMERGENCY_BREAKING 1
-  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 0
   #define ENABLE_DISTANCE_SENSOR1 0 
   #define ENABLE_DISTANCE_SENSOR2 1
   #define ENABLE_DISTANCE_SENSOR3 0
