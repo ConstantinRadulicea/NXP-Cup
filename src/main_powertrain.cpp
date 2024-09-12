@@ -15,10 +15,13 @@
 */
 
 #include "Config.h"
+
+#define MAX_ITERATION_PIXY_ERROR 10
 #define RX_BUFFER_SIZE 4092
 #define TX_BUFFER_SIZE 16384
 static char RX_BUFFER[RX_BUFFER_SIZE];
 static char TX_BUFFER[TX_BUFFER_SIZE];
+
 
 /*====================================================================================================================================*/
 
@@ -26,7 +29,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
   #endif
-  if (iteration >= 10){  
+  if (iteration >= MAX_ITERATION_PIXY_ERROR){  
     g_car_speed = (float)STANDSTILL_SPEED;
   do{
       #if ENABLE_DRIVERMOTOR == 1
@@ -387,7 +390,7 @@ void loop() {
       VectorsProcessing::findIntersections(vectors, intersections);
       VectorsProcessing::filterVectorIntersections(vectors, intersections);
 
-      pixy_1_loopIterationsCountNoVectorDetected = 0;
+      //pixy_1_loopIterationsCountNoVectorDetected = 0;
       if (vectors.size() > 0){
         pixy_1_loopIterationsCountNoVectorDetected = 0;
       }
@@ -484,7 +487,7 @@ void loop() {
     g_steering_angle = g_steering_wheel.vaildSteeringAngleDeg(purePersuitInfo.steeringAngle);
     //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
 
-    if (pixy_1_loopIterationsCountNoVectorDetected > 15)
+    if (pixy_1_loopIterationsCountNoVectorDetected >= MAX_ITERATION_PIXY_ERROR)
     {
       #if ENABLE_SERIAL_PRINT != 0
         SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(pixy_1_loopIterationsCountNoVectorDetected));

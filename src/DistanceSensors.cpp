@@ -17,6 +17,8 @@
 #include "DistanceSensors.h"
 #include "MedianFilter.h"
 
+IntervalTimer myTimer_2;
+
 #define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
 
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
@@ -65,6 +67,27 @@ To enable the AN Output Constantly Looping:
 connect (Pin 2- Pulse Width Output) to (Pin 4- Ranging Start/Stop)
 
 */
+
+
+void continous_loop_signal_generation(int signal_pin, int8_t _count) {
+    if (_count == (int8_t)1) {
+        digitalWrite(signal_pin, HIGH);
+    }
+    else {
+        digitalWrite(signal_pin, LOW);
+    }
+}
+
+void continous_loop_signal_generation_routine(){
+  static int8_t _count = 0;
+  //continous_loop_signal_generation(EDF_MOTOR_PIN, _count);
+  continous_loop_signal_generation(EDF_MOTOR_PIN, _count);
+  //continous_loop_signal_generation(EDF_MOTOR_PIN, _count);
+  _count++;
+  _count = _count % (int8_t)3;
+}
+
+
 void DistanceSensorsSetupAnalog(
 int _distance_sensor1_analog_pin,
 int _distance_sensor2_analog_pin,
@@ -85,6 +108,11 @@ distance_sensor3_analog_pin = _distance_sensor3_analog_pin;
   #if ENABLE_DISTANCE_SENSOR3 == 1
     pinMode(distance_sensor3_analog_pin, INPUT); 
   #endif
+
+  pinMode(EDF_MOTOR_PIN, OUTPUT);
+  digitalWrite(EDF_MOTOR_PIN, LOW);
+
+  myTimer_2.begin(continous_loop_signal_generation_routine, SecToMicros(HzToSec(30.0)));
 
 }
 

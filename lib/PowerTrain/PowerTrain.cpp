@@ -167,7 +167,7 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     g_powertrain.SetLeftWheelSpeedRequest(0.0);
     g_powertrain.SetRightWheelSpeedRequest(0.0);
     
-    myTimer.begin(power_train_sampling, SecToMicros(HzToSec(pid_frequency_hz)));  // blinkLED to run every 0.15 seconds
+    myTimer.begin(power_train_sampling, SecToMicros(HzToSec(pid_frequency_hz)));
 }
 
 
