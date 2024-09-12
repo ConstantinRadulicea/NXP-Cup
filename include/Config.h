@@ -55,7 +55,7 @@ g_steering_wheel_angle_offset_deg = 0.0;
 #define TEMP_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
-#define SERIAL_PORT_TYPE_CONFIGURATION 1
+#define SERIAL_PORT_TYPE_CONFIGURATION 2
 
 #if SERIAL_PORT_TYPE_CONFIGURATION == 1
   #define SERIAL_PORT Serial1
@@ -128,7 +128,7 @@ g_steering_wheel_angle_offset_deg = 0.0;
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
   #define ENABLE_FINISH_LINE_DETECTION 1
-  #define CAMERA_ILLUMINATION_LIGHT 0
+  #define CAMERA_ILLUMINATION_LIGHT 1
 #endif
 
 #if RACE_MODE == 1

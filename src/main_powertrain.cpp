@@ -25,22 +25,21 @@ static char TX_BUFFER[TX_BUFFER_SIZE];
 void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
-
   #endif
   if (iteration >= 10){  
     g_car_speed = (float)STANDSTILL_SPEED;
- do{
-#if ENABLE_DRIVERMOTOR == 1
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    g_powertrain.SetSpeedRequest((int)STANDSTILL_SPEED, 0.0, 0);
-  }
-#endif
-#if ENABLE_STEERING_SERVO == 1
-    g_steering_angle = 0.0f;
-    g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
-  #endif
-delay(10);
-    } while (pixy.init() != PIXY_RESULT_OK);
+  do{
+      #if ENABLE_DRIVERMOTOR == 1
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+          g_powertrain.SetSpeedRequest((int)STANDSTILL_SPEED, 0.0, 0);
+        }
+      #endif
+      #if ENABLE_STEERING_SERVO == 1
+        g_steering_angle = 0.0f;
+        g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
+      #endif
+      delay(10);
+    } while (pixy.init() < ((int8_t)0));
   }
 }
 
@@ -374,9 +373,12 @@ void loop() {
     pixy_1_result = PIXY_RESULT_ERROR;
 
     pixy_1_result = g_pixy_1.line.getAllFeatures(LINE_VECTOR /*| LINE_INTERSECTION*/, true);
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1_result: ") + String(pixy_1_result));
+
     
 /*===================================================START first camera============================================================================*/
-    if(pixy_1_result == PIXY_RESULT_OK){
+    if(pixy_1_result >= ((int8_t)0)){
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("vector: ") + String(g_pixy_1.line.numVectors));
       vectors.resize(g_pixy_1.line.numVectors);
       memcpy(vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
       //intersections.resize(g_pixy_1.line.numIntersections);
@@ -441,7 +443,7 @@ void loop() {
           #endif
 
           loopIterationsCountPixyChangeProgramError=0;
-          while ((pixyResult = g_pixy_1.changeProg("video")) != PIXY_RESULT_OK) {
+          while ((pixyResult = g_pixy_1.changeProg("video")) < ((int8_t)0)) {
             loopIterationsCountPixyChangeProgramError++;
             FailureModeMessage(g_pixy_1, loopIterationsCountPixyChangeProgramError,"pixy video");
             delay(10);
@@ -459,7 +461,7 @@ void loop() {
           g_pixy_1_vectors_processing.setRightVector(vec);
           
           loopIterationsCountPixyChangeProgramError = 0;
-          while ((pixyResult = g_pixy_1.changeProg("line")) != PIXY_RESULT_OK) {
+          while ((pixyResult = g_pixy_1.changeProg("line")) < ((int8_t)0)) {
             loopIterationsCountPixyChangeProgramError++;
             FailureModeMessage(g_pixy_1, loopIterationsCountPixyChangeProgramError,"pixy line");
             delay(10);
