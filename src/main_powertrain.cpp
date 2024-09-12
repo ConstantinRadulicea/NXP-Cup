@@ -373,12 +373,12 @@ void loop() {
     pixy_1_result = PIXY_RESULT_ERROR;
 
     pixy_1_result = g_pixy_1.line.getAllFeatures(LINE_VECTOR /*| LINE_INTERSECTION*/, true);
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1_result: ") + String(pixy_1_result));
+    //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1_result: ") + String(pixy_1_result));
 
     
 /*===================================================START first camera============================================================================*/
     if(pixy_1_result >= ((int8_t)0)){
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("vector: ") + String(g_pixy_1.line.numVectors));
+      //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("vector: ") + String(g_pixy_1.line.numVectors));
       vectors.resize(g_pixy_1.line.numVectors);
       memcpy(vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
       //intersections.resize(g_pixy_1.line.numIntersections);
