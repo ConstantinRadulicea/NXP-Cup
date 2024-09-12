@@ -54,7 +54,7 @@ void setup() {
   // Initialization and attachment of the servo and motor
   #if ENABLE_STEERING_SERVO == 1
     pinMode(STEERING_SERVO_PIN, OUTPUT);
-    g_steering_wheel.attach(STEERING_SERVO_PIN);
+    g_steering_wheel.attach(STEERING_SERVO_PIN, 500, 2500);
     g_steering_angle = 0.0f;
     g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
   #endif
@@ -288,10 +288,18 @@ void loop() {
       consecutiveValidFinishLines = 0;
       g_finish_line_detected = 0;
       g_finish_line_detected_now = 0;
-      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        g_powertrain.SetSpeedRequest(STANDSTILL_SPEED, 0.0, 0);
-      }
+      #if ENABLE_DRIVERMOTOR == 1
+        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+          g_powertrain.SetSpeedRequest(STANDSTILL_SPEED, 0.0, 0);
+        }
+      #endif
     }
+
+    #if ENABLE_STEERING_SERVO == 1
+      if (g_enable_car_steering_wheel == 0) {
+        g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
+      }
+    #endif
     
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
 

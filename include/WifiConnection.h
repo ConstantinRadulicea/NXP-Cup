@@ -23,10 +23,10 @@
 #define ESP8266_ENABLE_SERVER 1
 #define ESP8266_ENABLE_CLIENT 0
 
-//#define DEBUG_WIFI_SSID "Off Limits3"
-//#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
-#define DEBUG_WIFI_SSID "Off Limits"
+#define DEBUG_WIFI_SSID "Off Limits2"
 #define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
+//#define DEBUG_WIFI_SSID "Off Limits"
+//#define DEBUG_WIFI_PASSWORD "J7s2tzvzKzva"
 
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
