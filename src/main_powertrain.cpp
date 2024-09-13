@@ -149,55 +149,6 @@ void remote_control_routine(){
     #endif
 }
 
-
-/*==============================================================================*/
-
-static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteeringWheelAngle, float steeringWheelAngle, LineABC laneMiddleLine, float ki, float kd, float kiMinMaxImpact) {
-	float newCarSpeed_bySteeringAngle, speedSpan, angleCurrentTrajectoryAndMiddleLane, newCarSpeed_byTrajectoryAngle;
-  static float sumSteeringWheelAngle = 0.0f;
-  static float prevSteeringWheelAngleError = 0.0f;
-  float derivativeSteeringError;
-  LineABC currentTrajectory;
-
-  kiMinMaxImpact = fabs(kiMinMaxImpact);
-
-	speedSpan = maxSpeed - minSpeed;
-	maxSteeringWheelAngle = fabsf(maxSteeringWheelAngle);
-	steeringWheelAngle = fabsf(steeringWheelAngle);
-	steeringWheelAngle = MIN(steeringWheelAngle, maxSteeringWheelAngle);
-
-  derivativeSteeringError = fabs(steeringWheelAngle - prevSteeringWheelAngleError);
-
-  currentTrajectory = yAxisABC();
-	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
-
-  newCarSpeed_byTrajectoryAngle = minSpeed + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * speedSpan) + (ki * sumSteeringWheelAngle) + (kd * derivativeSteeringError);
-
-	newCarSpeed_byTrajectoryAngle = MAX(newCarSpeed_byTrajectoryAngle, minSpeed);
-	newCarSpeed_byTrajectoryAngle = MIN(newCarSpeed_byTrajectoryAngle, maxSpeed);
-	
-	newCarSpeed_bySteeringAngle = minSpeed + (((maxSteeringWheelAngle - steeringWheelAngle) / maxSteeringWheelAngle) * speedSpan) + (ki * sumSteeringWheelAngle) + (kd * derivativeSteeringError);
-
-	newCarSpeed_bySteeringAngle = MAX(newCarSpeed_bySteeringAngle, minSpeed);
-	newCarSpeed_bySteeringAngle = MIN(newCarSpeed_bySteeringAngle, maxSpeed);
-
-  sumSteeringWheelAngle += steeringWheelAngle;
-
-  if (floatCmp(ki, 0.0f) != 0) {
-    sumSteeringWheelAngle = MAX(sumSteeringWheelAngle, -kiMinMaxImpact / ki);
-	  sumSteeringWheelAngle = MIN(sumSteeringWheelAngle, kiMinMaxImpact / ki);
-  }
-  else{
-    sumSteeringWheelAngle = 0.0f;
-  }
-  
-
-
-  prevSteeringWheelAngleError = steeringWheelAngle;
-
-	return (float)MIN(newCarSpeed_bySteeringAngle, newCarSpeed_byTrajectoryAngle);
-}
-
 /*==============================================================================*/
 
 static float calculateLookAheadDistance(float minDistance, float maxDistance, LineABC laneMiddleLine) {
@@ -513,7 +464,7 @@ void loop() {
     }
     else{
       if (g_emergency_break_active == 0){
-        g_car_speed = calculateCarSpeed((float)g_min_speed, g_max_speed, (float)STEERING_SERVO_MAX_ANGLE, degrees(g_steering_angle), g_middle_lane_line_pixy_1, g_car_speed_ki, g_car_speed_kd, g_car_speed_ki_min_max_impact);
+        g_car_speed = CalculateCarSpeed(g_min_speed, g_max_speed, CAR_LENGTH_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle);
       }
     }
     

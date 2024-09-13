@@ -80,6 +80,7 @@ g_steering_wheel_angle_offset_deg = 0.0;
 #include "PowerTrain.h"
 #include <PWMServo.h>
 #include "WifiConnection.h"
+#include "CalculateCarSpeed.h"
 
 #ifdef I2C
   #include <pixy2_libs/host/arduino/libraries/Pixy2/Pixy2I2C.h>

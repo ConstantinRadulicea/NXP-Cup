@@ -54,6 +54,9 @@ float g_powertrain_right_wheel_ki = 0.1;
 float g_powertrain_right_wheel_kd = 0.0;
 float g_powertrain_right_wheel_ki_max_sum = 0.4;
 
+float g_friction_coefficient = 0.4f;
+float g_downward_acceleration = G_CONSTANT;
+
 
 #if RACE_MODE == 1
   float g_emergency_brake_enable_delay_s = 15.0f;
@@ -250,6 +253,9 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     g_powertrain_right_wheel_ki = std::stof(fields[31]);
     g_powertrain_right_wheel_kd = std::stof(fields[32]);
     g_powertrain_right_wheel_ki_max_sum = std::stof(fields[33]);
+
+    g_friction_coefficient = std::stof(fields[34]);
+    g_downward_acceleration = std::stof(fields[35]);
 }
 
 
@@ -450,6 +456,10 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(String(g_powertrain_right_wheel_kd, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_powertrain_right_wheel_ki_max_sum, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_friction_coefficient, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_downward_acceleration, n_decimals));
 
   serialPort.println();
 }
