@@ -1,1 +1,126 @@
-﻿  calculateCarSpeed.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\calculateCarSpeed\x64\Debug\calculateCarSpeed.exe
+﻿  main.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(15,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(15,21): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(15,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(15,51): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(15,62): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(15,73): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,16): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,40): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,52): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,64): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,76): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,88): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,100): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(16,112): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,29): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,53): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,65): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,77): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,89): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,101): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(17,113): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,29): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,53): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,65): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,77): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,89): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,101): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(18,113): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,29): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,53): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,65): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,77): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,89): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,101): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(19,113): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,29): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,53): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,65): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,77): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,89): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,101): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(20,113): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,29): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,53): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,65): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,77): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,89): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,101): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(21,113): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,29): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,41): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,53): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,65): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,78): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,91): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,104): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(22,117): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,31): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,44): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,57): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,70): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,83): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,96): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,109): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(23,122): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(24,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(46,20): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\esc_raw.h(54,35): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(103,8): error C2662: 'void PID::setKp(double)': cannot convert 'this' pointer from 'volatile PID' to 'PID &'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(104,8): error C2662: 'void PID::setKi(double)': cannot convert 'this' pointer from 'volatile PID' to 'PID &'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(105,8): error C2662: 'void PID::setKd(double)': cannot convert 'this' pointer from 'volatile PID' to 'PID &'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(106,8): error C2662: 'void PID::setIntegralImpact(double)': cannot convert 'this' pointer from 'volatile PID' to 'PID &'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(166,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(167,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(173,28): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(174,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(180,56): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(187,69): error C2662: 'double PID::calculate(double,double,double)': cannot convert 'this' pointer from 'volatile PID' to 'PID &'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(247,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(248,43): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(252,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(253,43): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(256,67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(257,69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(258,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(269,22): warning C4244: '=': conversion from 'int' to 'volatile float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(280,18): error C3861: 'floatCmp': identifier not found
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(283,8): error C3861: 'floatCmp': identifier not found
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(293,8): error C3861: 'floatCmp': identifier not found
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\PowerTrain.h(305,79): warning C4244: 'argument': conversion from 'volatile float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(21,32): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(34,28): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(44,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(45,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(49,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(50,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(53,66): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(54,68): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(55,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(67,11): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(68,11): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(70,22): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(83,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\calculateCarSpeed\main.cpp(92,40): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data

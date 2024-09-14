@@ -128,7 +128,6 @@ public:
 		}
 	}
 
-
 	void SetSpeedRequest(float speed_mps) volatile{ // speed = mps!
 		this->speedRequest = speed_mps;
 		this->SetToMotorRawRequest(this->ThrottleToRawValue(this->CalculateThrottle(0.0)));
@@ -192,14 +191,10 @@ private:
 		return throttle_request_temp;
 	}
 
-
 	float prevWheelRPM = 0.0;
 	float wheelRPM = 0.0;
 	float wheelDiameter = 0.0;
-
-	
 	float speedRequest = 0.0;
-
 	float carWeight = 0.0;
 	float speedRequest_raw = 0.0;
 	float timePassedFromLastSample = 0.0;
@@ -273,6 +268,46 @@ public:
 		this->SetRightWheelSpeedRequest(right_wheel_speed_request_m);
 	}
 
+	void SetSpeedRequest_slow(float speed_ms, float turn_radius, int left_right_turn, float max_acceleration = -1.0, float max_deceleration = -1.0) volatile {
+		this->_direction = left_right_turn;
+		this->_turn_radius = fabsf(turn_radius);
+		this->_speed_request = speed_ms;
+		this->_max_deceleration = max_deceleration;
+		this->_max_acceleration = max_acceleration;
+	}
+	
+	void SetSpeedRequest_slow_routine(float timePassedFromLastSample1) volatile {
+		int cmp_result_1;
+		float new_partial_speed_request, increased_speed_request_value;
+
+		cmp_result_1 = PowerTrainfloatCmp(this->_speed_request, this->_partial_speed_request);
+		if (cmp_result_1 > 0) {
+			// increase partial speed
+			if(PowerTrainfloatCmp(this->_max_acceleration, 0.0f) > 0){
+				increased_speed_request_value = timePassedFromLastSample1 * this->_max_acceleration;
+				new_partial_speed_request = MIN((this->_partial_speed_request + increased_speed_request_value), this->_speed_request);
+			}
+			else{
+				new_partial_speed_request = this->_speed_request;
+			}
+		}
+		else if (cmp_result_1 < 0){
+			// decrease partial speed
+			if(PowerTrainfloatCmp(this->_max_deceleration, 0.0f) > 0){
+				increased_speed_request_value = -(timePassedFromLastSample1 * this->_max_deceleration);
+				new_partial_speed_request = MAX((this->_partial_speed_request + increased_speed_request_value), this->_speed_request);
+			}
+			else{
+				new_partial_speed_request = this->_speed_request;
+			}
+		}
+		else{
+			new_partial_speed_request = this->_speed_request;
+		}
+		this->_partial_speed_request = new_partial_speed_request;
+		this->SetSpeedRequest(this->_partial_speed_request, this->_turn_radius, this->_direction);
+	}
+
 	void SetLeftWheelMeasuredRPM(float measuredSpeed, float timePassedFromLastSample1) volatile {
 		this->leftWheel.SetMeasuredRPM(measuredSpeed, timePassedFromLastSample1);
 	}
@@ -344,6 +379,13 @@ public:
 	Wheel leftWheel;
 	Wheel rightWheel;
 	float _distanceBwWheels_m = 0.0;
+
+	float _direction;	// left: -1, front: 0, right: 1
+	float _turn_radius = 0.0;
+	float _max_deceleration = -1.0;
+	float _max_acceleration = -1.0;
+	float _speed_request = 0.0;
+	float _partial_speed_request = 0.0;
 
 private:
 };

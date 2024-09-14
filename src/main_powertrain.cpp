@@ -41,7 +41,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
   do{
       #if ENABLE_DRIVERMOTOR == 1
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest((int)STANDSTILL_SPEED, 0.0, 0);
+          g_powertrain.SetSpeedRequest_slow((int)STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
         }
       #endif
       #if ENABLE_STEERING_SERVO == 1
@@ -225,7 +225,7 @@ void loop() {
       g_finish_line_detected_now = 0;
       #if ENABLE_DRIVERMOTOR == 1
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest(STANDSTILL_SPEED, 0.0, 0);
+          g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
         }
       #endif
     }
@@ -283,7 +283,7 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
+              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle), g_max_acceleration, g_max_deceleration);
             }
           }
         #endif
@@ -383,7 +383,7 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
               ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-                g_powertrain.SetSpeedRequest(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
+                g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle), g_max_acceleration, g_max_deceleration);
               }            
             }
           #endif
@@ -454,7 +454,7 @@ void loop() {
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle)));
+          g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle)), g_max_acceleration, g_max_deceleration);
         }
       }
     #endif

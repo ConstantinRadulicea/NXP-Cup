@@ -22,6 +22,7 @@ IntervalTimer myTimer;
 
 volatile PWMServo RightMotor;
 volatile PWMServo LeftMotor;
+volatile float pid_frequency_hz;
 
 
 void empty_function(){
@@ -74,6 +75,7 @@ void on_pulse_left_motor(volatile struct RpmSensorData *data){
 void power_train_sampling(){
     float rpm, timePassed;
     RpmSensorData temp_WheelRpmData;
+
     temp_WheelRpmData = getRightWheelRpmData();
 
     rpm = getCurrentRpm_adjusted(&temp_WheelRpmData);
@@ -109,6 +111,7 @@ void power_train_sampling(){
     //Serial.print(';');
     //Serial.print(temp_WheelRpmData.Rpm);
     //Serial.println();
+    g_powertrain.SetSpeedRequest_slow_routine(HzToSec(pid_frequency_hz));
 }
 
 int PowerTrainfloatCmp(float num1, float num2) {
@@ -122,7 +125,7 @@ int PowerTrainfloatCmp(float num1, float num2) {
 }
 
 
-void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin)
+void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float _pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin)
 {
     float kp = 0.0;
     float ki = 0.0;
@@ -166,8 +169,8 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     
     g_powertrain.SetLeftWheelSpeedRequest(0.0);
     g_powertrain.SetRightWheelSpeedRequest(0.0);
-    
-    myTimer.begin(power_train_sampling, SecToMicros(HzToSec(pid_frequency_hz)));
+    pid_frequency_hz = _pid_frequency_hz;
+    myTimer.begin(power_train_sampling, SecToMicros(HzToSec(_pid_frequency_hz)));
 }
 
 

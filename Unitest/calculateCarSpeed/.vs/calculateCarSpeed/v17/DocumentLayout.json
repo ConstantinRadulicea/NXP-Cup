@@ -1,22 +1,14 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\",
+  "WorkspaceRootPath": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\esc_raw.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|solutionrelative:esc_raw.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\PID.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|solutionrelative:PID.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\PowerTrain.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\PowerTrain.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|solutionrelative:PowerTrain.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{275DF117-BE6F-4581-AAE2-7AA4CB637694}|calculateCarSpeed.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,21 +18,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 312,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 4,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "PID.h",
-              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\PID.h",
-              "RelativeDocumentMoniker": "PID.h",
-              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\PID.h",
-              "RelativeToolTip": "PID.h",
-              "ViewState": "AQIAAD8AAAAAzczMzMwTwE0AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-07-12T09:58:30.002Z",
-              "IsPinned": true
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{2143d5d7-e0e9-4543-bc50-2f80d3a5b025}"
@@ -59,37 +38,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "esc_raw.h",
-              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\esc_raw.h",
-              "RelativeDocumentMoniker": "esc_raw.h",
-              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\esc_raw.h",
-              "RelativeToolTip": "esc_raw.h",
-              "ViewState": "AQIAACYAAAAAAAAAAAAmwCsAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-07-19T10:13:27.715Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PowerTrain.h",
-              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\PowerTrain.h",
-              "RelativeDocumentMoniker": "PowerTrain.h",
-              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\PowerTrain.h",
-              "RelativeToolTip": "PowerTrain.h",
-              "ViewState": "AQIAAAUBAAAAAAAAAAAkwBsBAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-07-06T12:28:41.632Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PowerTrain.h",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\PowerTrain.h",
+              "RelativeDocumentMoniker": "PowerTrain.h",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\PowerTrain.h",
+              "RelativeToolTip": "PowerTrain.h",
+              "ViewState": "AQIAAAwAAAAAAAAAAAAAABcAAAAXAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-07-06T12:28:41.632Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "main.cpp",
-              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\main.cpp",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
-              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup-2024-PixyVectors\\Unitest\\calculateCarSpeed\\main.cpp",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\calculateCarSpeed\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AQIAADIAAAAAAAAAAAAwwD4AAAAAAAAA",
+              "ViewState": "AQIAAEEAAAAAAAAAAAAwwEgAAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-07-06T12:28:41.757Z",
               "EditorCaption": ""

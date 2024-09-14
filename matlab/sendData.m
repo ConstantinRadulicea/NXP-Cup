@@ -5,7 +5,7 @@ fieldTerminator = ';';
 % 22 - 0
 g_enable_car_engine = 0.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 0.0;
+g_enable_emergency_brake = 1.0;
 g_enable_pixy_vector_approximation = 0.0;             
 g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
@@ -40,8 +40,11 @@ g_powertrain_right_wheel_ki = 0.1;
 g_powertrain_right_wheel_kd = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-g_friction_coefficient = 0.4;
+g_friction_coefficient = 0.3;
 g_downward_acceleration = 9.80665;
+
+g_max_acceleration = (g_friction_coefficient * g_downward_acceleration) / 1;
+g_max_deceleration = (g_friction_coefficient * g_downward_acceleration) / 1;
 
 values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...
@@ -78,7 +81,9 @@ values = [g_lane_width_vector_unit...
     g_powertrain_right_wheel_kd...
     g_powertrain_right_wheel_ki_max_sum...
     g_friction_coefficient...
-    g_downward_acceleration];
+    g_downward_acceleration...
+    g_max_acceleration...
+    g_max_deceleration];
 
 outputString = '';
 

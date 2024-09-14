@@ -133,6 +133,9 @@ extern float g_powertrain_right_wheel_ki_max_sum;
 extern float g_friction_coefficient;
 extern float g_downward_acceleration;
 
+extern float g_max_acceleration;
+extern float g_max_deceleration;
+
 
 extern SteeringWheel g_steering_wheel;
 
