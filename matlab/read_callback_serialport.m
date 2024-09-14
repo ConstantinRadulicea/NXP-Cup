@@ -142,7 +142,7 @@ plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
     text(xmin, ymax-11, myText);
     myText = sprintf("LookAheadDistance[cm]: %.2f", lookAheadDistance);
     text(xmin, ymax-15, myText);
-    myText = sprintf("g_car_speed[raw]: %.2f", carSpeedRaw);
+    myText = sprintf("g_car_speed_mps[raw]: %.2f", carSpeedRaw);
     text(xmin, ymax-19, myText);
     myText = sprintf("FinishLine[1/0]: %d", g_finish_line_detected);
     text(xmin, ymax-23, myText);

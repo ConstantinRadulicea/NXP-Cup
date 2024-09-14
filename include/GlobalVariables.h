@@ -56,9 +56,9 @@ extern float g_emergency_brake_distance_from_obstacle_m;   // 13.5f
 extern float g_steering_wheel_angle_offset_deg;
 extern float g_min_x_axis_angle_vector;
 extern float g_max_speed_after_emergency_brake_delay; // m/s
-extern float g_car_speed_ki;
-extern float g_car_speed_kd;
-extern float g_car_speed_ki_min_max_impact;
+extern float g_car_speed_mps_ki;
+extern float g_car_speed_mps_kd;
+extern float g_car_speed_mps_ki_min_max_impact;
 extern float g_finish_line_angle_tolerance;
 
 extern float g_emergency_brake_enable_delay_s;
@@ -95,17 +95,17 @@ extern float g_emergency_brake_enable_delay_s;
 
 #define STANDSTILL_SPEED 0.0f
 
-#define CAR_LENGTH_M 0.175
+#define WHEEL_BASE_M 0.175
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
 #define DISTANCE_BETWEEN_WHEELS_M 0.145	//distance between wheels
 #define POWERTRAIN_PID_FREQUENCY_HZ 100
 
 
 /*====================================================================================================================================*/
-extern float g_car_length_vector_unit;
+extern float g_wheel_base_vector_unit;
 extern int g_emergency_break_active;
 extern unsigned int g_emergency_break_loops_count;
-extern float g_car_speed;
+extern float g_car_speed_mps;
 extern LineABC g_middle_lane_line_pixy_1;
 extern LineABC g_left_lane_line_pixy_1;
 extern LineABC g_right_lane_line_pixy_1;

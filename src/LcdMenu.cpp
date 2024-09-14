@@ -337,32 +337,32 @@ void settingsMenuRoutine() {
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KI:
         if (incrementButton == HIGH) {
-          g_car_speed_ki += 0.005f;
+          g_car_speed_mps_ki += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_car_speed_ki -= 0.005f;
+          g_car_speed_mps_ki -= 0.005f;
         }
-        displayParameterValue(String("SPEED_KI"), String(g_car_speed_ki, 4));
+        displayParameterValue(String("SPEED_KI"), String(g_car_speed_mps_ki, 4));
       break;
 
       case LCDMENU_MAX_SPEED_CAR_SPEED_KD:
         if (incrementButton == HIGH) {
-          g_car_speed_kd += 0.005f;
+          g_car_speed_mps_kd += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_car_speed_kd -= 0.005f;
+          g_car_speed_mps_kd -= 0.005f;
         }
 
-        displayParameterValue(String("SPEED_KD"), String(g_car_speed_kd, 4));
+        displayParameterValue(String("SPEED_KD"), String(g_car_speed_mps_kd, 4));
       break;
 
 
       case LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT:
         if (incrementButton == HIGH) {
-          g_car_speed_ki_min_max_impact += 0.1f;
+          g_car_speed_mps_ki_min_max_impact += 0.1f;
         } else if (decrementButton == HIGH) {
-          g_car_speed_ki_min_max_impact -= 0.1f;
+          g_car_speed_mps_ki_min_max_impact -= 0.1f;
         }
 
-        displayParameterValue(String("SPD_KI_MIN_MAX"), String(g_car_speed_ki_min_max_impact, 3));
+        displayParameterValue(String("SPD_KI_MIN_MAX"), String(g_car_speed_mps_ki_min_max_impact, 3));
       break;
 
 

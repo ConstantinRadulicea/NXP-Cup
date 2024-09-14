@@ -46,7 +46,7 @@ void FailureModeMessage(Pixy2SPI_SS &pixy, int iteration, String errorText){
 
   #endif
   if (iteration >= 5){  
-    g_car_speed = (float)STANDSTILL_SPEED;
+    g_car_speed_mps = (float)STANDSTILL_SPEED;
  do{
 #if ENABLE_DRIVERMOTOR == 1
    driverMotor.write((int)STANDSTILL_SPEED);
@@ -359,7 +359,7 @@ static float calculateCarSpeed(float minSpeed, float maxSpeed, float maxSteering
 
 /*==============================================================================*/
 
-static float calculateLookAheadDistance(float minDistance, float maxDistance, LineABC laneMiddleLine) {
+static float CalculateLookAheadDistance(float minDistance, float maxDistance, LineABC laneMiddleLine) {
 	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
 	LineABC currentTrajectory;
 	distanceSpan = maxDistance - minDistance;
@@ -433,7 +433,7 @@ void loop() {
   for (;;)
   {
     timeStart = (float)millis();
-    movingAverage_speed.next(g_car_speed);
+    movingAverage_speed.next(g_car_speed_mps);
     g_pixy_1_vectors_processing.setMinXaxisAngle(g_min_x_axis_angle_vector * RADIANS_PER_DEGREE);
     //pixy_2_vectorsProcessing.setMinXaxisAngle(g_min_x_axis_angle_vector * RADIANS_PER_DEGREE);
 
@@ -489,7 +489,7 @@ void loop() {
 
           #if ENABLE_DRIVERMOTOR == 1 &&  ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE == 1 // use brakes to get to a near standstill
             if (g_enable_car_engine != 0) {
-              float tempCarSpeed = movingAverage_speed.next(g_car_speed);
+              float tempCarSpeed = movingAverage_speed.next(g_car_speed_mps);
               float startTime_ = (float)millis();
               float brakeTime_ = (float)fabsf((tempCarSpeed - (float)STANDSTILL_SPEED)) * (40.0f / (107.0f - 90.0f));
               int brakeSpeed_ = (int)((float)STANDSTILL_SPEED - fabsf(tempCarSpeed - (float)STANDSTILL_SPEED));
@@ -499,18 +499,18 @@ void loop() {
               }
             }
           #endif
-          g_car_speed = (float)g_emergency_brake_min_speed;  
+          g_car_speed_mps = (float)g_emergency_brake_min_speed;  
         }
         
         if(frontObstacleDistance <= g_emergency_brake_distance_from_obstacle_m){
-          g_car_speed = (float)STANDSTILL_SPEED;
+          g_car_speed_mps = (float)STANDSTILL_SPEED;
         }
         else{
-          g_car_speed = (float)g_emergency_brake_min_speed;
+          g_car_speed_mps = (float)g_emergency_brake_min_speed;
         }
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
-            driverMotor.write((int)g_car_speed);
+            driverMotor.write((int)g_car_speed_mps);
           }
         #endif
 
@@ -613,11 +613,11 @@ void loop() {
       if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
         if (((int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_rightVectorOld) + (int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_leftVectorOld))==1){
           if (g_emergency_break_active == 0){
-            g_car_speed = (float)g_min_speed;
+            g_car_speed_mps = (float)g_min_speed;
           }
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
-              driverMotor.write((int)g_car_speed);
+              driverMotor.write((int)g_car_speed_mps);
             }
           #endif
 
@@ -688,11 +688,11 @@ void loop() {
       if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
         if (((int)pixy_2_vectorsProcessing.isVectorValid(pixy_2_rightVectorOld) + (int)pixy_2_vectorsProcessing.isVectorValid(pixy_2_leftVectorOld))==1){
           if (g_emergency_break_active == 0){
-            g_car_speed = (float)g_min_speed;
+            g_car_speed_mps = (float)g_min_speed;
           }
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
-              driverMotor.write((int)g_car_speed);
+              driverMotor.write((int)g_car_speed_mps);
             }
           #endif
 
@@ -734,25 +734,25 @@ void loop() {
 
 
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
-    lookAheadDistance = calculateLookAheadDistance(g_lookahead_min_distance_cm * VECTOR_UNIT_PER_CM, g_lookahead_max_distance_cm * VECTOR_UNIT_PER_CM, g_middle_lane_line_pixy_1);
-    purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_car_length_vector_unit, lookAheadDistance);
+    lookAheadDistance = CalculateLookAheadDistance(g_lookahead_min_distance_cm * VECTOR_UNIT_PER_CM, g_lookahead_max_distance_cm * VECTOR_UNIT_PER_CM, g_middle_lane_line_pixy_1);
+    purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
     purePersuitInfo.steeringAngle -= (g_steering_wheel_angle_offset_deg * RADIANS_PER_DEGREE);
 
 
     if (pixy_1_loopIterationsCountNoVectorDetected > 15)
     {
       if (g_emergency_break_active == 0) {
-        g_car_speed = (float)g_min_speed;
+        g_car_speed_mps = (float)g_min_speed;
       }
       #if ENABLE_DRIVERMOTOR == 1
         if (g_enable_car_engine != 0) {
-          driverMotor.write((int)g_car_speed);
+          driverMotor.write((int)g_car_speed_mps);
         }
       #endif
     }
     else{
       if (g_emergency_break_active == 0){
-        g_car_speed = calculateCarSpeed((float)g_min_speed, g_max_speed, (float)STEERING_SERVO_MAX_ANGLE, degrees(purePersuitInfo.steeringAngle), g_middle_lane_line_pixy_1, g_car_speed_ki, g_car_speed_kd, g_car_speed_ki_min_max_impact);
+        g_car_speed_mps = calculateCarSpeed((float)g_min_speed, g_max_speed, (float)STEERING_SERVO_MAX_ANGLE, degrees(purePersuitInfo.steeringAngle), g_middle_lane_line_pixy_1, g_car_speed_mps_ki, g_car_speed_mps_kd, g_car_speed_mps_ki_min_max_impact);
       }
     }
         
@@ -764,7 +764,7 @@ void loop() {
 
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
-        driverMotor.write((int)g_car_speed);
+        driverMotor.write((int)g_car_speed_mps);
       }
     #endif
     
@@ -776,7 +776,7 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance, g_car_speed);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed_mps - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance, g_car_speed_mps);
     #endif
     
     /*

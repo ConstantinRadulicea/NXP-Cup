@@ -30,7 +30,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
   #endif
   if (iteration >= MAX_ITERATION_PIXY_ERROR){  
-    g_car_speed = (float)STANDSTILL_SPEED;
+    g_car_speed_mps = (float)STANDSTILL_SPEED;
   do{
       #if ENABLE_DRIVERMOTOR == 1
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
@@ -151,24 +151,6 @@ void remote_control_routine(){
 
 /*==============================================================================*/
 
-static float calculateLookAheadDistance(float minDistance, float maxDistance, LineABC laneMiddleLine) {
-	float angleCurrentTrajectoryAndMiddleLane, newLookAheadDistance, distanceSpan;
-	LineABC currentTrajectory;
-	distanceSpan = maxDistance - minDistance;
-
-	currentTrajectory = yAxisABC();
-	angleCurrentTrajectoryAndMiddleLane = fabsf(angleBetweenLinesABC(currentTrajectory, laneMiddleLine));
-
-	newLookAheadDistance = minDistance + ((((float)M_PI_2 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_2) * distanceSpan);
-
-	newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
-	newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
-
-	return newLookAheadDistance;
-}
-
-/*==============================================================================*/
-
 
 /*====================================================================================================================================*/
 void loop() {
@@ -235,7 +217,7 @@ void loop() {
     #endif
 
 
-    movingAverage_speed.next(g_car_speed);
+    movingAverage_speed.next(g_car_speed_mps);
     g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
     //pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
 
@@ -298,15 +280,15 @@ void loop() {
         #endif
         
         if(frontObstacleDistance_m <= g_emergency_brake_distance_from_obstacle_m){
-          g_car_speed = (float)STANDSTILL_SPEED;
+          g_car_speed_mps = (float)STANDSTILL_SPEED;
         }
         else{
-          g_car_speed = (float)g_emergency_brake_min_speed;
+          g_car_speed_mps = (float)g_emergency_brake_min_speed;
         }
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
+              g_powertrain.SetSpeedRequest(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
             }
           }
         #endif
@@ -401,12 +383,12 @@ void loop() {
       if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
         if (((int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_rightVectorOld) + (int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_leftVectorOld))==1){
           if (g_emergency_break_active == 0){
-            g_car_speed = (float)g_min_speed;
+            g_car_speed_mps = (float)g_min_speed;
           }
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
               ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-                g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
+                g_powertrain.SetSpeedRequest(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle));
               }            
             }
           #endif
@@ -448,8 +430,8 @@ void loop() {
 
 
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
-    lookAheadDistance = calculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
-    purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_car_length_vector_unit, lookAheadDistance);
+    lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
+    purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
     g_steering_angle = g_steering_wheel.vaildSteeringAngleDeg(purePersuitInfo.steeringAngle);
     //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
 
@@ -459,12 +441,12 @@ void loop() {
         SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(pixy_1_loopIterationsCountNoVectorDetected));
       #endif
       if (g_emergency_break_active == 0) {
-        g_car_speed = (float)g_min_speed;
+        g_car_speed_mps = (float)g_min_speed;
       }
     }
     else{
       if (g_emergency_break_active == 0){
-        g_car_speed = CalculateCarSpeed(g_min_speed, g_max_speed, CAR_LENGTH_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle);
+        g_car_speed_mps = CalculateCarSpeed(g_min_speed, g_max_speed, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle);
       }
     }
     
@@ -477,7 +459,7 @@ void loop() {
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest(g_car_speed, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle)));
+          g_powertrain.SetSpeedRequest(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle)));
         }
       }
     #endif
@@ -490,9 +472,9 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
-        //SERIAL_PORT.println(String("%g_car_speed: ") + String(g_car_speed, 5));
-        //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Speed: ") + String(g_car_speed));
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance_m, g_car_speed);
+        //SERIAL_PORT.println(String("%g_car_speed_mps: ") + String(g_car_speed_mps, 5));
+        //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Speed: ") + String(g_car_speed_mps));
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed_mps - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance_m, g_car_speed_mps);
     #endif
   }
 }

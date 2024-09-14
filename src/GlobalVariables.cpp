@@ -40,9 +40,9 @@ float g_emergency_brake_distance_from_obstacle_m = 0.09f;   // 13.5f
 float g_steering_wheel_angle_offset_deg = -4.6f;
 float g_min_x_axis_angle_vector = 15.0f;
 float g_max_speed_after_emergency_brake_delay = 2.0f; // m/s
-float g_car_speed_ki = -0.02f;
-float g_car_speed_kd = -0.2f;
-float g_car_speed_ki_min_max_impact = 0.2f;
+float g_car_speed_mps_ki = -0.02f;
+float g_car_speed_mps_kd = -0.2f;
+float g_car_speed_mps_ki_min_max_impact = 0.2f;
 float g_finish_line_angle_tolerance = 15.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
@@ -90,9 +90,9 @@ float g_emergency_brake_distance_from_obstacle_m = 1.0f;   // 13.5f
 float g_steering_wheel_angle_offset_deg = 0.0f;
 float g_min_x_axis_angle_vector = 15.0f;
 float g_max_speed_after_emergency_brake_delay = 107.0f;
-float g_car_speed_ki = -0.01f;
-float g_car_speed_kd = -0.4f;
-float g_car_speed_ki_min_max_impact = 5.0f;
+float g_car_speed_mps_ki = -0.01f;
+float g_car_speed_mps_kd = -0.4f;
+float g_car_speed_mps_ki_min_max_impact = 5.0f;
 
 
 #if RACE_MODE == 1
@@ -109,10 +109,10 @@ float g_car_speed_ki_min_max_impact = 5.0f;
 
 
 
-float g_car_length_vector_unit = (float)MeterToVectorUnit(CAR_LENGTH_M);
+float g_wheel_base_vector_unit = (float)MeterToVectorUnit(WHEEL_BASE_M);
 int g_emergency_break_active =(int) 0;
 unsigned int g_emergency_break_loops_count = (int)0;
-float g_car_speed = (float)STANDSTILL_SPEED;
+float g_car_speed_mps = (float)STANDSTILL_SPEED;
 LineABC g_middle_lane_line_pixy_1;
 LineABC g_left_lane_line_pixy_1;
 LineABC g_right_lane_line_pixy_1;
@@ -231,9 +231,9 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
       g_enable_remote_start_stop = 0;
     }
 
-    g_car_speed_ki = std::stof(fields[21]);
-    g_car_speed_kd = std::stof(fields[22]);
-    g_car_speed_ki_min_max_impact = std::stof(fields[23]);
+    g_car_speed_mps_ki = std::stof(fields[21]);
+    g_car_speed_mps_kd = std::stof(fields[22]);
+    g_car_speed_mps_ki_min_max_impact = std::stof(fields[23]);
     g_finish_line_angle_tolerance = std::stof(fields[24]);
 
     temp_float = std::stof(fields[25]);
@@ -347,9 +347,9 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
     g_enable_remote_start_stop = 0;
   }
 
-  g_car_speed_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-  g_car_speed_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-  g_car_speed_ki_min_max_impact = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_car_speed_mps_ki = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_car_speed_mps_kd = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_car_speed_mps_ki_min_max_impact = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   g_finish_line_angle_tolerance = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
 
@@ -430,11 +430,11 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_enable_remote_start_stop, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_ki, n_decimals));
+  serialPort.print(String(g_car_speed_mps_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_kd, n_decimals));
+  serialPort.print(String(g_car_speed_mps_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_ki_min_max_impact, n_decimals));
+  serialPort.print(String(g_car_speed_mps_ki_min_max_impact, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_finish_line_angle_tolerance, n_decimals));
   serialPort.print(separatorCharacter);

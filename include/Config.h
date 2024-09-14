@@ -15,34 +15,6 @@
 */
 
 
-
-//All defines and Includes
-
-/*
-CAR2 FULL JUICE baterie mica
-g_enable_car_engine = 0.0;
-g_enable_car_steering_wheel = 1.0;
-g_enable_emergency_brake = 1.0;
-enable_pixy_vector_approximation = 0.0;             
-enable_distance_sensor1 = 1.0;
-enable_distance_sensor2 = 1.0;
-enable_distance_sensor3 = 1.0;
-
-g_lane_width_vector_unit = 53.0;
-g_black_color_treshold = 0.2;
-g_car_length_cm = 17.5;
-g_lookahead_min_distance_cm = 16.0;                       % 22
-g_lookahead_max_distance_cm = 40.0;                       % 40
-g_min_speed = 97.0;
-g_max_speed = 115.0;                                      % 
-g_emergency_brake_distance_m = 75.0;                     % 75
-g_emergency_brake_min_speed = 94.0;
-g_emergency_brake_distance_from_obstacle_m = 14.0;       % 14
-emergency_brake_enable_delay = 0.0;
-g_steering_wheel_angle_offset_deg = 0.0;
-
-*/
-
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
@@ -81,6 +53,7 @@ g_steering_wheel_angle_offset_deg = 0.0;
 #include <PWMServo.h>
 #include "WifiConnection.h"
 #include "CalculateCarSpeed.h"
+#include "CalculateLookAheadDistance.h"
 
 #ifdef I2C
   #include <pixy2_libs/host/arduino/libraries/Pixy2/Pixy2I2C.h>
