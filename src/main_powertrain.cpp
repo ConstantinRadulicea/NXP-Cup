@@ -17,10 +17,17 @@
 #include "Config.h"
 
 #define MAX_ITERATION_PIXY_ERROR 10
+
 #define RX_BUFFER_SIZE 4092
 #define TX_BUFFER_SIZE 16384
-static char RX_BUFFER[RX_BUFFER_SIZE];
-static char TX_BUFFER[TX_BUFFER_SIZE];
+
+#if (ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1) && SERIAL_PORT_TYPE_CONFIGURATION == 1
+  static char RX_BUFFER[RX_BUFFER_SIZE];
+  static char TX_BUFFER[TX_BUFFER_SIZE];
+#endif
+
+
+
 
 
 /*====================================================================================================================================*/
@@ -132,48 +139,34 @@ void setup() {
 
 void remote_control_routine(){
     // Remote State Reading
-    #if ENABLE_REMOTE_START_STOP == 1
-      // stop car
-      if (g_enable_remote_start_stop != 0)
-      {
-        if (digitalRead(REMOTE_STOP_PIN) == HIGH && g_enable_car_engine != 0) {
-          g_enable_car_engine = 0;
-        }
-        // start car
-        else if(digitalRead(REMOTE_START_PIN) == HIGH && g_enable_car_engine == 0){
-          g_emergency_brake_enable_delay_started_count = 0;
-          g_emergency_brake_enable_remaining_delay_s = 0.0f;
-          g_enable_car_engine = 1;
-        }
-      }
-    #endif
+    if (digitalRead(REMOTE_STOP_PIN) == HIGH && g_enable_car_engine != 0) {
+      g_enable_car_engine = 0;
+    }
+    // start car
+    else if(digitalRead(REMOTE_START_PIN) == HIGH && g_enable_car_engine == 0){
+      g_emergency_brake_enable_delay_started_count = 0;
+      g_emergency_brake_enable_remaining_delay_s = 0.0f;
+      g_enable_car_engine = 1;
+    }
 }
-
-/*==============================================================================*/
-
 
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
-  int8_t pixyResult, pixy_1_result, pixy_2_result;
-  uint32_t pixy_1_loopIterationsCountNoVectorDetected, pixy_2_loopIterationsCountNoVectorDetected, loopIterationsCountPixyChangeProgramError;
+  int8_t pixy_1_result;
+  uint32_t pixy_1_loopIterationsCountNoVectorDetected;
   LineABC mirrorLine;
   Vector vec, pixy_1_leftVectorOld, pixy_1_rightVectorOld;
-  Vector pixy_2_leftVectorOld, pixy_2_rightVectorOld;
   std::vector<Vector> vectors;
   std::vector<Intersection> intersections;
-  
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
   float laneWidth, lookAheadDistance, frontObstacleDistance_m;
   float timeStart;
   float max_speed_original;
-  MovingAverage movingAverage_speed(10);
   
   int consecutiveValidFinishLines = 0;
-
   pixy_1_result = PIXY_RESULT_ERROR;
-  pixy_2_result = PIXY_RESULT_ERROR;
 
   timeStart = 0.0f;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
@@ -197,12 +190,12 @@ void loop() {
   g_pixy_1_vectors_processing.setCarPosition(carPosition);
   g_pixy_1_vectors_processing.setLaneWidth(laneWidth);
   
-  g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
+  g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 
 /*
   pixy_2_vectorsProcessing.setCarPosition(carPosition);
   pixy_2_vectorsProcessing.setLaneWidth(laneWidth);
-  pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
+  pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 */
   for (;;)
   {
@@ -216,12 +209,14 @@ void loop() {
       settingsMenuRoutine();
     #endif
 
+    g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
+    //pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 
-    movingAverage_speed.next(g_car_speed_mps);
-    g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
-    //pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector));
-
-    remote_control_routine();
+    #if ENABLE_REMOTE_START_STOP != 0
+      if (g_enable_remote_start_stop != 0) {
+        remote_control_routine();
+      }
+    #endif
 
 
     if (g_enable_car_engine == 0) {

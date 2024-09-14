@@ -167,12 +167,12 @@ void settingsMenuRoutine() {
 
       case LCDMENU_MIN_XAXIS_ANGLE_VECTOR:
         if (incrementButton == HIGH) {
-          g_min_x_axis_angle_vector += 0.1f;
+          g_min_x_axis_angle_vector_deg += 0.1f;
         } else if (decrementButton == HIGH) {
-          g_min_x_axis_angle_vector -= 0.1f;
+          g_min_x_axis_angle_vector_deg -= 0.1f;
         }
 
-        displayParameterValue(String("XAXIS_ANGL_VECT"), String(g_min_x_axis_angle_vector, 2));
+        displayParameterValue(String("XAXIS_ANGL_VECT"), String(g_min_x_axis_angle_vector_deg, 2));
       break;
 
       case LCDMENU_MAIN_VIEW:

@@ -423,19 +423,19 @@ void loop() {
   
   g_pixy_1_vectors_processing.setCarPosition(carPosition);
   g_pixy_1_vectors_processing.setLaneWidth(laneWidth);
-  g_pixy_1_vectors_processing.setMinXaxisAngle(g_min_x_axis_angle_vector * RADIANS_PER_DEGREE);
+  g_pixy_1_vectors_processing.setMinXaxisAngle(g_min_x_axis_angle_vector_deg * RADIANS_PER_DEGREE);
 
 /*
   pixy_2_vectorsProcessing.setCarPosition(carPosition);
   pixy_2_vectorsProcessing.setLaneWidth(laneWidth);
-  pixy_2_vectorsProcessing.setMinXaxisAngle(g_min_x_axis_angle_vector * RADIANS_PER_DEGREE);
+  pixy_2_vectorsProcessing.setMinXaxisAngle(g_min_x_axis_angle_vector_deg * RADIANS_PER_DEGREE);
 */
   for (;;)
   {
     timeStart = (float)millis();
     movingAverage_speed.next(g_car_speed_mps);
-    g_pixy_1_vectors_processing.setMinXaxisAngle(g_min_x_axis_angle_vector * RADIANS_PER_DEGREE);
-    //pixy_2_vectorsProcessing.setMinXaxisAngle(g_min_x_axis_angle_vector * RADIANS_PER_DEGREE);
+    g_pixy_1_vectors_processing.setMinXaxisAngle(g_min_x_axis_angle_vector_deg * RADIANS_PER_DEGREE);
+    //pixy_2_vectorsProcessing.setMinXaxisAngle(g_min_x_axis_angle_vector_deg * RADIANS_PER_DEGREE);
 
     remote_control_routine();
 

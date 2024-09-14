@@ -26,6 +26,9 @@
 #include "Config.h"
 #include "VectorsProcessing.h"
 
+#define TRUE 1
+#define FALSE 0
+
 
 #if CAR1 == 0 && CAR2 == 0
   #define CAR1 1
@@ -34,15 +37,15 @@
 
 /*====================================================================================================================================*/
 
-extern int g_enable_car_engine;
-extern int g_enable_car_steering_wheel;
-extern int g_enable_emergency_brake;
-extern int g_enable_pixy_vector_approximation;
-extern int g_enable_distance_sensor1;
-extern int g_enable_distance_sensor2;
-extern int g_enable_distance_sensor3;
-extern int g_enable_remote_start_stop;
-extern int g_enable_finish_line_detection;
+extern int8_t g_enable_car_engine;
+extern int8_t g_enable_car_steering_wheel;
+extern int8_t g_enable_emergency_brake;
+extern int8_t g_enable_pixy_vector_approximation;
+extern int8_t g_enable_distance_sensor1;
+extern int8_t g_enable_distance_sensor2;
+extern int8_t g_enable_distance_sensor3;
+extern int8_t g_enable_remote_start_stop;
+extern int8_t g_enable_finish_line_detection;
 
 extern float g_lane_width_vector_unit;
 extern float g_black_color_treshold; // 0=black, 1=white
@@ -54,7 +57,7 @@ extern float g_emergency_brake_distance_m;
 extern float g_emergency_brake_min_speed; // m/s
 extern float g_emergency_brake_distance_from_obstacle_m;   // 13.5f
 extern float g_steering_wheel_angle_offset_deg;
-extern float g_min_x_axis_angle_vector;
+extern float g_min_x_axis_angle_vector_deg;
 extern float g_max_speed_after_emergency_brake_delay; // m/s
 extern float g_car_speed_mps_ki;
 extern float g_car_speed_mps_kd;
@@ -103,7 +106,7 @@ extern float g_emergency_brake_enable_delay_s;
 
 /*====================================================================================================================================*/
 extern float g_wheel_base_vector_unit;
-extern int g_emergency_break_active;
+extern int8_t g_emergency_break_active;
 extern unsigned int g_emergency_break_loops_count;
 extern float g_car_speed_mps;
 extern LineABC g_middle_lane_line_pixy_1;
@@ -112,9 +115,9 @@ extern LineABC g_right_lane_line_pixy_1;
 extern float g_loop_time_ms;
 extern float g_time_passed_ms;
 extern float g_emergency_brake_enable_remaining_delay_s;
-extern int g_emergency_brake_enable_delay_started_count;
-extern int g_finish_line_detected;
-extern int g_finish_line_detected_now;
+extern int8_t g_emergency_brake_enable_delay_started_count;
+extern int8_t g_finish_line_detected;
+extern int8_t g_finish_line_detected_now;
 extern float g_steering_angle;
 extern FinishLine g_finish_line;
 
