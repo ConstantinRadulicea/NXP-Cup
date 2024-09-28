@@ -21,6 +21,9 @@ IntervalTimer myTimer_2;
 
 #define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
 
+float calibration_formula_x = -0.124;
+float calibration_formula_c = -0.056;
+
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
 int distance_sensor2_trig_pin, distance_sensor2_echo_pin;
 int distance_sensor3_trig_pin, distance_sensor3_echo_pin;
@@ -240,8 +243,17 @@ float getFrontObstacleDistanceHCSR04_m(){
 
 float AnalogToDistance_m(int analogValue){
   // distance_mm = ([V_observed / (Vcc/ 1024)] * 6) - 300
-  float distance_m = (((float)analogValue * 6.0f) - 300.0f)/1000;
+  float distance_m = (((float)analogValue * 6.0f) - 300.0f)/1000.0;
   return distance_m;
+}
+
+// calibrated_data = sensor_data - offset		
+// offset =	sensor_data * x + c
+float CalibrateDistance_linear(float sensor_data, float x, float c){
+  float calibrated_data, offset;
+  offset = (sensor_data * x) + c;
+  calibrated_data = sensor_data - offset;
+  return calibrated_data;
 }
 
 float getFrontObstacleDistanceAnalog_m(){
@@ -268,6 +280,7 @@ float getFrontObstacleDistanceAnalog_m(){
     {
       analogValue = analogRead(distance_sensor1_analog_pin);
       measured_distance = AnalogToDistance_m(analogValue);
+      measured_distance = CalibrateDistance_linear(measured_distance, calibration_formula_x, calibration_formula_c);
       estimated_distance_sensor1 = filter_sensor1.next(measured_distance);
       //estimated_distance = measured_distance;
     }
@@ -278,6 +291,7 @@ float getFrontObstacleDistanceAnalog_m(){
   {
     analogValue = analogRead(distance_sensor2_analog_pin);
     measured_distance = AnalogToDistance_m(analogValue);
+    measured_distance = CalibrateDistance_linear(measured_distance, calibration_formula_x, calibration_formula_c);
     estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
     //Serial.println(String("%") + String(analogValue));
     //estimated_distance_sensor2 = measured_distance;
@@ -289,6 +303,7 @@ float getFrontObstacleDistanceAnalog_m(){
     {
       analogValue = analogRead(distance_sensor3_analog_pin);
       measured_distance = AnalogToDistance_m(analogValue);
+      measured_distance = CalibrateDistance_linear(measured_distance, calibration_formula_x, calibration_formula_c);
       estimated_distance_sensor3 = filter_sensor3.next(measured_distance);
       //estimated_distance = measured_distance;
     }
