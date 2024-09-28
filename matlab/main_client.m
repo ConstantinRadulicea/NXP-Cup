@@ -2,7 +2,7 @@ clc;
 clear;
 close all;
 
-car_ip_address = '192.168.208.128';
+car_ip_address = '192.168.2.197';
 car_port = 6789;
 
 server = tcpclient(car_ip_address,car_port)

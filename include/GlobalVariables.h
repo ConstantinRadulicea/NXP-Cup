@@ -100,7 +100,7 @@ extern float g_emergency_brake_enable_delay_s;
 
 #define WHEEL_BASE_M 0.175
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
-#define DISTANCE_BETWEEN_WHEELS_M 0.145	//distance between wheels
+#define DISTANCE_BETWEEN_WHEELS_M 0.137	//distance between wheels
 #define POWERTRAIN_PID_FREQUENCY_HZ 100
 
 
