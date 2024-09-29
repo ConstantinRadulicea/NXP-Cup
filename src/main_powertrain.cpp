@@ -263,7 +263,7 @@ void loop() {
     if (g_emergency_brake_enable_remaining_delay_s <= 0.0f)
     {
       
-      frontObstacleDistance_m = getFrontObstacleDistanceAnalog_m() - DISTANCE_SENSOR_OFFSET_M;
+      frontObstacleDistance_m = getFrontObstacleDistanceAnalog_m();
 
       if (frontObstacleDistance_m <= g_emergency_brake_distance_m ) {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);

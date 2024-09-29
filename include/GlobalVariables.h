@@ -103,7 +103,18 @@ extern float g_emergency_brake_enable_delay_s;
 #define DISTANCE_BETWEEN_WHEELS_M 0.137	//distance between wheels
 #define POWERTRAIN_PID_FREQUENCY_HZ 100
 
-#define DISTANCE_SENSOR_OFFSET_M (0.07)   // calibrated_data = sensor_data - offset
+#define DISTANCE_SENSOR1_OFFSET_M (0.0)
+#define DISTANCE_SENSOR2_OFFSET_M (0.07)   // calibrated_data = sensor_data - offset
+#define DISTANCE_SENSOR3_OFFSET_M (0.0)
+
+#define DISTANCE_SENSOR1_CALIBRATION_FORMULA_X (-0.124)
+#define DISTANCE_SENSOR1_CALIBRATION_FORMULA_C (-0.056)
+
+#define DISTANCE_SENSOR2_CALIBRATION_FORMULA_X (-0.124)
+#define DISTANCE_SENSOR2_CALIBRATION_FORMULA_C (-0.056)
+
+#define DISTANCE_SENSOR3_CALIBRATION_FORMULA_X (-0.124)
+#define DISTANCE_SENSOR3_CALIBRATION_FORMULA_C (-0.056)
 
 
 /*====================================================================================================================================*/
