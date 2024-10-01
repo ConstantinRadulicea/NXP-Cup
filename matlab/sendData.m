@@ -5,7 +5,7 @@ fieldTerminator = ';';
 % 22 - 0
 g_enable_car_engine = 0.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 0.0;
+g_enable_emergency_brake = 1.0;
 g_enable_pixy_vector_approximation = 0.0;             
 g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
@@ -13,7 +13,7 @@ g_enable_distance_sensor3 = 0.0;
 g_enable_remote_start_stop = 0.0;
 g_enable_finish_line_detection = 0;
 
-g_lane_width_vector_unit = 45.5;
+g_lane_width_vector_unit = 46.5;
 g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 60.0;                       % 40
@@ -22,11 +22,11 @@ g_max_speed = 2.5;                                      %
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
-g_emergency_brake_distance_m = 0.6;                     % 75
+g_emergency_brake_distance_m = 0.35;                     % 75
 g_emergency_brake_min_speed = 0.2;
-g_emergency_brake_distance_from_obstacle_m = 0.20;       % 14
+g_emergency_brake_distance_from_obstacle_m = 0.3;       % 14
 g_emergency_brake_enable_delay_s = 0.0;
-g_steering_wheel_angle_offset_deg = 1;
+g_steering_wheel_angle_offset_deg = -4.7;
 g_min_x_axis_angle_vector_deg = 15.0;
 g_max_speed_after_emergency_brake_delay = 0.3;
 g_finish_line_angle_tolerance = 15.0;
@@ -40,11 +40,11 @@ g_powertrain_right_wheel_ki = 0.1;
 g_powertrain_right_wheel_kd = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-g_friction_coefficient = 0.55;
+g_friction_coefficient = 0.7;
 g_downward_acceleration = 9.80665;
 
-g_max_acceleration = (g_friction_coefficient * g_downward_acceleration) + 1 - 100;
-g_max_deceleration = (g_friction_coefficient * g_downward_acceleration) + 1 - 100;
+g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);
+g_max_deceleration = (g_friction_coefficient * g_downward_acceleration) - 100;
 
 values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...
