@@ -60,8 +60,10 @@ public:
     // angle > 0: going left
     void setSteeringAngleDeg(float steering_angle){
         int new_servo_angle = this->ServoMiddleAngle;
-
-        if(steering_angle < 0) { // going right
+        int cmpResult;
+        steering_angle = vaildSteeringAngleDeg(steering_angle);
+        cmpResult = floatCmp(steering_angle, 0.0f);
+        if(cmpResult < 0) { // going right
             steering_angle = MAX(steering_angle, this->SteeringWheel_MaxRightAngle);
             this->SteeringWheelAngle = steering_angle;
 
@@ -75,7 +77,7 @@ public:
             }
         }
 
-        else if(steering_angle > 0){    // going left
+        else if(cmpResult > 0){    // going left
             steering_angle = MIN(steering_angle, this->SteeringWheel_MaxLeftAngle);
             this->SteeringWheelAngle = steering_angle;
 
@@ -88,9 +90,10 @@ public:
         }
 
         else{   // going middle
-            this->SteeringWheelAngle = 0;
+            this->SteeringWheelAngle = 0.0;
             new_servo_angle = this->ServoMiddleAngle;
         }
+        
         this->write(new_servo_angle);
     }
 

@@ -713,6 +713,10 @@ IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2) {
 
 float triangleAngleA(float AC, float CB, float BA) {
 	float angle;
+	if (floatCmp(AC, 0.0f) == 0 || floatCmp(BA, 0.0f) == 0) {
+		return 0.0f;
+	}
+	
 	angle = acosf(((AC * AC) + (BA * BA) - (CB * CB)) / (2.0f * AC * BA));
 	return angle;
 }

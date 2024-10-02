@@ -52,18 +52,33 @@ static float carTrajectoryAndWayPointAngle(Point2D carPos, Point2D nextWayPoint)
 
 static float steeringWheelAngle(float TrajectoryToWayPointAngle, float wheelBase, float nextWayPointDistance) {
 	float angle;
+	float temp_float;
+	if (floatCmp(nextWayPointDistance, 0.0f) == 0) {
+		return 0.0f;
+	}
+	
 	angle = atanf((2.0f * wheelBase * sinf(TrajectoryToWayPointAngle)) / nextWayPointDistance);
 	return angle;
 }
 
 static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBase, float nextWayPointDistance) {
 	float angle;
+	float temp_float;
+	
+	temp_float = sinf(TrajectoryToWayPointAngle);
+	if (floatCmp(temp_float, 0.0f) == 0) {
+		return 0.0f;
+	}
 	angle = (nextWayPointDistance / (2.0f * sinf(TrajectoryToWayPointAngle)));
 	return angle;
 }
 
 static float turnRadius(float wheelBase, float turnAngle) {
 	float angle;
+	if (floatCmp(turnAngle, 0.0f) == 0) {
+		return 0.0f;
+	}
+	
 	angle = (wheelBase / tanf(turnAngle));
 	angle = fabsf(angle);
 	return angle;
@@ -178,7 +193,7 @@ static PurePursuitInfo purePursuitComputeABC(Point2D carPos, LineABC wayPoints, 
 
 static float carTurnMaxSpeed(float _turn_radius, float _friction_coefficient, float _downward_acceleration) {
 	float _max_speed;
-	_max_speed = sqrtf(_friction_coefficient * _turn_radius * _downward_acceleration);
+	_max_speed = sqrtf(fabs(_friction_coefficient * _turn_radius * _downward_acceleration));
 	return _max_speed;
 }
 
