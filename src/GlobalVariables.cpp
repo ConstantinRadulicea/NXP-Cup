@@ -141,13 +141,19 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
   float temp_float;
     std::stringstream ss(rawData);
     std::vector<std::string> fields;
- SERIAL_PORT.print("%");
+ SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
     int i = 0;
     while (ss.good()) {
         std::string substr;
         getline(ss, substr, variableTerminator);
-        fields.push_back(substr);
         SERIAL_PORT.print(String("[") + String(i)+ String("]") + String(substr.c_str()) + String(";"));
+        if (isNumber(substr.data(), substr.length()) == 0) {
+          g_enable_car_engine = 0;
+          g_enable_car_steering_wheel = 0;
+          SERIAL_PORT.println("ERROR: invaild field");
+          return;
+        }
+        fields.push_back(substr);
         i++;
     }
     SERIAL_PORT.println();

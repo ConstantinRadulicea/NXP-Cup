@@ -16,6 +16,7 @@
 
 #ifndef __MOVING_AVERAGE_H__
 #define __MOVING_AVERAGE_H__
+#include <stddef.h>
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -26,6 +27,14 @@ class MovingAverage {
   float* queue;
 
 public:
+MovingAverage(){
+  this->size = 0;
+  this->head = 0;
+  this->count = 0;
+  this->windowSum = 0.0f;
+  this->queue = NULL;
+}
+
 MovingAverage(size_t size) {
     this->size = size;
     queue = new float[size];
@@ -35,9 +44,6 @@ MovingAverage(size_t size) {
     
   }
 
-  MovingAverage() {
-    this->size = 0;
-  }
 
 float next(float val){
     ++count;

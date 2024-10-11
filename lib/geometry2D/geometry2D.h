@@ -190,4 +190,6 @@ float circlePoint2DToAngle(Point2D circleCenter, Point2D point);
 float angleBw3Points2D(Point2D origin, Point2D point_b, Point2D point_c);
 
 float NormalizeZeroToPi(float angle);
+
+int isNumber(const char* str, size_t str_length);
 #endif // !__GEOMETRY2D_H__

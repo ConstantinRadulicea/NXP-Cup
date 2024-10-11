@@ -1118,3 +1118,39 @@ float NormalizeZeroToPi(float angle) {
 	}
 	return angle;
 }
+
+
+int isNumber(const char* str, size_t str_length) {
+    int dots = 0;
+    int numbers = 0;
+
+    for (size_t i = 0; i < str_length; i++)
+    {
+        if (str[i] >= '0' && str[i] <= '9') {
+            numbers++;
+        }
+        else if (str[i] == '.') {
+            dots++;
+            if (dots > 1) {
+                break;
+            }
+        }
+        else if (str[i] == ' ') {
+            if (numbers > 0 || dots > 0) {
+                break;
+            }
+        }
+        else if (str[i] == '\0') {
+            break;
+        }
+        else {
+            break;
+        }
+    }
+    if (numbers > 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}

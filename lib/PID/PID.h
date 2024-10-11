@@ -32,10 +32,10 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        this->_integral_impact = -1.0;
+        this->_integral_max_error = -1.0;
     }
 
-    PID(double Kp, double Ki, double Kd, double max_output, double min_output, double integrative_impact) :
+    PID(double Kp, double Ki, double Kd, double max_output, double min_output, double integral_max_error) :
         _max_output(max_output),
         _min_output(min_output),
         _Kp(Kp),
@@ -44,7 +44,7 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        this->_integral_impact = integrative_impact;
+        this->_integral_max_error = integral_max_error;
     }
 
     PID() :
@@ -55,7 +55,7 @@ public:
         _Ki(0.0),
         _pre_error(0.0),
         _integral(0.0),
-        _integral_impact(-1.0)
+        _integral_max_error(-1.0)
     {
 
     }
@@ -75,13 +75,13 @@ public:
             
 
             // Restrict to max/min
-            if (this->_integral_impact >= 0.0)
+            if (this->_integral_max_error >= 0.0)
             {
-                if (_integral > this->_integral_impact) {
-                    _integral = this->_integral_impact;
+                if (_integral > this->_integral_max_error) {
+                    _integral = this->_integral_max_error;
                 }
-                else if (_integral < -(this->_integral_impact)) {
-                    _integral = -(this->_integral_impact);
+                else if (_integral < -(this->_integral_max_error)) {
+                    _integral = -(this->_integral_max_error);
                 }
             }
 
@@ -150,11 +150,11 @@ public:
         if (val < 0.0) {
             val = -val;
         }
-        this->_integral_impact = val;
+        this->_integral_max_error = val;
     }
 
     double getIntegralImpact(double val) volatile {
-        return this->_integral_impact;
+        return this->_integral_max_error;
     }
 
     double getMaxOutput(double val) volatile {
@@ -189,7 +189,7 @@ private:
     double _Ki;
     double _pre_error = 0.0;
     double _integral = 0.0;
-    double _integral_impact = 0.0;
+    double _integral_max_error = 0.0;
 };
 
 #endif // !__PID_H__
