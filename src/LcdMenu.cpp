@@ -90,6 +90,7 @@ void settingsMenuRoutine() {
                 LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
                 LCDMENU_LAST_VALUE,
+                
                 LCDMENU_ENABLE_REMOTE_START_STOP,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,

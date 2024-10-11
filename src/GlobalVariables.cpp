@@ -139,9 +139,10 @@ Pixy2 g_pixy_1;
 
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
   float temp_float;
-    std::stringstream ss(rawData);
-    std::vector<std::string> fields;
- SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+  int total_fields = 38;
+  std::stringstream ss(rawData);
+  std::vector<std::string> fields;
+  SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
     int i = 0;
     while (ss.good()) {
         std::string substr;
@@ -150,6 +151,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
         if (isNumber(substr.data(), substr.length()) == 0) {
           g_enable_car_engine = 0;
           g_enable_car_steering_wheel = 0;
+          SERIAL_PORT.println();
           SERIAL_PORT.println("ERROR: invaild field");
           return;
         }
@@ -157,6 +159,13 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
         i++;
     }
     SERIAL_PORT.println();
+    if (fields.size() < total_fields) {
+      SERIAL_PORT.println(String("ERROR: missing ") + String(total_fields - fields.size()) + String(" fields"));
+      return;
+    }
+    
+
+
 
     g_lane_width_vector_unit = std::stof(fields[0]);
     g_lookahead_min_distance_cm = std::stof(fields[1]);
