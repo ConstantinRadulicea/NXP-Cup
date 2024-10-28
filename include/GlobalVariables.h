@@ -51,14 +51,14 @@ extern float g_lane_width_vector_unit;
 extern float g_black_color_treshold; // 0=black, 1=white
 extern float g_lookahead_min_distance_cm;
 extern float g_lookahead_max_distance_cm;
-extern float g_min_speed;   // m/s
-extern float g_max_speed;  // m/s
-extern float g_emergency_brake_distance_m;
-extern float g_emergency_brake_min_speed; // m/s
+extern float g_vehicle_min_speed_mps;   // m/s
+extern float g_vehicle_max_speed_mps;  // m/s
+extern float g_emergency_brake_activation_max_distance_m;
+extern float g_emergency_brake_speed_mps; // m/s
 extern float g_emergency_brake_distance_from_obstacle_m;   // 13.5f
 extern float g_steering_wheel_angle_offset_deg;
 extern float g_min_x_axis_angle_vector_deg;
-extern float g_max_speed_after_emergency_brake_delay; // m/s
+extern float g_max_speed_after_emergency_brake_delay_mps; // m/s
 extern float g_car_speed_mps_ki;
 extern float g_car_speed_mps_kd;
 extern float g_car_speed_mps_ki_min_max_impact;

@@ -405,7 +405,7 @@ void loop() {
   timeStart = 0.0f;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
-  max_speed_original = g_max_speed;
+  max_speed_original = g_vehicle_max_speed_mps;
 
   frontObstacleDistance = 0.0f;
 
@@ -452,12 +452,12 @@ void loop() {
     if (g_enable_emergency_brake != 0 && (g_enable_distance_sensor1 != 0 || g_enable_distance_sensor2 != 0 || g_enable_distance_sensor3 != 0)) {
       
     if (g_emergency_brake_enable_delay_started_count == 0 && g_enable_car_engine != 0) {
-      max_speed_original = g_max_speed;
+      max_speed_original = g_vehicle_max_speed_mps;
       g_emergency_brake_enable_remaining_delay_s = g_emergency_brake_enable_delay_s;
       g_emergency_brake_enable_delay_started_count = 1;
     }
     else if(g_emergency_brake_enable_delay_started_count != 0 && g_enable_car_engine == 0){
-      g_max_speed = max_speed_original;
+      g_vehicle_max_speed_mps = max_speed_original;
       g_emergency_brake_enable_remaining_delay_s = 0.0f;
       g_emergency_brake_enable_delay_started_count = 0.0f;
     }
@@ -467,8 +467,8 @@ void loop() {
       g_emergency_brake_enable_remaining_delay_s = MAX(g_emergency_brake_enable_remaining_delay_s, 0.0f);
 
       if (g_emergency_brake_enable_remaining_delay_s <= 0.0f) {
-        max_speed_original = g_max_speed;
-        g_max_speed = g_max_speed_after_emergency_brake_delay;
+        max_speed_original = g_vehicle_max_speed_mps;
+        g_vehicle_max_speed_mps = g_max_speed_after_emergency_brake_delay_mps;
       }
     }
     if (g_emergency_brake_enable_remaining_delay_s <= 0.0f)
@@ -476,7 +476,7 @@ void loop() {
       
       frontObstacleDistance = getFrontObstacleDistance_cm();
 
-      if (frontObstacleDistance <= g_emergency_brake_distance_m ) {
+      if (frontObstacleDistance <= g_emergency_brake_activation_max_distance_m ) {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
         g_emergency_break_active = 1;
         g_emergency_break_loops_count++;
@@ -499,14 +499,14 @@ void loop() {
               }
             }
           #endif
-          g_car_speed_mps = (float)g_emergency_brake_min_speed;  
+          g_car_speed_mps = (float)g_emergency_brake_speed_mps;  
         }
         
         if(frontObstacleDistance <= g_emergency_brake_distance_from_obstacle_m){
           g_car_speed_mps = (float)STANDSTILL_SPEED;
         }
         else{
-          g_car_speed_mps = (float)g_emergency_brake_min_speed;
+          g_car_speed_mps = (float)g_emergency_brake_speed_mps;
         }
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
@@ -613,7 +613,7 @@ void loop() {
       if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
         if (((int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_rightVectorOld) + (int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_leftVectorOld))==1){
           if (g_emergency_break_active == 0){
-            g_car_speed_mps = (float)g_min_speed;
+            g_car_speed_mps = (float)g_vehicle_min_speed_mps;
           }
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
@@ -688,7 +688,7 @@ void loop() {
       if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
         if (((int)pixy_2_vectorsProcessing.isVectorValid(pixy_2_rightVectorOld) + (int)pixy_2_vectorsProcessing.isVectorValid(pixy_2_leftVectorOld))==1){
           if (g_emergency_break_active == 0){
-            g_car_speed_mps = (float)g_min_speed;
+            g_car_speed_mps = (float)g_vehicle_min_speed_mps;
           }
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
@@ -742,7 +742,7 @@ void loop() {
     if (pixy_1_loopIterationsCountNoVectorDetected > 15)
     {
       if (g_emergency_break_active == 0) {
-        g_car_speed_mps = (float)g_min_speed;
+        g_car_speed_mps = (float)g_vehicle_min_speed_mps;
       }
       #if ENABLE_DRIVERMOTOR == 1
         if (g_enable_car_engine != 0) {
@@ -752,7 +752,7 @@ void loop() {
     }
     else{
       if (g_emergency_break_active == 0){
-        g_car_speed_mps = calculateCarSpeed((float)g_min_speed, g_max_speed, (float)STEERING_SERVO_MAX_ANGLE, degrees(purePersuitInfo.steeringAngle), g_middle_lane_line_pixy_1, g_car_speed_mps_ki, g_car_speed_mps_kd, g_car_speed_mps_ki_min_max_impact);
+        g_car_speed_mps = calculateCarSpeed((float)g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, (float)STEERING_SERVO_MAX_ANGLE, degrees(purePersuitInfo.steeringAngle), g_middle_lane_line_pixy_1, g_car_speed_mps_ki, g_car_speed_mps_kd, g_car_speed_mps_ki_min_max_impact);
       }
     }
         
@@ -776,7 +776,7 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed_mps - (float)STANDSTILL_SPEED) / (float)(g_max_speed - STANDSTILL_SPEED), frontObstacleDistance, g_car_speed_mps);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed_mps - (float)STANDSTILL_SPEED) / (float)(g_vehicle_max_speed_mps - STANDSTILL_SPEED), frontObstacleDistance, g_car_speed_mps);
     #endif
     
     /*

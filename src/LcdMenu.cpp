@@ -327,12 +327,12 @@ void settingsMenuRoutine() {
 
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
-          g_min_speed += 0.01f;
+          g_vehicle_min_speed_mps += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_min_speed -= 0.01f;
+          g_vehicle_min_speed_mps -= 0.01f;
         }
-        g_min_speed = MAX(g_min_speed, 0.0f);
-        displayParameterValue(String("g_min_speed"), String(g_min_speed, 3));
+        g_vehicle_min_speed_mps = MAX(g_vehicle_min_speed_mps, 0.0f);
+        displayParameterValue(String("g_vehicle_min_speed_mps"), String(g_vehicle_min_speed_mps, 3));
         break;
 
 
@@ -369,24 +369,24 @@ void settingsMenuRoutine() {
 
       case LCDMENU_MAX_SPEED:
         if (incrementButton == HIGH) {
-          g_max_speed += 0.01f;
+          g_vehicle_max_speed_mps += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_max_speed -= 0.01f;
+          g_vehicle_max_speed_mps -= 0.01f;
         }
-        g_max_speed = MAX(g_max_speed, 0.0f);
+        g_vehicle_max_speed_mps = MAX(g_vehicle_max_speed_mps, 0.0f);
 
-        displayParameterValue(String("g_max_speed"), String(g_max_speed, 3));
+        displayParameterValue(String("g_vehicle_max_speed_mps"), String(g_vehicle_max_speed_mps, 3));
         break;
 
       case LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY:
         if (incrementButton == HIGH) {
-          g_max_speed_after_emergency_brake_delay += 0.5f;
+          g_max_speed_after_emergency_brake_delay_mps += 0.5f;
         } else if (decrementButton == HIGH) {
-          g_max_speed_after_emergency_brake_delay -= 0.5f;
+          g_max_speed_after_emergency_brake_delay_mps -= 0.5f;
         }
-        g_max_speed_after_emergency_brake_delay = MAX(g_max_speed_after_emergency_brake_delay, 0.0f);
+        g_max_speed_after_emergency_brake_delay_mps = MAX(g_max_speed_after_emergency_brake_delay_mps, 0.0f);
 
-        displayParameterValue(String("MS_AFT_EMBRK_DLY"), String(g_max_speed_after_emergency_brake_delay, 2));
+        displayParameterValue(String("MS_AFT_EMBRK_DLY"), String(g_max_speed_after_emergency_brake_delay_mps, 2));
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:
@@ -413,13 +413,13 @@ void settingsMenuRoutine() {
       
       case LCDMENU_EMERGENCY_BREAK_DISTANCE_M:
         if (incrementButton == HIGH) {
-          g_emergency_brake_distance_m += 0.005f;
+          g_emergency_brake_activation_max_distance_m += 0.005f;
         } else if (decrementButton == HIGH) {
-          g_emergency_brake_distance_m -= 0.005f;
+          g_emergency_brake_activation_max_distance_m -= 0.005f;
         }
-        g_emergency_brake_distance_m = MAX(g_emergency_brake_distance_m, 0.0f);
+        g_emergency_brake_activation_max_distance_m = MAX(g_emergency_brake_activation_max_distance_m, 0.0f);
 
-        displayParameterValue(String("EMER_BRK_DIST_M"), String(g_emergency_brake_distance_m, 3));
+        displayParameterValue(String("EMER_BRK_DIST_M"), String(g_emergency_brake_activation_max_distance_m, 3));
         break;
       
       case LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M:
@@ -457,13 +457,13 @@ void settingsMenuRoutine() {
 
       case LCDMENU_EMERGENCY_BRAKE_MIN_SPEED:
         if (incrementButton == HIGH) {
-          g_emergency_brake_min_speed += 0.01f;
+          g_emergency_brake_speed_mps += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_emergency_brake_min_speed -= 0.01f;
+          g_emergency_brake_speed_mps -= 0.01f;
         }
-        g_emergency_brake_min_speed = MAX(g_emergency_brake_min_speed, 0.0f);
+        g_emergency_brake_speed_mps = MAX(g_emergency_brake_speed_mps, 0.0f);
 
-        displayParameterValue(String("EMER_BRK_MIN_SPD"), String(g_emergency_brake_min_speed, 3));
+        displayParameterValue(String("EMER_BRK_MIN_SPD"), String(g_emergency_brake_speed_mps, 3));
         break;
       
       case LCDMENU_BLACK_COLOR_TRESHOLD:
