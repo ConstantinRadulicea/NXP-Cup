@@ -94,6 +94,11 @@ LineABC xAxisABC();
 
 LineABC yAxisABC();
 
+int isValidLineABC(LineABC line);
+
+// result = A - B;
+LineABC LineAbcSubtraction(LineABC A, LineABC B);
+
 // polynomial_coefficients[0] = x^2
 // polynomial_coefficients[1] = x
 // polynomial_coefficients[3] = 1

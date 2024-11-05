@@ -35,6 +35,22 @@ LineABC yAxisABC() {
 	return line;
 }
 
+int isValidLineABC(LineABC line){
+	if (floatCmp(line.Ax, 0.0f) == 0 && floatCmp(line.By, 0.0f) == 0) {
+		return 0;
+	}
+	return 1;
+}
+
+// result = A - B;
+LineABC LineAbcSubtraction(LineABC A, LineABC B){
+	LineABC res;
+	res.Ax = A.Ax - B.Ax;
+	res.By = A.By - B.By;
+	res.C = A.C - B.C;
+	return res;
+}
+
 // polynomial_coefficients[0] = x^2
 // polynomial_coefficients[1] = x
 // polynomial_coefficients[3] = 1

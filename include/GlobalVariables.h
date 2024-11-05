@@ -133,6 +133,8 @@ extern int8_t g_finish_line_detected;
 extern int8_t g_finish_line_detected_now;
 extern float g_steering_angle;
 extern FinishLine g_finish_line;
+extern LineABC g_default_trajectory_line;
+extern LineABC g_line_calibration_offset;   // offset = raw_measurement - correct_measurement;
 
 extern float g_powertrain_left_wheel_kp;
 extern float g_powertrain_left_wheel_ki;
