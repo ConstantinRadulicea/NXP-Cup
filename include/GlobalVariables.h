@@ -25,6 +25,7 @@
 #include "geometry2D.h"
 #include "Config.h"
 #include "VectorsProcessing.h"
+#include "TrajectoryMix.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -135,6 +136,8 @@ extern float g_steering_angle;
 extern FinishLine g_finish_line;
 extern LineABC g_default_trajectory_line;
 extern LineABC g_line_calibration_offset;   // offset = raw_measurement - correct_measurement;
+
+extern LineCalibrationData g_line_calibration_data;
 
 extern float g_powertrain_left_wheel_kp;
 extern float g_powertrain_left_wheel_ki;

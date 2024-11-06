@@ -519,6 +519,27 @@ LineABC perpendicularToLinePassingThroughPointABC(LineABC line, Point2D point) {
 	return perpendicularLine;
 }
 
+LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle) {
+    // Calculate the new coefficients after rotation
+    float cosTheta = cosf(angle);
+    float sinTheta = sinf(angle);
+
+    // Rotate the line's A and B components
+    float newA = (line.Ax * cosTheta) - (line.By * sinTheta);
+    float newB = (line.Ax * sinTheta) + (line.By * cosTheta);
+
+    // Calculate the new C component after translating to the point (x0, y0)
+    float newC = line.C + (line.Ax * point.x) + (line.By * point.y);
+
+    // Return the rotated line
+    LineABC rotatedLine;
+    rotatedLine.Ax = newA;
+    rotatedLine.By = newB;
+    rotatedLine.C = newC;
+    
+    return rotatedLine;
+}
+
 float angleBetweenLinesABC(LineABC line1, LineABC line2) {
 	float angle;
 	LineMQ line1Mq, line2Mq;

@@ -20,35 +20,6 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-LineABC closestLineToCurrentTrajectory(LineABC line1, LineABC line2){
-  LineABC upper_line, lower_line, horizontal_middle_line, calibration_line;
-  IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
-
-  horizontal_middle_line = xAxisABC();
-  horizontal_middle_line.C = -SCREEN_CENTER_Y;
-
-  left_lane_line_intersection = intersectionLinesABC(line1, horizontal_middle_line);
-  right_lane_line_intersection = intersectionLinesABC(line2, horizontal_middle_line);
-
-  if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
-    if (euclidianDistance(left_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y}) < euclidianDistance(right_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y})) {
-      calibration_line = line1;
-    }
-    else{
-      calibration_line = line2;
-    }
-  }
-  else if(left_lane_line_intersection.info == 0){
-    calibration_line = line1;
-  }
-  else if(right_lane_line_intersection.info == 0){
-    calibration_line = line2;
-  }
-  else{
-    calibration_line = LineABC{};
-  }
-  return calibration_line;
-}
 
 void displayParameterValue(String parameter, String value){
         display.clearDisplay();
@@ -560,7 +531,9 @@ void settingsMenuRoutine() {
             // offset = raw_measurement - correct_measurement;
             g_line_calibration_offset = LineAbcSubtraction(calibration_line, yAxisABC());
             g_line_calibration_offset = normalizeLineABC2MQ(g_line_calibration_offset);
-        }        
+
+            g_line_calibration_data = lineCalibration(calibration_line);
+        }
 
         upper_line = xAxisABC();
         upper_line.C = -IMAGE_MAX_Y;

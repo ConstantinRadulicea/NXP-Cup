@@ -127,8 +127,10 @@ int8_t g_finish_line_detected = 0;
 int8_t g_finish_line_detected_now = 0;
 float g_steering_angle = 0.0f;
 FinishLine g_finish_line = {};
-LineABC g_default_trajectory_line = yAxisABC();
+LineABC g_default_trajectory_line={};
 LineABC g_line_calibration_offset = {};
+
+LineCalibrationData g_line_calibration_data = {};
 
 
 SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
