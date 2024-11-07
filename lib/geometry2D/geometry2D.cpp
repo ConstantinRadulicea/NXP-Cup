@@ -540,6 +540,33 @@ LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle) {
     return rotatedLine;
 }
 
+
+Point2D rotatePointAroundPoint(Point2D point, Point2D center, float angle) {
+    // Translate the point to the origin (relative to the center point)
+    float translatedX = point.x - center.x;
+    float translatedY = point.y - center.y;
+
+    // Calculate the rotated coordinates
+    float cosTheta = cos(angle);
+    float sinTheta = sin(angle);
+    float rotatedX = translatedX * cosTheta - translatedY * sinTheta;
+    float rotatedY = translatedX * sinTheta + translatedY * cosTheta;
+
+    // Translate the point back to the original center
+    Point2D rotatedPoint;
+    rotatedPoint.x = rotatedX + center.x;
+    rotatedPoint.y = rotatedY + center.y;
+
+    return rotatedPoint;
+}
+
+LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center, float angle){
+	LineSegment rotatedLineSegment;
+	rotatedLineSegment.A = rotatePointAroundPoint(lineSegment.A, center, angle);
+	rotatedLineSegment.B = rotatePointAroundPoint(lineSegment.B, center, angle);
+	return rotatedLineSegment;
+}
+
 float angleBetweenLinesABC(LineABC line1, LineABC line2) {
 	float angle;
 	LineMQ line1Mq, line2Mq;

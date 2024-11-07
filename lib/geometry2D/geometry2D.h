@@ -155,6 +155,10 @@ LineABC perpendicularToLinePassingThroughPointABC(LineABC line, Point2D point);
 
 LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle);
 
+Point2D rotatePointAroundPoint(Point2D point, Point2D center, float angle);
+
+LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center, float angle);
+
 float angleBetweenLinesABC(LineABC line1, LineABC line2);
 
 LineABC points2lineABC(Point2D point1, Point2D point2);
