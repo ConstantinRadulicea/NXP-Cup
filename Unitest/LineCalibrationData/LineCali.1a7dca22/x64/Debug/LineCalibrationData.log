@@ -1,28 +1,5 @@
-﻿  TrajectoryMix.cpp
+﻿  main.cpp
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.h(51,16): warning C4091: 'typedef ': ignored on left of 'ParabolaABC' when no variable is declared
-  (compiling source file 'TrajectoryMix.cpp')
+  (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\TrajectoryMix.cpp(5,21): warning C4101: 'upper_intersection': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\TrajectoryMix.cpp(5,41): warning C4101: 'lower_intersection': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\TrajectoryMix.cpp(4,23): warning C4101: 'lower_line': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\TrajectoryMix.cpp(4,11): warning C4101: 'upper_line': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\TrajectoryMix.cpp(37,11): warning C4101: 'temp_point': unreferenced local variable
-  geometry2D.cpp
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.h(51,16): warning C4091: 'typedef ': ignored on left of 'ParabolaABC' when no variable is declared
-  (compiling source file 'geometry2D.cpp')
-  
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(524,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(525,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(585,11): warning C4305: 'return': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(593,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(597,11): warning C4305: 'return': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(605,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1111,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1134,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1135,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1176,45): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1177,44): warning C4305: '-=': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1183,29): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\geometry2D.cpp(1185,18): warning C4305: '+=': truncation from 'double' to 'float'
-  Generating Code...
   LineCalibrationData.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\LineCalibrationData\x64\Debug\LineCalibrationData.exe

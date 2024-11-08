@@ -1191,12 +1191,25 @@ float NormalizeZeroToPi(float angle) {
 int isNumber(const char* str, size_t str_length) {
     int dots = 0;
     int numbers = 0;
+	int pluses = 0, minuses = 0;
 
     for (size_t i = 0; i < str_length; i++)
     {
         if (str[i] >= '0' && str[i] <= '9') {
             numbers++;
         }
+		else if (str[i] == '+'){
+			pluses++;
+			if (pluses > 1) {
+                break;
+            }
+		}
+		else if (str[i] == '-'){
+			minuses++;
+			if (minuses > 1) {
+                break;
+            }
+		}
         else if (str[i] == '.') {
             dots++;
             if (dots > 1) {
@@ -1204,7 +1217,7 @@ int isNumber(const char* str, size_t str_length) {
             }
         }
         else if (str[i] == ' ') {
-            if (numbers > 0 || dots > 0) {
+            if (numbers > 0 || dots > 0 || pluses > 0 || minuses > 0) {
                 break;
             }
         }

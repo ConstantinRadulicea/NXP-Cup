@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <string>
 
 #include "TrajectoryMix.h"
 
@@ -15,6 +16,8 @@ int main() {
 	calibration_data = lineCalibration(measured_line);
 	calibrated_segment = calibrateLineSegment(measured_segment, calibration_data);
 	temp_line_1 = lineSegmentToLineABC(calibrated_segment);
+
+	float ggg = std::stof("++2.0 ");
 
 	return 0;
 }

@@ -3,9 +3,9 @@ fieldTerminator = ';';
 % good bad
 % 17 - 3
 % 22 - 0
-g_enable_car_engine = 01.0;
+g_enable_car_engine = 0.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 0.0;
+g_enable_emergency_brake = 01.0;
 g_enable_pixy_vector_approximation = 0.0;             
 g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
@@ -89,7 +89,12 @@ values = [g_lane_width_vector_unit...
     g_friction_coefficient...
     g_downward_acceleration...
     g_max_acceleration...
-    g_max_deceleration];
+    g_max_deceleration...
+    g_line_calibration_data_angle_offset...
+    g_line_calibration_data_rotation_point_x...
+    g_line_calibration_data_rotation_point_y...
+    g_line_calibration_data_x_axis_offset...
+    g_line_calibration_data_y_axis_offset];
 
 outputString = '';
 
@@ -105,5 +110,10 @@ outputString = [outputString recordTerminator];
 outputString
 
 server.write(outputString, "string")
+
+
+%45.000;20.000;60.000;0.600;0.300;2.500;0.200;0;0;0.200;0.200;1;0;0;1;0.000;-4.600;0;15.000;2.000;0;-0.020;-0.200;0.300;15.000;0;0.000;0.100;0.000;0.400;0.000;0.100;0.000;0.400;0.550;9.807;-1.000;-1.000;0.000;0.000;0.000;0.000;0.000
+%46.500;20.000;60.000;0.350;0.300;1.000;0.200;1.000;0.000;0.200;0.300;0.000;0.000;0.000;1.000;0.000;-4.700;0.000;15.000;0.300;0.000;-0.001;0.000;5.000;15.000;0.000;0.000;0.100;0.000;0.400;0.000;0.100;0.000;0.400;0.700;9.807;6.865;-93.135;0.000;0.000;0.000;0.000;0.000
+
 
 

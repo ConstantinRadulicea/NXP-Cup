@@ -141,7 +141,7 @@ Pixy2 g_pixy_1;
 
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
   float temp_float;
-  int total_fields = 38;
+  int total_fields = 42;
   std::stringstream ss(rawData);
   std::vector<std::string> fields;
   SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
@@ -154,6 +154,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
           g_enable_car_engine = 0;
           g_enable_car_steering_wheel = 0;
           SERIAL_PORT.println();
+          SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
           SERIAL_PORT.println("ERROR: invaild field");
           return;
         }
@@ -162,6 +163,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     }
     SERIAL_PORT.println();
     if (fields.size() < total_fields) {
+      SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
       SERIAL_PORT.println(String("ERROR: missing ") + String(total_fields - fields.size()) + String(" fields"));
       return;
     }
@@ -517,8 +519,8 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
 void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){
   std::string serialInputBuffer;
   if(readRecordFromSerial(serialPort, String("\r\n"), serialInputBuffer)){
-    //serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
-    //serialPort.println(serialInputBuffer.c_str());
+    serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
+    serialPort.println(serialInputBuffer.c_str());
     parseAndSetGlobalVariables_2(serialInputBuffer, ';');
     //parseAndSetGlobalVariables(serialInputBuffer, ';');
     //g_enable_car_engine = 1;
