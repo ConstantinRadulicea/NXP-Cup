@@ -281,6 +281,11 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     g_max_acceleration = std::stof(fields[36]);
     g_max_deceleration = std::stof(fields[37]);
 
+    g_line_calibration_data.angle_offset = std::stof(fields[38]);
+    g_line_calibration_data.rotation_point.x = std::stof(fields[39]);
+    g_line_calibration_data.rotation_point.y = std::stof(fields[40]);
+    g_line_calibration_data.x_axis_offset = std::stof(fields[41]);
+    g_line_calibration_data.y_axis_offset = std::stof(fields[42]);
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
@@ -494,6 +499,17 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(String(g_max_acceleration, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_max_deceleration, n_decimals));
+
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_line_calibration_data.angle_offset, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_line_calibration_data.rotation_point.x, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_line_calibration_data.rotation_point.y, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_line_calibration_data.x_axis_offset, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(String(g_line_calibration_data.y_axis_offset, n_decimals));
 
   serialPort.println();
 }
