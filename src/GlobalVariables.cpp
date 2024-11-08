@@ -127,9 +127,7 @@ int8_t g_finish_line_detected = 0;
 int8_t g_finish_line_detected_now = 0;
 float g_steering_angle = 0.0f;
 FinishLine g_finish_line = {};
-LineABC g_default_trajectory_line={};
-LineABC g_line_calibration_offset = {};
-
+int8_t g_start_line_calibration_acquisition = 0;
 LineCalibrationData g_line_calibration_data = {};
 
 

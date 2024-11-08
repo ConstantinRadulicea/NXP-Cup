@@ -24,8 +24,8 @@
 #include "parseNextFloat.h"
 #include "geometry2D.h"
 #include "Config.h"
-#include "VectorsProcessing.h"
 #include "TrajectoryMix.h"
+
 
 #define TRUE 1
 #define FALSE 0
@@ -134,8 +134,7 @@ extern int8_t g_finish_line_detected;
 extern int8_t g_finish_line_detected_now;
 extern float g_steering_angle;
 extern FinishLine g_finish_line;
-extern LineABC g_default_trajectory_line;
-extern LineABC g_line_calibration_offset;   // offset = raw_measurement - correct_measurement;
+extern int8_t g_start_line_calibration_acquisition;
 
 extern LineCalibrationData g_line_calibration_data;
 

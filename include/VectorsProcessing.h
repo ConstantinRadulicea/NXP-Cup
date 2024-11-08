@@ -294,6 +294,18 @@ public:
         return LineSegment{Point2D{(float)(vec.m_x0), (float)(vec.m_y0)}, Point2D{(float)(vec.m_x1), (float)(vec.m_y1)}};
     }
 
+
+    static Vector lineSegmentToVector(LineSegment seg){
+        Vector vec;
+        vec.m_x0 = seg.A.x;
+        vec.m_y0 = seg.A.y;
+
+        vec.m_x1 = seg.B.x;
+        vec.m_y1 = seg.B.y;
+
+        return vec;
+    }
+
     static float minDistanceVectorToLine(Vector vec, LineABC line){
         return minDistanceLineSegmentToLine(vectorToLineSegment(vec), line);
     }

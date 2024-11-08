@@ -520,24 +520,28 @@ LineABC perpendicularToLinePassingThroughPointABC(LineABC line, Point2D point) {
 }
 
 LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle) {
-    // Calculate the new coefficients after rotation
-    float cosTheta = cosf(angle);
-    float sinTheta = sinf(angle);
+	// Calculate the cosine and sine of the angle
+	float cosTheta = cos(angle);
+	float sinTheta = sin(angle);
 
-    // Rotate the line's A and B components
-    float newA = (line.Ax * cosTheta) - (line.By * sinTheta);
-    float newB = (line.Ax * sinTheta) + (line.By * cosTheta);
+	// Rotate the A and B components
+	float newA = line.Ax * cosTheta - line.By * sinTheta;
+	float newB = line.Ax * sinTheta + line.By * cosTheta;
 
-    // Calculate the new C component after translating to the point (x0, y0)
-    float newC = line.C + (line.Ax * point.x) + (line.By * point.y);
+	// Adjust C for rotation around the point (x0, y0)
+	//float newC = line.C - (line.Ax * point.x + line.By * point.y);
+	//newC = newC + (newA * point.x + newB * point.y);
 
-    // Return the rotated line
-    LineABC rotatedLine;
-    rotatedLine.Ax = newA;
-    rotatedLine.By = newB;
-    rotatedLine.C = newC;
-    
-    return rotatedLine;
+	// Step 2: Correct C to keep the line's position relative to the rotation point
+	float rotatedC = line.C + point.x * (line.Ax - newA) + point.y * (line.By - newB);
+
+	// Return the rotated line
+	LineABC rotatedLine;
+	rotatedLine.Ax = newA;
+	rotatedLine.By = newB;
+	rotatedLine.C = rotatedC;
+
+	return rotatedLine;
 }
 
 
@@ -547,8 +551,8 @@ Point2D rotatePointAroundPoint(Point2D point, Point2D center, float angle) {
     float translatedY = point.y - center.y;
 
     // Calculate the rotated coordinates
-    float cosTheta = cos(angle);
-    float sinTheta = sin(angle);
+    float cosTheta = cosf(angle);
+    float sinTheta = sinf(angle);
     float rotatedX = translatedX * cosTheta - translatedY * sinTheta;
     float rotatedY = translatedX * sinTheta + translatedY * cosTheta;
 

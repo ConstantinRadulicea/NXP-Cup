@@ -27,7 +27,7 @@
 #define TEMP_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
-#define SERIAL_PORT_TYPE_CONFIGURATION 1
+#define SERIAL_PORT_TYPE_CONFIGURATION 2
 
 #if SERIAL_PORT_TYPE_CONFIGURATION == 1
   #define SERIAL_PORT Serial1
@@ -68,6 +68,7 @@
     #endif
   #endif
 #endif
+
 
 
 #define ENABLE_SERIAL_PRINT 1
@@ -172,11 +173,11 @@
 #define RPM_SENSOR_RIGHT_WHEEL_PIN 3
 
 
-
 #include "GlobalVariables.h"
 #include "log.h"
 #include "LcdMenu.h"
 #include "DistanceSensors.h"
+
 
 
 /*====================================================================================================================================*/

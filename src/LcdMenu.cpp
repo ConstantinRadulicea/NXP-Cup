@@ -520,20 +520,34 @@ void settingsMenuRoutine() {
         LineABC upper_line, lower_line, horizontal_middle_line, calibration_line;
         IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
 
+        if (decrementButton != LOW) {
+          g_start_line_calibration_acquisition = 0;
+          g_line_calibration_data = LineCalibrationData{};
+          displayParameterValue(String("UNCALIBRATE"), String("UNCALIBRATE"));
+          break;
+        }
+
         calibration_line = closestLineToCurrentTrajectory(g_left_lane_line_pixy_1, g_right_lane_line_pixy_1);
         if (isValidLineABC(calibration_line) == 0) {
           displayParameterValue(String("NO_LINE"), String("NO_LINE"));
           break;
         }
         
-        if (incrementButton == HIGH)
-        {
-            // offset = raw_measurement - correct_measurement;
-            g_line_calibration_offset = LineAbcSubtraction(calibration_line, yAxisABC());
-            g_line_calibration_offset = normalizeLineABC2MQ(g_line_calibration_offset);
-
-            g_line_calibration_data = lineCalibration(calibration_line);
+        if (incrementButton != LOW) {
+            if (g_start_line_calibration_acquisition != 0) {
+              g_line_calibration_data = lineCalibration(calibration_line);
+              displayParameterValue(String("CALIBRATE"), String("CALIBRATE"));
+              break;
+            }
+            else{
+              g_start_line_calibration_acquisition = 1;
+            }
         }
+        else if (incrementButton == LOW && g_start_line_calibration_acquisition != 0) {
+          g_start_line_calibration_acquisition = 0;
+        }
+        
+        
 
         upper_line = xAxisABC();
         upper_line.C = -IMAGE_MAX_Y;
@@ -553,6 +567,9 @@ void settingsMenuRoutine() {
       default:
         break;
     }
+  }
+  else if(g_start_line_calibration_acquisition != 0){
+    g_start_line_calibration_acquisition = 0;
   }
   #if ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE == 1
   }
