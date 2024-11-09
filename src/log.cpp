@@ -24,6 +24,7 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
   char semicolonChar;
   RpmSensorData temp_rpmData;
   float adjusted_rpm, raw_rpm;
+  int n_decimals = 3;
 
   commaCharStr = String(',');
   semicolonChar = ';';
@@ -85,12 +86,18 @@ ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
   serialPort.print(String(g_powertrain.GetLeftWheelSpeedRequest_raw()));
   serialPort.print(semicolonChar);
   serialPort.print(String(g_powertrain.GetRightWheelSpeedRequest_raw()));
-
-  //Serial.print(semicolonChar);
-  //Serial.print(String(g_powertrain.GetLeftWheelSpeedRequest_raw()));
-  //Serial.print(semicolonChar);
-  //Serial.println(String(g_powertrain.GetRightWheelSpeedRequest_raw()));
 }
+
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_line_calibration_data.angle_offset, n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_line_calibration_data.rotation_point.x, n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_line_calibration_data.rotation_point.y, n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_line_calibration_data.x_axis_offset, n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(String(g_line_calibration_data.y_axis_offset, n_decimals));
 
   serialPort.println();
 }

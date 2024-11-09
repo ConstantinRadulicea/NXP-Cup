@@ -88,8 +88,10 @@ void settingsMenuRoutine() {
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
                 LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
 		            LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
+                LCDMENU_AUTOMATIC_CALIBRATION_VIEW,
                 LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
+                
                 LCDMENU_LAST_VALUE,
                 
                 LCDMENU_ENABLE_REMOTE_START_STOP,
@@ -520,34 +522,12 @@ void settingsMenuRoutine() {
         LineABC upper_line, lower_line, horizontal_middle_line, calibration_line;
         IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
 
-        if (decrementButton != LOW) {
-          g_start_line_calibration_acquisition = 0;
-          g_line_calibration_data = LineCalibrationData{};
-          displayParameterValue(String("UNCALIBRATE"), String("UNCALIBRATE"));
-          break;
-        }
-
+        
         calibration_line = closestLineToCurrentTrajectory(g_left_lane_line_pixy_1, g_right_lane_line_pixy_1);
         if (isValidLineABC(calibration_line) == 0) {
           displayParameterValue(String("NO_LINE"), String("NO_LINE"));
           break;
         }
-        
-        if (incrementButton != LOW) {
-            if (g_start_line_calibration_acquisition != 0) {
-              g_line_calibration_data = lineCalibration(calibration_line);
-              displayParameterValue(String("CALIBRATE"), String("CALIBRATE"));
-              break;
-            }
-            else{
-              g_start_line_calibration_acquisition = 1;
-            }
-        }
-        else if (incrementButton == LOW && g_start_line_calibration_acquisition != 0) {
-          g_start_line_calibration_acquisition = 0;
-        }
-        
-        
 
         upper_line = xAxisABC();
         upper_line.C = -IMAGE_MAX_Y;
@@ -563,6 +543,69 @@ void settingsMenuRoutine() {
         }
         }
         break;
+
+      case LCDMENU_AUTOMATIC_CALIBRATION_VIEW:{
+        LineABC calibration_line;
+        enum calibration_state_enum{
+          UNCALIBRATE,
+          CALIBRATE,
+          NO_LINE,
+          DISPLAY_ONLY
+        };
+
+
+        calibration_state_enum calibration_state;
+        calibration_state = calibration_state_enum::DISPLAY_ONLY;
+
+        if (decrementButton != LOW) {
+          calibration_state = calibration_state_enum::UNCALIBRATE;
+        }
+        else if (incrementButton != LOW) {
+          calibration_state = calibration_state_enum::CALIBRATE;
+          calibration_line = closestLineToCurrentTrajectory(g_left_lane_line_pixy_1, g_right_lane_line_pixy_1);
+          if (isValidLineABC(calibration_line) == 0) {
+            calibration_state = calibration_state_enum::NO_LINE;
+          }
+        }
+        
+        display.clearDisplay();
+        display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
+        display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+        display.setCursor(0, 0);
+
+        if (calibration_state == calibration_state_enum::UNCALIBRATE) {
+          g_start_line_calibration_acquisition = 0;
+          g_line_calibration_data = LineCalibrationData{};
+          display.println("UNCALIBRATE");
+        }
+        
+        if (calibration_state == calibration_state_enum::CALIBRATE) {
+            if (g_start_line_calibration_acquisition != 0) {
+              g_line_calibration_data = lineCalibration(calibration_line);
+              display.println("CALIBRATE");
+            }
+            else{
+              g_start_line_calibration_acquisition = 1;
+            }
+        }
+        else if (incrementButton == LOW && g_start_line_calibration_acquisition != 0) {
+          g_start_line_calibration_acquisition = 0;
+        }
+
+
+        display.print("Offset[rad]: ");
+        display.println(String(g_line_calibration_data.angle_offset));
+        display.println("Rotation point:");
+        display.print("(x;y):");
+        display.println(String("(") + String(g_line_calibration_data.rotation_point.x, 2) + String(";") + String(g_line_calibration_data.rotation_point.y, 2) + String(")"));
+        display.print("x offset: ");
+        display.println(String(g_line_calibration_data.x_axis_offset));
+        display.print("y offset: ");
+        display.println(String(g_line_calibration_data.y_axis_offset));
+        display.display();
+
+        break;
+      }
 
       default:
         break;
