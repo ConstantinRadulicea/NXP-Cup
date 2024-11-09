@@ -132,7 +132,7 @@ extern float g_emergency_brake_enable_remaining_delay_s;
 extern int8_t g_emergency_brake_enable_delay_started_count;
 extern int8_t g_finish_line_detected;
 extern int8_t g_finish_line_detected_now;
-extern float g_steering_angle;
+extern float g_steering_angle_rad;
 extern FinishLine g_finish_line;
 extern int8_t g_start_line_calibration_acquisition;
 

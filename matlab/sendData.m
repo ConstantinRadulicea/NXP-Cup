@@ -5,7 +5,7 @@ fieldTerminator = ';';
 % 22 - 0
 g_enable_car_engine = 0.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 01.0;
+g_enable_emergency_brake = 0.0;
 g_enable_pixy_vector_approximation = 0.0;             
 g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
@@ -18,7 +18,7 @@ g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 60.0;                       % 40
 g_vehicle_min_speed_mps = 0.3;
-g_vehicle_max_speed_mps = 1.0;                                      % 
+g_vehicle_max_speed_mps = 1;                                      % 
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
@@ -46,11 +46,11 @@ g_downward_acceleration = 9.80665;
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);
 g_max_deceleration = (g_friction_coefficient * g_downward_acceleration) - 100;
 
-g_line_calibration_data_angle_offset = 0;
-g_line_calibration_data_rotation_point_x = 0;
-g_line_calibration_data_rotation_point_y = 0;
-g_line_calibration_data_x_axis_offset = 0;
-g_line_calibration_data_y_axis_offset = 0;
+g_line_calibration_data_angle_offset = 0.03331;
+g_line_calibration_data_rotation_point_x = 39;
+g_line_calibration_data_rotation_point_y = 25.5;
+g_line_calibration_data_x_axis_offset = -4.13849;
+g_line_calibration_data_y_axis_offset = 0.27618;
 
 values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...

@@ -18,8 +18,8 @@
 
 #define MAX_ITERATION_PIXY_ERROR 10
 
-#define RX_BUFFER_SIZE 4092
-#define TX_BUFFER_SIZE 16384
+  #define RX_BUFFER_SIZE 4092
+  #define TX_BUFFER_SIZE 16384
 
 #if (ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1) && SERIAL_PORT_TYPE_CONFIGURATION == 1
   static char RX_BUFFER[RX_BUFFER_SIZE];
@@ -45,7 +45,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
         }
       #endif
       #if ENABLE_STEERING_SERVO == 1
-        g_steering_angle = 0.0f;
+        g_steering_angle_rad = 0.0f;
         g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
       #endif
       delay(10);
@@ -62,7 +62,7 @@ void setup() {
   #if ENABLE_STEERING_SERVO == 1
     pinMode(STEERING_SERVO_PIN, OUTPUT);
     g_steering_wheel.attach(STEERING_SERVO_PIN, 500, 2500);
-    g_steering_angle = 0.0f;
+    g_steering_angle_rad = 0.0f;
     g_steering_wheel.setSteeringAngleDeg(-g_steering_wheel_angle_offset_deg);
   #endif
 
@@ -283,7 +283,7 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle), g_max_acceleration, g_max_deceleration);
+              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle_rad), g_max_acceleration, g_max_deceleration);
             }
           }
         #endif
@@ -386,7 +386,7 @@ void loop() {
           #if ENABLE_DRIVERMOTOR == 1
             if (g_enable_car_engine != 0) {
               ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-                g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle), g_max_acceleration, g_max_deceleration);
+                g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle_rad), g_max_acceleration, g_max_deceleration);
               }            
             }
           #endif
@@ -430,7 +430,7 @@ void loop() {
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
-    g_steering_angle = g_steering_wheel.vaildSteeringAngleDeg(purePersuitInfo.steeringAngle);
+    g_steering_angle_rad = g_steering_wheel.vaildSteeringAngleDeg(purePersuitInfo.steeringAngle);
     //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
 
     if (pixy_1_loopIterationsCountNoVectorDetected >= MAX_ITERATION_PIXY_ERROR)
@@ -444,20 +444,20 @@ void loop() {
     }
     else{
       if (g_emergency_break_active == 0){
-        g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle);
+        g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle_rad);
       }
     }
     
     #if ENABLE_STEERING_SERVO == 1
       if (g_enable_car_steering_wheel != 0) {
-        g_steering_wheel.setSteeringAngleDeg(degrees(g_steering_angle) - g_steering_wheel_angle_offset_deg);
+        g_steering_wheel.setSteeringAngleDeg(degrees(g_steering_angle_rad) - g_steering_wheel_angle_offset_deg);
       }
     #endif
 
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle)), g_max_acceleration, g_max_deceleration);
+          g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
         }
       }
     #endif

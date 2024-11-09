@@ -594,14 +594,14 @@ void settingsMenuRoutine() {
 
 
         display.print("Offset[rad]: ");
-        display.println(String(g_line_calibration_data.angle_offset));
+        display.println(String(g_line_calibration_data.angle_offset, 5));
         display.println("Rotation point:");
         display.print("(x;y):");
         display.println(String("(") + String(g_line_calibration_data.rotation_point.x, 2) + String(";") + String(g_line_calibration_data.rotation_point.y, 2) + String(")"));
         display.print("x offset: ");
-        display.println(String(g_line_calibration_data.x_axis_offset));
+        display.println(String(g_line_calibration_data.x_axis_offset, 5));
         display.print("y offset: ");
-        display.println(String(g_line_calibration_data.y_axis_offset));
+        display.println(String(g_line_calibration_data.y_axis_offset, 5));
         display.display();
 
         break;

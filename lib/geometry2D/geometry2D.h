@@ -25,10 +25,10 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 
-#define M_PI       3.14159265358979323846   // pi
-#define M_PI_2     1.57079632679489661923   // pi/2
-#define DEG_TO_RAD 0.01745329251994329576
-#define RAD_TO_DEG 57.2957795130823208767
+#define M_PI       3.14159//265358979323846   // pi
+#define M_PI_2     1.57079//632679489661923   // pi/2
+#define DEG_TO_RAD 0.01745//329251994329576
+#define RAD_TO_DEG 57.2957//795130823208767
 #define G_CONSTANT 9.80665
 
 #define radians(deg) ((deg)*DEG_TO_RAD)
@@ -52,7 +52,7 @@ typedef struct ParabolaABC {
 	float A;
 	float B;
 	float C;
-};
+}ParabolaABC;
 
 typedef struct LineABC {
 	float Ax;
@@ -64,6 +64,11 @@ typedef struct Point2D {
 	float x;
 	float y;
 }Point2D;
+
+typedef struct Point2D_int {
+	int x;
+	int y;
+}Point2D_int;
 
 typedef struct LineSegment {
 	Point2D A;
