@@ -1,0 +1,5 @@
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\main.cpp;C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy_usb_demo\x64\Release\main.obj
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\common\src\chirp.cpp;C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy_usb_demo\x64\Release\chirp.obj
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\src\libpixyusb2.cpp;C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy_usb_demo\x64\Release\libpixyusb2.obj
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\src\usblink.cpp;C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy_usb_demo\x64\Release\usblink.obj
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\src\util.cpp;C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy_usb_demo\x64\Release\util.obj

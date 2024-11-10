@@ -1,0 +1,15 @@
+﻿  main.cpp
+main.obj : error LNK2019: unresolved external symbol "unsigned int __cdecl millis(void)" (?millis@@YAIXZ) referenced in function "public: signed char __cdecl TPixy2<class Link2USB>::init(unsigned int)" (?init@?$TPixy2@VLink2USB@@@@QEAACI@Z)
+main.obj : error LNK2019: unresolved external symbol "void __cdecl delayMicroseconds(unsigned int)" (?delayMicroseconds@@YAXI@Z) referenced in function "private: short __cdecl TPixy2<class Link2USB>::getSync(void)" (?getSync@?$TPixy2@VLink2USB@@@@AEAAFXZ)
+main.obj : error LNK2019: unresolved external symbol "public: void __cdecl Console::println(char const *)" (?println@Console@@QEAAXPEBD@Z) referenced in function "private: short __cdecl TPixy2<class Link2USB>::getSync(void)" (?getSync@?$TPixy2@VLink2USB@@@@AEAAFXZ)
+main.obj : error LNK2019: unresolved external symbol "public: __cdecl Link2USB::Link2USB(void)" (??0Link2USB@@QEAA@XZ) referenced in function "public: __cdecl TPixy2<class Link2USB>::TPixy2<class Link2USB>(void)" (??0?$TPixy2@VLink2USB@@@@QEAA@XZ)
+main.obj : error LNK2019: unresolved external symbol "public: __cdecl Link2USB::~Link2USB(void)" (??1Link2USB@@QEAA@XZ) referenced in function "public: __cdecl TPixy2<class Link2USB>::~TPixy2<class Link2USB>(void)" (??1?$TPixy2@VLink2USB@@@@QEAA@XZ)
+main.obj : error LNK2019: unresolved external symbol "public: signed char __cdecl Link2USB::open(unsigned int)" (?open@Link2USB@@QEAACI@Z) referenced in function "public: signed char __cdecl TPixy2<class Link2USB>::init(unsigned int)" (?init@?$TPixy2@VLink2USB@@@@QEAACI@Z)
+main.obj : error LNK2019: unresolved external symbol "public: void __cdecl Link2USB::close(void)" (?close@Link2USB@@QEAAXXZ) referenced in function "public: __cdecl TPixy2<class Link2USB>::~TPixy2<class Link2USB>(void)" (??1?$TPixy2@VLink2USB@@@@QEAA@XZ)
+main.obj : error LNK2019: unresolved external symbol "public: short __cdecl Link2USB::recv(unsigned char *,unsigned char,unsigned short *)" (?recv@Link2USB@@QEAAFPEAEEPEAG@Z) referenced in function "private: short __cdecl TPixy2<class Link2USB>::getSync(void)" (?getSync@?$TPixy2@VLink2USB@@@@AEAAFXZ)
+main.obj : error LNK2019: unresolved external symbol "public: short __cdecl Link2USB::send(unsigned char *,unsigned char)" (?send@Link2USB@@QEAAFPEAEE@Z) referenced in function "private: short __cdecl TPixy2<class Link2USB>::sendPacket(void)" (?sendPacket@?$TPixy2@VLink2USB@@@@AEAAFXZ)
+main.obj : error LNK2019: unresolved external symbol "public: int __cdecl Link2USB::stop(void)" (?stop@Link2USB@@QEAAHXZ) referenced in function main
+main.obj : error LNK2019: unresolved external symbol "public: int __cdecl Link2USB::resume(void)" (?resume@Link2USB@@QEAAHXZ) referenced in function main
+main.obj : error LNK2019: unresolved external symbol "public: int __cdecl Link2USB::getRawFrame(unsigned char * *)" (?getRawFrame@Link2USB@@QEAAHPEAPEAE@Z) referenced in function main
+main.obj : error LNK2001: unresolved external symbol "struct Console Serial" (?Serial@@3UConsole@@A)
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\x64\Debug\pixy_usb_demo.exe : fatal error LNK1120: 13 unresolved externals

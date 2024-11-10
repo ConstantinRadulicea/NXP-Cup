@@ -1,0 +1,12 @@
+﻿  main.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\include\usblink.h(20,10): error C1083: Cannot open include file: 'libusb.h': No such file or directory
+  (compiling source file 'main.cpp')
+  
+  chirp.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\common\src\chirp.cpp(18,10): error C1083: Cannot open include file: 'chirp.hpp': No such file or directory
+  libpixyusb2.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\src\libpixyusb2.cpp(1,10): error C1083: Cannot open include file: 'libpixyusb2.h': No such file or directory
+  usblink.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\src\usblink.cpp(18,10): error C1083: Cannot open include file: 'pixydefs.h': No such file or directory
+  util.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\pixy_usb_demo\pixy2_libs\host\libpixyusb2\src\util.cpp(4,10): error C1083: Cannot open include file: 'util.h': No such file or directory
