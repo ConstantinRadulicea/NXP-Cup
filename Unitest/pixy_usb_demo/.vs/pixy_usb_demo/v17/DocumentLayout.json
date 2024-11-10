@@ -7,10 +7,6 @@
       "RelativeMoniker": "D:0:0:{69605815-64DF-438E-90CF-ECB441A707C1}|pixy_usb_demo.vcxproj|solutionrelative:pixy2_libs\\host\\libpixyusb2\\src\\usblink.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{69605815-64DF-438E-90CF-ECB441A707C1}|pixy_usb_demo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\pixy_usb_demo\\pixy2_libs\\host\\libpixyusb2\\include\\usblink.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{69605815-64DF-438E-90CF-ECB441A707C1}|pixy_usb_demo.vcxproj|solutionrelative:pixy2_libs\\host\\libpixyusb2\\include\\usblink.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{69605815-64DF-438E-90CF-ECB441A707C1}|pixy_usb_demo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\pixy_usb_demo\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{69605815-64DF-438E-90CF-ECB441A707C1}|pixy_usb_demo.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -48,7 +44,7 @@
               "RelativeDocumentMoniker": "pixy2_libs\\host\\libpixyusb2\\src\\usblink.cpp",
               "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\pixy_usb_demo\\pixy2_libs\\host\\libpixyusb2\\src\\usblink.cpp",
               "RelativeToolTip": "pixy2_libs\\host\\libpixyusb2\\src\\usblink.cpp",
-              "ViewState": "AgIAAEQAAAAAAAAAAAAUwEkAAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAUwGcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-11-10T20:11:03.054Z",
               "EditorCaption": ""
@@ -56,19 +52,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "usblink.h",
-              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\pixy_usb_demo\\pixy2_libs\\host\\libpixyusb2\\include\\usblink.h",
-              "RelativeDocumentMoniker": "pixy2_libs\\host\\libpixyusb2\\include\\usblink.h",
-              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\pixy_usb_demo\\pixy2_libs\\host\\libpixyusb2\\include\\usblink.h",
-              "RelativeToolTip": "pixy2_libs\\host\\libpixyusb2\\include\\usblink.h",
-              "ViewState": "AgIAABUAAAAAAAAAAAArwCcAAAAYAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-11-10T20:08:00.264Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "main.cpp",
               "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\pixy_usb_demo\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
@@ -76,8 +59,7 @@
               "RelativeToolTip": "main.cpp",
               "ViewState": "AgIAAAwAAAAAAAAAAAAAAJQAAAAUAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-11-10T20:04:50.12Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-10T20:04:50.12Z"
             }
           ]
         }

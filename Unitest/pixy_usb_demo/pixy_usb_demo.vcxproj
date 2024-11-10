@@ -143,25 +143,6 @@
     <ClCompile Include="pixy2_libs\host\libpixyusb2\src\usblink.cpp" />
     <ClCompile Include="pixy2_libs\host\libpixyusb2\src\util.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="libusb-1.0.27\include\libusb.h" />
-    <ClInclude Include="pixy2_libs\common\inc\chirp.hpp" />
-    <ClInclude Include="pixy2_libs\common\inc\colorlut.h" />
-    <ClInclude Include="pixy2_libs\common\inc\link.h" />
-    <ClInclude Include="pixy2_libs\common\inc\pixydefs.h" />
-    <ClInclude Include="pixy2_libs\common\inc\pixytypes.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2CCC.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2I2C.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2Line.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2SPI_SS.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2UART.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2Video.h" />
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\TPixy2.h" />
-    <ClInclude Include="pixy2_libs\host\libpixyusb2\include\libpixyusb2.h" />
-    <ClInclude Include="pixy2_libs\host\libpixyusb2\include\usblink.h" />
-    <ClInclude Include="pixy2_libs\host\libpixyusb2\include\util.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

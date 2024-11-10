@@ -18,9 +18,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="pixy2_libs\common\src\chirp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="pixy2_libs\host\libpixyusb2\src\libpixyusb2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -30,58 +27,8 @@
     <ClCompile Include="pixy2_libs\host\libpixyusb2\src\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="pixy2_libs\host\libpixyusb2\include\libpixyusb2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\libpixyusb2\include\usblink.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\libpixyusb2\include\util.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2CCC.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2I2C.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2Line.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2SPI_SS.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2UART.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\Pixy2Video.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\host\arduino\libraries\Pixy2\TPixy2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\common\inc\colorlut.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\common\inc\link.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\common\inc\pixydefs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\common\inc\pixytypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pixy2_libs\common\inc\chirp.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="libusb-1.0.27\include\libusb.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="pixy2_libs\common\src\chirp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
