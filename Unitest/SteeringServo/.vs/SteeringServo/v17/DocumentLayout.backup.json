@@ -1,0 +1,87 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\SteeringWheel.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|solutionrelative:SteeringWheel.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\SteeringServo.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|solutionrelative:SteeringServo.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 312,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{2143d5d7-e0e9-4543-bc50-2f80d3a5b025}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{4c948e95-307a-403f-9a4c-70fa26d41ca6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{4c948e95-307a-403f-9a4c-70fa26d41ca6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "SteeringServo.h",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\SteeringServo.h",
+              "RelativeDocumentMoniker": "SteeringServo.h",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\SteeringServo.h",
+              "RelativeToolTip": "SteeringServo.h",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAE4AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-11-13T09:29:13.861Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SteeringWheel.h",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\SteeringWheel.h",
+              "RelativeDocumentMoniker": "SteeringWheel.h",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\SteeringWheel.h",
+              "RelativeToolTip": "SteeringWheel.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-11-13T09:22:38.68Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AgIAABYAAAAAAAAAAAAkwB8AAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-11-13T08:51:46.294Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
