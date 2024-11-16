@@ -1,6 +1,9 @@
+
 #define DEBUG_UNITTEST
 #include "SteeringServo.h"
 #include "SteeringWheel.h"
+
+#include "PurePursuitGeometry.h"
 
 #include "geometry2D.h"
 #include <cstdint>
@@ -10,27 +13,12 @@
 #include <iostream>
 
 
-struct WheelSteeringInfo {
-	float angle;
-	Point2D
-};
-
-enum WHEEL{FL, FL, RL, RR};
-struct SteeringConfiguration {
-	Point2D servo_position;
-	Point2D left_wheel_position;
-	Point2D right_wheel_position;
-	enum WHEEL connected_wheel_to_servo;
-	float servo_arm_length;
-	float wheel_arm_length;
-	float wheel_arm_forward_position_angle_rad;
-	float servo_arm_forward_position_angle_rad;
-};
 
 
-// positive angle: going right
-// negative angle: goinf left
-// wheels angle: [-48.946945; 59.711018], servo angle: [-65; 41]
+// positive angle: going left
+// negative angle: goinf right
+// wheels angle: [59.711018; -48.946945], servo angle: [41; -65]
+// servo angle: [60.33; -48.962376], wheel angle: [41.116337; -65.044365]
 Point2D g_servo_position = Point2D{ 0.0f, 0.0f };
 Point2D g_arm_wheel_position = Point2D{ 52.392, -6.0f };
 float g_servo_arm_circle_radius_mm = 24.0f;	// 24mm, 20mm
@@ -38,197 +26,71 @@ float g_arm_wheel_circle_radius_mm = 25.547f;
 float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(16.46f));		//16.46
 
 // float g_servo_arm_to_arm_wheel_rod_length_mm = 45.6188202f;	// not necessary to calculate manually, already done automatically
-float g_arm_wheel_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f)) - g_arm_wheel_angle_rad;
 float g_servo_rod_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));
-float g_servo_rod_angle_position_rad = g_servo_rod_forward_angle_position_rad;
 float g_arm_wheel_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f) - g_arm_wheel_angle_rad);
 
 
 
-// positive angle: going right
-// negative angle: goinf left
-float SteeringAngleToRawAngle_rad(float steering_angle) {
-	steering_angle = NormalizePiToNegPi(steering_angle);
-	Point2D servo_position = g_servo_position;
-	Point2D arm_wheel_position = g_arm_wheel_position;
-	float servo_arm_circle_radius_mm = g_servo_arm_circle_radius_mm;
-	float arm_wheel_circle_radius_mm = g_arm_wheel_circle_radius_mm;
-	float arm_wheel_angle_rad = g_arm_wheel_angle_rad;
-
-	float servo_arm_to_arm_wheel_rod_length_mm; //= g_servo_arm_to_arm_wheel_rod_length_mm;
-	float arm_wheel_angle_position_rad = g_arm_wheel_angle_position_rad;
-	float arm_wheel_forward_angle_position_rad = g_arm_wheel_forward_angle_position_rad;
-	float servo_rod_forward_angle_position_rad = g_servo_rod_forward_angle_position_rad;
-	float servo_rod_angle_position_rad = g_servo_rod_angle_position_rad;
-	float raw_angle = 0.0f;
-	Point2D servo_rod_position;
-	Point2D arm_wheel_rod_position;
-	IntersectionPoints2D_2 temp_intersectionPoints;
-	float temp_distance_1, temp_distance_2;
-	float cmp_result_1;
-
-	servo_rod_position = circleAngleToPoint2D(servo_position, servo_arm_circle_radius_mm, servo_rod_angle_position_rad);
-	arm_wheel_rod_position = circleAngleToPoint2D(arm_wheel_position, arm_wheel_circle_radius_mm, arm_wheel_angle_position_rad);
-	servo_arm_to_arm_wheel_rod_length_mm = euclidianDistance(servo_rod_position, arm_wheel_rod_position);
-
-
-	// the function main logic starts here
-	arm_wheel_angle_position_rad = NormalizePiToNegPi(arm_wheel_angle_position_rad + steering_angle);
-	arm_wheel_rod_position = circleAngleToPoint2D(arm_wheel_position, arm_wheel_circle_radius_mm, arm_wheel_angle_position_rad);
-
-	temp_intersectionPoints = intersectionBwCircles(servo_position, servo_arm_circle_radius_mm, arm_wheel_rod_position, servo_arm_to_arm_wheel_rod_length_mm);
-
-	temp_distance_1 = euclidianDistance(servo_rod_position, temp_intersectionPoints.point1);
-	temp_distance_2 = euclidianDistance(servo_rod_position, temp_intersectionPoints.point2);
-
-	if (temp_distance_1 < temp_distance_2) {
-		servo_rod_position = temp_intersectionPoints.point1;
-	}
-	else {
-		servo_rod_position = temp_intersectionPoints.point2;
-	}
-	servo_rod_angle_position_rad = circlePoint2DToAngle(servo_position, servo_rod_position);
-
-	raw_angle = NormalizePiToNegPi(servo_rod_angle_position_rad - servo_rod_forward_angle_position_rad);
-
-	return raw_angle;
-}
-
-// positive angle: going right
-// negative angle: goinf left
-float RawAngleToSteeringAngle_rad(float raw_angle) {
-	raw_angle = NormalizePiToNegPi(raw_angle);
-	Point2D servo_position = g_servo_position;
-	Point2D arm_wheel_position = g_arm_wheel_position;
-	float servo_arm_circle_radius_mm = g_servo_arm_circle_radius_mm;
-	float arm_wheel_circle_radius_mm = g_arm_wheel_circle_radius_mm;
-	float arm_wheel_angle_rad = g_arm_wheel_angle_rad;
-
-	float servo_arm_to_arm_wheel_rod_length_mm; //= g_servo_arm_to_arm_wheel_rod_length_mm;
-	float arm_wheel_angle_position_rad = g_arm_wheel_angle_position_rad;
-	float arm_wheel_forward_angle_position_rad = g_arm_wheel_forward_angle_position_rad;
-	float servo_rod_forward_angle_position_rad = g_servo_rod_forward_angle_position_rad;
-	float servo_rod_angle_position_rad = g_servo_rod_angle_position_rad;
-	float steering_angle = 0.0f;
-	Point2D servo_rod_position;
-	Point2D arm_wheel_rod_position;
-	IntersectionPoints2D_2 temp_intersectionPoints;
-	float temp_distance_1, temp_distance_2;
-	float cmp_result_1;
-
-	servo_rod_position = circleAngleToPoint2D(servo_position, servo_arm_circle_radius_mm, servo_rod_angle_position_rad);
-	arm_wheel_rod_position = circleAngleToPoint2D(arm_wheel_position, arm_wheel_circle_radius_mm, arm_wheel_angle_position_rad);
-	servo_arm_to_arm_wheel_rod_length_mm = euclidianDistance(servo_rod_position, arm_wheel_rod_position);
-
-	// the function main logic starts here
-	servo_rod_angle_position_rad = NormalizePiToNegPi(servo_rod_angle_position_rad + raw_angle);
-	servo_rod_position = circleAngleToPoint2D(servo_position, servo_arm_circle_radius_mm, servo_rod_angle_position_rad);
-
-	temp_intersectionPoints = intersectionBwCircles(arm_wheel_position, arm_wheel_circle_radius_mm, servo_rod_position, servo_arm_to_arm_wheel_rod_length_mm);
-
-	temp_distance_1 = euclidianDistance(arm_wheel_rod_position, temp_intersectionPoints.point1);
-	temp_distance_2 = euclidianDistance(arm_wheel_rod_position, temp_intersectionPoints.point2);
-
-	if (temp_distance_1 < temp_distance_2) {
-		arm_wheel_rod_position = temp_intersectionPoints.point1;
-	}
-	else {
-		arm_wheel_rod_position = temp_intersectionPoints.point2;
-	}
-
-	arm_wheel_angle_position_rad = circlePoint2DToAngle(arm_wheel_position, arm_wheel_rod_position);
-	steering_angle = NormalizePiToNegPi(arm_wheel_angle_position_rad - arm_wheel_forward_angle_position_rad);
-	return steering_angle;
-}
-
-
-// positive angle: going right
-// negative angle: goinf left
-Point2D wheelArmServoRodPosition(float steering_angle, enum WHEEL wheel, SteeringConfiguration steering_config) {
-	steering_angle = NormalizePiToNegPi(steering_angle);
-	Point2D servo_position = steering_config.servo_position;
-	Point2D arm_wheel_position;
-	if (wheel == WHEEL::FL) {
-		arm_wheel_position = steering_config.left_wheel_position;
-	}
-	else {
-		arm_wheel_position = steering_config.right_wheel_position;
-	}
-
-	float servo_arm_circle_radius_mm = steering_config.servo_arm_length;
-	float arm_wheel_circle_radius_mm = steering_config.wheel_arm_length;
-
-	float servo_arm_to_arm_wheel_rod_length_mm; //= g_servo_arm_to_arm_wheel_rod_length_mm;
-	float arm_wheel_angle_position_rad = steering_config.wheel_arm_forward_position_angle_rad;
-	float servo_rod_forward_angle_position_rad = steering_config.servo_arm_forward_position_angle_rad;
-	float servo_rod_angle_position_rad = steering_config.servo_arm_forward_position_angle_rad;
-	float raw_angle = 0.0f;
-	Point2D servo_rod_position;
-	Point2D arm_wheel_rod_position;
-	IntersectionPoints2D_2 temp_intersectionPoints;
-	float temp_distance_1, temp_distance_2;
-	float cmp_result_1;
-
-	servo_rod_position = circleAngleToPoint2D(servo_position, servo_arm_circle_radius_mm, servo_rod_angle_position_rad);
-	arm_wheel_rod_position = circleAngleToPoint2D(arm_wheel_position, arm_wheel_circle_radius_mm, arm_wheel_angle_position_rad);
-	servo_arm_to_arm_wheel_rod_length_mm = euclidianDistance(servo_rod_position, arm_wheel_rod_position);
-
-
-	// the function main logic starts here
-	arm_wheel_angle_position_rad = NormalizePiToNegPi(arm_wheel_angle_position_rad + steering_angle);
-	arm_wheel_rod_position = circleAngleToPoint2D(arm_wheel_position, arm_wheel_circle_radius_mm, arm_wheel_angle_position_rad);
-
-	temp_intersectionPoints = intersectionBwCircles(servo_position, servo_arm_circle_radius_mm, arm_wheel_rod_position, servo_arm_to_arm_wheel_rod_length_mm);
-
-	temp_distance_1 = euclidianDistance(servo_rod_position, temp_intersectionPoints.point1);
-	temp_distance_2 = euclidianDistance(servo_rod_position, temp_intersectionPoints.point2);
-
-	if (temp_distance_1 < temp_distance_2) {
-		servo_rod_position = temp_intersectionPoints.point1;
-	}
-	else {
-		servo_rod_position = temp_intersectionPoints.point2;
-	}
-	return servo_rod_position;
-}
-
-
-// positive angle: going right
-// negative angle: goinf left
-float SteeringAngleToRawAngle_rad2(float steering_angle, SteeringConfiguration steering_config) {
-	steering_angle = NormalizePiToNegPi(steering_angle);
-	Point2D servo_position = steering_config.servo_position;
-
-
-	float servo_rod_forward_angle_position_rad = steering_config.servo_arm_forward_position_angle_rad;
-	float servo_rod_angle_position_rad;
-	float raw_angle = 0.0f;
-	Point2D servo_rod_position;
-
-
-	servo_rod_position = wheelArmServoRodPosition(steering_angle, steering_config.connected_wheel_to_servo, steering_config);
-	servo_rod_angle_position_rad = circlePoint2DToAngle(servo_position, servo_rod_position);
-	
-	raw_angle = NormalizePiToNegPi(servo_rod_angle_position_rad - servo_rod_forward_angle_position_rad);
-
-	return raw_angle;
-}
+#define WHEEL_BASE_M 0.175
+#define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
+#define DISTANCE_BETWEEN_WHEELS_M 0.137	//distance between wheels
 
 
 
-int main() {
+int main1() {
 	float result_1, result_2, result_3;
-	float servo, wheels;
-	result_1 = degrees(SteeringAngleToRawAngle_rad(radians(40))); // -0.936093390 rad
-	result_2 = degrees(RawAngleToSteeringAngle_rad(radians(result_1))); // 40
-	result_1 = degrees(SteeringAngleToRawAngle_rad(radians(-40))); // -0.936093390 rad
-	result_2 = degrees(RawAngleToSteeringAngle_rad(radians(result_1))); // -40
+	float servo, wheels, servo_2, right_wheel;
+
+	SteeringConfiguration steer_config;
+	steer_config.servo_arm_forward_position_angle_rad = g_servo_rod_forward_angle_position_rad;
+	steer_config.servo_arm_length = g_servo_arm_circle_radius_mm;
+	steer_config.servo_position = g_servo_position;
+	steer_config.wheel_arm_forward_position_angle_rad = g_arm_wheel_forward_angle_position_rad;
+	steer_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
+	steer_config.wheel_position = g_arm_wheel_position;
+
+
+
+	result_1 = degrees(WheelAngleToServoRawAngle_rad(radians(0), steer_config)); // -0.936093390 rad
+	result_2 = degrees(ServoRawAngleToWheelAngle_rad(radians(result_1), steer_config)); // 40
+	result_1 = degrees(WheelAngleToServoRawAngle_rad(radians(-40), steer_config)); // -0.936093390 rad
+	result_2 = degrees(ServoRawAngleToWheelAngle_rad(radians(result_1), steer_config)); // -40
 	for (int i = -90; i < 90; i++)
 	{
-		servo = degrees(SteeringAngleToRawAngle_rad(radians(i)));
-		wheels = degrees(RawAngleToSteeringAngle_rad(radians(servo)));;
-		printf("steering [%d] = servo: %f\t wheels: %f\n", i, servo, wheels);
+
+		right_wheel = degrees(RightWheelSteeringAngle(radians(i), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
+
+		servo_2 = degrees(WheelAngleToServoRawAngle_rad(radians(right_wheel), steer_config));
+		wheels = degrees(ServoRawAngleToWheelAngle_rad(radians(servo_2), steer_config));
+		printf("steering [%d] = wheel_RL: %f\t servo: %f\t wheels: %f\n", i, right_wheel, servo_2, wheels);
 	}
 
 	return 0;
+}
+
+
+#define STEERING_SERVO_ANGLE_MIDDLE     90
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  126   // +36 -> -36 going right
+#define STEERING_SERVO_ANGLE_MAX_LEFT   43     // -47 -> +47 going left
+
+int main() {
+	SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
+	g_steering_wheel.setTrackWidth(DISTANCE_BETWEEN_WHEELS_M);
+	g_steering_wheel.setWheelBase(WHEEL_BASE_M);
+	//g_steering_wheel.steering_servo.setAngleOffset(-4.7f);
+
+	float servo_angle, servo_raw_angle, steering_wheel_angle;
+
+
+	for (int i = -90; i < 90; i++)
+	{
+
+		g_steering_wheel.setSteeringWheelAngleDeg(i);
+
+		servo_angle = g_steering_wheel.steering_servo.getAngleDeg();
+		servo_raw_angle = g_steering_wheel.steering_servo.getRawAngleDeg();
+		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
+		printf("req_ang [%d] = steer_wheel: %f\t servo: %f\t servo_raw: %f\n", i, steering_wheel_angle, servo_angle, servo_raw_angle);
+	}
+
 }

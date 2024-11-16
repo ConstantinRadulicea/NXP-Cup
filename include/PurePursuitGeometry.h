@@ -61,6 +61,18 @@ static float steeringWheelAngle(float TrajectoryToWayPointAngle, float wheelBase
 	return angle;
 }
 
+
+static float bicycleSteeringAngle(float wheel_base, float steering_radius) {
+	if (floatCmp(steering_radius, 0.0f) == 0) {
+		return 0.0f;
+	}
+	if (floatCmp(wheel_base, 0.0f) == 0) {
+		return 0.0f;
+	}
+    // Calculate the steering angle in radians
+    return atanf(wheel_base / steering_radius);
+}
+
 static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBase, float nextWayPointDistance) {
 	float angle;
 	float temp_float;
