@@ -25,6 +25,7 @@
 #include "geometry2D.h"
 #include "Config.h"
 #include "TrajectoryMix.h"
+#include "SteeringWheel.h"
 
 
 #define TRUE 1

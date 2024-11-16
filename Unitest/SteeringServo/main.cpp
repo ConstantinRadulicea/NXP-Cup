@@ -55,11 +55,11 @@ int main2() {
 	result_2 = degrees(ServoRawAngleToWheelAngle_rad(radians(result_1), steer_config)); // 40
 	result_1 = degrees(WheelAngleToServoRawAngle_rad(radians(-40), steer_config)); // -0.936093390 rad
 	result_2 = degrees(ServoRawAngleToWheelAngle_rad(radians(result_1), steer_config)); // -40
-	for (int i = -90; i < 90; i++)
+	for (int i = -50; i < 54; i++)
 	{
 
 		right_wheel = degrees(RightWheelAngle(radians(i), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
-
+		//right_wheel = i;
 		servo_2 = degrees(WheelAngleToServoRawAngle_rad(radians(right_wheel), steer_config));
 		wheels = degrees(ServoRawAngleToWheelAngle_rad(radians(servo_2), steer_config));
 		printf("steering [%d] = wheel_RL: %f\t servo: %f\t wheels: %f\n", i, right_wheel, servo_2, wheels);
@@ -77,12 +77,12 @@ int main() {
 	SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
 	//g_steering_wheel.setTrackWidth(DISTANCE_BETWEEN_WHEELS_M);
 	//g_steering_wheel.setWheelBase(WHEEL_BASE_M);
-	g_steering_wheel.steering_servo.setAngleOffset(-4.7f);
+	//g_steering_wheel.steering_servo.setAngleOffset(-4.6f);
 
-	float servo_angle, servo_raw_angle, steering_wheel_angle;
+	float servo_angle, servo_raw_angle, steering_wheel_angle, right_wheel_angle;
 
 
-	for (int i = -90; i < 90; i++)
+	for (int i = -60; i <= 60; i++)
 	{
 
 		g_steering_wheel.setSteeringWheelAngleDeg(i);
@@ -90,7 +90,8 @@ int main() {
 		servo_angle = g_steering_wheel.steering_servo.getAngleDeg();
 		servo_raw_angle = g_steering_wheel.steering_servo.getRawAngleDeg();
 		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
-		printf("req_ang [%d] = steer_wheel: %f\t servo: %f\t servo_raw: %f\n", i, steering_wheel_angle, servo_angle, servo_raw_angle);
+		right_wheel_angle = g_steering_wheel.getRightWheelAngleDeg();
+		printf("req_ang [%d] = steer_wheel: %f\t right_wheel: %f\t servo: %f\t servo_raw: %f\n", i, steering_wheel_angle, right_wheel_angle, servo_angle, servo_raw_angle);
 	}
 	return 0;
 }

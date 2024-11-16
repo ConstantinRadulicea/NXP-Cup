@@ -16,7 +16,7 @@ struct SteeringConfiguration {
 
 // positive angle: going left
 // negative angle: goinf right
-static Point2D wheelArmServoRodPosition(float steering_angle, SteeringConfiguration steering_config) {
+static Point2D ServoArmPosition(float steering_angle, SteeringConfiguration steering_config) {
 	steering_angle = NormalizePiToNegPi(steering_angle);
 	Point2D servo_position = steering_config.servo_position;
 	Point2D arm_wheel_position = steering_config.wheel_position;
@@ -124,7 +124,7 @@ static float WheelAngleToServoRawAngle_rad(float steering_angle, SteeringConfigu
 	Point2D servo_rod_position;
 
 
-	servo_rod_position = wheelArmServoRodPosition(steering_angle, steering_config);
+	servo_rod_position = ServoArmPosition(steering_angle, steering_config);
 	servo_rod_angle_position_rad = circlePoint2DToAngle(servo_position, servo_rod_position);
 
 	raw_angle = NormalizePiToNegPi(servo_rod_angle_position_rad - servo_rod_forward_angle_position_rad);
@@ -164,6 +164,7 @@ public:
 		this->wheel_base = wheel_base;
 		this->track_width = track_width;
 		this->steering_wheel_angle = 0.0f;
+		this->right_wheel_angle_rad = 0.0f;
 
 		this->SteeringWheel_MaxLeftAngle = degrees(RightWheelAngleToVehicleSteeringAngle(ServoRawAngleToWheelAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg()), this->steering_config), this->wheel_base, this->track_width));
 		this->SteeringWheel_MaxRightAngle = degrees(RightWheelAngleToVehicleSteeringAngle(ServoRawAngleToWheelAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config), this->wheel_base, this->track_width));
@@ -177,7 +178,7 @@ public:
 	}
 	void setSteeringWheelAngleDeg(float steering_wheel_angle) {
 		steering_wheel_angle = this->vaildAngleDeg(steering_wheel_angle);
-		float right_wheel_angle_rad = RightWheelAngle(radians(steering_wheel_angle), this->wheel_base, this->track_width);
+		this->right_wheel_angle_rad = RightWheelAngle(radians(steering_wheel_angle), this->wheel_base, this->track_width);
 		float servo_raw_angle_deg = degrees(WheelAngleToServoRawAngle_rad(right_wheel_angle_rad, this->steering_config));
 		this->steering_servo.setAngleDeg(servo_raw_angle_deg);
 		this->steering_wheel_angle = steering_wheel_angle;
@@ -196,6 +197,10 @@ public:
 
 		valid_angle = MAX(MIN(angle, max_steering_angle), min_steering_angle);
 		return valid_angle;
+	}
+
+	float getRightWheelAngleDeg() {
+		return degrees(this->right_wheel_angle_rad);
 	}
 
 	// -1: left, 0: forward, 1: right
@@ -221,6 +226,7 @@ private:
 
 	float SteeringWheel_MaxLeftAngle;
 	float SteeringWheel_MaxRightAngle;
+	float right_wheel_angle_rad;
 
 
 };
