@@ -37,7 +37,7 @@ float g_arm_wheel_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f
 
 
 
-int main1() {
+int main2() {
 	float result_1, result_2, result_3;
 	float servo, wheels, servo_2, right_wheel;
 
@@ -58,7 +58,7 @@ int main1() {
 	for (int i = -90; i < 90; i++)
 	{
 
-		right_wheel = degrees(RightWheelSteeringAngle(radians(i), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
+		right_wheel = degrees(RightWheelAngle(radians(i), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
 
 		servo_2 = degrees(WheelAngleToServoRawAngle_rad(radians(right_wheel), steer_config));
 		wheels = degrees(ServoRawAngleToWheelAngle_rad(radians(servo_2), steer_config));
@@ -74,10 +74,10 @@ int main1() {
 #define STEERING_SERVO_ANGLE_MAX_LEFT   43     // -47 -> +47 going left
 
 int main() {
-	SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
-	g_steering_wheel.setTrackWidth(DISTANCE_BETWEEN_WHEELS_M);
-	g_steering_wheel.setWheelBase(WHEEL_BASE_M);
-	//g_steering_wheel.steering_servo.setAngleOffset(-4.7f);
+	SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
+	//g_steering_wheel.setTrackWidth(DISTANCE_BETWEEN_WHEELS_M);
+	//g_steering_wheel.setWheelBase(WHEEL_BASE_M);
+	g_steering_wheel.steering_servo.setAngleOffset(-4.7f);
 
 	float servo_angle, servo_raw_angle, steering_wheel_angle;
 
@@ -92,5 +92,5 @@ int main() {
 		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
 		printf("req_ang [%d] = steer_wheel: %f\t servo: %f\t servo_raw: %f\n", i, steering_wheel_angle, servo_angle, servo_raw_angle);
 	}
-
+	return 0;
 }

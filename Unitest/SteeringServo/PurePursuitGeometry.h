@@ -211,7 +211,7 @@ static float carTurnMaxSpeed(float _turn_radius, float _friction_coefficient, fl
 
 // positive angle: going left
 // negative angle: going right
-static float RightWheelSteeringAngle(float steering_angle, float wheel_base, float track_width) {
+static float RightWheelAngle(float steering_angle, float wheel_base, float track_width) {
 	float vehicle_turn_radius = turnRadius(wheel_base, steering_angle);
 	float right_wheel_turn_radius;
 	int cmp_result;
@@ -241,9 +241,46 @@ static float RightWheelSteeringAngle(float steering_angle, float wheel_base, flo
 		right_wheel_steering_angle = -right_wheel_steering_angle;
 	}
 
+	return right_wheel_steering_angle;
+}
+
+
+// positive angle: going left
+// negative angle: going right
+static float RightWheelAngleToVehicleSteeringAngle(float right_wheel_angle, float wheel_base, float track_width) {
+	float vehicle_turn_radius;
+	float right_wheel_turn_radius = turnRadius(wheel_base, right_wheel_angle);
+	int cmp_result;
+	float right_wheel_steering_angle;
+
+	if (floatCmp(track_width, 0.0f) == 0) {
+		return 0;
+	}
+	cmp_result = floatCmp(right_wheel_angle, 0.0f);
+	if (cmp_result > 0)	// going left
+	{
+		vehicle_turn_radius = right_wheel_turn_radius - (track_width / 2.0f);
+	}
+	else if (cmp_result < 0) // going right
+	{
+		vehicle_turn_radius = right_wheel_turn_radius + (track_width / 2.0f);
+	}
+	else
+	{
+		return 0.0f;
+	}
+
+	right_wheel_steering_angle = bicycleSteeringAngle(wheel_base, vehicle_turn_radius);;
+
+	if (cmp_result < 0) // going right
+	{
+		right_wheel_steering_angle = -right_wheel_steering_angle;
+	}
+
 
 	return right_wheel_steering_angle;
 }
+
 
 
 #endif // !__PUREPURSUITGEOMETRY_H__
