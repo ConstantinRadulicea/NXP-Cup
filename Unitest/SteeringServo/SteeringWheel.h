@@ -149,6 +149,7 @@ public:
 		float g_servo_arm_circle_radius_mm = 24.0f;	// 24mm, 20mm
 		float g_arm_wheel_circle_radius_mm = 25.547f;
 		float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(16.46f));		//16.46
+		//g_arm_wheel_angle_rad = 0.0f;
 
 		// float g_servo_arm_to_arm_wheel_rod_length_mm = 45.6188202f;	// not necessary to calculate manually, already done automatically
 		float g_servo_rod_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));

@@ -67,7 +67,7 @@ static float bicycleSteeringAngle(float wheel_base, float steering_radius) {
 		return 0.0f;
 	}
 	if (floatCmp(wheel_base, 0.0f) == 0) {
-		return 0.0f;
+		return atanf(0.0f);
 	}
     // Calculate the steering angle in radians
     return atanf(wheel_base / steering_radius);
@@ -87,11 +87,15 @@ static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBa
 
 static float turnRadius(float wheelBase, float turnAngle) {
 	float angle;
-	if (floatCmp(turnAngle, 0.0f) == 0) {
+	//float temp_sin = sinf(turnAngle);
+	float temp_sin = tanf(turnAngle);
+	if (floatCmp(temp_sin, 0.0f) == 0) {
 		return 0.0f;
 	}
 	
-	angle = (wheelBase / tanf(turnAngle));
+	//angle = (wheelBase / tanf(turnAngle));
+	angle = (wheelBase / temp_sin);
+
 	angle = fabsf(angle);
 	return angle;
 }
@@ -235,6 +239,43 @@ static float RightWheelAngle(float steering_angle, float wheel_base, float track
 	}
 
 	right_wheel_steering_angle = bicycleSteeringAngle(wheel_base, right_wheel_turn_radius);;
+
+	if (cmp_result < 0) // going right
+	{
+		right_wheel_steering_angle = -right_wheel_steering_angle;
+	}
+
+	return right_wheel_steering_angle;
+}
+
+
+
+// positive angle: going left
+// negative angle: going right
+static float LeftWheelAngle(float steering_angle, float wheel_base, float track_width) {
+	float vehicle_turn_radius = turnRadius(wheel_base, steering_angle);
+	float right_wheel_turn_radius;
+	int cmp_result;
+	float right_wheel_steering_angle;
+
+	if (floatCmp(track_width, 0.0f) == 0) {
+		return 0;
+	}
+	cmp_result = floatCmp(steering_angle, 0.0f);
+	if (cmp_result > 0)	// going left
+	{
+		right_wheel_turn_radius = vehicle_turn_radius - (track_width / 2.0f);
+	}
+	else if (cmp_result < 0) // going right
+	{
+		right_wheel_turn_radius = vehicle_turn_radius + (track_width / 2.0f);
+	}
+	else
+	{
+		return 0.0f;
+	}
+
+	right_wheel_steering_angle = bicycleSteeringAngle(wheel_base, right_wheel_turn_radius);
 
 	if (cmp_result < 0) // going right
 	{
