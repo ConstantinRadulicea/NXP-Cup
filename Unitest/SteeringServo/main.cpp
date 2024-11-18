@@ -134,12 +134,13 @@ int main() {
 	left_wheel_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
 	left_wheel_config.wheel_position = left_wheel_config.servo_position;
 	left_wheel_config.wheel_position.x = -(left_wheel_config.wheel_position.x);
-
-
+	//float g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(0.28077)));
+	float valid_angle;
 	for (int i = -60; i <= 60; i++)
 	{
-
-		g_steering_wheel.setSteeringWheelAngleDeg(i);
+		g_steering_wheel.SetRawAngleOffset(-4.0f);
+		valid_angle = g_steering_wheel.vaildAngleDeg(i);
+		g_steering_wheel.setSteeringWheelAngleDeg(valid_angle);
 
 		servo_angle = g_steering_wheel.steering_servo.getAngleDeg();
 		servo_raw_angle = g_steering_wheel.steering_servo.getRawAngleDeg();

@@ -9,40 +9,49 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(2,9): warning C400
       C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(2,9):
       'DEBUG_UNITTEST' previously declared on the command line
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(63,63): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,63): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(63,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,130): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(65,130): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(66,92): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(67,92): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(67,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(68,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(100,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(101,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(102,16): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(103,16): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(117,32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(137,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(137,31): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(139,16): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(144,60): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(155,32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(188,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(176,31): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(192,31): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(183,83): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(201,57): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(203,31): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(193,13): warning C4101: 'cmpResult': unreferenced local variable
   (compiling source file 'main.cpp')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(56,8): warning C4101: 'temp_float': unreferenced local variable
@@ -62,42 +71,51 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(44,18): warning C4
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(44,28): warning C4101: 'result_3': unreferenced local variable
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(44,8): warning C4101: 'result_1': unreferenced local variable
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(45,8): warning C4101: 'servo': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(142,45): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(142,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   SteeringWheel.h
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(63,63): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,63): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(63,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,37): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,130): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(65,130): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(66,92): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(67,92): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(67,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(68,89): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(100,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(101,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(102,16): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(103,16): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(117,32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(137,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(137,31): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(139,16): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(144,60): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(155,32): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(188,31): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(176,31): warning C4244: '=': conversion from 'unsigned int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(192,31): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(183,83): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  (compiling source file 'SteeringWheel.h')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(201,57): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  (compiling source file 'SteeringWheel.h')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(203,31): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  (compiling source file 'SteeringWheel.h')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(193,13): warning C4101: 'cmpResult': unreferenced local variable
   (compiling source file 'SteeringWheel.h')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(56,8): warning C4101: 'temp_float': unreferenced local variable

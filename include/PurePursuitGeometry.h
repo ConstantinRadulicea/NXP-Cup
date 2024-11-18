@@ -14,6 +14,7 @@
 * limitations under the License.
 */
 
+// https://taketake2.com/S19_en.html
 
 
 
@@ -31,7 +32,7 @@ typedef struct PurePursuitInfo {
 	float TrajectoryToWayPointAngle;
 	float steeringAngle;
 	float wheelBase;
-	float turnRadius;
+	float rearWheelTurnRadius;
 	float manouvreLength;
 }PurePursuitInfo;
 
@@ -62,17 +63,6 @@ static float steeringWheelAngle(float TrajectoryToWayPointAngle, float wheelBase
 }
 
 
-static float bicycleSteeringAngle(float wheel_base, float steering_radius) {
-	if (floatCmp(steering_radius, 0.0f) == 0) {
-		return 0.0f;
-	}
-	if (floatCmp(wheel_base, 0.0f) == 0) {
-		return 0.0f;
-	}
-    // Calculate the steering angle in radians
-    return atanf(wheel_base / steering_radius);
-}
-
 static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBase, float nextWayPointDistance) {
 	float angle;
 	float temp_float;
@@ -85,15 +75,46 @@ static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBa
 	return angle;
 }
 
-static float turnRadius(float wheelBase, float turnAngle) {
+static float FrontWheelTurnRadius(float wheelBase, float turnAngle) {
 	float angle;
-	if (floatCmp(turnAngle, 0.0f) == 0) {
+	float temp_sin = sinf(turnAngle);
+	if (floatCmp(temp_sin, 0.0f) == 0) {
 		return 0.0f;
 	}
-	
-	angle = (wheelBase / tanf(turnAngle));
+
+	angle = (wheelBase / temp_sin);
+
 	angle = fabsf(angle);
 	return angle;
+}
+
+static float RearWheelTurnRadius(float wheelBase, float turnAngle) {
+	float angle;
+	//float temp_sin = sinf(turnAngle);
+	float temp_sin = tanf(turnAngle);
+	if (floatCmp(temp_sin, 0.0f) == 0) {
+		return 0.0f;
+	}
+
+	//angle = (wheelBase / tanf(turnAngle));
+	angle = (wheelBase / temp_sin);
+
+	angle = fabsf(angle);
+	return angle;
+}
+
+static float RearWheelTurnRadiusToFrontWheelTurnRadius(float wheelBase, float rear_wheel_turn_radius) {
+	return sqrtf((wheelBase * wheelBase) + (rear_wheel_turn_radius * rear_wheel_turn_radius));
+}
+
+static float TurnRadiusToSteeringAngle(float wheelBase, float turn_radius) {
+	float steer_angle;
+	if (floatCmp(turn_radius, 0.0f) == 0) {
+		return 0.0f;
+	}
+	steer_angle = asinf(wheelBase / turn_radius);
+	steer_angle = fabsf(steer_angle);
+	return steer_angle;
 }
 
 static float purePursuitComputeSteeringWheelAngle(Point2D carPos, LineMQ wayPoints, float wheelBase, float lookAheadDistance) {
@@ -146,17 +167,17 @@ static PurePursuitInfo purePursuitComputeMQ(Point2D carPos, LineMQ wayPoints, fl
 	info.nextWayPoint = nextWayPoint;
 	info.lookAheadDistance = lookAheadDistance;
 	info.wheelBase = wheelBase;
-	info.turnRadius = turnRadius(wheelBase, info.steeringAngle);
-	info.manouvreLength = fabsf(((2.0f * M_PI * info.turnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
+	info.rearWheelTurnRadius = RearWheelTurnRadius(wheelBase, info.steeringAngle);
+	info.manouvreLength = fabsf(((2.0f * M_PI * info.rearWheelTurnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
 	info.turnPoint = carPos;
 
 	
 
 	if (floatCmp(info.TrajectoryToWayPointAngle, 0.0f) < 0) {
-		info.turnPoint.x += info.turnRadius;
+		info.turnPoint.x += info.rearWheelTurnRadius;
 	}
 	else {
-		info.turnPoint.x -= info.turnRadius;
+		info.turnPoint.x -= info.rearWheelTurnRadius;
 	}
 
 	return info;
@@ -188,15 +209,15 @@ static PurePursuitInfo purePursuitComputeABC(Point2D carPos, LineABC wayPoints, 
 	info.nextWayPoint = nextWayPoint;
 	info.lookAheadDistance = lookAheadDistance;
 	info.wheelBase = wheelBase;
-	info.turnRadius = turnRadius(wheelBase, info.steeringAngle);
-	info.manouvreLength = fabsf(((2.0f * M_PI * info.turnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
+	info.rearWheelTurnRadius = RearWheelTurnRadius(wheelBase, info.steeringAngle);
+	info.manouvreLength = fabsf(((2.0f * M_PI * info.rearWheelTurnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
 	info.turnPoint = carPos;
 
 	if (floatCmp(info.TrajectoryToWayPointAngle, 0.0f) < 0) {
-		info.turnPoint.x += info.turnRadius;
+		info.turnPoint.x += info.rearWheelTurnRadius;
 	}
 	else {
-		info.turnPoint.x -= info.turnRadius;
+		info.turnPoint.x -= info.rearWheelTurnRadius;
 	}
 
 	return info;
@@ -209,76 +230,91 @@ static float carTurnMaxSpeed(float _turn_radius, float _friction_coefficient, fl
 	return _max_speed;
 }
 
+
 // positive angle: going left
 // negative angle: going right
-static float RightWheelAngle(float steering_angle, float wheel_base, float track_width) {
-	float vehicle_turn_radius = turnRadius(wheel_base, steering_angle);
-	float right_wheel_turn_radius;
+static float LeftWheelAngle(float steering_angle, float wheel_base, float track_width) {
+	float left_wheel_turn_radius;
 	int cmp_result;
-	float right_wheel_steering_angle;
+	float left_wheel_steering_angle;
+	float rear_wheel_turn_radius;
 
 	if (floatCmp(track_width, 0.0f) == 0) {
 		return 0;
 	}
+
+	rear_wheel_turn_radius = RearWheelTurnRadius(wheel_base, steering_angle);
+
 	cmp_result = floatCmp(steering_angle, 0.0f);
 	if (cmp_result > 0)	// going left
 	{
-		right_wheel_turn_radius = vehicle_turn_radius + (track_width / 2.0f);
+		rear_wheel_turn_radius = rear_wheel_turn_radius - (track_width / 2.0f);
 	}
 	else if (cmp_result < 0) // going right
 	{
-		right_wheel_turn_radius = vehicle_turn_radius - (track_width / 2.0f);
+		rear_wheel_turn_radius = rear_wheel_turn_radius + (track_width / 2.0f);
 	}
 	else
 	{
 		return 0.0f;
 	}
 
-	right_wheel_steering_angle = bicycleSteeringAngle(wheel_base, right_wheel_turn_radius);;
+	left_wheel_turn_radius = RearWheelTurnRadiusToFrontWheelTurnRadius(wheel_base, rear_wheel_turn_radius);
+	left_wheel_steering_angle = TurnRadiusToSteeringAngle(wheel_base, left_wheel_turn_radius);
 
 	if (cmp_result < 0) // going right
 	{
-		right_wheel_steering_angle = -right_wheel_steering_angle;
+		left_wheel_steering_angle = -left_wheel_steering_angle;
 	}
 
-	return right_wheel_steering_angle;
+	return left_wheel_steering_angle;
+}
+
+
+// positive angle: going left
+// negative angle: going right
+static float RightWheelAngle(float steering_angle, float wheel_base, float track_width) {
+	float left_wheel_turn_radius;
+	int cmp_result;
+	float left_wheel_steering_angle;
+	float rear_wheel_turn_radius;
+
+	if (floatCmp(track_width, 0.0f) == 0) {
+		return 0;
+	}
+
+	rear_wheel_turn_radius = RearWheelTurnRadius(wheel_base, steering_angle);
+
+	cmp_result = floatCmp(steering_angle, 0.0f);
+	if (cmp_result > 0)	// going left
+	{
+		rear_wheel_turn_radius = rear_wheel_turn_radius + (track_width / 2.0f);
+	}
+	else if (cmp_result < 0) // going right
+	{
+		rear_wheel_turn_radius = rear_wheel_turn_radius - (track_width / 2.0f);
+	}
+	else
+	{
+		return 0.0f;
+	}
+
+	left_wheel_turn_radius = RearWheelTurnRadiusToFrontWheelTurnRadius(wheel_base, rear_wheel_turn_radius);
+	left_wheel_steering_angle = TurnRadiusToSteeringAngle(wheel_base, left_wheel_turn_radius);
+
+	if (cmp_result < 0) // going right
+	{
+		left_wheel_steering_angle = -left_wheel_steering_angle;
+	}
+
+	return left_wheel_steering_angle;
 }
 
 
 // positive angle: going left
 // negative angle: going right
 static float RightWheelAngleToVehicleSteeringAngle(float right_wheel_angle, float wheel_base, float track_width) {
-	float vehicle_turn_radius;
-	float right_wheel_turn_radius = turnRadius(wheel_base, right_wheel_angle);
-	int cmp_result;
-	float right_wheel_steering_angle;
-
-	if (floatCmp(track_width, 0.0f) == 0) {
-		return 0;
-	}
-	cmp_result = floatCmp(right_wheel_angle, 0.0f);
-	if (cmp_result > 0)	// going left
-	{
-		vehicle_turn_radius = right_wheel_turn_radius - (track_width / 2.0f);
-	}
-	else if (cmp_result < 0) // going right
-	{
-		vehicle_turn_radius = right_wheel_turn_radius + (track_width / 2.0f);
-	}
-	else
-	{
-		return 0.0f;
-	}
-
-	right_wheel_steering_angle = bicycleSteeringAngle(wheel_base, vehicle_turn_radius);;
-
-	if (cmp_result < 0) // going right
-	{
-		right_wheel_steering_angle = -right_wheel_steering_angle;
-	}
-
-
-	return right_wheel_steering_angle;
+	return LeftWheelAngle(right_wheel_angle, wheel_base, track_width);
 }
 
 

@@ -86,6 +86,7 @@ extern float g_emergency_brake_enable_delay_s;
   #define STEERING_SERVO_ANGLE_MIDDLE     90
   #define STEERING_SERVO_ANGLE_MAX_RIGHT  126   // +36 -> -36 going right 126
   #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
+
 #elif CAR2 == 1
   #define STEERING_SERVO_ANGLE_MIDDLE     (90)    // 90 middle // 120
   #define STEERING_SERVO_ANGLE_MAX_RIGHT  (145)    // 0 max right // 90 - 58 = 32

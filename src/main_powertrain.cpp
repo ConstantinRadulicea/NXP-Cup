@@ -63,7 +63,7 @@ void setup() {
     pinMode(STEERING_SERVO_PIN, OUTPUT);
     g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
     g_steering_angle_rad = 0.0f;
-    g_steering_wheel.steering_servo.setAngleOffset(g_steering_wheel_angle_offset_deg);
+    g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
     g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
   #endif
 
@@ -201,7 +201,7 @@ void loop() {
   for (;;)
   {
     timeStart = (float)millis();
-    g_steering_wheel.steering_servo.setAngleOffset(g_steering_wheel_angle_offset_deg);
+    g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
     #if ENABLE_SERIAL_PRINT == 1
     parseInputGlobalVariablesRoutine(SERIAL_PORT);
     #endif
@@ -284,7 +284,7 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle_rad), g_max_acceleration, g_max_deceleration);
+              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.rearWheelTurnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle_rad), g_max_acceleration, g_max_deceleration);
             }
           }
         #endif
@@ -432,7 +432,11 @@ void loop() {
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
     g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
+    //g_steering_angle_rad = purePersuitInfo.steeringAngle;
     //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
+    //SERIAL_PORT.println(String("% g_steering_angle_rad: ") + String(g_steering_angle_rad, 5));
+    //SERIAL_PORT.println(String("% raw: ") + String(g_steering_wheel.steering_servo.getRawAngleDeg(), 5));
+    //SERIAL_PORT.println(String("% steer: ") + String(g_steering_wheel.getSteeringWheelAngle(), 5));
 
     if (pixy_1_loopIterationsCountNoVectorDetected >= MAX_ITERATION_PIXY_ERROR)
     {
@@ -458,7 +462,7 @@ void loop() {
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
+          g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.rearWheelTurnRadius), SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
         }
       }
     #endif
