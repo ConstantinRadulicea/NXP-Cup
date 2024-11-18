@@ -133,6 +133,44 @@ static float WheelAngleToServoRawAngle_rad(float steering_angle, SteeringConfigu
 }
 
 
+// positive angle: going left
+// negative angle: goinf right
+static float ServoAngleToSteeringAngle_rad(float servo_angle, SteeringConfiguration steering_servo_config) {
+	SteeringConfiguration center_wheel_config;
+
+	center_wheel_config.servo_arm_forward_position_angle_rad = steering_servo_config.wheel_arm_forward_position_angle_rad;
+	center_wheel_config.servo_arm_length = steering_servo_config.wheel_arm_length;
+	center_wheel_config.servo_position = steering_servo_config.wheel_position;
+	center_wheel_config.wheel_arm_forward_position_angle_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));
+	center_wheel_config.wheel_arm_length = steering_servo_config.wheel_arm_length;
+	center_wheel_config.wheel_position = steering_servo_config.servo_position;
+	center_wheel_config.wheel_position.y = steering_servo_config.wheel_position.y;
+
+	float right_wheel_angle = ServoRawAngleToWheelAngle_rad(servo_angle, steering_servo_config);
+	float steering_angle = ServoRawAngleToWheelAngle_rad(right_wheel_angle, center_wheel_config);
+	return steering_angle;
+}
+
+// positive angle: going left
+// negative angle: goinf right
+static float SteeringAngleToServoAngle_rad(float steering_angle, SteeringConfiguration steering_servo_config) {
+	SteeringConfiguration center_wheel_config;
+
+	center_wheel_config.servo_arm_forward_position_angle_rad = steering_servo_config.wheel_arm_forward_position_angle_rad;
+	center_wheel_config.servo_arm_length = steering_servo_config.wheel_arm_length;
+	center_wheel_config.servo_position = steering_servo_config.wheel_position;
+	center_wheel_config.wheel_arm_forward_position_angle_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));
+	center_wheel_config.wheel_arm_length = steering_servo_config.wheel_arm_length;
+	center_wheel_config.wheel_position = steering_servo_config.servo_position;
+	center_wheel_config.wheel_position.y = steering_servo_config.wheel_position.y;
+
+	float right_wheel_angle = WheelAngleToServoRawAngle_rad(steering_angle, center_wheel_config);
+	float servo_angle = WheelAngleToServoRawAngle_rad(right_wheel_angle, steering_servo_config);
+	return servo_angle;
+}
+
+
+
 
 class SteeringWheel
 {
@@ -145,7 +183,7 @@ public:
 		// negative angle: goinf right
 		// servo angle: [60.33; -48.962376], wheel angle: [41.116337; -65.044365]
 		Point2D g_servo_position = Point2D{ 0.0f, 0.0f };
-		Point2D g_arm_wheel_position = Point2D{ 52.392, -6.0f };
+		Point2D g_arm_wheel_position = Point2D{ 52.0f, -6.4f };
 		float g_servo_arm_circle_radius_mm = 24.0f;	// 24mm, 20mm
 		float g_arm_wheel_circle_radius_mm = 25.547f;
 		float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(16.46f));		//16.46
@@ -166,21 +204,13 @@ public:
 		this->track_width = track_width;
 		this->steering_wheel_angle = 0.0f;
 		this->right_wheel_angle_rad = 0.0f;
-
-		this->SteeringWheel_MaxLeftAngle = degrees(RightWheelAngleToVehicleSteeringAngle(ServoRawAngleToWheelAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg()), this->steering_config), this->wheel_base, this->track_width));
-		this->SteeringWheel_MaxRightAngle = degrees(RightWheelAngleToVehicleSteeringAngle(ServoRawAngleToWheelAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config), this->wheel_base, this->track_width));
+		
+		this->calculateMaxRanges();
 	}
 
-	void setWheelBase(float wheelBase) {
-		this->wheel_base = wheelBase;
-	}
-	void setTrackWidth(float trackWidth) {
-		this->track_width = trackWidth;
-	}
 	void setSteeringWheelAngleDeg(float steering_wheel_angle) {
 		steering_wheel_angle = this->vaildAngleDeg(steering_wheel_angle);
-		this->right_wheel_angle_rad = RightWheelAngle(radians(steering_wheel_angle), this->wheel_base, this->track_width);
-		float servo_raw_angle_deg = degrees(WheelAngleToServoRawAngle_rad(right_wheel_angle_rad, this->steering_config));
+		float servo_raw_angle_deg = degrees(SteeringAngleToServoAngle_rad(radians(steering_wheel_angle), this->steering_config));
 		this->steering_servo.setAngleDeg(servo_raw_angle_deg);
 		this->steering_wheel_angle = steering_wheel_angle;
 	}
@@ -200,10 +230,6 @@ public:
 		return valid_angle;
 	}
 
-	float getRightWheelAngleDeg() {
-		return degrees(this->right_wheel_angle_rad);
-	}
-
 	// -1: left, 0: forward, 1: right
 	static int AngleToDirectionDeg(float angle) {
 		int cmp_result = floatCmp(angle, 0.0);
@@ -216,6 +242,16 @@ public:
 		else {
 			return 0;
 		}
+	}
+
+	void calculateMaxRanges() {
+		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg()), this->steering_config));
+		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config));
+	}
+
+	void SetRawAngleOffset(float offset) {
+		this->steering_servo.setMiddleAngleOffset(offset);
+		this->calculateMaxRanges();
 	}
 
 private:

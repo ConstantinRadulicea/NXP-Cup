@@ -53,6 +53,55 @@ protected:
     float SteeringAngleOffset;
     float raw_angle_deg;
     /* data */
+
+    void calculateMaxRanges() {
+
+        //this->ServoMaxLeftAngle -= this->SteeringAngleOffset;
+        //this->ServoMiddleAngle -= this->SteeringAngleOffset;
+        //this->ServoMaxRightAngle -= this->SteeringAngleOffset;
+
+        this->ServoAngleSpan = fabsf(this->ServoMaxRightAngle - this->ServoMaxLeftAngle);
+        this->ServoAngleSpan_per_SteeringServoAngle = fabsf((float)this->ServoAngleSpan / (float)fabsf((this->ServoMaxRightAngle - this->ServoMaxLeftAngle)));
+
+        this->SteeringServo_MaxRightAngle = -(float)((float)fabsf(this->ServoMaxRightAngle - this->ServoMiddleAngle) / this->ServoAngleSpan_per_SteeringServoAngle);
+        this->SteeringServo_MaxLeftAngle = (float)((float)fabsf(this->ServoMaxLeftAngle - this->ServoMiddleAngle) / this->ServoAngleSpan_per_SteeringServoAngle);
+    }
+
+    float inputAngleToRawAngle(float input_angle) {
+        int new_servo_angle = this->ServoMiddleAngle;
+        int cmpResult;
+
+        cmpResult = floatCmp(input_angle, 0.0f);
+        if (cmpResult < 0) { // going right
+            input_angle = MAX(input_angle, this->SteeringServo_MaxRightAngle);
+
+            input_angle = -input_angle;
+
+            if (this->ServoMaxRightAngle > this->ServoMiddleAngle) {
+                new_servo_angle = (this->ServoMiddleAngle) + (int)(input_angle * this->ServoAngleSpan_per_SteeringServoAngle);
+            }
+            else {
+                new_servo_angle = (this->ServoMiddleAngle) - (int)(input_angle * this->ServoAngleSpan_per_SteeringServoAngle);
+            }
+        }
+
+        else if (cmpResult > 0) {    // going left
+            input_angle = MIN(input_angle, this->SteeringServo_MaxLeftAngle);
+
+            if (this->ServoMaxLeftAngle < this->ServoMiddleAngle) {
+                new_servo_angle = (this->ServoMiddleAngle) - (int)((float)(input_angle * this->ServoAngleSpan_per_SteeringServoAngle));
+            }
+            else {
+                new_servo_angle = (this->ServoMiddleAngle) + (int)((float)(input_angle * this->ServoAngleSpan_per_SteeringServoAngle));
+            }
+        }
+
+        else {   // going middle
+            new_servo_angle = 0.0f;
+        }
+        return new_servo_angle;
+    }
+
 public:
 
     SteeringServo()
@@ -84,19 +133,17 @@ public:
         this->ServoMaxLeftAngle = (int) servo_max_left_angle;
         this->ServoMiddleAngle = (int) servo_middle_angle;
         this->ServoMaxRightAngle = (int) servo_max_right_angle;
-        this->ServoAngleSpan = fabsf((int)servo_max_right_angle - (int)servo_max_left_angle);
-        this->ServoAngleSpan_per_SteeringServoAngle = fabsf((float)this->ServoAngleSpan / (float)fabsf(((int)servo_max_right_angle - (int)servo_max_left_angle)));
-        
-        this->SteeringServo_MaxRightAngle = -(float)((float)fabsf((int)servo_max_right_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringServoAngle);
-        this->SteeringServo_MaxLeftAngle = (float)((float)fabsf((int)servo_max_left_angle - (int)servo_middle_angle) / this->ServoAngleSpan_per_SteeringServoAngle);
+        this->calculateMaxRanges();
         this->raw_angle_deg = servo_middle_angle;
     }
 
     ~SteeringServo(){}
 
     // raw_servo_value = request_angle - offset
-    void setAngleOffset(float offset) {
+    void setMiddleAngleOffset(float offset) {
+        this->ServoMiddleAngle = this->inputAngleToRawAngle(-offset);
         this->SteeringAngleOffset = offset;
+        this->calculateMaxRanges();
     }
 
     // It interprets the received value as the steering servo angle and converts it to the corresponding angle for the servo motor
@@ -109,8 +156,8 @@ public:
         
         steering_angle = vaildAngleDeg(steering_angle);
         this->SteeringServoAngle = steering_angle;
-        steering_angle = steering_angle - this->SteeringAngleOffset;
-        steering_angle = vaildAngleDeg(steering_angle);
+        //steering_angle = steering_angle - this->SteeringAngleOffset;
+        //steering_angle = vaildAngleDeg(steering_angle);
 
         cmpResult = floatCmp(steering_angle, 0.0f);
         if(cmpResult < 0) { // going right
