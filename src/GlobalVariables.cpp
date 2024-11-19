@@ -129,6 +129,7 @@ float g_steering_angle_rad = 0.0f;
 FinishLine g_finish_line = {};
 int8_t g_start_line_calibration_acquisition = 0;
 LineCalibrationData g_line_calibration_data = {};
+float g_rear_axe_turn_radius_m = 0.0f;
 
 
 //SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);

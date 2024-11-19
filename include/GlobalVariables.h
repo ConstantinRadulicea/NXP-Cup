@@ -139,6 +139,8 @@ extern FinishLine g_finish_line;
 extern int8_t g_start_line_calibration_acquisition;
 
 extern LineCalibrationData g_line_calibration_data;
+extern float g_rear_axe_turn_radius_m;
+
 
 extern float g_powertrain_left_wheel_kp;
 extern float g_powertrain_left_wheel_ki;
