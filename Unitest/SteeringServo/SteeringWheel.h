@@ -146,6 +146,8 @@ static float ServoAngleToSteeringAngle_rad(float servo_angle, SteeringConfigurat
 	center_wheel_config.wheel_position = steering_servo_config.servo_position;
 	center_wheel_config.wheel_position.y = steering_servo_config.wheel_position.y;
 
+	center_wheel_config.wheel_arm_length = fabs(steering_servo_config.wheel_arm_length * sinf(steering_servo_config.wheel_arm_forward_position_angle_rad));
+
 	float right_wheel_angle = ServoRawAngleToWheelAngle_rad(servo_angle, steering_servo_config);
 	float steering_angle = ServoRawAngleToWheelAngle_rad(right_wheel_angle, center_wheel_config);
 	return steering_angle;
@@ -163,6 +165,8 @@ static float SteeringAngleToServoAngle_rad(float steering_angle, SteeringConfigu
 	center_wheel_config.wheel_arm_length = steering_servo_config.wheel_arm_length;
 	center_wheel_config.wheel_position = steering_servo_config.servo_position;
 	center_wheel_config.wheel_position.y = steering_servo_config.wheel_position.y;
+
+	center_wheel_config.wheel_arm_length = fabs(steering_servo_config.wheel_arm_length * sinf(steering_servo_config.wheel_arm_forward_position_angle_rad));
 
 	float right_wheel_angle = WheelAngleToServoRawAngle_rad(steering_angle, center_wheel_config);
 	float servo_angle = WheelAngleToServoRawAngle_rad(right_wheel_angle, steering_servo_config);
