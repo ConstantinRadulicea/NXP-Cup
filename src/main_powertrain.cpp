@@ -180,6 +180,12 @@ void EnableLineDetectionAfterDelay(int8_t* g_enable_finish_line_detection_ptr, f
             }
           }
         }
+        else if (floatCmp(seconds, 0.0f) > 0 && g_enable_car_engine == 0)
+        {
+          (*enable_ptr) = 0;
+          remaining_delay_s = 0.0f;
+          started_count = 0;
+        }
 }
 void EnableEmergencyBrakeAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
     static int started_count = 0;
@@ -209,6 +215,13 @@ void EnableEmergencyBrakeAfterDelay(int8_t* g_enable_finish_line_detection_ptr, 
             }
           }
         }
+        else if (floatCmp(seconds, 0.0f) > 0 && g_enable_car_engine == 0)
+        {
+          (*enable_ptr) = 0;
+          remaining_delay_s = 0.0f;
+          started_count = 0;
+        }
+        
 }
 
 
@@ -240,6 +253,12 @@ void EnableSlowSpeedAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float
             }
           }
         }
+        else if (floatCmp(seconds, 0.0f) > 0 && g_enable_car_engine == 0)
+        {
+          (*enable_ptr) = 0;
+          remaining_delay_s = 0.0f;
+          started_count = 0;
+        }
 }
 
 
@@ -257,6 +276,7 @@ void loop() {
   float laneWidth, lookAheadDistance, frontObstacleDistance_m;
   float timeStart;
   float max_speed_original;
+  float speed_request_mps;
   
   int consecutiveValidFinishLines = 0;
   pixy_1_result = PIXY_RESULT_ERROR;
@@ -541,23 +561,22 @@ void loop() {
     #endif
 
     // max_speed Arbitrator
+    speed_request_mps = g_vehicle_max_speed_original_mps;
     if (g_enable_emergency_brake != 0 && g_emergency_break_active != 0) {
       if (frontObstacleDistance_m <= g_emergency_brake_distance_from_obstacle_m) {
-        g_vehicle_max_speed_mps = STANDSTILL_SPEED;
+        speed_request_mps = MIN(STANDSTILL_SPEED, speed_request_mps);
       }
       else{
-          g_vehicle_max_speed_mps = (float)g_vehicle_min_speed_mps;
+        speed_request_mps = MIN(g_emergency_brake_speed_mps, speed_request_mps);
       }
     }
-    else if (g_enable_finish_line_detection != 0 && g_finish_line_detected_slowdown != 0) {
-        g_vehicle_max_speed_mps = g_max_speed_after_finish_line_detected_mps;
+    if (g_enable_finish_line_detection != 0 && g_finish_line_detected_slowdown != 0) {
+        speed_request_mps = MIN(g_max_speed_after_finish_line_detected_mps, speed_request_mps);
     }
-    else if(g_max_speed_delay_passed != 0){
-      g_vehicle_max_speed_mps = g_max_speed_after_delay_mps;
+    if(g_max_speed_delay_passed != 0){
+      speed_request_mps = MIN(g_max_speed_after_delay_mps, speed_request_mps);
     }
-    else{
-      g_vehicle_max_speed_mps = g_vehicle_max_speed_original_mps;
-    }
+    g_vehicle_max_speed_mps = speed_request_mps;
     
 
     #if ENABLE_DRIVERMOTOR == 1

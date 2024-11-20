@@ -67,35 +67,40 @@ void settingsMenuRoutine() {
                 LCDMENU_MAIN_VIEW,
                 LCDMENU_ENABLE_CAR_ENGINE,
                 LCDMENU_ENABLE_CAR_STEERING_WHEEL,
-                LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S,
-                LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
+                LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
                 LCDMENU_MIN_SPEED,
                 LCDMENU_MAX_SPEED,
+                LCDMENU_MAX_SPEED_AFTER_DELAY,
+                LCDMENU_ENABLE_MAX_SPEED_AFTER_DELAY,
+
+                LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
+                LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
+
+                LCDMENU_ENABLE_FINISH_LINE_DETECTION,
+                LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY,
+                LCDMENU_FINISH_LINE_ANGLE_TOLERANCE,
+
+                LCDMENU_ENABLE_EMERGENCY_BRAKE,
+                LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY,
+                LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
+                LCDMENU_EMERGENCY_BREAK_DISTANCE_M,
+                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M,
+
+                LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
+		            LCDMENU_MIN_XAXIS_ANGLE_VECTOR,
+
                 LCDMENU_MAX_SPEED_CAR_SPEED_KI,
                 LCDMENU_MAX_SPEED_CAR_SPEED_KD,
                 LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT,
-		            LCDMENU_ENABLE_MAX_SPEED_AFTER_DELAY,
-                LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY,
-                LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY,
-                LCDMENU_ENABLE_FINISH_LINE_DETECTION,
-                LCDMENU_FINISH_LINE_ANGLE_TOLERANCE,
-                LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
-                LCDMENU_LOOKAHEAD_MAX_DISTANCE_CM,
-                LCDMENU_ENABLE_EMERGENCY_BRAKE,
-                LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M,
-                LCDMENU_ENABLE_DISTANCE_SENSOR1,
-                LCDMENU_ENABLE_DISTANCE_SENSOR2,
-                LCDMENU_ENABLE_DISTANCE_SENSOR3,
-                LCDMENU_EMERGENCY_BREAK_DISTANCE_M,
-                LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
-                LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL,
-		            LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
+
                 LCDMENU_AUTOMATIC_CALIBRATION_VIEW,
                 LCDMENU_CALIBRATION_VIEW_SINGLE_LINE,
                 LCDMENU_CALIBRATION_VIEW,
                 
                 LCDMENU_LAST_VALUE,
-                
+                LCDMENU_ENABLE_DISTANCE_SENSOR1,
+                LCDMENU_ENABLE_DISTANCE_SENSOR2,
+                LCDMENU_ENABLE_DISTANCE_SENSOR3,
                 LCDMENU_ENABLE_REMOTE_START_STOP,
                 LCDMENU_BLACK_COLOR_TRESHOLD,
                 LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION,
@@ -350,6 +355,11 @@ void settingsMenuRoutine() {
         displayParameterValue(String("SPEED_KI"), String(g_car_speed_mps_ki, 4));
       break;
 
+
+
+
+      
+
       case LCDMENU_MAX_SPEED_CAR_SPEED_KD:
         if (incrementButton == HIGH) {
           g_car_speed_mps_kd += 0.005f;
@@ -374,14 +384,25 @@ void settingsMenuRoutine() {
 
       case LCDMENU_MAX_SPEED:
         if (incrementButton == HIGH) {
-          g_vehicle_max_speed_mps += 0.01f;
+          g_vehicle_max_speed_original_mps += 0.01f;
         } else if (decrementButton == HIGH) {
-          g_vehicle_max_speed_mps -= 0.01f;
+          g_vehicle_max_speed_original_mps -= 0.01f;
         }
-        g_vehicle_max_speed_mps = MAX(g_vehicle_max_speed_mps, 0.0f);
+        g_vehicle_max_speed_original_mps = MAX(g_vehicle_max_speed_original_mps, 0.0f);
 
-        displayParameterValue(String("g_vehicle_max_speed_mps"), String(g_vehicle_max_speed_mps, 3));
+        displayParameterValue(String("g_vehicle_max_speed_original_mps"), String(g_vehicle_max_speed_original_mps, 3));
         break;
+
+
+      case LCDMENU_MAX_SPEED_AFTER_DELAY:
+        if (incrementButton == HIGH) {
+          g_max_speed_after_delay_mps += 0.01f;
+        } else if (decrementButton == HIGH) {
+          g_max_speed_after_delay_mps -= 0.01f;
+        }
+        g_max_speed_after_delay_mps = MAX(g_max_speed_after_delay_mps, 0.0f);
+        displayParameterValue(String("g_vehicle_max_speed_after_delay_mps"), String(g_max_speed_after_delay_mps, 4));
+      break;
 
       case LCDMENU_ENABLE_MAX_SPEED_AFTER_DELAY:
         if (incrementButton == HIGH) {
@@ -391,7 +412,7 @@ void settingsMenuRoutine() {
         }
         g_max_speed_after_delay_s = MAX(g_max_speed_after_delay_s, 0.0f);
 
-        displayParameterValue(String("MAX_SPEED_AFTER_DLY"), String(g_max_speed_after_delay_s, 2));
+        displayParameterValue(String("MAX_SPEED_DLY_S"), String(g_max_speed_after_delay_s, 2));
         break;
 
       case LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY:
@@ -459,17 +480,6 @@ void settingsMenuRoutine() {
 
         displayParameterValue(String("EMR_BR_DIST_OBST"), String(g_emergency_brake_distance_from_obstacle_m, 3));
       break;
-
-      case LCDMENU_EMERGENCY_BRAKE_ENABLE_DELAY_S:
-        if (incrementButton == HIGH) {
-          g_emergency_brake_enable_delay_s += 0.5f;
-        } else if (decrementButton == HIGH) {
-          g_emergency_brake_enable_delay_s -= 0.5f;
-        }
-        g_emergency_brake_enable_delay_s = MAX(g_emergency_brake_enable_delay_s, 0.0f);
-
-        displayParameterValue(String("EMER_BRK_DELY_S"), String(g_emergency_brake_enable_delay_s, 2));
-        break;
       
       case LCDMENU_LANE_WIDTH_VECTOR_UNIT_REAL:
         if (incrementButton == HIGH) {
