@@ -43,7 +43,7 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
   serialPort.print(semicolonChar);
   serialPort.print(String(laneMiddleLine.Ax) + commaCharStr + String(laneMiddleLine.By) + commaCharStr + String(laneMiddleLine.C));
   serialPort.print(semicolonChar);
-  serialPort.print(String(purePersuitInfo.carPos.x) + commaCharStr + String(purePersuitInfo.carPos.y));
+  serialPort.print(String(purePersuitInfo.frontAxePosition.x) + commaCharStr + String(purePersuitInfo.frontAxePosition.y));
   serialPort.print(semicolonChar);
   serialPort.print(String(purePersuitInfo.nextWayPoint.x) + commaCharStr + String(purePersuitInfo.nextWayPoint.y));
   serialPort.print(semicolonChar);

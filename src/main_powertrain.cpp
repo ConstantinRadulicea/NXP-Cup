@@ -273,6 +273,7 @@ void loop() {
   std::vector<Intersection> intersections;
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
+  Point2D centerRearAxeCarPosition_vectorUnit;
   float laneWidth, lookAheadDistance, frontObstacleDistance_m;
   float timeStart;
   float max_speed_original;
@@ -530,7 +531,9 @@ void loop() {
 
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
-    purePersuitInfo = purePursuitComputeABC(carPosition, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
+    centerRearAxeCarPosition_vectorUnit.x = carPosition.x;
+    centerRearAxeCarPosition_vectorUnit.y = carPosition.y - MeterToVectorUnit(WHEEL_BASE_M);
+    purePersuitInfo = purePursuitComputeABC(centerRearAxeCarPosition_vectorUnit, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
     g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
     g_rear_axe_turn_radius_m = RearWheelTurnRadius(WHEEL_BASE_M, g_steering_angle_rad);
     //g_steering_angle_rad = purePersuitInfo.steeringAngle;
