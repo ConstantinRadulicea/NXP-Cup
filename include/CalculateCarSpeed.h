@@ -57,8 +57,8 @@ static float CalculateCarSpeed(float _min_speed, float _max_speed, float _wheel_
 	turn_radius = RearWheelTurnRadius(_wheel_base, _turn_angle);
 	new_car_speed = carTurnMaxSpeed(turn_radius, _friction_coefficient, _downward_acceleration);
 
-	new_car_speed = MIN(_max_speed, new_car_speed);
 	new_car_speed = MAX(_min_speed, new_car_speed);
+	new_car_speed = MIN(_max_speed, new_car_speed);
 
 	return new_car_speed;
 }
