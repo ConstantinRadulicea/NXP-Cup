@@ -74,7 +74,9 @@ void settingsMenuRoutine() {
                 LCDMENU_MAX_SPEED_CAR_SPEED_KI,
                 LCDMENU_MAX_SPEED_CAR_SPEED_KD,
                 LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT,
-		            LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY,
+		            LCDMENU_ENABLE_MAX_SPEED_AFTER_DELAY,
+                LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY,
+                LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY,
                 LCDMENU_ENABLE_FINISH_LINE_DETECTION,
                 LCDMENU_FINISH_LINE_ANGLE_TOLERANCE,
                 LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM,
@@ -381,15 +383,37 @@ void settingsMenuRoutine() {
         displayParameterValue(String("g_vehicle_max_speed_mps"), String(g_vehicle_max_speed_mps, 3));
         break;
 
-      case LCDMENU_MAX_SPEED_AFTER_EMERGENCY_BRAKE_DELAY:
+      case LCDMENU_ENABLE_MAX_SPEED_AFTER_DELAY:
         if (incrementButton == HIGH) {
-          g_max_speed_after_emergency_brake_delay_mps += 0.5f;
+          g_max_speed_after_delay_s += 0.5f;
         } else if (decrementButton == HIGH) {
-          g_max_speed_after_emergency_brake_delay_mps -= 0.5f;
+          g_max_speed_after_delay_s -= 0.5f;
         }
-        g_max_speed_after_emergency_brake_delay_mps = MAX(g_max_speed_after_emergency_brake_delay_mps, 0.0f);
+        g_max_speed_after_delay_s = MAX(g_max_speed_after_delay_s, 0.0f);
 
-        displayParameterValue(String("MS_AFT_EMBRK_DLY"), String(g_max_speed_after_emergency_brake_delay_mps, 2));
+        displayParameterValue(String("MAX_SPEED_AFTER_DLY"), String(g_max_speed_after_delay_s, 2));
+        break;
+
+      case LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY:
+        if (incrementButton == HIGH) {
+          g_emergency_brake_enable_delay_s += 0.5f;
+        } else if (decrementButton == HIGH) {
+          g_emergency_brake_enable_delay_s -= 0.5f;
+        }
+        g_emergency_brake_enable_delay_s = MAX(g_emergency_brake_enable_delay_s, 0.0f);
+
+        displayParameterValue(String("ENABLE_EMER_BRAKE_AFTER_DLY"), String(g_emergency_brake_enable_delay_s, 2));
+        break;
+
+      case LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY:
+        if (incrementButton == HIGH) {
+          g_enable_finish_line_detection_after_delay += 0.5f;
+        } else if (decrementButton == HIGH) {
+          g_enable_finish_line_detection_after_delay -= 0.5f;
+        }
+        g_enable_finish_line_detection_after_delay = MAX(g_enable_finish_line_detection_after_delay, 0.0f);
+
+        displayParameterValue(String("ENABLE_LINE_DETECT_AFTER_DLY"), String(g_enable_finish_line_detection_after_delay, 2));
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:

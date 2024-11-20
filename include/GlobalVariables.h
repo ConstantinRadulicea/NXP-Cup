@@ -55,18 +55,20 @@ extern float g_lookahead_min_distance_cm;
 extern float g_lookahead_max_distance_cm;
 extern float g_vehicle_min_speed_mps;   // m/s
 extern float g_vehicle_max_speed_mps;  // m/s
+extern float g_vehicle_max_speed_original_mps; // m/s
 extern float g_emergency_brake_activation_max_distance_m;
 extern float g_emergency_brake_speed_mps; // m/s
 extern float g_emergency_brake_distance_from_obstacle_m;   // 13.5f
 extern float g_steering_wheel_angle_offset_deg;
 extern float g_min_x_axis_angle_vector_deg;
-extern float g_max_speed_after_emergency_brake_delay_mps; // m/s
+extern float g_max_speed_after_delay_mps; // m/s
 extern float g_car_speed_mps_ki;
 extern float g_car_speed_mps_kd;
 extern float g_car_speed_mps_ki_min_max_impact;
 extern float g_finish_line_angle_tolerance;
 
 extern float g_emergency_brake_enable_delay_s;
+extern int8_t g_max_speed_delay_passed;
 
 
 
@@ -134,6 +136,8 @@ extern float g_emergency_brake_enable_remaining_delay_s;
 extern int8_t g_emergency_brake_enable_delay_started_count;
 extern int8_t g_finish_line_detected;
 extern int8_t g_finish_line_detected_now;
+extern int8_t g_finish_line_detected_slowdown;
+extern float g_max_speed_after_finish_line_detected_mps; // m/s
 extern float g_steering_angle_rad;
 extern FinishLine g_finish_line;
 extern int8_t g_start_line_calibration_acquisition;
@@ -156,6 +160,11 @@ extern float g_downward_acceleration;
 
 extern float g_max_acceleration;
 extern float g_max_deceleration;
+
+
+extern float g_enable_finish_line_detection_after_delay;
+extern float g_max_speed_after_delay_s;
+
 
 
 extern SteeringWheel g_steering_wheel;

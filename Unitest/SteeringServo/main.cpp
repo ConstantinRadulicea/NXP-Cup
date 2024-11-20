@@ -40,7 +40,7 @@ float g_wheel_arm_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f
 
 
 
-int main2() {
+int main() {
 	float result_1, result_2, result_3;
 	float servo, wheels, servo_2, right_wheel, left_wheel, left_wheel_angle_from_steering, right_wheel_angle_from_steering;
 	float trackwidth;
@@ -118,7 +118,7 @@ int main2() {
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  125   // +36 -> -36 going right 126
 #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //48
 
-int main() {
+int main2() {
 	SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
 	//g_steering_wheel.setTrackWidth(DISTANCE_BETWEEN_WHEELS_M);
 	//g_steering_wheel.setWheelBase(WHEEL_BASE_M);

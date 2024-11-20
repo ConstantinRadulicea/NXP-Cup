@@ -34,12 +34,14 @@ float g_lookahead_min_distance_cm = 20.0f;
 float g_lookahead_max_distance_cm = 60.0f;
 float g_vehicle_min_speed_mps = 0.3f;   // m/s
 float g_vehicle_max_speed_mps = 2.5f;  // m/s
+float g_vehicle_max_speed_original_mps = 2.5f; // m/s
 float g_emergency_brake_activation_max_distance_m = 0.6f;
 float g_emergency_brake_speed_mps = 0.2f; // m/s
 float g_emergency_brake_distance_from_obstacle_m = 0.2f;   // 13.5f
 float g_steering_wheel_angle_offset_deg = -4.6f;
 float g_min_x_axis_angle_vector_deg = 15.0f;
-float g_max_speed_after_emergency_brake_delay_mps = 2.0f; // m/s
+float g_max_speed_after_delay_mps = 1.5f; // m/s
+float g_max_speed_after_finish_line_detected_mps = 0.7f; // m/s
 float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
@@ -59,6 +61,10 @@ float g_downward_acceleration = G_CONSTANT;
 
 float g_max_acceleration = -1.0f;
 float g_max_deceleration = -1.0f;
+
+
+float g_enable_finish_line_detection_after_delay = 0.0f;
+float g_max_speed_after_delay_s = 0.0f;
 
 
 #if RACE_MODE == 1
@@ -92,7 +98,7 @@ float g_emergency_brake_speed_mps = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
 float g_emergency_brake_distance_from_obstacle_m = 1.0f;   // 13.5f
 float g_steering_wheel_angle_offset_deg = 0.0f;
 float g_min_x_axis_angle_vector_deg = 15.0f;
-float g_max_speed_after_emergency_brake_delay_mps = 107.0f;
+float g_max_speed_after_delay_mps = 107.0f;
 float g_car_speed_mps_ki = -0.01f;
 float g_car_speed_mps_kd = -0.4f;
 float g_car_speed_mps_ki_min_max_impact = 5.0f;
@@ -125,11 +131,13 @@ float g_emergency_brake_enable_remaining_delay_s = 0.0f;
 int8_t g_emergency_brake_enable_delay_started_count = 0;
 int8_t g_finish_line_detected = 0;
 int8_t g_finish_line_detected_now = 0;
+int8_t g_finish_line_detected_slowdown = 0;
 float g_steering_angle_rad = 0.0f;
 FinishLine g_finish_line = {};
 int8_t g_start_line_calibration_acquisition = 0;
 LineCalibrationData g_line_calibration_data = {};
 float g_rear_axe_turn_radius_m = 0.0f;
+int8_t g_max_speed_delay_passed = 0;
 
 
 //SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
@@ -178,7 +186,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     g_lookahead_max_distance_cm = std::stof(fields[2]);
     g_emergency_brake_activation_max_distance_m = std::stof(fields[3]);
     g_vehicle_min_speed_mps = std::stof(fields[4]);
-    g_vehicle_max_speed_mps = std::stof(fields[5]);
+    g_vehicle_max_speed_original_mps = std::stof(fields[5]);
     g_black_color_treshold = std::stof(fields[6]);
     
     temp_float = std::stof(fields[7]);
@@ -245,7 +253,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     }
 
     g_min_x_axis_angle_vector_deg = std::stof(fields[18]);
-    g_max_speed_after_emergency_brake_delay_mps = std::stof(fields[19]);
+    g_max_speed_after_delay_mps = std::stof(fields[19]);
 
     temp_float = std::stof(fields[20]);
     if (temp_float >= 0.5f) {
@@ -309,7 +317,7 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
 	g_lookahead_max_distance_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	g_emergency_brake_activation_max_distance_m = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   g_vehicle_min_speed_mps = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-	g_vehicle_max_speed_mps = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+	g_vehicle_max_speed_original_mps = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	g_black_color_treshold = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 	//g_car_length_cm = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   
@@ -376,7 +384,7 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
   }
 
   g_min_x_axis_angle_vector_deg = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
-  g_max_speed_after_emergency_brake_delay_mps = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
+  g_max_speed_after_delay_mps = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
 
   temp_float = parseNextFloat(pEnd, (rawData.size() + rawData.data()) - pEnd, variableTerminator, &pEnd, &resultSuccess);
   if (temp_float >= 0.5f) {
@@ -435,7 +443,7 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_vehicle_min_speed_mps, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_vehicle_max_speed_mps, n_decimals));
+  serialPort.print(String(g_vehicle_max_speed_original_mps, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_black_color_treshold, n_decimals));
   serialPort.print(separatorCharacter);
@@ -465,7 +473,7 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_min_x_axis_angle_vector_deg, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_max_speed_after_emergency_brake_delay_mps, n_decimals));
+  serialPort.print(String(g_max_speed_after_delay_mps, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(String(g_enable_remote_start_stop, n_decimals));
   serialPort.print(separatorCharacter);

@@ -151,6 +151,98 @@ void remote_control_routine(){
     }
 }
 
+
+void EnableLineDetectionAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
+    static int started_count = 0;
+    static float remaining_delay_s = 0.0f;
+    int8_t *enable_ptr = g_enable_finish_line_detection_ptr;
+    if (enable_ptr == NULL) {
+      return;
+    }
+    
+        if ((*enable_ptr) == 0 && floatCmp(seconds, 0.0f) > 0)
+        {
+          if (started_count == 0 && g_enable_car_engine != 0) {
+            remaining_delay_s = seconds;
+            started_count = 1;
+          }
+          else if(started_count != 0 && g_enable_car_engine == 0){
+            remaining_delay_s = 0.0f;
+            started_count = 0;
+          }
+          
+          if (g_enable_car_engine != 0 && floatCmp(remaining_delay_s, 0.0f) > 0) {
+            remaining_delay_s -= (g_loop_time_ms / 1000.0f);
+            remaining_delay_s = MAX(remaining_delay_s, 0.0f);
+
+            if (floatCmp(remaining_delay_s, 0.0f) <= 0) {
+              (*enable_ptr) = 1;
+            }
+          }
+        }
+}
+void EnableEmergencyBrakeAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
+    static int started_count = 0;
+    static float remaining_delay_s = 0.0f;
+    int8_t *enable_ptr = g_enable_finish_line_detection_ptr;
+    if (enable_ptr == NULL) {
+      return;
+    }
+    
+        if ((*enable_ptr) == 0 && floatCmp(seconds, 0.0f) > 0)
+        {
+          if (started_count == 0 && g_enable_car_engine != 0) {
+            remaining_delay_s = seconds;
+            started_count = 1;
+          }
+          else if(started_count != 0 && g_enable_car_engine == 0){
+            remaining_delay_s = 0.0f;
+            started_count = 0;
+          }
+          
+          if (g_enable_car_engine != 0 && floatCmp(remaining_delay_s, 0.0f) > 0) {
+            remaining_delay_s -= (g_loop_time_ms / 1000.0f);
+            remaining_delay_s = MAX(remaining_delay_s, 0.0f);
+
+            if (floatCmp(remaining_delay_s, 0.0f) <= 0) {
+              (*enable_ptr) = 1;
+            }
+          }
+        }
+}
+
+
+void EnableSlowSpeedAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
+    static int started_count = 0;
+    static float remaining_delay_s = 0.0f;
+    int8_t *enable_ptr = g_enable_finish_line_detection_ptr;
+    if (enable_ptr == NULL) {
+      return;
+    }
+    
+        if ((*enable_ptr) == 0 && floatCmp(seconds, 0.0f) > 0)
+        {
+          if (started_count == 0 && g_enable_car_engine != 0) {
+            remaining_delay_s = seconds;
+            started_count = 1;
+          }
+          else if(started_count != 0 && g_enable_car_engine == 0){
+            remaining_delay_s = 0.0f;
+            started_count = 0;
+          }
+          
+          if (g_enable_car_engine != 0 && floatCmp(remaining_delay_s, 0.0f) > 0) {
+            remaining_delay_s -= (g_loop_time_ms / 1000.0f);
+            remaining_delay_s = MAX(remaining_delay_s, 0.0f);
+
+            if (floatCmp(remaining_delay_s, 0.0f) <= 0) {
+              (*enable_ptr) = 1;
+            }
+          }
+        }
+}
+
+
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
@@ -201,6 +293,7 @@ void loop() {
   for (;;)
   {
     timeStart = (float)millis();
+    EnableSlowSpeedAfterDelay(&g_max_speed_delay_passed, g_max_speed_after_delay_s);
     g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
     #if ENABLE_SERIAL_PRINT == 1
     parseInputGlobalVariablesRoutine(SERIAL_PORT);
@@ -222,8 +315,9 @@ void loop() {
 
     if (g_enable_car_engine == 0) {
       consecutiveValidFinishLines = 0;
-      g_finish_line_detected = 0;
-      g_finish_line_detected_now = 0;
+      //g_finish_line_detected = 0;
+      //g_finish_line_detected_now = 0;
+      g_finish_line_detected_slowdown = 0;
       #if ENABLE_DRIVERMOTOR == 1
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
           g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
@@ -238,35 +332,18 @@ void loop() {
     #endif
     
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
-
+    EnableEmergencyBrakeAfterDelay(&g_enable_emergency_brake, g_emergency_brake_enable_delay_s);
+  
     if (g_enable_emergency_brake != 0 && (g_enable_distance_sensor1 != 0 || g_enable_distance_sensor2 != 0 || g_enable_distance_sensor3 != 0)) {
       
-    if (g_emergency_brake_enable_delay_started_count == 0 && g_enable_car_engine != 0) {
-      max_speed_original = g_vehicle_max_speed_mps;
-      g_emergency_brake_enable_remaining_delay_s = g_emergency_brake_enable_delay_s;
-      g_emergency_brake_enable_delay_started_count = 1;
-    }
-    else if(g_emergency_brake_enable_delay_started_count != 0 && g_enable_car_engine == 0){
-      g_vehicle_max_speed_mps = max_speed_original;
-      g_emergency_brake_enable_remaining_delay_s = 0.0f;
-      g_emergency_brake_enable_delay_started_count = 0;
-    }
-    
-    if (g_enable_car_engine != 0 && g_emergency_brake_enable_remaining_delay_s > 0.0f) {
-      g_emergency_brake_enable_remaining_delay_s -= (g_loop_time_ms / 1000.0f);
-      g_emergency_brake_enable_remaining_delay_s = MAX(g_emergency_brake_enable_remaining_delay_s, 0.0f);
 
-      if (g_emergency_brake_enable_remaining_delay_s <= 0.0f) {
-        max_speed_original = g_vehicle_max_speed_mps;
-        g_vehicle_max_speed_mps = g_max_speed_after_emergency_brake_delay_mps;
-      }
-    }
-    if (g_emergency_brake_enable_remaining_delay_s <= 0.0f)
+
+    if (g_enable_emergency_brake != 0)
     {
       
       frontObstacleDistance_m = getFrontObstacleDistanceAnalog_m();
 
-      if (frontObstacleDistance_m <= g_emergency_brake_activation_max_distance_m ) {
+      if (frontObstacleDistance_m <= g_emergency_brake_activation_max_distance_m) {
         digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
         g_emergency_break_active = 1;
         g_emergency_break_loops_count++;
@@ -361,6 +438,7 @@ void loop() {
       }
 
       #if ENABLE_FINISH_LINE_DETECTION == 1
+        EnableLineDetectionAfterDelay(&g_enable_finish_line_detection, g_enable_finish_line_detection_after_delay);
         if (g_enable_finish_line_detection != 0) {
           g_finish_line = VectorsProcessing::findStartFinishLine(vectors, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), g_pixy_1_vectors_processing.getMiddleLine(), g_finish_line_angle_tolerance);
           if (VectorsProcessing::isFinishLineValid(g_finish_line)) {
@@ -368,14 +446,16 @@ void loop() {
             g_finish_line_detected_now = 1;
             if (consecutiveValidFinishLines >= 5) {
               g_finish_line_detected = 1;
+              g_finish_line_detected_slowdown = 1;
             }
           }
           else{
             consecutiveValidFinishLines = 0;
             g_finish_line_detected_now = 0;
+            g_finish_line_detected = 0;
             memset(&g_finish_line, 0, sizeof(g_finish_line));
           }
-        }
+        }        
       #endif
       
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
@@ -449,7 +529,7 @@ void loop() {
       }
     }
     else{
-      if (g_emergency_break_active == 0){
+      if (g_emergency_break_active == 0){        
         g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle_rad);
       }
     }
@@ -459,6 +539,26 @@ void loop() {
         g_steering_wheel.setSteeringWheelAngleDeg(degrees(g_steering_angle_rad));
       }
     #endif
+
+    // max_speed Arbitrator
+    if (g_enable_emergency_brake != 0 && g_emergency_break_active != 0) {
+      if (frontObstacleDistance_m <= g_emergency_brake_distance_from_obstacle_m) {
+        g_vehicle_max_speed_mps = STANDSTILL_SPEED;
+      }
+      else{
+          g_vehicle_max_speed_mps = (float)g_vehicle_min_speed_mps;
+      }
+    }
+    else if (g_enable_finish_line_detection != 0 && g_finish_line_detected_slowdown != 0) {
+        g_vehicle_max_speed_mps = g_max_speed_after_finish_line_detected_mps;
+    }
+    else if(g_max_speed_delay_passed != 0){
+      g_vehicle_max_speed_mps = g_max_speed_after_delay_mps;
+    }
+    else{
+      g_vehicle_max_speed_mps = g_vehicle_max_speed_original_mps;
+    }
+    
 
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {

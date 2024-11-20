@@ -468,7 +468,7 @@ void loop() {
 
       if (g_emergency_brake_enable_remaining_delay_s <= 0.0f) {
         max_speed_original = g_vehicle_max_speed_mps;
-        g_vehicle_max_speed_mps = g_max_speed_after_emergency_brake_delay_mps;
+        g_vehicle_max_speed_mps = g_max_speed_after_delay_mps;
       }
     }
     if (g_emergency_brake_enable_remaining_delay_s <= 0.0f)
