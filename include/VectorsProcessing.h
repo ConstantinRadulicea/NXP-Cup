@@ -426,6 +426,8 @@ public:
         Vector newVector;
         std::vector<Vector>::iterator newVectorIterator, bestVectorIterator;
 
+        memset(&bestVector, 0, sizeof(Vector));
+
         for (size_t i = 0; i < intersection.m_n; i++)
         {
             newVectorIterator = findVectorByIndex(vectors, intersection.m_intLines[i].m_index);
@@ -490,7 +492,6 @@ public:
     static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees){
         FinishLine finishLine;
         LineABC leftLine, rightLine, tempVectorLine;
-        Point2D projectionOnLine;
         float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev, laneWidth_max, laneWidth_min;
         LineSegmentsDistancePoints laneWidth_;
 

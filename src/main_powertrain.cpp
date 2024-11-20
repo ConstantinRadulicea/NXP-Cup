@@ -276,7 +276,6 @@ void loop() {
   Point2D centerRearAxeCarPosition_vectorUnit;
   float laneWidth, lookAheadDistance, frontObstacleDistance_m;
   float timeStart;
-  float max_speed_original;
   float speed_request_mps;
   
   int consecutiveValidFinishLines = 0;
@@ -285,7 +284,6 @@ void loop() {
   timeStart = 0.0f;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
-  max_speed_original = g_vehicle_max_speed_mps;
 
   frontObstacleDistance_m = 0.0f;
 

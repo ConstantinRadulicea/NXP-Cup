@@ -24,7 +24,8 @@
 #include "geometry2D.h"
 
 typedef struct PurePursuitInfo {
-	Point2D carPos;
+	Point2D frontAxePosition;
+	Point2D rearAxePosition;
 	Point2D nextWayPoint;
 	Point2D turnPoint;
 	float distanceToWayPoint;
@@ -141,35 +142,42 @@ static float purePursuitComputeSteeringWheelAngle(Point2D carPos, LineMQ wayPoin
 	return steeringWheelAngle(temp, wheelBase, lookAheadDistance);
 }
 
-static PurePursuitInfo purePursuitComputeMQ(Point2D carPos, LineMQ wayPoints, float wheelBase, float lookAheadDistance) {
+static PurePursuitInfo purePursuitComputeMQ(Point2D rearAxePosition, LineMQ wayPoints, float wheelBase, float lookAheadDistance) {
 	float temp;
+	float distance_bw_rearAxe_and_waipoint;
 	PurePursuitInfo info;
 	IntersectionPoints2D_2 intersectionPoints;
 	Point2D nextWayPoint;
+	Point2D frontAxePosition;
+	frontAxePosition = rearAxePosition;
+	frontAxePosition.y += wheelBase;
 
-	temp = distance2lineMQ(carPos, wayPoints);
+	info.frontAxePosition = frontAxePosition;
+
+	temp = distance2lineMQ(frontAxePosition, wayPoints);
 	info.distanceToWayPoint = temp;
 	if (floatCmp(temp, lookAheadDistance) >= 0) {
 		lookAheadDistance = temp + (temp * 0.25f);
 	}
 
-	intersectionPoints = intersectionLineCircleMQ(carPos, lookAheadDistance, wayPoints);
+	intersectionPoints = intersectionLineCircleMQ(frontAxePosition, lookAheadDistance, wayPoints);
 	if (floatCmp(intersectionPoints.point1.y, intersectionPoints.point2.y) > 0) {
 		nextWayPoint = intersectionPoints.point1;
 	}
 	else {
 		nextWayPoint = intersectionPoints.point2;
 	}
-	info.TrajectoryToWayPointAngle = carTrajectoryAndWayPointAngle(carPos, nextWayPoint);
-	info.steeringAngle = steeringWheelAngle(info.TrajectoryToWayPointAngle, wheelBase, lookAheadDistance);
+	info.TrajectoryToWayPointAngle = carTrajectoryAndWayPointAngle(rearAxePosition, nextWayPoint);
+	distance_bw_rearAxe_and_waipoint = euclidianDistance(rearAxePosition, nextWayPoint);
+	info.steeringAngle = steeringWheelAngle(info.TrajectoryToWayPointAngle, wheelBase, distance_bw_rearAxe_and_waipoint);
 
-	info.carPos = carPos;
+	info.rearAxePosition = rearAxePosition;
 	info.nextWayPoint = nextWayPoint;
 	info.lookAheadDistance = lookAheadDistance;
 	info.wheelBase = wheelBase;
 	info.rearWheelTurnRadius = RearWheelTurnRadius(wheelBase, info.steeringAngle);
 	info.manouvreLength = fabsf(((2.0f * M_PI * info.rearWheelTurnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
-	info.turnPoint = carPos;
+	info.turnPoint = rearAxePosition;
 
 	
 
@@ -183,35 +191,42 @@ static PurePursuitInfo purePursuitComputeMQ(Point2D carPos, LineMQ wayPoints, fl
 	return info;
 }
 
-static PurePursuitInfo purePursuitComputeABC(Point2D carPos, LineABC wayPoints, float wheelBase, float lookAheadDistance) {
+static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wayPoints, float wheelBase, float lookAheadDistance) {
 	float temp;
 	PurePursuitInfo info;
 	IntersectionPoints2D_2 intersectionPoints;
 	Point2D nextWayPoint;
+	Point2D frontAxePosition;
+	float distance_bw_rearAxe_and_waipoint;
+	frontAxePosition = rearAxePosition;
+	frontAxePosition.y += wheelBase;
 
-	temp = distance2lineABC(carPos, wayPoints);
+	info.frontAxePosition = frontAxePosition;
+
+	temp = distance2lineABC(frontAxePosition, wayPoints);
 	info.distanceToWayPoint = temp;
 	if (floatCmp(temp, lookAheadDistance) >= 0) {
 		lookAheadDistance = temp + (temp * 0.1f);
 	}
 
-	intersectionPoints = intersectionLineCircleABC(carPos, lookAheadDistance, wayPoints);
+	intersectionPoints = intersectionLineCircleABC(frontAxePosition, lookAheadDistance, wayPoints);
 	if (floatCmp(intersectionPoints.point1.y, intersectionPoints.point2.y) > 0) {
 		nextWayPoint = intersectionPoints.point1;
 	}
 	else {
 		nextWayPoint = intersectionPoints.point2;
 	}
-	info.TrajectoryToWayPointAngle = carTrajectoryAndWayPointAngle(carPos, nextWayPoint);
-	info.steeringAngle = steeringWheelAngle(info.TrajectoryToWayPointAngle, wheelBase, lookAheadDistance);
+	info.TrajectoryToWayPointAngle = carTrajectoryAndWayPointAngle(rearAxePosition, nextWayPoint);
+	distance_bw_rearAxe_and_waipoint = euclidianDistance(rearAxePosition, nextWayPoint);
+	info.steeringAngle = steeringWheelAngle(info.TrajectoryToWayPointAngle, wheelBase, distance_bw_rearAxe_and_waipoint);
 
-	info.carPos = carPos;
+	info.rearAxePosition = rearAxePosition;
 	info.nextWayPoint = nextWayPoint;
 	info.lookAheadDistance = lookAheadDistance;
 	info.wheelBase = wheelBase;
 	info.rearWheelTurnRadius = RearWheelTurnRadius(wheelBase, info.steeringAngle);
 	info.manouvreLength = fabsf(((2.0f * M_PI * info.rearWheelTurnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
-	info.turnPoint = carPos;
+	info.turnPoint = rearAxePosition;
 
 	if (floatCmp(info.TrajectoryToWayPointAngle, 0.0f) < 0) {
 		info.turnPoint.x += info.rearWheelTurnRadius;
