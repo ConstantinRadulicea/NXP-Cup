@@ -35,7 +35,7 @@
 
 extern Adafruit_SSD1306 display;
 
-
+void displayParameterValue(String parameter, String value);
 void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow);
 void settingsMenuRoutine();
 

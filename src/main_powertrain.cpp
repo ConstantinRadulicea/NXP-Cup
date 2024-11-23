@@ -249,7 +249,6 @@ void loop() {
 
     if (g_enable_emergency_brake != 0)
     {
-      
       frontObstacleDistance_m = getFrontObstacleDistanceAnalog_m();
 
       if (frontObstacleDistance_m <= g_emergency_brake_activation_max_distance_m) {

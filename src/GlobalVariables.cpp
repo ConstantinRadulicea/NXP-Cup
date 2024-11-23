@@ -309,7 +309,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
   }
 }
 
-
+/*
 void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = ';') {
 	char* pEnd;
 	int resultSuccess;
@@ -427,6 +427,7 @@ void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = 
     g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
   }
 }
+*/
 
 /*==============================================================================*/
 

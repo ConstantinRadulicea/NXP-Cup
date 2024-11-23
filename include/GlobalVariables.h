@@ -21,7 +21,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include "parseNextFloat.h"
+//#include "parseNextFloat.h"
 #include "geometry2D.h"
 #include "Config.h"
 #include "TrajectoryMix.h"

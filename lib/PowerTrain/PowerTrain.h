@@ -18,13 +18,15 @@
 #define __POWERTRAIN_H__
 
 #include <Arduino.h>
-#include <math.h>
-#include <float.h>
+//#include <math.h>
+//#include <float.h>
 #include "PID.h"
 #include "esc_raw.h"
 #include "util/atomic.h"
 #include <WheelRpm.h>
 #include <PWMServo.h>
+
+#include "geometry2D.h"
 
 
 
@@ -32,10 +34,10 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define HzToSec(hz) (1.0/(hz))
 
-#define M_PI       3.14159265358979323846   // pi
-#define M_PI_2     1.57079632679489661923   // pi/2
-
-int PowerTrainfloatCmp(float num1, float num2);
+//#define M_PI       3.14159265358979323846   // pi
+//#define M_PI_2     1.57079632679489661923   // pi/2
+//
+//int floatCmp(float num1, float num2);
 
 
 //TO DO:
@@ -239,7 +241,7 @@ public:
 
 		turn_radius = fabs(turn_radius);
 
-		if (PowerTrainfloatCmp(turn_radius, 0.0) == 0 || left_right_turn == 0)	// going straight
+		if (floatCmp(turn_radius, 0.0) == 0 || left_right_turn == 0)	// going straight
 		{
 			left_wheel_speed_request_m = speed_ms;
 			right_wheel_speed_request_m = speed_ms;
@@ -280,10 +282,10 @@ public:
 		int cmp_result_1;
 		float new_partial_speed_request, increased_speed_request_value;
 
-		cmp_result_1 = PowerTrainfloatCmp(this->_speed_request, this->_partial_speed_request);
+		cmp_result_1 = floatCmp(this->_speed_request, this->_partial_speed_request);
 		if (cmp_result_1 > 0) {
 			// increase partial speed
-			if(PowerTrainfloatCmp(this->_max_acceleration, 0.0f) > 0){
+			if(floatCmp(this->_max_acceleration, 0.0f) > 0){
 				increased_speed_request_value = timePassedFromLastSample1 * this->_max_acceleration;
 				new_partial_speed_request = MIN((this->_partial_speed_request + increased_speed_request_value), this->_speed_request);
 			}
@@ -293,7 +295,7 @@ public:
 		}
 		else if (cmp_result_1 < 0){
 			// decrease partial speed
-			if(PowerTrainfloatCmp(this->_max_deceleration, 0.0f) > 0){
+			if(floatCmp(this->_max_deceleration, 0.0f) > 0){
 				increased_speed_request_value = -(timePassedFromLastSample1 * this->_max_deceleration);
 				new_partial_speed_request = MAX((this->_partial_speed_request + increased_speed_request_value), this->_speed_request);
 			}

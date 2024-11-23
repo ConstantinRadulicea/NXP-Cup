@@ -7,5 +7,6 @@ void setup(){
 
 void loop(){
   settingsMenuRoutine();
+    displayParameterValue(String("ENABLE_ENGINE"), String("Disabled"));
   delay(100);
 }

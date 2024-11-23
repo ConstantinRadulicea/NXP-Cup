@@ -27,11 +27,15 @@
 #define TEMP_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
-#define SERIAL_PORT_TYPE_CONFIGURATION 1
+#define SERIAL_PORT_TYPE_CONFIGURATION 2
 
 #if SERIAL_PORT_TYPE_CONFIGURATION == 1
   #define SERIAL_PORT Serial1
-  #define SERIAL_PORT_TYPE HardwareSerialIMXRT
+  #if defined(TEENSYLC)
+    #define SERIAL_PORT_TYPE HardwareSerial
+  #elif defined(TEENSY40)
+    #define SERIAL_PORT_TYPE HardwareSerialIMXRT
+  #endif
 #elif SERIAL_PORT_TYPE_CONFIGURATION == 2
   #define SERIAL_PORT Serial
   #define SERIAL_PORT_TYPE usb_serial_class
@@ -45,7 +49,7 @@
 #include "PurePursuitGeometry.h"
 #include "VectorsProcessing.h"
 #include "aproximatePixyVector.h"
-#include "strtod_.h"
+//#include "strtod_.h"
 #include "MovingAverage.h"
 #include "ReadSerial.h"
 #include <vector>
@@ -113,14 +117,14 @@
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
   #define ENABLE_EMERGENCY_BREAKING 1
-  #define ENABLE_PIXY_VECTOR_APPROXIMATION 1
-  #define ENABLE_DISTANCE_SENSOR1 0
+  #define ENABLE_PIXY_VECTOR_APPROXIMATION 0
+  #define ENABLE_DISTANCE_SENSOR1 0 
   #define ENABLE_DISTANCE_SENSOR2 1
   #define ENABLE_DISTANCE_SENSOR3 0
   #define ENABLE_EMERGENCYBRAKE_BACKWARDSBRAKE 0
   #define ENABLE_REMOTE_START_STOP 0
   #define ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE 0
-  #define ENABLE_FINISH_LINE_DETECTION 0
+  #define ENABLE_FINISH_LINE_DETECTION 1
   #define CAMERA_ILLUMINATION_LIGHT 1
 #endif
 
@@ -182,11 +186,5 @@
 
 
 /*====================================================================================================================================*/
-
-
-static void HardwareReset(){
-  delay(100);
-  SCB_AIRCR = 0x05FA0004;
-}
 
 #endif

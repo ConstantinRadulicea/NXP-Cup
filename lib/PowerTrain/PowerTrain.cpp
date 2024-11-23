@@ -114,15 +114,16 @@ void power_train_sampling(){
     g_powertrain.SetSpeedRequest_slow_routine(HzToSec(pid_frequency_hz));
 }
 
-int PowerTrainfloatCmp(float num1, float num2) {
-	if (fabs(num1 - num2) < FLT_EPSILON) {
-		return 0;
-	}
-	else if (num1 > num2) {
-		return 1;
-	}
-	return -1;
-}
+//int PowerTrainfloatCmp(float num1, float num2) {
+//    return floatCmp(num1, num2);
+//	if (fabs(num1 - num2) < FLT_EPSILON) {
+//		return 0;
+//	}
+//	else if (num1 > num2) {
+//		return 1;
+//	}
+//	return -1;
+//}
 
 
 void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float _pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin)
