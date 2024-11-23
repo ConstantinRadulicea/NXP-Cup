@@ -16,7 +16,7 @@
 
 #include "Config.h"
 
-#define MAX_ITERATION_PIXY_ERROR 10
+#define MAX_ITERATION_PIXY_ERROR 5
 
   #define RX_BUFFER_SIZE 4092
   #define TX_BUFFER_SIZE 16384
@@ -48,7 +48,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
         g_steering_angle_rad = 0.0f;
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       #endif
-      delay(10);
+      delay(100);
     } while (pixy.init() < ((int8_t)0));
   }
 }
