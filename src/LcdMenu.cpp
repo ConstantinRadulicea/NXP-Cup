@@ -18,7 +18,17 @@
 #include "LcdMenu.h"
 
 
+
+
+
+#if LCD_LIBRARY_ADAFRUIT != 0
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+#endif
+
+
+#if LCD_LIBRARY_SSD1306Ascii != 0
+SSD1306AsciiWire display;
+#endif
 
 
 
@@ -77,6 +87,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 
 void displayParameterValue(String parameter, String value){
+  #if LCD_LIBRARY_ADAFRUIT != 0
         display.clearDisplay();
         display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
         display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
@@ -87,6 +98,15 @@ void displayParameterValue(String parameter, String value){
         //display.setCursor(0, 1);
         display.println(value);
         display.display();
+  #endif
+
+  #if LCD_LIBRARY_SSD1306Ascii != 0
+        display.clear();
+        display.setFont(Adafruit5x7);
+        display.setCursor(0, 0);
+        display.println(parameter);
+        display.println(value);
+  #endif
 }
 
 
@@ -171,7 +191,10 @@ String FloatToString(float num, int decimals){
 
 int left_arrow_btn, right_arrow_btn, increment_btn, decrement_btn;
 
-void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow){
+
+#if LCD_LIBRARY_ADAFRUIT != 0
+
+void LcdDisplaySetup_adafruit(){
     // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
     if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
       //Serial.println(F("SSD1306 allocation failed"));
@@ -185,6 +208,29 @@ void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow)
     // Clear the buffer
     display.clearDisplay();
     display.display();
+}
+#endif
+
+#if LCD_LIBRARY_SSD1306Ascii != 0
+void LcdDisplaySetup_SSD1306Ascii(){
+  Wire.begin();
+  Wire.setClock(400000L);
+
+#if RST_PIN >= 0
+  display.begin(&Adafruit128x32, I2C_ADDRESS, RST_PIN);
+#else // RST_PIN >= 0
+  display.begin(&Adafruit128x64, I2C_ADDRESS);
+#endif // RST_PIN >= 0
+  display.setFont(Adafruit5x7);
+}
+#endif
+
+void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow){
+    #if LCD_LIBRARY_ADAFRUIT != 0
+      LcdDisplaySetup_adafruit();
+    #elif LCD_LIBRARY_SSD1306Ascii != 0
+      LcdDisplaySetup_SSD1306Ascii();
+    #endif
 
     left_arrow_btn = left_arrow;
     right_arrow_btn = right_arrow;
@@ -354,7 +400,12 @@ void settingsMenuRoutine() {
   ///lcd_print_timeont -= fabsf(g_loop_time_ms);
   if (leftArrowButtonState == HIGH || rightArrowButtonState == HIGH || incrementButton == HIGH || decrementButton == HIGH /*|| lcd_print_timeont <= 0.0f*/) {
     //lcd_print_timeont = 500.0f;
-    display.clearDisplay();
+
+    #if LCD_LIBRARY_ADAFRUIT != 0
+      display.clearDisplay();
+    #elif LCD_LIBRARY_SSD1306Ascii != 0
+      display.clear();
+    #endif
     
     switch (lcdMenuIndex) {
     
@@ -801,7 +852,9 @@ void settingsMenuRoutine() {
         else{
           display.println(String("NO_LINE"));
         }
-        display.display();
+        #if LCD_LIBRARY_ADAFRUIT != 0
+          display.display();
+        #endif
       }
         break;
     #endif
@@ -860,10 +913,16 @@ void settingsMenuRoutine() {
           }
         }
         
-        display.clearDisplay();
-        display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
-        display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+
         display.setCursor(0, 0);
+
+        #if LCD_LIBRARY_ADAFRUIT != 0
+          display.clearDisplay();
+          display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
+          display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+        #elif LCD_LIBRARY_SSD1306Ascii != 0
+        display.clear();
+        #endif
 
         if (calibration_state == calibration_state_enum::UNCALIBRATE) {
           g_start_line_calibration_acquisition = 0;
@@ -894,7 +953,9 @@ void settingsMenuRoutine() {
         display.println(FloatToString(g_line_calibration_data.x_axis_offset, 5));
         display.print("y offset: ");
         display.println(FloatToString(g_line_calibration_data.y_axis_offset, 5));
-        display.display();
+        #if LCD_LIBRARY_ADAFRUIT != 0
+          display.display();
+        #endif
 
         break;
       }

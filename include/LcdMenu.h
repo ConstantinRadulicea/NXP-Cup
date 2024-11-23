@@ -19,21 +19,50 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+
 #include "GlobalVariables.h"
 
+#define LCD_LIBRARY_ADAFRUIT 0
+#define LCD_LIBRARY_SSD1306Ascii 1
 
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
+
+
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
-#define PARAMETER_NAME_TEXT_SIZE 1
-#define PARAMETER_VALUE_TEXT_SIZE 1
-#define PARAMETER_NAME_TEXT_COLOR WHITE
-#define PARAMETER_VALUE_TEXT_COLOR WHITE
+
+#if LCD_LIBRARY_ADAFRUIT != 0
+    #include <Adafruit_GFX.h>
+    #include <Adafruit_SSD1306.h>
+
+    #define SCREEN_WIDTH 128
+    #define SCREEN_HEIGHT 64
+
+    #define PARAMETER_NAME_TEXT_SIZE 1
+    #define PARAMETER_VALUE_TEXT_SIZE 1
+    #define PARAMETER_NAME_TEXT_COLOR WHITE
+    #define PARAMETER_VALUE_TEXT_COLOR WHITE
+
+    extern Adafruit_SSD1306 display;
+#endif
 
 
-extern Adafruit_SSD1306 display;
+#if LCD_LIBRARY_SSD1306Ascii != 0
+    #include "SSD1306Ascii.h"
+    #include "SSD1306AsciiWire.h"
+
+    // 0X3C+SA0 - 0x3C or 0x3D
+    #define I2C_ADDRESS 0x3C
+
+    // Define proper RST_PIN if required.
+    #define RST_PIN -1
+
+    extern SSD1306AsciiWire display;
+#endif
+
+
+
+
+
+
 
 void displayParameterValue(String parameter, String value);
 void LcdMenuSetup(int left_arrow, int right_arrow, int up_arrow, int down_arrow);

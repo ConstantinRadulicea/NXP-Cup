@@ -22,8 +22,8 @@
 #define CAR2 0
 
 
-#define DEBUG_MODE 1
-#define RACE_MODE 0
+#define DEBUG_MODE 0
+#define RACE_MODE 1
 #define TEMP_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
