@@ -72,18 +72,19 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_BLACK_COLOR_TRESHOLD                       0
 #define ENABLE_LCDMENU_ENABLE_PIXY_VECTOR_APPROXIMATION           0
 
-
+/*
 #ifdef TEENSYLC
-#define ENABLE_LCDMENU_MAIN_VIEW                                  0
-#define ENABLE_LCDMENU_ENABLE_CAR_STEERING_WHEEL                  0
-#define ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET                0
+#define ENABLE_LCDMENU_MAIN_VIEW                                  1
+#define ENABLE_LCDMENU_ENABLE_CAR_STEERING_WHEEL                  1
+#define ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET                1
 
-#define ENABLE_LCDMENU_EMERGENCY_BRAKE_MIN_SPEED                  0
-#define ENABLE_LCDMENU_EMERGENCY_BREAK_DISTANCE_M                 0
+#define ENABLE_LCDMENU_EMERGENCY_BRAKE_MIN_SPEED                  1
+#define ENABLE_LCDMENU_EMERGENCY_BREAK_DISTANCE_M                 1
 #define ENABLE_LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M   1
 
-#define ENABLE_LCDMENU_CALIBRATION_VIEW                           0
+#define ENABLE_LCDMENU_CALIBRATION_VIEW                           1
 #endif
+*/
 
 
 void displayParameterValue(String parameter, String value){
