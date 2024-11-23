@@ -63,16 +63,18 @@ float g_max_acceleration = -1.0f;
 float g_max_deceleration = -1.0f;
 
 
-float g_enable_finish_line_detection_after_delay = 0.0f;
-float g_max_speed_after_delay_s = 0.0f;
-
-
 #if RACE_MODE == 1
   float g_emergency_brake_enable_delay_s = 15.0f;
+  float g_max_speed_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #elif DEBUG_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;
+  float g_max_speed_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #else
   float g_emergency_brake_enable_delay_s = 15.0f;
+  float g_max_speed_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #endif
 
 
@@ -118,7 +120,7 @@ float g_car_speed_mps_ki_min_max_impact = 5.0f;
 
 
 
-float g_wheel_base_vector_unit = (float)MeterToVectorUnit(WHEEL_BASE_M);
+//float g_wheel_base_vector_unit = (float)MeterToVectorUnit(WHEEL_BASE_M);
 int8_t g_emergency_break_active =0;
 unsigned int g_emergency_break_loops_count = 0;
 float g_car_speed_mps = (float)STANDSTILL_SPEED;
@@ -151,7 +153,7 @@ Pixy2 g_pixy_1;
 
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
   float temp_float;
-  int total_fields = 42;
+  int total_fields = 45;
   std::stringstream ss(rawData);
   std::vector<std::string> fields;
   SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
@@ -178,8 +180,6 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
       return;
     }
     
-
-
 
     g_lane_width_vector_unit = std::stof(fields[0]);
     g_lookahead_min_distance_cm = std::stof(fields[1]);
@@ -298,6 +298,10 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     g_line_calibration_data.rotation_point.y = std::stof(fields[40]);
     g_line_calibration_data.x_axis_offset = std::stof(fields[41]);
     g_line_calibration_data.y_axis_offset = std::stof(fields[42]);
+
+    g_max_speed_after_delay_s = std::stof(fields[43]);
+    g_enable_finish_line_detection_after_delay_s = std::stof(fields[44]);
+
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);

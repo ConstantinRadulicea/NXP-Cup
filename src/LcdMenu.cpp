@@ -428,13 +428,13 @@ void settingsMenuRoutine() {
 
       case LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY:
         if (incrementButton == HIGH) {
-          g_enable_finish_line_detection_after_delay += 0.5f;
+          g_enable_finish_line_detection_after_delay_s += 0.5f;
         } else if (decrementButton == HIGH) {
-          g_enable_finish_line_detection_after_delay -= 0.5f;
+          g_enable_finish_line_detection_after_delay_s -= 0.5f;
         }
-        g_enable_finish_line_detection_after_delay = MAX(g_enable_finish_line_detection_after_delay, 0.0f);
+        g_enable_finish_line_detection_after_delay_s = MAX(g_enable_finish_line_detection_after_delay_s, 0.0f);
 
-        displayParameterValue(String("ENABLE_LINE_DETECT_AFTER_DLY"), String(g_enable_finish_line_detection_after_delay, 2));
+        displayParameterValue(String("ENABLE_LINE_DETECT_AFTER_DLY"), String(g_enable_finish_line_detection_after_delay_s, 2));
         break;
 
       case LCDMENU_LOOKAHEAD_MIN_DISTANCE_CM:

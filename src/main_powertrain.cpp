@@ -152,116 +152,6 @@ void remote_control_routine(){
 }
 
 
-void EnableLineDetectionAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
-    static int started_count = 0;
-    static float remaining_delay_s = 0.0f;
-    int8_t *enable_ptr = g_enable_finish_line_detection_ptr;
-    if (enable_ptr == NULL) {
-      return;
-    }
-    
-        if ((*enable_ptr) == 0 && floatCmp(seconds, 0.0f) > 0)
-        {
-          if (started_count == 0 && g_enable_car_engine != 0) {
-            remaining_delay_s = seconds;
-            started_count = 1;
-          }
-          else if(started_count != 0 && g_enable_car_engine == 0){
-            remaining_delay_s = 0.0f;
-            started_count = 0;
-          }
-          
-          if (g_enable_car_engine != 0 && floatCmp(remaining_delay_s, 0.0f) > 0) {
-            remaining_delay_s -= (g_loop_time_ms / 1000.0f);
-            remaining_delay_s = MAX(remaining_delay_s, 0.0f);
-
-            if (floatCmp(remaining_delay_s, 0.0f) <= 0) {
-              (*enable_ptr) = 1;
-            }
-          }
-        }
-        else if (floatCmp(seconds, 0.0f) > 0 && g_enable_car_engine == 0)
-        {
-          (*enable_ptr) = 0;
-          remaining_delay_s = 0.0f;
-          started_count = 0;
-        }
-}
-void EnableEmergencyBrakeAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
-    static int started_count = 0;
-    static float remaining_delay_s = 0.0f;
-    int8_t *enable_ptr = g_enable_finish_line_detection_ptr;
-    if (enable_ptr == NULL) {
-      return;
-    }
-    
-        if ((*enable_ptr) == 0 && floatCmp(seconds, 0.0f) > 0)
-        {
-          if (started_count == 0 && g_enable_car_engine != 0) {
-            remaining_delay_s = seconds;
-            started_count = 1;
-          }
-          else if(started_count != 0 && g_enable_car_engine == 0){
-            remaining_delay_s = 0.0f;
-            started_count = 0;
-          }
-          
-          if (g_enable_car_engine != 0 && floatCmp(remaining_delay_s, 0.0f) > 0) {
-            remaining_delay_s -= (g_loop_time_ms / 1000.0f);
-            remaining_delay_s = MAX(remaining_delay_s, 0.0f);
-
-            if (floatCmp(remaining_delay_s, 0.0f) <= 0) {
-              (*enable_ptr) = 1;
-            }
-          }
-        }
-        else if (floatCmp(seconds, 0.0f) > 0 && g_enable_car_engine == 0)
-        {
-          (*enable_ptr) = 0;
-          remaining_delay_s = 0.0f;
-          started_count = 0;
-        }
-        
-}
-
-
-void EnableSlowSpeedAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
-    static int started_count = 0;
-    static float remaining_delay_s = 0.0f;
-    int8_t *enable_ptr = g_enable_finish_line_detection_ptr;
-    if (enable_ptr == NULL) {
-      return;
-    }
-    
-        if ((*enable_ptr) == 0 && floatCmp(seconds, 0.0f) > 0)
-        {
-          if (started_count == 0 && g_enable_car_engine != 0) {
-            remaining_delay_s = seconds;
-            started_count = 1;
-          }
-          else if(started_count != 0 && g_enable_car_engine == 0){
-            remaining_delay_s = 0.0f;
-            started_count = 0;
-          }
-          
-          if (g_enable_car_engine != 0 && floatCmp(remaining_delay_s, 0.0f) > 0) {
-            remaining_delay_s -= (g_loop_time_ms / 1000.0f);
-            remaining_delay_s = MAX(remaining_delay_s, 0.0f);
-
-            if (floatCmp(remaining_delay_s, 0.0f) <= 0) {
-              (*enable_ptr) = 1;
-            }
-          }
-        }
-        else if (floatCmp(seconds, 0.0f) > 0 && g_enable_car_engine == 0)
-        {
-          (*enable_ptr) = 0;
-          remaining_delay_s = 0.0f;
-          started_count = 0;
-        }
-}
-
-
 /*====================================================================================================================================*/
 void loop() {
   size_t i;
@@ -457,7 +347,7 @@ void loop() {
       }
 
       #if ENABLE_FINISH_LINE_DETECTION == 1
-        EnableLineDetectionAfterDelay(&g_enable_finish_line_detection, g_enable_finish_line_detection_after_delay);
+        EnableLineDetectionAfterDelay(&g_enable_finish_line_detection, g_enable_finish_line_detection_after_delay_s);
         if (g_enable_finish_line_detection != 0) {
           g_finish_line = VectorsProcessing::findStartFinishLine(vectors, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), g_pixy_1_vectors_processing.getMiddleLine(), g_finish_line_angle_tolerance);
           if (VectorsProcessing::isFinishLineValid(g_finish_line)) {
@@ -531,7 +421,7 @@ void loop() {
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     centerRearAxeCarPosition_vectorUnit.x = carPosition.x;
     centerRearAxeCarPosition_vectorUnit.y = carPosition.y - MeterToVectorUnit(WHEEL_BASE_M);
-    purePersuitInfo = purePursuitComputeABC(centerRearAxeCarPosition_vectorUnit, g_middle_lane_line_pixy_1, g_wheel_base_vector_unit, lookAheadDistance);
+    purePersuitInfo = purePursuitComputeABC(centerRearAxeCarPosition_vectorUnit, g_middle_lane_line_pixy_1, (float)MeterToVectorUnit(WHEEL_BASE_M), lookAheadDistance);
     g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
     g_rear_axe_turn_radius_m = RearWheelTurnRadius(WHEEL_BASE_M, g_steering_angle_rad);
     //g_steering_angle_rad = purePersuitInfo.steeringAngle;

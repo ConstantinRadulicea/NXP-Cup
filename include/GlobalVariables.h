@@ -123,7 +123,7 @@ extern int8_t g_max_speed_delay_passed;
 
 
 /*====================================================================================================================================*/
-extern float g_wheel_base_vector_unit;
+//extern float g_wheel_base_vector_unit;
 extern int8_t g_emergency_break_active;
 extern unsigned int g_emergency_break_loops_count;
 extern float g_car_speed_mps;
@@ -162,7 +162,7 @@ extern float g_max_acceleration;
 extern float g_max_deceleration;
 
 
-extern float g_enable_finish_line_detection_after_delay;
+extern float g_enable_finish_line_detection_after_delay_s;
 extern float g_max_speed_after_delay_s;
 
 
