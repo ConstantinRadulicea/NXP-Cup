@@ -68,7 +68,9 @@ float next(float val){
     }
 
   ~MovingAverage(){
-    delete this->queue;
+    if (this->queue) {
+      delete this->queue;
+    }
   }
 };
 

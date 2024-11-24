@@ -18,12 +18,14 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
+#include <Arduino.h>
+
 #define CAR1 1
 #define CAR2 0
 
 
-#define DEBUG_MODE 1
-#define RACE_MODE 0
+#define DEBUG_MODE 0
+#define RACE_MODE 1
 #define TEMP_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
@@ -43,7 +45,7 @@
 
 //#define SPI_SS
 
-#include <Arduino.h>
+
 #include <SPI.h>
 #include "SteeringWheel.h"
 #include "PurePursuitGeometry.h"

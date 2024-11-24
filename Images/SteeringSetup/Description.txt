@@ -1,0 +1,17 @@
+physical steering angle: 35 degrees
+MEASURED_TURN_RADIUS = ((CIRCLE_DIAMETER / 2) + DISTANCE_FROM_REAR_CENTER_AXE_TO_OUTER_WHEEL)
+MEASURED_TURN_RADIUS = ((0.325m / 2) + 0.82m)
+MEASURED_TURN_RADIUS = 0.2445m
+
+EXPECTED_TURN_RADIUS = 0.25135m
+
+Error = [(Expected value − Actual value) / Actual value]
+Percentage error = [(Expected value − Actual value) / Actual value] * 100
+Percentage error = Error * 100
+
+
+ERROR = ((0.25135m - 0.2445m) / 0.2445m)
+ERROR = 0.028016
+PERCENTAGE_ERROR = 0.028016 * 100
+PERCENTAGE_ERROR = 2.8016
+

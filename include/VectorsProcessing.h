@@ -48,6 +48,8 @@ public:
         this->lastMidLine = yAxisABC();
         this->lastMidLine.C = -this->carPosition.x;
         this->clear();
+        memset(&(this->leftVector), 0, sizeof(this->leftVector));
+        memset(&(this->rightVector), 0, sizeof(this->leftVector));
     }
 
     VectorsProcessing(Point2D carPos, float laneWidth, float minXaxeAngle){
@@ -129,6 +131,9 @@ public:
         LineABC leftLine, rightLine, middleLine_, acuteAngleBisector, ottuseAngleBisector;
         leftVector_ = this->getLeftVector();
         rightVector_ = this->getRightVector();
+
+        leftLine = yAxisABC();
+        rightLine = yAxisABC();
         
 
         if (!this->isVectorValid(leftVector_) && !this->isVectorValid(rightVector_)){

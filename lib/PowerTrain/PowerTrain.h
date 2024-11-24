@@ -382,7 +382,7 @@ public:
 	Wheel rightWheel;
 	float _distanceBwWheels_m = 0.0;
 
-	float _direction;	// left: -1, front: 0, right: 1
+	float _direction = 0;	// left: -1, front: 0, right: 1
 	float _turn_radius = 0.0;
 	float _max_deceleration = -1.0;
 	float _max_acceleration = -1.0;

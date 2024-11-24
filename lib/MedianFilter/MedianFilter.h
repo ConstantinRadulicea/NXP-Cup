@@ -134,8 +134,12 @@ public:
     }
 
     ~MedianFilter() {
-        delete this->_queue;
-        delete this->_tempQueue;
+        if (this->_queue) {
+            delete this->_queue;
+        }
+        if (this->_tempQueue) {
+            delete this->_tempQueue;
+        }
     }
 };
 
