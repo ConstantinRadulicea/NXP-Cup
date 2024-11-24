@@ -32,7 +32,7 @@
 
 /*====================================================================================================================================*/
 
-void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
+void FailureModeMessage(Pixy2 *pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
   #endif
@@ -49,7 +49,7 @@ void FailureModeMessage(Pixy2 &pixy, int iteration, String errorText){
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       #endif
       delay(100);
-    } while (pixy.init() < ((int8_t)0));
+    } while (pixy->init() < ((int8_t)0));
   }
 }
 
@@ -411,7 +411,7 @@ void loop() {
     }
     else{
       pixy_1_loopIterationsCountNoVectorDetected++;
-      FailureModeMessage(g_pixy_1, pixy_1_loopIterationsCountNoVectorDetected,"pixy getAllFeatures");
+      FailureModeMessage(&g_pixy_1, pixy_1_loopIterationsCountNoVectorDetected,"pixy getAllFeatures");
     }
 /*===================================================END first camera============================================================================*/
 
