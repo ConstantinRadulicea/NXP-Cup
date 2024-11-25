@@ -16,7 +16,7 @@
 
 #include "Config.h"
 
-#define MAX_ITERATION_PIXY_ERROR 5
+#define MAX_ITERATION_PIXY_ERROR 50
 
   #define RX_BUFFER_SIZE 4092
   #define TX_BUFFER_SIZE 16384
@@ -36,9 +36,10 @@ void FailureModeMessage(Pixy2 *pixy, int iteration, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
   #endif
-  if (iteration >= MAX_ITERATION_PIXY_ERROR){  
-    g_car_speed_mps = (float)STANDSTILL_SPEED;
-  do{
+  if (iteration >= MAX_ITERATION_PIXY_ERROR){
+    //g_car_speed_mps = (float)STANDSTILL_SPEED;
+    while (pixy->init() < ((int8_t)0))
+    {
       #if ENABLE_DRIVERMOTOR == 1
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
           g_powertrain.SetSpeedRequest_slow((int)STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
@@ -48,8 +49,8 @@ void FailureModeMessage(Pixy2 *pixy, int iteration, String errorText){
         g_steering_angle_rad = 0.0f;
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       #endif
-      delay(100);
-    } while (pixy->init() < ((int8_t)0));
+      delay(10);
+    }
   }
 }
 
