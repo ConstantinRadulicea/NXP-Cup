@@ -69,7 +69,7 @@ connect (Pin 2- Pulse Width Output) to (Pin 4- Ranging Start/Stop)
 */
 
 
-void continous_loop_signal_generation(int signal_pin, int8_t _count) {
+inline void continous_loop_signal_generation(int signal_pin, int8_t _count) {
     if (_count == (int8_t)1) {
         digitalWrite(signal_pin, HIGH);
     }

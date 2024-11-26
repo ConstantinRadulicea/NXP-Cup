@@ -106,7 +106,12 @@ extern int8_t g_max_speed_delay_passed;
 #define WHEEL_BASE_M 0.175
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
 #define DISTANCE_BETWEEN_WHEELS_M 0.137	//distance between wheels
+
 #define POWERTRAIN_PID_FREQUENCY_HZ 100
+#ifdef TEENSYLC
+#define POWERTRAIN_PID_FREQUENCY_HZ 60
+#endif
+
 
 #define DISTANCE_SENSOR1_OFFSET_M (0.0)
 #define DISTANCE_SENSOR2_OFFSET_M (0.07)   // calibrated_data = sensor_data - offset

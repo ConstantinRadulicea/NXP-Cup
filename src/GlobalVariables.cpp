@@ -72,7 +72,7 @@ float g_max_deceleration = -1.0f;
   float g_max_speed_after_delay_s = 0.0f;
   float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #else
-  float g_emergency_brake_enable_delay_s = 15.0f;
+  float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
   float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #endif

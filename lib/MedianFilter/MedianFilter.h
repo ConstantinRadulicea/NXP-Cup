@@ -28,16 +28,16 @@ class MedianFilter
 private:
     unsigned int _windowSize;
     int totSamples;
-    double* _queue;
-    double* _tempQueue;
+    float* _queue = NULL;
+    float* _tempQueue = NULL;
 
 
     // An optimized version of Bubble Sort
-    static void bubbleSort(double arr[], int n)
+    static void bubbleSort(float arr[], int n)
     {
         int i, j;
         int swapped;
-        double temp;
+        float temp;
         for (i = 0; i < n - 1; i++) {
             swapped = 0;
             for (j = 0; j < n - i - 1; j++) {
@@ -61,20 +61,26 @@ public:
     MedianFilter(unsigned int windowSize) {
         this->totSamples = 0;
         this->_windowSize = windowSize;
-        this->_queue = new double[windowSize];
-        this->_tempQueue = new double[windowSize];
-        for (int i = 0; i < windowSize; i++) {
+        if (windowSize <= 0) {
+            this->_queue = NULL;
+            this->_tempQueue = NULL;
+            return;
+        }
+        
+        this->_queue = new (std::nothrow) float[windowSize];
+        this->_tempQueue = new (std::nothrow) float[windowSize];
+        for (unsigned int i = 0; i < windowSize; i++) {
             this->_queue[i] = 0.0f;
         }
     }
 
-    double next(double curValue) {
-        double nextValue;
+    float next(float curValue) {
+        float nextValue;
         this->totSamples++;
         this->totSamples = MIN(this->totSamples, this->_windowSize);
 
 
-        for (int i = 0; i < (this->_windowSize -1); i++) {
+        for (unsigned int i = 0; i < (this->_windowSize -1); i++) {
             this->_queue[i] = this->_queue[i+1];
         }
         this->_queue[this->_windowSize-1] = curValue;
@@ -84,7 +90,7 @@ public:
         //printf("\n");
 
 
-        for (int i = 0; i < this->_windowSize; i++) {
+        for (unsigned int i = 0; i < this->_windowSize; i++) {
             _tempQueue[i] = _queue[i];
         }
         this->bubbleSort(this->_tempQueue, this->_windowSize);
@@ -98,13 +104,13 @@ public:
         return nextValue;
     }
 
-    double nextVolatile(double curValue) volatile {
-        double nextValue;
+    float nextVolatile(float curValue) volatile {
+        float nextValue;
         this->totSamples++;
         this->totSamples = MIN(this->totSamples, this->_windowSize);
 
 
-        for (int i = 0; i < (this->_windowSize - 1); i++) {
+        for (unsigned int i = 0; i < (this->_windowSize - 1); i++) {
             this->_queue[i] = this->_queue[i + 1];
         }
         this->_queue[this->_windowSize - 1] = curValue;
@@ -114,7 +120,7 @@ public:
         //printf("\n");
 
 
-        for (int i = 0; i < this->_windowSize; i++) {
+        for (unsigned int i = 0; i < this->_windowSize; i++) {
             _tempQueue[i] = _queue[i];
         }
         this->bubbleSort(this->_tempQueue, this->_windowSize);
@@ -135,10 +141,10 @@ public:
 
     ~MedianFilter() {
         if (this->_queue) {
-            delete this->_queue;
+            delete[] this->_queue;
         }
         if (this->_tempQueue) {
-            delete this->_tempQueue;
+            delete[] this->_tempQueue;
         }
     }
 };

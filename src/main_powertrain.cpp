@@ -22,6 +22,7 @@
   #define TX_BUFFER_SIZE 16384
 
 #if (ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1) && SERIAL_PORT_TYPE_CONFIGURATION == 1 && defined(TEENSY40)
+  #define ENABLE_SERIAL_BUFFER
   static char RX_BUFFER[RX_BUFFER_SIZE];
   static char TX_BUFFER[TX_BUFFER_SIZE];
 #endif
@@ -112,8 +113,10 @@ void setup() {
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
   #if SERIAL_PORT_TYPE_CONFIGURATION == 1
-    SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
-    SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
+    #ifdef ENABLE_SERIAL_BUFFER
+      SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
+      SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);
+    #endif
   #endif
     SERIAL_PORT.begin(SERIAL_PORT_BAUD_RATE);
     while (!SERIAL_PORT){
