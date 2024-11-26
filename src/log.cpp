@@ -20,12 +20,21 @@
 #include "WheelRpm.h"
 #include "FloatToString.h"
 
-void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float carAcceleration, float frontObstacleDistance, float carSpeed_){
+void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
   RpmSensorData temp_rpmData;
   float adjusted_rpm, raw_rpm;
   int n_decimals = 3;
+
+  float carAcceleration;
+  if (floatCmp((float)(g_vehicle_max_speed_mps - STANDSTILL_SPEED), 0.0f) != 0) {
+      carAcceleration  = (g_car_speed_mps - (float)STANDSTILL_SPEED) / (float)(g_vehicle_max_speed_mps - STANDSTILL_SPEED);
+  }
+  else{
+    carAcceleration = 0.0f;
+  }
+
 
   commaCharStr = String(',');
   semicolonChar = ';';

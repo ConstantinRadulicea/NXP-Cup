@@ -109,7 +109,7 @@ extern int8_t g_max_speed_delay_passed;
 
 #define POWERTRAIN_PID_FREQUENCY_HZ 100
 #ifdef TEENSYLC
-#define POWERTRAIN_PID_FREQUENCY_HZ 60
+#define POWERTRAIN_PID_FREQUENCY_HZ 100
 #endif
 
 

@@ -291,6 +291,7 @@ float getFrontObstacleDistanceAnalog_m(){
     measured_distance = CalibrateDistance_linear(measured_distance, DISTANCE_SENSOR2_CALIBRATION_FORMULA_X, DISTANCE_SENSOR2_CALIBRATION_FORMULA_C);
     estimated_distance_sensor2 = filter_sensor2.next(measured_distance);
     estimated_distance_sensor2 = estimated_distance_sensor2 - DISTANCE_SENSOR2_OFFSET_M;
+    //estimated_distance_sensor2 = analogValue;
   }
   #endif
 
@@ -308,7 +309,7 @@ float getFrontObstacleDistanceAnalog_m(){
 
   estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
   estimated_distance = MIN(estimated_distance, estimated_distance_sensor3);
-
+//estimated_distance = analogValue;
   return estimated_distance;
 }
 

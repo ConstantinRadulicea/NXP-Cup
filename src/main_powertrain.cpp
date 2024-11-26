@@ -516,7 +516,7 @@ void loop() {
     #if ENABLE_SERIAL_PRINT == 1
         //SERIAL_PORT.println(String("%g_car_speed_mps: ") + String(g_car_speed_mps, 5));
         //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Speed: ") + String(g_car_speed_mps));
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, (g_car_speed_mps - (float)STANDSTILL_SPEED) / (float)(g_vehicle_max_speed_mps - STANDSTILL_SPEED), frontObstacleDistance_m, g_car_speed_mps);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, frontObstacleDistance_m, g_car_speed_mps);
     #endif
   }
 }

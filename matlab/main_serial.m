@@ -2,7 +2,7 @@ clc;
 clear;
 close all;
 
-server = serialport("COM3",230400);
+server = serialport("COM11",230400);
 server.UserData.lastFlushed = 1;
 server.UserData.cameraView_figure = figure('Name','cameraView');
 server.UserData.wheelRpm_figure = figure('Name','Wheels Rpm');

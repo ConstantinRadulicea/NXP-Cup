@@ -20,7 +20,7 @@
 #if CAR1 == 1
 int8_t g_enable_car_engine = 0;
 int8_t g_enable_car_steering_wheel = 0;
-int8_t g_enable_emergency_brake = 1;
+int8_t g_enable_emergency_brake = 0;
 int8_t g_enable_pixy_vector_approximation = 0;
 int8_t g_enable_distance_sensor1 = 0;
 int8_t g_enable_distance_sensor2 = 1;
@@ -64,7 +64,7 @@ float g_max_deceleration = -1.0f;
 
 
 #if RACE_MODE == 1
-  float g_emergency_brake_enable_delay_s = 15.0f;
+  float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
   float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #elif DEBUG_MODE == 1
