@@ -79,6 +79,13 @@ int floatCmp(float num1, float num2) {
 	return -1;
 }
 
+int arePoints2DEqual(Point2D point1, Point2D point2){
+	if(floatCmp(point1.x, point2.x) == 0 && floatCmp(point1.y, point2.y)==0){
+		return 1;
+	}
+	return 0;
+}
+
 int gaussianElimination3(float A[3][3 + 1], float x[3], int n) {
 	int j, i, k;
 	int pivot_row;
@@ -388,6 +395,10 @@ int isLineParallelToYaxisABC(LineABC line) {
 
 float angleBetweenLinesMQ(LineMQ line1, LineMQ line2) {
 	float angle;
+	if (floatCmp((line1.m * line2.m), -1.0f) == 0) {
+		return M_PI_2;
+	}
+	
 	angle = atanf(fabsf((line1.m - line2.m)) / (1.0f + (line1.m * line2.m)));
 	return angle;
 }
@@ -573,32 +584,27 @@ LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center
 
 float angleBetweenLinesABC(LineABC line1, LineABC line2) {
 	float angle;
+	int are_parallel;
+	int are_perpendicular;
 	LineMQ line1Mq, line2Mq;
 
-	if (isLineParallelToXaxisABC(line1) && isLineParallelToXaxisABC(line2)) {
-		return 0.0f;	/* line1 // line2 // Y */
+	are_parallel = areParallelABC(line1, line2);
+	if (are_parallel) {
+		return 0.0f;
+	}
+	are_perpendicular = arePerpenticularABC(line1, line2);
+	if (are_perpendicular) {
+		return M_PI_2;
 	}
 
 	if (isLineParallelToYaxisABC(line1))
 	{
-		if (isLineParallelToXaxisABC(line2)) {
-			return M_PI_2;
-		}
-		else if (isLineParallelToYaxisABC(line2)) {
-			return 0.0f;	/* line1 // line2 // Y */
-		}
 		line1Mq = lineABC2MQ(line2);
 		line2Mq.m = 0;
 		line2Mq.q = 0;
 		angle = M_PI_2 - angleBetweenLinesMQ(line1Mq, line2Mq);
 	}
 	else if (isLineParallelToYaxisABC(line2)) {
-		if (isLineParallelToXaxisABC(line1)) {
-			return M_PI_2;
-		}
-		else if (isLineParallelToYaxisABC(line1)) {
-			return 0.0f;	/* line1 // line2 // Y */
-		}
 		line1Mq = lineABC2MQ(line1);
 		line2Mq.m = 0;
 		line2Mq.q = 0;
@@ -616,6 +622,11 @@ float angleBetweenLinesABC(LineABC line1, LineABC line2) {
 LineABC points2lineABC(Point2D point1, Point2D point2) {
 	LineMQ lineMq;
 	LineABC lineAbc;
+
+	if (arePoints2DEqual(point1, point2)) {
+		return LineABC{0.0f, 0.0f, 0.0f};
+	}
+	
 
 	if (floatCmp(point1.x, point2.x) == 0) { // perpendicular to y axis
 		lineAbc = yAxisABC();

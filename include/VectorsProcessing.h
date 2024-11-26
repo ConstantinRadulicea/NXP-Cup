@@ -93,6 +93,9 @@ public:
     }
 
     void addVector(Vector vec){
+        if (!isVectorValid(vec)) {
+            return;
+        }
         
         if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
             return;

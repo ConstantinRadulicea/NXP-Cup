@@ -21,6 +21,7 @@
 #include <Wire.h>
 
 #include "GlobalVariables.h"
+#include "FloatToString.h"
 
 #define LCD_LIBRARY_ADAFRUIT 0
 #define LCD_LIBRARY_SSD1306Ascii 1

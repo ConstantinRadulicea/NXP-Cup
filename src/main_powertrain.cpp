@@ -21,11 +21,22 @@
   #define RX_BUFFER_SIZE 4092
   #define TX_BUFFER_SIZE 16384
 
-#if (ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1) && SERIAL_PORT_TYPE_CONFIGURATION == 1
+#if (ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1) && SERIAL_PORT_TYPE_CONFIGURATION == 1 && defined(TEENSY40)
   static char RX_BUFFER[RX_BUFFER_SIZE];
   static char TX_BUFFER[TX_BUFFER_SIZE];
 #endif
 
+
+
+int isValidFloatNumber(float *num, int line){
+    if (!isfinite(*num)) {
+      #if ENABLE_SERIAL_PRINT == 1
+          SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("ERROR: isfinite at line ") + String(line));
+      #endif
+      return 0;
+    }
+    return 1;
+}
 
 
 
@@ -205,7 +216,7 @@ void loop() {
     timeStart = (float)millis();
     EnableSlowSpeedAfterDelay(&g_max_speed_delay_passed, g_max_speed_after_delay_s);
     g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
-    #if ENABLE_SERIAL_PRINT == 1
+    #if ENABLE_WIRELESS_DEBUG == 1
     parseInputGlobalVariablesRoutine(SERIAL_PORT);
     #endif
 
@@ -419,11 +430,21 @@ void loop() {
 
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
+    if (!isValidFloatNumber(&lookAheadDistance, __LINE__)) {
+      continue;
+    }
+    
     centerRearAxeCarPosition_vectorUnit.x = carPosition.x;
     centerRearAxeCarPosition_vectorUnit.y = carPosition.y - MeterToVectorUnit(WHEEL_BASE_M);
     purePersuitInfo = purePursuitComputeABC(centerRearAxeCarPosition_vectorUnit, g_middle_lane_line_pixy_1, (float)MeterToVectorUnit(WHEEL_BASE_M), lookAheadDistance);
+    if (!isValidFloatNumber(&(purePersuitInfo.steeringAngle), __LINE__)) {
+      continue;
+    }
     g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
     g_rear_axe_turn_radius_m = RearWheelTurnRadius(WHEEL_BASE_M, g_steering_angle_rad);
+    if (!isValidFloatNumber(&(g_rear_axe_turn_radius_m), __LINE__)) {
+      continue;
+    }
     //g_steering_angle_rad = purePersuitInfo.steeringAngle;
     //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
     //SERIAL_PORT.println(String("% g_steering_angle_rad: ") + String(g_steering_angle_rad, 5));
@@ -445,6 +466,10 @@ void loop() {
       }
     }
     
+    if (!isValidFloatNumber(&(g_car_speed_mps), __LINE__)) {
+      continue;
+    }
+
     #if ENABLE_STEERING_SERVO == 1
       if (g_enable_car_steering_wheel != 0) {
         g_steering_wheel.setSteeringWheelAngleDeg(degrees(g_steering_angle_rad));

@@ -183,7 +183,7 @@ float getFrontObstacleDistanceHCSR04_m(){
     // Reads the echoPin, returns the sound wave travel time in microseconds
     duration = (float)(pulseIn(distance_sensor2_echo_pin, HIGH, pulseInTimeout_us));
     // Calculating the distance
-    measured_distance = (duration * 0.034321f / 2.0f);
+    measured_distance = ((duration * 0.034321f) / 2.0f);
 
     if (measured_distance <= 0.0f) {
       measured_distance = 400.0f;
