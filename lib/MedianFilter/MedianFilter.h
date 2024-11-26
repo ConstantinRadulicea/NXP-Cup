@@ -78,6 +78,13 @@ public:
         float nextValue;
         this->totSamples++;
         this->totSamples = MIN(this->totSamples, this->_windowSize);
+        if (this->_windowSize <= 0) {
+            return 0.0f;
+        }
+        if (this->_windowSize == 1) {
+            return curValue;
+        }
+        
 
 
         for (unsigned int i = 0; i < (this->_windowSize -1); i++) {
@@ -108,7 +115,13 @@ public:
         float nextValue;
         this->totSamples++;
         this->totSamples = MIN(this->totSamples, this->_windowSize);
-
+        if (this->_windowSize <= 0) {
+            return 0.0f;
+        }
+        if (this->_windowSize == 1) {
+            return curValue;
+        }
+        
 
         for (unsigned int i = 0; i < (this->_windowSize - 1); i++) {
             this->_queue[i] = this->_queue[i + 1];
