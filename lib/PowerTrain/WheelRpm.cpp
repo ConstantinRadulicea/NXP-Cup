@@ -78,7 +78,7 @@ volatile RpmSensorData LeftWheelRpmData = {
     data->TotalRotations += (1.0 / (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
 
         data->TimePassedFromLastSample_us = elapsed_time_us;
-        local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * RPM_SENSOR_PULSES_PER_REVOLUTION);
+        local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
         data->Rpm = local_rpm;
         data->RpmFiltered = data->RpmAverage.nextVolatile(local_rpm);
     
