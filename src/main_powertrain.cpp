@@ -57,8 +57,8 @@ void FailureModeMessage(Pixy2 *pixy, int iteration, String errorText){
           g_powertrain.SetSpeedRequest_slow((int)STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
         }
       #endif
+      g_steering_angle_rad = 0.0f;
       #if ENABLE_STEERING_SERVO == 1
-        g_steering_angle_rad = 0.0f;
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       #endif
       delay(10);
@@ -72,10 +72,10 @@ void setup() {
   int8_t pixyResult;
   //Serial.begin(SERIAL_PORT_BAUD_RATE);
   // Initialization and attachment of the servo and motor
+  g_steering_angle_rad = 0.0f;
   #if ENABLE_STEERING_SERVO == 1
     pinMode(STEERING_SERVO_PIN, OUTPUT);
     g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
-    g_steering_angle_rad = 0.0f;
     g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
     g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
   #endif
@@ -286,7 +286,7 @@ void loop() {
         #if ENABLE_DRIVERMOTOR == 1
           if (g_enable_car_engine != 0) {
             ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, g_rear_axe_turn_radius_m, SteeringWheel::AngleToDirectionDeg(g_steering_angle_rad), g_max_acceleration, g_max_deceleration);
+              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, g_rear_axe_turn_radius_m, SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
             }
           }
         #endif
