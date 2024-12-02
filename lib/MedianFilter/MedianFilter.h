@@ -1,12 +1,12 @@
 /*
 * Copyright 2024 Constantin Dumitru Petre RĂDULICEA
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *   http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,8 @@
 #ifndef __MEDIANFILTER_H__
 #define __MEDIANFILTER_H__
 
-//#include <stdio.h>
+#include <stddef.h>
+//#include <new>
 
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -66,9 +67,9 @@ public:
             this->_tempQueue = NULL;
             return;
         }
-        
-        this->_queue = new (std::nothrow) float[windowSize];
-        this->_tempQueue = new (std::nothrow) float[windowSize];
+
+        this->_queue = new float[windowSize];
+        this->_tempQueue = new float[windowSize];
         for (unsigned int i = 0; i < windowSize; i++) {
             this->_queue[i] = 0.0f;
         }
@@ -79,29 +80,27 @@ public:
         this->totSamples++;
         this->totSamples = MIN(this->totSamples, this->_windowSize);
         if (this->_windowSize <= 0) {
-            return 0.0f;
+            return curValue;
         }
         if (this->_windowSize == 1) {
             return curValue;
         }
-        
 
-
-        for (unsigned int i = 0; i < (this->_windowSize -1); i++) {
-            this->_queue[i] = this->_queue[i+1];
+        for (unsigned int i = 0; i < (this->_windowSize - 1); i++) {
+            this->_queue[i] = this->_queue[i + 1];
         }
-        this->_queue[this->_windowSize-1] = curValue;
+        this->_queue[this->_windowSize - 1] = curValue;
         //for (int i = 0; i < this->_windowSize; i++) {
         //    printf("%f\n", this->_queue[i]);
         //}
         //printf("\n");
+        unsigned int dst_index, src_index;
 
-
-        for (unsigned int i = 0; i < this->_windowSize; i++) {
-            _tempQueue[i] = _queue[i];
+        for (dst_index = 0, src_index = this->_windowSize - this->totSamples; src_index < this->_windowSize; src_index++, dst_index++) {
+            _tempQueue[dst_index] = _queue[src_index];
         }
-        this->bubbleSort(this->_tempQueue, this->_windowSize);
-        nextValue = this->_tempQueue[(int)((this->_windowSize-1) - (this->totSamples / 2))];
+        this->bubbleSort(this->_tempQueue, this->totSamples);
+        nextValue = this->_tempQueue[(int)(this->totSamples / 2)];
 
 
         //for (int i = 0; i < this->_windowSize; i++) {
@@ -116,12 +115,11 @@ public:
         this->totSamples++;
         this->totSamples = MIN(this->totSamples, this->_windowSize);
         if (this->_windowSize <= 0) {
-            return 0.0f;
+            return curValue;
         }
         if (this->_windowSize == 1) {
             return curValue;
         }
-        
 
         for (unsigned int i = 0; i < (this->_windowSize - 1); i++) {
             this->_queue[i] = this->_queue[i + 1];
@@ -131,13 +129,13 @@ public:
         //    printf("%f\n", this->_queue[i]);
         //}
         //printf("\n");
+        unsigned int dst_index, src_index;
 
-
-        for (unsigned int i = 0; i < this->_windowSize; i++) {
-            _tempQueue[i] = _queue[i];
+        for (dst_index = 0, src_index = this->_windowSize - this->totSamples; src_index < this->_windowSize; src_index++, dst_index++) {
+            _tempQueue[dst_index] = _queue[src_index];
         }
-        this->bubbleSort(this->_tempQueue, this->_windowSize);
-        nextValue = this->_tempQueue[(int)((this->_windowSize - 1) - (this->totSamples / 2))];
+        this->bubbleSort(this->_tempQueue, this->totSamples);
+        nextValue = this->_tempQueue[(int)(this->totSamples / 2)];
 
 
         //for (int i = 0; i < this->_windowSize; i++) {

@@ -1,6 +1,7 @@
 #include "MedianFilter.h"
 #include <stdlib.h> 
-#include <stdio.h> 
+#include <stdio.h>
+#include <time.h>
 
 int main() {
 	MedianFilter filter(3);
@@ -10,9 +11,10 @@ int main() {
 	for (size_t i = 0; i < sizeof(arr) / sizeof((*arr)); i++)
 	{
 		next = filter.next(arr[i]);
-		printf("filtered: %f\n", next);
+		printf("value: %f\t\tfiltered: %f\n", arr[i], next);
 	}
 	
+	//srand(time(NULL));
 	//for (size_t i = 0; i <1000; i++)
 	//{
 	//	next = filter.next(rand()%100);

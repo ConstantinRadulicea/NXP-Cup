@@ -1,9 +1,9 @@
 ﻿  main.cpp
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(50,27): warning C4018: '<': signed/unsigned mismatch
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(58,28): warning C4018: '<': signed/unsigned mismatch
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(61,27): warning C4018: '<': signed/unsigned mismatch
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(71,27): warning C4018: '<': signed/unsigned mismatch
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(88,28): warning C4018: '<': signed/unsigned mismatch
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(91,27): warning C4018: '<': signed/unsigned mismatch
-C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\MedianFilter.h(101,27): warning C4018: '<': signed/unsigned mismatch
-  MedianFilter.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\MedianFilter\x64\Debug\MedianFilter.exe
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\MedianFilter.h(81,28): warning C4018: '<': signed/unsigned mismatch
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\MedianFilter.h(116,28): warning C4018: '<': signed/unsigned mismatch
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\main.cpp(13,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  MedianFilter.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\x64\Debug\MedianFilter.exe
