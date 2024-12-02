@@ -218,7 +218,9 @@ void loop() {
   {
     timeStart = (float)millis();
     EnableSlowSpeedAfterDelay(&g_max_speed_delay_passed, g_max_speed_after_delay_s);
-    g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
+    #if ENABLE_STEERING_SERVO == 1
+      g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
+    #endif
     #if ENABLE_WIRELESS_DEBUG == 1
     parseInputGlobalVariablesRoutine(SERIAL_PORT);
     #endif
@@ -443,7 +445,15 @@ void loop() {
     if (!isValidFloatNumber(&(purePersuitInfo.steeringAngle), __LINE__)) {
       continue;
     }
-    g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
+
+    #if ENABLE_STEERING_SERVO == 1
+      g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
+    #elif ENABLE_REAR_STEERING_ONLY == 1
+      g_steering_angle_rad = VALIDATE_REAR_STEERING_ANGLE(purePersuitInfo.steeringAngle);
+    #else
+      g_steering_angle_rad = purePersuitInfo.steeringAngle;
+    #endif
+
     g_rear_axe_turn_radius_m = RearWheelTurnRadius(WHEEL_BASE_M, g_steering_angle_rad);
     if (!isValidFloatNumber(&(g_rear_axe_turn_radius_m), __LINE__)) {
       continue;

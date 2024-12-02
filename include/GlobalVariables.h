@@ -84,16 +84,26 @@ extern int8_t g_max_speed_delay_passed;
 #define MeterToVectorUnit(m) ((float)(m) * ((float)g_lane_width_vector_unit / (float)LANE_WIDTH_M))
 #define VectorUnitToMeter(v_unit) ((float)(v_unit) * ((float)LANE_WIDTH_M / (float)g_lane_width_vector_unit))
 
-#if CAR1 == 1
-  #define STEERING_SERVO_ANGLE_MIDDLE     90
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  126   // +36 -> -36 going right 126
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
 
-#elif CAR2 == 1
-  #define STEERING_SERVO_ANGLE_MIDDLE     (90)    // 90 middle // 120
-  #define STEERING_SERVO_ANGLE_MAX_RIGHT  (145)    // 0 max right // 90 - 58 = 32
-  #define STEERING_SERVO_ANGLE_MAX_LEFT   (35)   // 180 max left // 90 + 58
+#if ENABLE_STEERING_SERVO == 1
+  #if CAR1 == 1
+    #define STEERING_SERVO_ANGLE_MIDDLE     90
+    #define STEERING_SERVO_ANGLE_MAX_RIGHT  126   // +36 -> -36 going right 126
+    #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
+  #endif
 #endif
+
+#if ENABLE_REAR_STEERING_ONLY == 1
+  #define STEERING_ANGLE_MAX_RIGHT  (-35)
+  #define STEERING_ANGLE_MAX_LEFT   (-STEERING_ANGLE_MAX_RIGHT)
+
+  #define STEERING_ANGLE_MAX (((STEERING_ANGLE_MAX_RIGHT)>(STEERING_ANGLE_MAX_LEFT))?(STEERING_ANGLE_MAX_RIGHT):(STEERING_ANGLE_MAX_LEFT))
+  #define STEERING_ANGLE_MIN (((STEERING_ANGLE_MAX_RIGHT)>(STEERING_ANGLE_MAX_LEFT))?(STEERING_ANGLE_MAX_LEFT):(STEERING_ANGLE_MAX_RIGHT))
+
+  #define VALIDATE_REAR_STEERING_ANGLE(deg) MIN(STEERING_ANGLE_MAX, MAX(deg, STEERING_ANGLE_MIN))
+#endif
+
+
 
 
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
@@ -171,8 +181,9 @@ extern float g_enable_finish_line_detection_after_delay_s;
 extern float g_max_speed_after_delay_s;
 
 
-
-extern SteeringWheel g_steering_wheel;
+#if ENABLE_STEERING_SERVO == 1
+  extern SteeringWheel g_steering_wheel;
+#endif
 
 extern VectorsProcessing g_pixy_1_vectors_processing;
 //VectorsProcessing pixy_2_vectorsProcessing;
