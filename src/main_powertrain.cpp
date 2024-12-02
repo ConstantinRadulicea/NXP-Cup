@@ -449,7 +449,7 @@ void loop() {
     #if ENABLE_STEERING_SERVO == 1
       g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
     #elif ENABLE_REAR_STEERING_ONLY == 1
-      g_steering_angle_rad = VALIDATE_REAR_STEERING_ANGLE(purePersuitInfo.steeringAngle);
+      g_steering_angle_rad =  radians(VALIDATE_REAR_STEERING_ANGLE(degrees(purePersuitInfo.steeringAngle)));
     #else
       g_steering_angle_rad = purePersuitInfo.steeringAngle;
     #endif
