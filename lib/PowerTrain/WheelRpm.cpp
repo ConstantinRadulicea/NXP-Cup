@@ -16,7 +16,7 @@
 
 #include "WheelRpm.h"
 
-#define MEDIAN_FILTER_SIZE 6
+#define MEDIAN_FILTER_SIZE 5
 
 
 void enableCpuCyclesCount(){
@@ -67,7 +67,8 @@ volatile RpmSensorData LeftWheelRpmData = {
         return;
     }
     elapsed_time_us = time_now_us - data->LastSampleTimestamp_us;
-    if (elapsed_time_us < MillisToMicros(1)) {
+    if (elapsed_time_us < (unsigned long)MillisToMicros(0.5f)) {
+        //data->LastSampleTimestamp_us = time_now_us;
         return;
     }
     
@@ -77,8 +78,8 @@ volatile RpmSensorData LeftWheelRpmData = {
     // Update the total rotations
     data->TotalRotations += (1.0 / (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
 
-    data->TimePassedFromLastSample_us = elapsed_time_us;
-    local_rpm = (float)MillisToMicros(60*1000) / (float)((elapsed_time_us) * (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
+    data->TimePassedFromLastSample_us = (float)elapsed_time_us;
+    local_rpm = (float)MillisToMicros(60*1000) / (float)((float)(elapsed_time_us) * (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
     data->Rpm = local_rpm;
     data->RpmFiltered = data->RpmAverage.nextVolatile(local_rpm);
     
