@@ -15,8 +15,11 @@
 */
 
 #include "setup.h"
+#include "features/automatic_emergency_braking.h"
+#include "features/finish_line_detection.h"
 
 /*====================================================================================================================================*/
+
 void loop() {
   size_t i;
   int8_t pixy_1_result;
@@ -28,18 +31,21 @@ void loop() {
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
   Point2D centerRearAxeCarPosition_vectorUnit;
-  float laneWidth, lookAheadDistance, frontObstacleDistance_m;
+  float laneWidth, lookAheadDistance;
   float timeStart;
   float speed_request_mps;
-  
-  int consecutiveValidFinishLines = 0;
+
+  AEB_out_t AEB_out;
+  FLD_out_t FLD_out;
+
+  memset(&AEB_out, 0, sizeof(AEB_out_t));
+  memset(&FLD_out, 0, sizeof(FLD_out_t));
+
   pixy_1_result = PIXY_RESULT_ERROR;
 
   timeStart = 0.0f;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
   pixy_1_loopIterationsCountNoVectorDetected = 0;
-
-  frontObstacleDistance_m = 0.0f;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
@@ -82,10 +88,7 @@ void loop() {
     //pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 
     if (g_enable_car_engine == 0) {
-      consecutiveValidFinishLines = 0;
-      //g_finish_line_detected = 0;
-      //g_finish_line_detected_now = 0;
-      g_finish_line_detected_slowdown = 0;
+      FLD_deactivate();
       #if ENABLE_DRIVERMOTOR == 1
         ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
           g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
@@ -98,62 +101,6 @@ void loop() {
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       }
     #endif
-    
-    #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
-    EnableEmergencyBrakeAfterDelay(&g_enable_emergency_brake, g_emergency_brake_enable_delay_s);
-  
-    if (g_enable_emergency_brake != 0 && (g_enable_distance_sensor1 != 0 || g_enable_distance_sensor2 != 0 || g_enable_distance_sensor3 != 0)) {
-      
-
-
-    if (g_enable_emergency_brake != 0)
-    {
-      frontObstacleDistance_m = getFrontObstacleDistanceAnalog_m();
-
-      if (frontObstacleDistance_m <= g_emergency_brake_activation_max_distance_m) {
-        digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, HIGH);
-        g_emergency_break_active = 1;
-        g_emergency_break_loops_count++;
-
-        #if ENABLE_SERIAL_PRINT == 1
-          SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK loop: ") + String(g_emergency_break_loops_count));
-        #endif
-        
-        if(frontObstacleDistance_m <= g_emergency_brake_distance_from_obstacle_m){
-          g_car_speed_mps = (float)STANDSTILL_SPEED;
-        }
-        else{
-          g_car_speed_mps = (float)g_emergency_brake_speed_mps;
-        }
-        #if ENABLE_DRIVERMOTOR == 1
-          if (g_enable_car_engine != 0) {
-            ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-              g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, g_rear_axe_turn_radius_m, SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
-            }
-          }
-        #endif
-
-      }
-      else{
-        g_emergency_break_active = 0;
-        g_emergency_break_loops_count = 0;
-        digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
-      }
-      }
-      else{
-      g_emergency_break_active = 0;
-      g_emergency_break_loops_count = 0;
-      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
-    }
-    }
-    else{
-      g_emergency_break_active = 0;
-      g_emergency_break_loops_count = 0;
-      digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
-    }
-
-    #endif
-
 
     if (g_enable_car_steering_wheel == 0 && g_enable_car_engine != 0) {
       g_enable_car_steering_wheel = 1;
@@ -203,27 +150,6 @@ void loop() {
       for (size_t i = 0; i < g_pixy_1.line.numVectors; i++) {
         vectors[i] = VectorsProcessing::mirrorVector(mirrorLine, g_pixy_1.line.vectors[i]);
       }
-
-      #if ENABLE_FINISH_LINE_DETECTION == 1
-        EnableLineDetectionAfterDelay(&g_enable_finish_line_detection, g_enable_finish_line_detection_after_delay_s);
-        if (g_enable_finish_line_detection != 0) {
-          g_finish_line = VectorsProcessing::findStartFinishLine(vectors, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), g_pixy_1_vectors_processing.getMiddleLine(), g_finish_line_angle_tolerance);
-          if (VectorsProcessing::isFinishLineValid(g_finish_line)) {
-            consecutiveValidFinishLines += 1;
-            g_finish_line_detected_now = 1;
-            if (consecutiveValidFinishLines >= 5) {
-              g_finish_line_detected = 1;
-              g_finish_line_detected_slowdown = 1;
-            }
-          }
-          else{
-            consecutiveValidFinishLines = 0;
-            g_finish_line_detected_now = 0;
-            g_finish_line_detected = 0;
-            memset(&g_finish_line, 0, sizeof(g_finish_line));
-          }
-        }        
-      #endif
       
       #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
       if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
@@ -274,6 +200,13 @@ void loop() {
     }
 /*===================================================END first camera============================================================================*/
 
+    #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
+      AEB_out = automatic_emergency_braking();
+    #endif
+    #if ENABLE_FINISH_LINE_DETECTION == 1
+      FLD_out = finish_line_detection(&vectors);       
+    #endif
+
 
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
@@ -300,11 +233,6 @@ void loop() {
     if (!isValidFloatNumber(&(g_rear_axe_turn_radius_m), __LINE__)) {
       continue;
     }
-    //g_steering_angle_rad = purePersuitInfo.steeringAngle;
-    //SERIAL_PORT.println(String("% steeringAngle: ") + String(purePersuitInfo.steeringAngle, 5));
-    //SERIAL_PORT.println(String("% g_steering_angle_rad: ") + String(g_steering_angle_rad, 5));
-    //SERIAL_PORT.println(String("% raw: ") + String(g_steering_wheel.steering_servo.getRawAngleDeg(), 5));
-    //SERIAL_PORT.println(String("% steer: ") + String(g_steering_wheel.getSteeringWheelAngle(), 5));
 
     if (pixy_1_loopIterationsCountNoVectorDetected >= MAX_ITERATION_PIXY_ERROR)
     {
@@ -334,15 +262,10 @@ void loop() {
     // max_speed Arbitrator
     speed_request_mps = g_vehicle_max_speed_original_mps;
     if (g_enable_emergency_brake != 0 && g_emergency_break_active != 0) {
-      if (frontObstacleDistance_m <= g_emergency_brake_distance_from_obstacle_m) {
-        speed_request_mps = MIN(STANDSTILL_SPEED, speed_request_mps);
-      }
-      else{
-        speed_request_mps = MIN(g_emergency_brake_speed_mps, speed_request_mps);
-      }
+      speed_request_mps = MIN(AEB_out.speed_request_mps, speed_request_mps);
     }
     if (g_enable_finish_line_detection != 0 && g_finish_line_detected_slowdown != 0) {
-        speed_request_mps = MIN(g_max_speed_after_finish_line_detected_mps, speed_request_mps);
+        speed_request_mps = MIN(FLD_out.speed_request_mps, speed_request_mps);
     }
     if(g_max_speed_delay_passed != 0){
       speed_request_mps = MIN(g_max_speed_after_delay_mps, speed_request_mps);
@@ -366,9 +289,7 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
-        //SERIAL_PORT.println(String("%g_car_speed_mps: ") + String(g_car_speed_mps, 5));
-        //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Speed: ") + String(g_car_speed_mps));
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, frontObstacleDistance_m, g_car_speed_mps);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
     #endif
   }
 }

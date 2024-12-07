@@ -2,6 +2,8 @@
 #define __SETUP_H__
 
 #include "Config.h"
+#include "features/automatic_emergency_braking.h"
+#include "features/finish_line_detection.h"
 
 #define MAX_ITERATION_PIXY_ERROR 50
 
