@@ -32,6 +32,7 @@ void loop() {
   Point2D carPosition;
   Point2D centerRearAxeCarPosition_vectorUnit;
   float laneWidth, lookAheadDistance;
+  float temp_time;
   float timeStart;
   float speed_request_mps;
 
@@ -85,7 +86,6 @@ void loop() {
     #endif
 
     g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
-    //pixy_2_vectorsProcessing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 
     if (g_enable_car_engine == 0) {
       FLD_deactivate();
@@ -100,32 +100,24 @@ void loop() {
       if (g_enable_car_steering_wheel == 0) {
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       }
+
+      if (g_enable_car_steering_wheel == 0 && g_enable_car_engine != 0) {
+        g_enable_car_steering_wheel = 1;
+      }
     #endif
 
-    if (g_enable_car_steering_wheel == 0 && g_enable_car_engine != 0) {
-      g_enable_car_steering_wheel = 1;
-    }
-
     g_pixy_1_vectors_processing.clear();
-
-    pixy_1_result = PIXY_RESULT_ERROR;
-
     pixy_1_result = g_pixy_1.line.getAllFeatures(LINE_VECTOR /*| LINE_INTERSECTION*/, true);
-    //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("pixy_1_result: ") + String(pixy_1_result));
-
     
 /*===================================================START first camera============================================================================*/
     if(pixy_1_result >= ((int8_t)0)){
-      //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("vector: ") + String(g_pixy_1.line.numVectors));
       vectors.resize(g_pixy_1.line.numVectors);
       memcpy(vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
-      //intersections.resize(g_pixy_1.line.numIntersections);
-      //memcpy(intersections.data(), g_pixy_1.line.intersections, (g_pixy_1.line.numIntersections * sizeof(Intersection)));
+
       intersections.clear();
       VectorsProcessing::findIntersections(vectors, intersections);
       VectorsProcessing::filterVectorIntersections(vectors, intersections);
 
-      //pixy_1_loopIterationsCountNoVectorDetected = 0;
       if (vectors.size() > 0){
         pixy_1_loopIterationsCountNoVectorDetected = 0;
       }
@@ -150,49 +142,6 @@ void loop() {
       for (size_t i = 0; i < g_pixy_1.line.numVectors; i++) {
         vectors[i] = VectorsProcessing::mirrorVector(mirrorLine, g_pixy_1.line.vectors[i]);
       }
-      
-      #if ENABLE_PIXY_VECTOR_APPROXIMATION == 1
-      if(g_emergency_break_active == 0 && g_enable_pixy_vector_approximation != 0){
-        if (((int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_rightVectorOld) + (int)g_pixy_1_vectors_processing.isVectorValid(pixy_1_leftVectorOld))==1){
-          if (g_emergency_break_active == 0){
-            g_car_speed_mps = (float)g_vehicle_min_speed_mps;
-          }
-          #if ENABLE_DRIVERMOTOR == 1
-            if (g_enable_car_engine != 0) {
-              ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-                g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, VectorUnitToMeter(purePersuitInfo.turnRadius), SteeringWheel::AngleToDirectionDeg(g_steering_angle_rad), g_max_acceleration, g_max_deceleration);
-              }            
-            }
-          #endif
-
-          loopIterationsCountPixyChangeProgramError=0;
-          while ((pixyResult = g_pixy_1.changeProg("video")) < ((int8_t)0)) {
-            loopIterationsCountPixyChangeProgramError++;
-            FailureModeMessage(g_pixy_1, loopIterationsCountPixyChangeProgramError,"pixy video");
-            delay(10);
-          }
-          //delay(40);
-
-          vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_leftVectorOld);
-          approximatePixyVectorVector(g_pixy_1, vec, g_black_color_treshold, mirrorImageABC(mirrorLine, carPosition));
-          vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-          g_pixy_1_vectors_processing.setLeftVector(vec);
-
-          vec = VectorsProcessing::mirrorVector(mirrorLine, pixy_1_rightVectorOld);
-          approximatePixyVectorVector(g_pixy_1, vec, g_black_color_treshold, mirrorImageABC(mirrorLine, carPosition));
-          vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-          g_pixy_1_vectors_processing.setRightVector(vec);
-          
-          loopIterationsCountPixyChangeProgramError = 0;
-          while ((pixyResult = g_pixy_1.changeProg("line")) < ((int8_t)0)) {
-            loopIterationsCountPixyChangeProgramError++;
-            FailureModeMessage(g_pixy_1, loopIterationsCountPixyChangeProgramError,"pixy line");
-            delay(10);
-          }
-          //delay(40);
-        }
-      }
-      #endif
     }
     else{
       pixy_1_loopIterationsCountNoVectorDetected++;
@@ -284,7 +233,13 @@ void loop() {
     g_left_lane_line_pixy_1 = VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector());
     g_right_lane_line_pixy_1 = VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector());
 
-    g_loop_time_ms = ((float)millis()) - timeStart;
+    temp_time = (float)millis();
+    if (temp_time < timeStart){
+      timeStart = temp_time;
+      temp_time = 0.0f;
+    }
+    
+    g_loop_time_ms = temp_time - timeStart;
     g_loop_time_ms = MAX(g_loop_time_ms, 0.0f);
     g_time_passed_ms += g_loop_time_ms;
 

@@ -29,14 +29,19 @@ FLD_out_t finish_line_detection(std::vector<Vector> *vectors){
       if (VectorsProcessing::isFinishLineValid(g_finish_line)) {
         consecutiveValidFinishLines += 1;
         g_finish_line_detected_now = 1;
-        if (consecutiveValidFinishLines >= 5) {
+        if (consecutiveValidFinishLines >= CONSECUTUVE_FINISH_LINE_DETECTED_ACTIVATION) {
           g_finish_line_detected = 1;
           g_finish_line_detected_slowdown = 1;
           out.speed_request_mps = g_max_speed_after_finish_line_detected_mps;
         }
       }
-      else{
+      else if (g_finish_line_detected == 0) {
         FLD_deactivate();
+      }
+      else{
+        consecutiveValidFinishLines = 0;
+        g_finish_line_detected_now = 0;
+        memset(&g_finish_line, 0, sizeof(g_finish_line));
       }
     out.active = g_finish_line_detected_slowdown;
     out.detected_this_loop = g_finish_line_detected;

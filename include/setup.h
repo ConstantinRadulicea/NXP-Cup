@@ -5,7 +5,7 @@
 #include "features/automatic_emergency_braking.h"
 #include "features/finish_line_detection.h"
 
-#define MAX_ITERATION_PIXY_ERROR 50
+#define MAX_ITERATION_PIXY_ERROR 60
 
 void FailureModeMessage(Pixy2 *pixy, int iteration, String errorText);
 

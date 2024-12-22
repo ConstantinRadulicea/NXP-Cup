@@ -93,7 +93,6 @@ void setup() {
 
   #if ENABLE_WIRELESS_DEBUG == 1
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
-    //printSerial2WifiInfo(Serial, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
 
   pixyResult = g_pixy_1.init();
@@ -107,7 +106,6 @@ void setup() {
     g_pixy_1.setLamp(0,0);
   #endif
     
-  // Getting the RGB pixel values requires the 'video' program
   pixyResult = g_pixy_1.changeProg("line");
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.changeProg(line) = ") + String(pixyResult));

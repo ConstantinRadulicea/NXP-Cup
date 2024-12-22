@@ -18,8 +18,6 @@
 
 IntervalTimer myTimer_2;
 
-#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
-
 
 int distance_sensor1_trig_pin, distance_sensor1_echo_pin;
 int distance_sensor2_trig_pin, distance_sensor2_echo_pin;

@@ -4,6 +4,8 @@
 #include "GlobalVariables.h"
 #include "EnableAfterDelay.h"
 
+#define CONSECUTUVE_FINISH_LINE_DETECTED_ACTIVATION 30
+
 typedef struct FLD_out_s{
 int8_t enabled;
 int8_t active;
