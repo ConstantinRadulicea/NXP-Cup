@@ -4,6 +4,8 @@
 #include "geometry2D.h"
 #include "PurePursuitGeometry.h"
 
+// https://www.geogebra.org/classic/BueCG9ch
+
 
 struct SteeringConfiguration {
 	Point2D servo_position;
@@ -197,12 +199,28 @@ public:
 		float g_servo_rod_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));
 		float g_arm_wheel_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f) - g_arm_wheel_angle_rad);
 
+
+
+
 		this->steering_config.servo_arm_forward_position_angle_rad = g_servo_rod_forward_angle_position_rad;
 		this->steering_config.servo_arm_length = g_servo_arm_circle_radius_mm;
 		this->steering_config.servo_position = g_servo_position;
 		this->steering_config.wheel_arm_forward_position_angle_rad = g_arm_wheel_forward_angle_position_rad;
 		this->steering_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
 		this->steering_config.wheel_position = g_arm_wheel_position;
+
+
+
+
+		this->steering_config_right_wheel_to_left_wheel.servo_arm_forward_position_angle_rad = g_arm_wheel_forward_angle_position_rad;
+		this->steering_config_right_wheel_to_left_wheel.servo_arm_length = g_arm_wheel_circle_radius_mm;
+		this->steering_config_right_wheel_to_left_wheel.servo_position = g_arm_wheel_position;
+		this->steering_config_right_wheel_to_left_wheel.wheel_arm_forward_position_angle_rad = NormalizePiToNegPi((M_PI_2 * 3.0f) + g_arm_wheel_angle_rad);;
+		this->steering_config_right_wheel_to_left_wheel.wheel_arm_length = g_arm_wheel_circle_radius_mm;
+		this->steering_config_right_wheel_to_left_wheel.wheel_position = this->steering_config_right_wheel_to_left_wheel.servo_position;
+		this->steering_config_right_wheel_to_left_wheel.wheel_position.x = -(this->steering_config_right_wheel_to_left_wheel.wheel_position.x);
+
+
 
 		this->wheel_base = wheel_base;
 		this->track_width = track_width;
@@ -258,9 +276,30 @@ public:
 		this->calculateMaxRanges();
 	}
 
+
+	float getRightWheelAngle_deg() {
+		return degrees(ServoRawAngleToWheelAngle_rad(radians(this->steering_wheel_angle), this->steering_config));
+	}
+
+	float getLeftWheelAngle_deg() {
+		float right_wheel_angle = this->getRightWheelAngle_deg();
+		return degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel_angle), this->steering_config_right_wheel_to_left_wheel));
+	}
+
+	float getLeftWheelAchermannAngle_deg() {
+		float left_wheel_angle_from_steering = degrees(LeftWheelAngle(radians(this->steering_wheel_angle), this->wheel_base, this->track_width));
+		return left_wheel_angle_from_steering;
+	}
+
+	float getRightWheelAchermannAngle_deg() {
+		float right_wheel_angle_from_steering = degrees(RightWheelAngle(radians(this->steering_wheel_angle), this->wheel_base, this->track_width));
+		return right_wheel_angle_from_steering;
+	}
+
 private:
 	
 	SteeringConfiguration steering_config;
+	SteeringConfiguration steering_config_right_wheel_to_left_wheel;
 	float wheel_base;
 	float track_width;
 	float steering_wheel_angle;

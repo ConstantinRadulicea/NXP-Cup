@@ -125,7 +125,7 @@ int main() {
 	
 	g_steering_wheel.SetRawAngleOffset(-4.0f);
 
-	float servo_angle, servo_raw_angle, steering_wheel_angle, right_wheel_angle, left_wheel;
+	float servo_angle, servo_raw_angle, steering_wheel_angle, right_wheel_angle, left_wheel, right_wheel_achermann_angle, left_wheel_achermann_angle;
 
 	SteeringConfiguration left_wheel_config;
 	left_wheel_config.servo_arm_forward_position_angle_rad = g_wheel_arm_forward_angle_position_rad;
@@ -135,7 +135,7 @@ int main() {
 	left_wheel_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
 	left_wheel_config.wheel_position = left_wheel_config.servo_position;
 	left_wheel_config.wheel_position.x = -(left_wheel_config.wheel_position.x);
-	//float g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(0.28077)));
+
 	float valid_angle;
 	for (int i = -60; i <= 60; i++)
 	{
@@ -146,9 +146,12 @@ int main() {
 		servo_angle = g_steering_wheel.steering_servo.getAngleDeg();
 		servo_raw_angle = g_steering_wheel.steering_servo.getRawAngleDeg();
 		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
-		right_wheel_angle = 0;
-		left_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel_angle), left_wheel_config));
+		right_wheel_angle = g_steering_wheel.getRightWheelAngle_deg();
+		left_wheel = g_steering_wheel.getLeftWheelAngle_deg();
+		right_wheel_achermann_angle = g_steering_wheel.getRightWheelAchermannAngle_deg();
+		left_wheel_achermann_angle = g_steering_wheel.getLeftWheelAchermannAngle_deg();
 		printf("req_ang [%d] = steer_wheel: %f\t left_wheel: %f\t right_wheel: %f\t servo: %f\t servo_raw: %f\n", i, steering_wheel_angle, left_wheel, right_wheel_angle, servo_angle, servo_raw_angle);
+		printf("Achermann:\tFL: %f\t\tFR: %f\n\n", left_wheel_achermann_angle, right_wheel_achermann_angle);
 	}
 
 	float gggg = RearWheelTurnRadius(WHEEL_BASE_M, radians(35.0f)); // 0.2445m
