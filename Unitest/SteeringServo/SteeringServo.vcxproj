@@ -136,6 +136,9 @@
     <ClInclude Include="PurePursuitGeometry.h" />
     <ClInclude Include="SteeringServo.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="out.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
