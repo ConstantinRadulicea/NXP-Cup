@@ -77,12 +77,12 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(46,18): warning C4
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(46,28): warning C4101: 'result_3': unreferenced local variable
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(46,8): warning C4101: 'result_1': unreferenced local variable
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(47,8): warning C4101: 'servo': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(149,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(207,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(228,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(250,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(174,21): warning C4101: 'servo_raw_angle': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(174,8): warning C4101: 'servo_angle': unreferenced local variable
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(146,34): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(210,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(231,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(253,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(177,21): warning C4101: 'servo_raw_angle': unreferenced local variable
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(177,8): warning C4101: 'servo_angle': unreferenced local variable
   SteeringWheel.h
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,63): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')

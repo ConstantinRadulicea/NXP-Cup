@@ -77,6 +77,7 @@ void loop() {
     #if ENABLE_STEERING_SERVO == 1
       g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
     #endif
+    
     #if ENABLE_WIRELESS_DEBUG == 1
     parseInputGlobalVariablesRoutine(SERIAL_PORT);
     #endif

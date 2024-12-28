@@ -282,6 +282,13 @@ public:
 		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config));
 	}
 
+	void setMaxLeftAngle_deg(float deg) {
+		this->SteeringWheel_MaxLeftAngle = deg;
+	}
+	void setMaxRightAngle_deg(float deg) {
+		this->SteeringWheel_MaxRightAngle = deg;
+	}
+
 	void SetRawAngleOffset(float offset) {
 		this->steering_servo.setMiddleAngleOffset(offset);
 		this->calculateMaxRanges();

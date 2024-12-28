@@ -143,9 +143,12 @@ int main() {
 	fprintf(fptr, "\n");
 	fprintf(fptr, "steering_angle\tvalid_steering_angle\tachermann_left_wheel\tachermann_right_wheel\tleft_wheel_angle\tright_wheel_angle\tleft_wheel_error\tright_wheel_error\tservo_angle\tservo_raw_angle");
 	fprintf(fptr, "\n");
-	for (int i = -40; i <= 40; i++)
+	for (float i = -40; i <= 40; i+=0.1)
 	{
 		g_steering_wheel.SetRawAngleOffset(STEERING_SERVO_ERROR);
+		//g_steering_wheel.setMaxLeftAngle_deg(40.0f);
+		//g_steering_wheel.setMaxRightAngle_deg(-40.0f);
+
 		valid_angle = g_steering_wheel.vaildAngleDeg(i);
 		g_steering_wheel.setSteeringWheelAngleDeg(valid_angle);
 
