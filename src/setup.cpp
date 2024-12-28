@@ -95,21 +95,32 @@ void setup() {
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
   #endif
 
-  pixyResult = g_pixy_1.init();
-  #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
-  #endif
-
+  pixyResult = -1;
+  while (pixyResult != PIXY_RESULT_OK)
+  {
+    pixyResult = g_pixy_1.init();
+    #if ENABLE_SERIAL_PRINT == 1
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
+    #endif
+  }
+  
   #if CAMERA_ILLUMINATION_LIGHT != 0
     g_pixy_1.setLamp(1,1);
   #else
     g_pixy_1.setLamp(0,0);
   #endif
     
-  pixyResult = g_pixy_1.changeProg("line");
-  #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.changeProg(line) = ") + String(pixyResult));
-  #endif
+  pixyResult = -1;
+  while (pixyResult != PIXY_RESULT_OK)
+  {
+    pixyResult = g_pixy_1.changeProg("line");
+    #if ENABLE_SERIAL_PRINT == 1
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.changeProg(line) = ") + String(pixyResult));
+    #endif
+  }
+
+  g_line_image_frame_width = g_pixy_1.frameWidth;
+  g_line_image_frame_height = g_pixy_1.frameHeight;
 
   #if ENABLE_SERIAL_PRINT == 1
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));

@@ -49,7 +49,7 @@ void loop() {
   pixy_1_loopIterationsCountNoVectorDetected = 0;
 
   mirrorLine = xAxisABC();
-  mirrorLine.C = -(((float)IMAGE_MAX_Y) / 2.0f);
+  mirrorLine.C = -(SCREEN_CENTER_Y);
 
   carPosition.x = (float)SCREEN_CENTER_X;
   carPosition.y = 0.0f;

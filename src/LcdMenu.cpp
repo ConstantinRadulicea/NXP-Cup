@@ -767,7 +767,7 @@ void settingsMenuRoutine() {
         float lane_width_;
         
         upper_line = xAxisABC();
-        upper_line.C = -IMAGE_MAX_Y;
+        upper_line.C = -g_line_image_frame_height;
         lower_line = xAxisABC();
         upper_intersection = intersectionLinesABC(g_middle_lane_line_pixy_1, upper_line);
         lower_intersection = intersectionLinesABC(g_middle_lane_line_pixy_1, lower_line);
@@ -814,7 +814,7 @@ void settingsMenuRoutine() {
         }
 
         upper_line = xAxisABC();
-        upper_line.C = -IMAGE_MAX_Y;
+        upper_line.C = -g_line_image_frame_height;
         lower_line = xAxisABC();
         upper_intersection = intersectionLinesABC(calibration_line, upper_line);
         lower_intersection = intersectionLinesABC(calibration_line, lower_line);

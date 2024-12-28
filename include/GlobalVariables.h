@@ -74,10 +74,15 @@ extern int8_t g_max_speed_delay_passed;
 
 /*====================================================================================================================================*/
 
-#define IMAGE_MAX_X 78.0f
-#define IMAGE_MAX_Y 51.0f
-#define SCREEN_CENTER_X ((float)IMAGE_MAX_X / 2.0f)
-#define SCREEN_CENTER_Y ((float)IMAGE_MAX_Y / 2.0f)
+//#define IMAGE_MAX_X 78.0f
+//#define IMAGE_MAX_Y 51.0f
+
+
+extern float g_line_image_frame_width;
+extern float g_line_image_frame_height;
+
+#define SCREEN_CENTER_X ((float)g_line_image_frame_width / 2.0f)
+#define SCREEN_CENTER_Y ((float)g_line_image_frame_height / 2.0f)
 
 #define LANE_WIDTH_M 0.535f
 
