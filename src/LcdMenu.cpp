@@ -64,6 +64,7 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW                 1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW_SINGLE_LINE               1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW                           1
+#define ENABLE_LCDMENU_CAMERA_OFFSET_Y                            1
 
 #define ENABLE_LCDMENU_ENABLE_DISTANCE_SENSOR1                    0
 #define ENABLE_LCDMENU_ENABLE_DISTANCE_SENSOR2                    0
@@ -260,6 +261,9 @@ void settingsMenuRoutine() {
                 LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT,
               #endif
 
+              #if ENABLE_LCDMENU_CAMERA_OFFSET_Y != 0
+                LCDMENU_CAMERA_OFFSET,
+              #endif
               #if ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW != 0
                 LCDMENU_AUTOMATIC_CALIBRATION_VIEW,
               #endif
@@ -358,9 +362,27 @@ void settingsMenuRoutine() {
           g_steering_wheel_angle_offset_deg -= 0.1f;
         }
 
-        displayParameterValue(String("STR_WHEEL_OFST"), FloatToString(g_steering_wheel_angle_offset_deg, 2));
+        displayParameterValue(String("STR_WHEEL_OFFST"), FloatToString(g_steering_wheel_angle_offset_deg, 2));
       break;
     #endif
+
+
+
+    #if ENABLE_LCDMENU_CAMERA_OFFSET_Y != 0
+      case LCDMENU_CAMERA_OFFSET:
+        if (incrementButton == HIGH) {
+          g_camera_offset_y_m += 0.005f;
+        } else if (decrementButton == HIGH) {
+          g_camera_offset_y_m -= 0.005f;
+        }
+
+        displayParameterValue(String("CAM_OFFST_M"), FloatToString(g_camera_offset_y_m, 3));
+      break;
+    #endif
+
+
+
+    
       
     #if ENABLE_LCDMENU_FINISH_LINE_ANGLE_TOLERANCE != 0
       case LCDMENU_FINISH_LINE_ANGLE_TOLERANCE:

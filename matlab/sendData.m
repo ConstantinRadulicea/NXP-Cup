@@ -52,6 +52,8 @@ g_line_calibration_data_rotation_point_y = 25.5;
 g_line_calibration_data_x_axis_offset = -0.53113;
 g_line_calibration_data_y_axis_offset = -0;
 
+g_camera_offset_y_m = 0; //real_value = measured_value - offset    // offset = measured_value - real_value
+
 g_max_speed_after_delay_s = 0.0;
 g_enable_finish_line_detection_after_delay_s = 0.0;
 

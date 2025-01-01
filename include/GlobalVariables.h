@@ -181,6 +181,8 @@ extern float g_downward_acceleration;
 extern float g_max_acceleration;
 extern float g_max_deceleration;
 
+extern float g_camera_offset_y_m; //real_value = measured_value - offset    // offset = measured_value - real_value
+
 
 extern float g_enable_finish_line_detection_after_delay_s;
 extern float g_max_speed_after_delay_s;

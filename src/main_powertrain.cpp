@@ -85,6 +85,9 @@ void loop() {
     #if ENABLE_SETTINGS_MENU == 1
       settingsMenuRoutine();
     #endif
+    
+    carPosition.y = - MeterToVectorUnit(g_camera_offset_y_m);
+    g_pixy_1_vectors_processing.setCarPosition(carPosition);
 
     g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 

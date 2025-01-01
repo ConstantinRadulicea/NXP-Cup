@@ -48,7 +48,7 @@
               "RelativeDocumentMoniker": "out.txt",
               "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\out.txt",
               "RelativeToolTip": "out.txt",
-              "ViewState": "AgIAAA0DAAAAAAAAAAAAwCADAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4DAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2024-12-27T07:58:46.272Z",
               "EditorCaption": ""
@@ -63,8 +63,7 @@
               "RelativeToolTip": "SteeringWheel.h",
               "ViewState": "AgIAABcBAAAAAAAAAAAlwCMBAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-12-26T11:54:36.509Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-12-26T11:54:36.509Z"
             },
             {
               "$type": "Document",
@@ -76,8 +75,7 @@
               "RelativeToolTip": "main.cpp",
               "ViewState": "AgIAAIQAAAAAAAAAAAAQwJEAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-11-13T08:51:46.294Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-11-13T08:51:46.294Z"
             }
           ]
         }

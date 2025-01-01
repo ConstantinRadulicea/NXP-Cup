@@ -62,6 +62,8 @@ float g_downward_acceleration = G_CONSTANT;
 float g_max_acceleration = -1.0f;
 float g_max_deceleration = -1.0f;
 
+float g_camera_offset_y_m = 0.0f;
+
 
 #if RACE_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;
@@ -156,7 +158,7 @@ Pixy2 g_pixy_1;
 
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
   float temp_float;
-  int total_fields = 45;
+  int total_fields = 46;
   std::stringstream ss(rawData);
   std::vector<std::string> fields;
   SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
@@ -304,6 +306,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
 
     g_max_speed_after_delay_s = std::stof(fields[43]);
     g_enable_finish_line_detection_after_delay_s = std::stof(fields[44]);
+    g_camera_offset_y_m = std::stof(fields[45]);
 
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
