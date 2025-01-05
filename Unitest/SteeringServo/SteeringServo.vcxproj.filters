@@ -24,6 +24,9 @@
     <ClCompile Include="SteeringWheel.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="Tests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="geometry2D.h">

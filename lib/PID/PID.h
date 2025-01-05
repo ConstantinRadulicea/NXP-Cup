@@ -1,12 +1,12 @@
 /*
 * Copyright 2024 Constantin Dumitru Petre RĂDULICEA
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *   http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,7 +35,7 @@ public:
         this->_integral_max_error = -1.0;
     }
 
-    PID(double Kp, double Ki, double Kd, double max_output, double min_output, double integral_max_error) :
+    PID(double Kp, double Ki, double Kd, double min_output, double max_output, double integral_max_error) :
         _max_output(max_output),
         _min_output(min_output),
         _Kp(Kp),
@@ -59,11 +59,11 @@ public:
     {
 
     }
-    double calculate(double setpoint, double pv, double timePassedFromLastSample=1.0) volatile
+    double calculate(double setpoint, double process_value, double timePassedFromLastSample = 1.0) volatile
     {
         double error, Pout, Iout, Dout, derivative, output;
         // Calculate error
-        error = setpoint - pv;
+        error = setpoint - process_value;
 
         // Proportional terms
         Pout = _Kp * error;
@@ -72,7 +72,7 @@ public:
         if (timePassedFromLastSample > 0.0) {
             // Integral term
             _integral = _integral + (error * timePassedFromLastSample);
-            
+
 
             // Restrict to max/min
             if (this->_integral_max_error >= 0.0)
@@ -90,14 +90,14 @@ public:
             // Derivative term
             derivative = (error - _pre_error) / timePassedFromLastSample;
             Dout = _Kd * derivative;
-            
+
 
         }
         else {
             Dout = 0.0;
             Iout = 0.0;
         }
-        
+
 
 
         // Calculate total output
@@ -121,16 +121,16 @@ public:
 
     }
 
-    void setParameters(double Kp, double Ki, double Kd) volatile{
+    void setParameters(double Kp, double Ki, double Kd) volatile {
         this->_Kp = Kp;
         this->_Kd = Kd;
         this->_Ki = Ki;
     }
 
-    void setMaxOutput(double val) volatile{
+    void setMaxOutput(double val) volatile {
         this->_max_output = val;
     }
-    void setMinOutput(double val) volatile{
+    void setMinOutput(double val) volatile {
         this->_min_output = val;
     }
 
@@ -151,29 +151,39 @@ public:
             val = -val;
         }
         this->_integral_max_error = val;
+        if (this->_integral > this->_integral_max_error) {
+            this->_integral = this->_integral_max_error;
+        }
+        else if (this->_integral < -(this->_integral_max_error)) {
+            this->_integral = -(this->_integral_max_error);
+        }
     }
 
-    double getIntegralImpact(double val) volatile {
+    double getIntegralImpact() volatile {
         return this->_integral_max_error;
     }
 
-    double getMaxOutput(double val) volatile {
+    double getMaxOutput() volatile {
         return this->_max_output;
     }
-    double getMinOutput(double val) {
+    double getMinOutput() {
         return this->_min_output;
     }
 
-    double getKp(double val) volatile {
+    double getKp() volatile {
         return this->_Kp;
     }
 
-    double getKi(double val) {
+    double getKi() {
         return this->_Ki;
     }
 
-    double getKd(double val) {
+    double getKd() {
         return this->_Kd;
+    }
+
+    double getIntegralError() {
+        return this->_integral;
     }
 
     void reset() {

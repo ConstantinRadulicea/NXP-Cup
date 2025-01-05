@@ -32,10 +32,10 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        this->_integral_impact = -1.0;
+        this->_integral_max_error = -1.0;
     }
 
-    PID(double Kp, double Ki, double Kd, double max_output, double min_output, double integrative_impact) :
+    PID(double Kp, double Ki, double Kd, double min_output, double max_output, double integral_max_error) :
         _max_output(max_output),
         _min_output(min_output),
         _Kp(Kp),
@@ -44,7 +44,7 @@ public:
         _pre_error(0.0),
         _integral(0.0)
     {
-        this->_integral_impact = ABS(integrative_impact);
+        this->_integral_max_error = integral_max_error;
     }
 
     PID() :
@@ -55,15 +55,15 @@ public:
         _Ki(0.0),
         _pre_error(0.0),
         _integral(0.0),
-        _integral_impact(-1.0)
+        _integral_max_error(-1.0)
     {
 
     }
-    double calculate(double setpoint, double pv, double timePassedFromLastSample = 1.0)
+    double calculate(double setpoint, double process_value, double timePassedFromLastSample = 1.0) volatile
     {
         double error, Pout, Iout, Dout, derivative, output;
         // Calculate error
-        error = setpoint - pv;
+        error = setpoint - process_value;
 
         // Proportional terms
         Pout = _Kp * error;
@@ -75,13 +75,13 @@ public:
 
 
             // Restrict to max/min
-            if (this->_integral_impact > 0.0)
+            if (this->_integral_max_error >= 0.0)
             {
-                if (_integral > this->_integral_impact) {
-                    _integral = this->_integral_impact;
+                if (_integral > this->_integral_max_error) {
+                    _integral = this->_integral_max_error;
                 }
-                else if (_integral < -(this->_integral_impact)) {
-                    _integral = -(this->_integral_impact);
+                else if (_integral < -(this->_integral_max_error)) {
+                    _integral = -(this->_integral_max_error);
                 }
             }
 
@@ -121,59 +121,69 @@ public:
 
     }
 
-    void setParameters(double Kp, double Ki, double Kd) {
+    void setParameters(double Kp, double Ki, double Kd) volatile {
         this->_Kp = Kp;
         this->_Kd = Kd;
         this->_Ki = Ki;
     }
 
-    void setMaxOutput(double val) {
+    void setMaxOutput(double val) volatile {
         this->_max_output = val;
     }
-    void setMinOutput(double val) {
+    void setMinOutput(double val) volatile {
         this->_min_output = val;
     }
 
-    void setKp(double val) {
+    void setKp(double val) volatile {
         this->_Kp = val;
     }
 
-    void setKi(double val) {
+    void setKi(double val) volatile {
         this->_Ki = val;
     }
 
-    void setKd(double val) {
+    void setKd(double val) volatile {
         this->_Kd = val;
     }
 
-    void setIntegralImpact(double val) {
+    void setIntegralImpact(double val) volatile {
         if (val < 0.0) {
             val = -val;
         }
-        this->_integral_impact = val;
+        this->_integral_max_error = val;
+        if (this->_integral > this->_integral_max_error) {
+            this->_integral = this->_integral_max_error;
+        }
+        else if (this->_integral < -(this->_integral_max_error)) {
+            this->_integral = -(this->_integral_max_error);
+        }
     }
 
-    double getIntegralImpact(double val) {
-        return this->_integral_impact;
+    double getIntegralImpact() volatile {
+        return this->_integral_max_error;
     }
 
-    double getMaxOutput(double val) {
+    double getMaxOutput() volatile {
         return this->_max_output;
     }
-    double getMinOutput(double val) {
+    double getMinOutput() {
         return this->_min_output;
     }
 
-    double getKp(double val) {
+    double getKp() volatile {
         return this->_Kp;
     }
 
-    double getKi(double val) {
+    double getKi() {
         return this->_Ki;
     }
 
-    double getKd(double val) {
+    double getKd() {
         return this->_Kd;
+    }
+
+    double getIntegralError() {
+        return this->_integral;
     }
 
     void reset() {
@@ -189,7 +199,7 @@ private:
     double _Ki;
     double _pre_error = 0.0;
     double _integral = 0.0;
-    double _integral_impact = 0.0;
+    double _integral_max_error = 0.0;
 };
 
 #endif // !__PID_H__

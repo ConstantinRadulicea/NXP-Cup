@@ -1,2 +1,10 @@
-﻿  pid_example.cpp
-  PID.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup-2024-PixyVectors\Unitest\PID\x64\Debug\PID.exe
+﻿  main.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(33,28): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(33,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(34,22): warning C4566: character represented by universal-character-name '\u2705' cannot be represented in the current code page (1252)
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(37,22): warning C4566: character represented by universal-character-name '\u274C' cannot be represented in the current code page (1252)
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(105,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(105,18): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(106,22): warning C4566: character represented by universal-character-name '\u2705' cannot be represented in the current code page (1252)
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\main.cpp(109,22): warning C4566: character represented by universal-character-name '\u274C' cannot be represented in the current code page (1252)
+  PID.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\PID\x64\Debug\PID.exe

@@ -1,12 +1,9 @@
-
 #define DEBUG_UNITTEST
 #define DEBUG_STEERINGWHEEL
 #define _CRT_SECURE_NO_WARNINGS
 #include "SteeringServo.h"
 #include "SteeringWheel.h"
-
 #include "PurePursuitGeometry.h"
-
 #include "geometry2D.h"
 #include <cstdint>
 #include <vector>
@@ -122,7 +119,7 @@ int main2() {
 #define STEERING_SERVO_ERROR -4.0f
 
 
-int main() {
+int main33333() {
 	float arm_wheel_angle;
 	float arm_wheel_length;
 	arm_wheel_angle = 19.167f;
