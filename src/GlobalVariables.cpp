@@ -79,46 +79,7 @@ float g_camera_offset_y_m = 0.0f;
   float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #endif
 
-
-#elif CAR2 == 1
-int8_t g_enable_car_engine = 0;
-int8_t g_enable_car_steering_wheel = 0;
-int8_t g_enable_emergency_brake = 1;
-int8_t g_enable_pixy_vector_approximation = 0;
-int8_t g_enable_distance_sensor1 = 1;
-int8_t g_enable_distance_sensor2 = 1;
-int8_t g_enable_distance_sensor3 = 1;
-int8_t g_enable_remote_start_stop = 1;
-
-float g_lane_width_vector_unit = 53.0f;
-float g_black_color_treshold = 0.2f; // 0=black, 1=white
-float g_car_length_cm = 17.5f;
-float g_lookahead_min_distance_cm = 22.0f;
-float g_lookahead_max_distance_cm = 50.0f;
-float g_vehicle_min_speed_mps = 97.0f + CAR2_PARAMETERS_DIFFERENCE;
-float g_vehicle_max_speed_mps = 125.0f  + CAR2_PARAMETERS_DIFFERENCE;
-float g_emergency_brake_activation_max_distance_m = 1.0f;
-float g_emergency_brake_speed_mps = 94.0f + CAR2_PARAMETERS_DIFFERENCE;
-float g_emergency_brake_distance_from_obstacle_m = 1.0f;   // 13.5f
-float g_steering_wheel_angle_offset_deg = 0.0f;
-float g_min_x_axis_angle_vector_deg = 15.0f;
-float g_max_speed_after_delay_mps = 107.0f;
-float g_car_speed_mps_ki = -0.01f;
-float g_car_speed_mps_kd = -0.4f;
-float g_car_speed_mps_ki_min_max_impact = 5.0f;
-
-
-#if RACE_MODE == 1
-  float g_emergency_brake_enable_delay_s = 20.0f;
-#elif DEBUG_MODE == 1
-  float g_emergency_brake_enable_delay_s = 0.0f;
-#else
-  float g_emergency_brake_enable_delay_s = 15.0f;
 #endif
-
-#endif
-
-
 
 
 float g_line_image_frame_width = 78.0f;
