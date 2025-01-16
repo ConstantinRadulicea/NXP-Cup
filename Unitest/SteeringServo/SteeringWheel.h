@@ -204,8 +204,10 @@ public:
 		float g_arm_wheel_circle_radius_mm = wheel_arm_len;
 		float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(arm_ang));
 #else
-		float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(16.46f));		//16.46
-		float g_arm_wheel_circle_radius_mm = 25.547f;
+		//float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(16.46f));		//16.46
+		float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(19.167f));		//16.46
+		//float g_arm_wheel_circle_radius_mm = 25.547f;
+		float g_arm_wheel_circle_radius_mm = 24.5f;
 #endif // DEBUG_STEERINGWHEEL
 
 		// float g_servo_arm_to_arm_wheel_rod_length_mm = 45.6188202f;	// not necessary to calculate manually, already done automatically

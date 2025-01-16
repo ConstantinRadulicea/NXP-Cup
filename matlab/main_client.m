@@ -2,8 +2,8 @@ clc;
 clear;
 close all;
 
-% car_ip_address = '192.168.2.197';
-car_ip_address = '192.168.184.128';
+car_ip_address = '192.168.2.194';
+% car_ip_address = '192.168.184.128';
 
 car_port = 6789;
 

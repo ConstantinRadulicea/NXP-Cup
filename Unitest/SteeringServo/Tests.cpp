@@ -23,11 +23,14 @@
 #define STEERING_SERVO_ERROR -4.0f
 
 
-bool 
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  117   // -> -27 going right 126
+#define STEERING_SERVO_ANGLE_MAX_LEFT   45     // -47 -> +45 going left 43 //49
+#define STEERING_SERVO_ERROR -6.3f
 
 
 
-int main() {
+
+int main333333333() {
 	float arm_wheel_angle;
 	float arm_wheel_length;
 	arm_wheel_angle = 19.167f;
@@ -40,11 +43,11 @@ int main() {
 	float servo_angle, servo_raw_angle, steering_wheel_angle, right_wheel_angle, left_wheel, right_wheel_achermann_angle, left_wheel_achermann_angle;
 	float valid_angle;
 	float right_wheel_error, left_wheel_error;
-	fprintf(fptr, "arm_wheel_angle:\t%.3f\n", arm_wheel_angle);
-	fprintf(fptr, "arm_wheel_length:\t%.3f\n", arm_wheel_length);
-	fprintf(fptr, "\n");
-	fprintf(fptr, "steering_angle\tvalid_steering_angle\tachermann_left_wheel\tachermann_right_wheel\tleft_wheel_angle\tright_wheel_angle\tleft_wheel_error\tright_wheel_error\tservo_angle\tservo_raw_angle");
-	fprintf(fptr, "\n");
+	printf("arm_wheel_angle:\t%.3f\n", arm_wheel_angle);
+	printf("arm_wheel_length:\t%.3f\n", arm_wheel_length);
+	printf("\n");
+	printf("steering_angle\tvalid_steering_angle\tachermann_left_wheel\tachermann_right_wheel\tleft_wheel_angle\tright_wheel_angle\tleft_wheel_error\tright_wheel_error\tservo_angle\tservo_raw_angle");
+	printf("\n");
 	for (float i = -40; i <= 40; i += 0.1)
 	{
 		g_steering_wheel.SetRawAngleOffset(STEERING_SERVO_ERROR);
@@ -63,12 +66,11 @@ int main() {
 		left_wheel_achermann_angle = g_steering_wheel.getLeftWheelAchermannAngle_deg();
 		right_wheel_error = right_wheel_achermann_angle - right_wheel_angle;
 		left_wheel_error = left_wheel_achermann_angle - left_wheel;
-		fprintf(fptr, "%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t", (float)i, valid_angle, left_wheel_achermann_angle, right_wheel_achermann_angle, left_wheel, right_wheel_angle, left_wheel_error, right_wheel_error, servo_angle, servo_raw_angle);
-		fprintf(fptr, "\n");
+		printf("%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t%.3f\t", (float)i, valid_angle, left_wheel_achermann_angle, right_wheel_achermann_angle, left_wheel, right_wheel_angle, left_wheel_error, right_wheel_error, servo_angle, servo_raw_angle);
+		printf("\n");
 		//printf("req_ang [%d] = steer_wheel: %f\t left_wheel: %f\t right_wheel: %f\t servo: %f\t servo_raw: %f\n", i, steering_wheel_angle, left_wheel, right_wheel_angle, servo_angle, servo_raw_angle);
 		//printf("Achermann:\tFL: %f\t\tFR: %f\n\n", left_wheel_achermann_angle, right_wheel_achermann_angle);
 	}
-	fclose(fptr);
 
 	return 0;
 }

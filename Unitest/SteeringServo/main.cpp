@@ -118,8 +118,12 @@ int main2() {
 #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
 #define STEERING_SERVO_ERROR -4.0f
 
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  117   // -> -27 going right 126
+#define STEERING_SERVO_ANGLE_MAX_LEFT   45     // -47 -> +45 going left 43 //49
+#define STEERING_SERVO_ERROR -6.3f
 
-int main33333() {
+
+int main() {
 	float arm_wheel_angle;
 	float arm_wheel_length;
 	arm_wheel_angle = 19.167f;

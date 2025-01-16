@@ -3,8 +3,12 @@
   "WorkspaceRootPath": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\Tests.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|solutionrelative:Tests.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\out.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|solutionrelative:out.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A832F9CD-3E59-48FE-9D45-2881EFDDCD3A}|SteeringServo.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,14 +39,27 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Tests.cpp",
-              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\Tests.cpp",
-              "RelativeDocumentMoniker": "Tests.cpp",
-              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\Tests.cpp",
-              "RelativeToolTip": "Tests.cpp",
-              "ViewState": "AgIAABkAAAAAAAAAAADwvxkAAAAFAAAAAAAAAA==",
+              "Title": "out.txt",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\out.txt",
+              "RelativeDocumentMoniker": "out.txt",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\out.txt",
+              "RelativeToolTip": "out.txt",
+              "ViewState": "AgIAAA0DAAAAAAAAAAAAwBcDAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
+              "WhenOpened": "2025-01-16T21:55:03.246Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "main.cpp",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\main.cpp",
+              "RelativeDocumentMoniker": "main.cpp",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\SteeringServo\\main.cpp",
+              "RelativeToolTip": "main.cpp",
+              "ViewState": "AgIAACgAAAAAAAAAAADwv3kAAABPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2025-01-05T17:21:16.92Z",
+              "WhenOpened": "2025-01-16T21:49:40.777Z",
               "EditorCaption": ""
             }
           ]
