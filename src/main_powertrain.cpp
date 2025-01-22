@@ -23,7 +23,6 @@
 void loop() {
   size_t i;
   int8_t pixy_1_result;
-  uint32_t pixy_1_loopIterationsCountNoVectorDetected;
   LineABC mirrorLine;
   Vector vec, pixy_1_leftVectorOld, pixy_1_rightVectorOld;
   std::vector<Vector> vectors;
@@ -35,6 +34,8 @@ void loop() {
   float temp_time;
   float timeStart;
   float speed_request_mps;
+  float p_camera_no_vector_detected_stopwatch_s = 0.0f;
+  float p_camera_error_stopwatch_s = 0.0f;
 
   AEB_out_t AEB_out;
   FLD_out_t FLD_out;
@@ -45,8 +46,6 @@ void loop() {
   pixy_1_result = PIXY_RESULT_ERROR;
 
   timeStart = 0.0f;
-  pixy_1_loopIterationsCountNoVectorDetected = 0;
-  pixy_1_loopIterationsCountNoVectorDetected = 0;
 
   mirrorLine = xAxisABC();
   mirrorLine.C = -(SCREEN_CENTER_Y);
@@ -115,6 +114,7 @@ void loop() {
     
 /*===================================================START first camera============================================================================*/
     if(pixy_1_result >= ((int8_t)0)){
+      p_camera_error_stopwatch_s = 0.0f;
       vectors.resize(g_pixy_1.line.numVectors);
       memcpy(vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
 
@@ -123,10 +123,10 @@ void loop() {
       VectorsProcessing::filterVectorIntersections(vectors, intersections);
 
       if (vectors.size() > 0){
-        pixy_1_loopIterationsCountNoVectorDetected = 0;
+        p_camera_no_vector_detected_stopwatch_s = 0.0f;
       }
       else{
-        pixy_1_loopIterationsCountNoVectorDetected++;
+        p_camera_no_vector_detected_stopwatch_s += MillisToSec(g_loop_time_ms);
       }
 
       for (i=0; i < vectors.size(); i++)
@@ -148,8 +148,9 @@ void loop() {
       }
     }
     else{
-      pixy_1_loopIterationsCountNoVectorDetected++;
-      FailureModeMessage(&g_pixy_1, pixy_1_loopIterationsCountNoVectorDetected,"pixy getAllFeatures");
+      p_camera_no_vector_detected_stopwatch_s += MillisToSec(g_loop_time_ms);
+      p_camera_error_stopwatch_s += MillisToSec(g_loop_time_ms);
+      FailureModeMessage(&g_pixy_1, p_camera_error_stopwatch_s,"pixy getAllFeatures");
     }
 /*===================================================END first camera============================================================================*/
 
@@ -187,10 +188,10 @@ void loop() {
       continue;
     }
 
-    if (pixy_1_loopIterationsCountNoVectorDetected >= MAX_ITERATION_PIXY_ERROR)
+    if (p_camera_no_vector_detected_stopwatch_s >= CAMERA_NO_VECTOR_DETECTED_TIMEOUT_S)
     {
       #if ENABLE_SERIAL_PRINT != 0
-        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(pixy_1_loopIterationsCountNoVectorDetected));
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(p_camera_no_vector_detected_stopwatch_s) + String(" s"));
       #endif
       if (g_emergency_break_active == 0) {
         g_car_speed_mps = (float)g_vehicle_min_speed_mps;

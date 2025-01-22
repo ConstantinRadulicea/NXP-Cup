@@ -35,6 +35,7 @@
 #define MicrosToMillis(val) ((val)/1000)
 #define MicrosToSec(val) ((val)/1000000)
 #define SecToMicros(val) ((val)*1000000)
+#define MillisToSec(val) ((val) / 1000)
 
 
 

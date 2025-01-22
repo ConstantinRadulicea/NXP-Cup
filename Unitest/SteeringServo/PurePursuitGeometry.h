@@ -105,6 +105,9 @@ static float RearWheelTurnRadius(float wheelBase, float turnAngle) {
 }
 
 static float RearWheelTurnRadiusToFrontWheelTurnRadius(float wheelBase, float rear_wheel_turn_radius) {
+	if (floatCmp(rear_wheel_turn_radius, 0.0f) < 0) {
+		return rear_wheel_turn_radius;
+	}
 	return sqrtf((wheelBase * wheelBase) + (rear_wheel_turn_radius * rear_wheel_turn_radius));
 }
 

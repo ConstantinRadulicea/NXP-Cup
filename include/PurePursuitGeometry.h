@@ -79,6 +79,9 @@ static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBa
 static float FrontWheelTurnRadius(float wheelBase, float turnAngle) {
 	float angle;
 	float temp_sin = sinf(turnAngle);
+	if (floatCmp(turnAngle, 0.0f) == 0) {
+		return -1.0f;
+	}
 	if (floatCmp(temp_sin, 0.0f) == 0) {
 		return 0.0f;
 	}
@@ -92,6 +95,9 @@ static float FrontWheelTurnRadius(float wheelBase, float turnAngle) {
 static float RearWheelTurnRadius(float wheelBase, float turnAngle) {
 	float angle;
 	//float temp_sin = sinf(turnAngle);
+	if (floatCmp(turnAngle, 0.0f) == 0) {
+		return -1.0f;
+	}
 	float temp_sin = tanf(turnAngle);
 	if (floatCmp(temp_sin, 0.0f) == 0) {
 		return 0.0f;
@@ -105,12 +111,15 @@ static float RearWheelTurnRadius(float wheelBase, float turnAngle) {
 }
 
 static float RearWheelTurnRadiusToFrontWheelTurnRadius(float wheelBase, float rear_wheel_turn_radius) {
+	if (floatCmp(rear_wheel_turn_radius, 0.0f) < 0) {
+		return -1.0f;
+	}
 	return sqrtf((wheelBase * wheelBase) + (rear_wheel_turn_radius * rear_wheel_turn_radius));
 }
 
 static float TurnRadiusToSteeringAngle(float wheelBase, float turn_radius) {
 	float steer_angle;
-	if (floatCmp(turn_radius, 0.0f) == 0) {
+	if (floatCmp(turn_radius, 0.0f) <= 0) {
 		return 0.0f;
 	}
 	steer_angle = asinf(wheelBase / turn_radius);
@@ -258,7 +267,13 @@ static float LeftWheelAngle(float steering_angle, float wheel_base, float track_
 		return 0;
 	}
 
+	if (floatCmp(steering_angle, 0.0f) == 0) {
+		return 0;
+	}
 	rear_wheel_turn_radius = RearWheelTurnRadius(wheel_base, steering_angle);
+	if (floatCmp(rear_wheel_turn_radius, 0.0f) < 0) {
+		return 0;
+	}
 
 	cmp_result = floatCmp(steering_angle, 0.0f);
 	if (cmp_result > 0)	// going left
@@ -298,7 +313,16 @@ static float RightWheelAngle(float steering_angle, float wheel_base, float track
 		return 0;
 	}
 
+		
+	if (floatCmp(steering_angle, 0.0f) == 0) {
+		return 0;
+	}
+
 	rear_wheel_turn_radius = RearWheelTurnRadius(wheel_base, steering_angle);
+
+	if (floatCmp(rear_wheel_turn_radius, 0.0f) < 0) {
+		return 0;
+	}
 
 	cmp_result = floatCmp(steering_angle, 0.0f);
 	if (cmp_result > 0)	// going left

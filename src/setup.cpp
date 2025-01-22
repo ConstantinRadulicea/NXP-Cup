@@ -13,11 +13,11 @@
 
 
 
-void FailureModeMessage(Pixy2 *pixy, int iteration, String errorText){
+void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
   #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("iters [") + String(iteration) + String("] ERROR: " + errorText));
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("seconds [") + String(time_passed) + String("] ERROR: " + errorText));
   #endif
-  if (iteration >= MAX_ITERATION_PIXY_ERROR){
+  if (time_passed >= CAMERA_ERROR_TIMEOUT_S){
     //g_car_speed_mps = (float)STANDSTILL_SPEED;
     while (pixy->init() < ((int8_t)0))
     {

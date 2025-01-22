@@ -55,8 +55,13 @@ static float calculateCarSpeed_old(float minSpeed, float maxSpeed, float maxStee
 static float CalculateCarSpeed(float _min_speed, float _max_speed, float _wheel_base, float _friction_coefficient, float _downward_acceleration, float _turn_angle) {
 	float new_car_speed, turn_radius;
 	turn_radius = RearWheelTurnRadius(_wheel_base, _turn_angle);
-	new_car_speed = carTurnMaxSpeed(turn_radius, _friction_coefficient, _downward_acceleration);
-
+	if (floatCmp(turn_radius, 0.0f) < 0) {
+		new_car_speed = _max_speed;
+	}
+	else{
+		new_car_speed = carTurnMaxSpeed(turn_radius, _friction_coefficient, _downward_acceleration);
+	}
+	
 	new_car_speed = MAX(_min_speed, new_car_speed);
 	new_car_speed = MIN(_max_speed, new_car_speed);
 
