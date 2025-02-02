@@ -31,7 +31,7 @@ void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       #endif
       delay(10);
-    }
+    }    
   }
 }
 
@@ -102,6 +102,7 @@ void setup() {
     #if ENABLE_SERIAL_PRINT == 1
       SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
     #endif
+    delay(100);
   }
   
   #if CAMERA_ILLUMINATION_LIGHT != 0
@@ -117,6 +118,7 @@ void setup() {
     #if ENABLE_SERIAL_PRINT == 1
       SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.changeProg(line) = ") + String(pixyResult));
     #endif
+    delay(100);
   }
 
   g_line_image_frame_width = g_pixy_1.frameWidth;

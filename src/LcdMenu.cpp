@@ -88,6 +88,12 @@ SSD1306AsciiWire display;
 */
 
 
+#if REAR_STEERING_MODE != 0
+#define ENABLE_LCDMENU_ENABLE_CAR_STEERING_WHEEL                  0
+#define ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET                0
+#endif
+
+
 void displayParameterValue(String parameter, String value){
   #if LCD_LIBRARY_ADAFRUIT != 0
         display.clearDisplay();
@@ -302,7 +308,7 @@ void settingsMenuRoutine() {
   static int lcdMenuIndex = ((int)LCDMENU_FIRST_VALUE) + 1;
   static int leftArrowButtonState;
   static int rightArrowButtonState;
-  static float lcd_print_timeont = 0.0f;
+  //static float lcd_print_timeont = 0.0f;
   int incrementButton;
   int decrementButton;
   int leftArrowButtonPrevState, rightArrowButtonPrevState;
@@ -825,8 +831,8 @@ void settingsMenuRoutine() {
     #if ENABLE_LCDMENU_CALIBRATION_VIEW_SINGLE_LINE != 0
         case LCDMENU_CALIBRATION_VIEW_SINGLE_LINE:
         {
-        LineABC upper_line, lower_line, horizontal_middle_line, calibration_line;
-        IntersectionLines upper_intersection, lower_intersection, left_lane_line_intersection, right_lane_line_intersection;
+        LineABC upper_line, lower_line, calibration_line;
+        IntersectionLines upper_intersection, lower_intersection;
 
         
         calibration_line = closestLineToCurrentTrajectory(g_left_lane_line_pixy_1, g_right_lane_line_pixy_1);
