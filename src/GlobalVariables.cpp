@@ -119,7 +119,7 @@ Pixy2 g_pixy_1;
 
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
   float temp_float;
-  int total_fields = 46;
+  int total_fields = 47;
   std::stringstream ss(rawData);
   std::vector<std::string> fields;
   SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
@@ -268,6 +268,8 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
     g_max_speed_after_delay_s = std::stof(fields[43]);
     g_enable_finish_line_detection_after_delay_s = std::stof(fields[44]);
     g_camera_offset_y_m = std::stof(fields[45]);
+
+    g_max_speed_after_finish_line_detected_mps = std::stof(fields[46]);
 
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
