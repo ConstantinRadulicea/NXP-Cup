@@ -268,7 +268,7 @@ float getFrontObstacleDistanceAnalog_m(){
   int analogValue;
   float measured_distance = 0.0f;
   float estimated_distance = 0.0f;
-  float estimated_distance_sensor1 = 5.0f, estimated_distance_sensor2 = 5.0f, estimated_distance_sensor3 = 5.0f;
+  float estimated_distance_sensor1 = 5.1f, estimated_distance_sensor2 = 5.2f, estimated_distance_sensor3 = 5.3f;
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
     if (g_enable_distance_sensor1 != 0)
@@ -307,7 +307,7 @@ float getFrontObstacleDistanceAnalog_m(){
 
   estimated_distance = MIN(estimated_distance_sensor1, estimated_distance_sensor2);
   estimated_distance = MIN(estimated_distance, estimated_distance_sensor3);
-//estimated_distance = analogValue;
+//estimated_distance = (float)analogValue;
   return estimated_distance;
 }
 

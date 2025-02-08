@@ -22,6 +22,8 @@ AEB_out_t automatic_emergency_braking(){
     out.obstacle_distance_m = 0.0f;
     out.active_loops_count = 0;
 
+    out.obstacle_distance_m = getFrontObstacleDistanceAnalog_m();
+
     EnableEmergencyBrakeAfterDelay(&g_enable_emergency_brake, g_emergency_brake_enable_delay_s);
     out.enabled = g_enable_emergency_brake;
   
@@ -34,8 +36,7 @@ AEB_out_t automatic_emergency_braking(){
       return out;
     }
 
-    out.obstacle_distance_m = getFrontObstacleDistanceAnalog_m();
-
+    
     if (out.obstacle_distance_m <= g_emergency_brake_activation_max_distance_m) {
     }
     else{

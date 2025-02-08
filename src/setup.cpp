@@ -69,7 +69,10 @@ void setup() {
   #endif
 
   #if ENABLE_EMERGENCY_BREAKING == 1
-    void AEB_setup();
+    AEB_setup();
+  #endif
+  #if ENABLE_FINISH_LINE_DETECTION == 1
+    FLD_setup();
   #endif
 
 

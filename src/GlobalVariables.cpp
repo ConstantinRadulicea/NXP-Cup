@@ -22,9 +22,9 @@ int8_t g_enable_car_engine = 0;
 int8_t g_enable_car_steering_wheel = 0;
 int8_t g_enable_emergency_brake = 0;
 int8_t g_enable_pixy_vector_approximation = 0;
-int8_t g_enable_distance_sensor1 = 0;
+int8_t g_enable_distance_sensor1 = 1;
 int8_t g_enable_distance_sensor2 = 1;
-int8_t g_enable_distance_sensor3 = 0;
+int8_t g_enable_distance_sensor3 = 1;
 int8_t g_enable_remote_start_stop = 0;
 int8_t g_enable_finish_line_detection = 0;
 
