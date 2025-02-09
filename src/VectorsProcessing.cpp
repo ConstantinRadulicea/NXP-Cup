@@ -81,6 +81,11 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
             return;
         }
+
+        if (VectorsProcessing::vectorMagnitude(vec) <= MeterToVectorUnit(0.2)) {
+            return;
+        }
+        
         
         /*
         vec.print();

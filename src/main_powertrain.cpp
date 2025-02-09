@@ -192,30 +192,6 @@ void loop() {
       continue;
     }
 
-    if (p_camera_no_vector_detected_stopwatch_s >= CAMERA_NO_VECTOR_DETECTED_TIMEOUT_S)
-    {
-      #if ENABLE_SERIAL_PRINT != 0
-        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(p_camera_no_vector_detected_stopwatch_s) + String(" s"));
-      #endif
-      if (g_emergency_break_active == 0) {
-        g_car_speed_mps = (float)g_vehicle_min_speed_mps;
-      }
-    }
-    else{
-      if (g_emergency_break_active == 0){        
-        g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle_rad);
-      }
-    }
-    
-    if (!isValidFloatNumber(&(g_car_speed_mps), __LINE__)) {
-      continue;
-    }
-
-    #if ENABLE_STEERING_SERVO == 1
-      if (g_enable_car_steering_wheel != 0) {
-        g_steering_wheel.setSteeringWheelAngleDeg(degrees(g_steering_angle_rad));
-      }
-    #endif
 
     // max_speed Arbitrator
     speed_request_mps = g_vehicle_max_speed_original_mps;
@@ -229,6 +205,29 @@ void loop() {
       speed_request_mps = MIN(g_max_speed_after_delay_mps, speed_request_mps);
     }
     g_vehicle_max_speed_mps = speed_request_mps;
+
+
+    if (p_camera_no_vector_detected_stopwatch_s >= CAMERA_NO_VECTOR_DETECTED_TIMEOUT_S)
+    {
+      #if ENABLE_SERIAL_PRINT != 0
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(p_camera_no_vector_detected_stopwatch_s) + String(" s"));
+      #endif
+      g_vehicle_max_speed_mps = MIN(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps);
+    }
+    
+    g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle_rad);
+    
+    if (!isValidFloatNumber(&(g_car_speed_mps), __LINE__)) {
+      continue;
+    }
+
+    #if ENABLE_STEERING_SERVO == 1
+      if (g_enable_car_steering_wheel != 0) {
+        g_steering_wheel.setSteeringWheelAngleDeg(degrees(g_steering_angle_rad));
+      }
+    #endif
+
+
     
 
     #if ENABLE_DRIVERMOTOR == 1

@@ -53,15 +53,17 @@ AEB_out_t automatic_emergency_braking(){
     out.active_loops_count = g_emergency_break_loops_count;
     out.active = g_emergency_break_active;
 
-    #if ENABLE_SERIAL_PRINT == 1
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK loop: ") + String(g_emergency_break_loops_count));
-    #endif
-        
     if(out.obstacle_distance_m <= g_emergency_brake_distance_from_obstacle_m){
       out.speed_request_mps = (float)STANDSTILL_SPEED;
+      #if ENABLE_SERIAL_PRINT == 1
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK STOP: ") + String(g_emergency_break_loops_count));
+      #endif
     }
     else{
       out.speed_request_mps = (float)g_emergency_brake_speed_mps;
+      #if ENABLE_SERIAL_PRINT == 1
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("EMRG_BRK loop: ") + String(g_emergency_break_loops_count));
+      #endif
     }
     return out;
 }
