@@ -51,8 +51,6 @@
 #include <SPI.h>
 #include "SteeringWheel.h"
 #include "PurePursuitGeometry.h"
-#include "VectorsProcessing.h"
-#include "aproximatePixyVector.h"
 //#include "strtod_.h"
 #include "MovingAverage.h"
 #include "ReadSerial.h"
@@ -214,7 +212,6 @@
 #define RPM_SENSOR_RIGHT_WHEEL_PIN 3
 
 
-#include "GlobalVariables.h"
 #include "log.h"
 #include "LcdMenu.h"
 #include "DistanceSensors.h"

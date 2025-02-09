@@ -26,6 +26,7 @@
 #include "Config.h"
 #include "TrajectoryMix.h"
 #include "SteeringWheel.h"
+#include "VectorsProcessing.h"
 
 
 #define TRUE 1

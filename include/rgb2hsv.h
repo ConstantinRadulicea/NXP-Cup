@@ -17,7 +17,7 @@
 #ifndef __RGB2HSV_H__
 #define __RGB2HSV_H__
 
-//#include <stdint>
+#include <stdint.h>
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))

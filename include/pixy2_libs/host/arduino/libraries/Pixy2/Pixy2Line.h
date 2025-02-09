@@ -82,6 +82,8 @@
 
 #define LINE_MAX_INTERSECTION_LINES              6
 
+#include <stdint.h>
+
 struct Vector
 {
   void print()
