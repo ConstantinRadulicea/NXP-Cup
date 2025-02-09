@@ -101,7 +101,7 @@ extern float g_line_image_frame_height;
   #endif
 #endif
 
-#if ENABLE_REAR_STEERING_ONLY == 1
+#if ENABLE_SINGLE_AXE_STEERING == 1
   #define STEERING_ANGLE_MAX_RIGHT  (-35)
   #define STEERING_ANGLE_MAX_LEFT   (-STEERING_ANGLE_MAX_RIGHT)
 
@@ -123,7 +123,7 @@ extern float g_line_image_frame_height;
 
 #define WHEEL_BASE_M 0.175
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
-#define DISTANCE_BETWEEN_WHEELS_M 0.137	//distance between wheels
+#define TRACK_WIDTH_M 0.137	//distance between wheels
 
 #define POWERTRAIN_PID_FREQUENCY_HZ 50
 #ifdef TEENSYLC

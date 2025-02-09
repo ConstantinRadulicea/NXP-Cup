@@ -33,7 +33,7 @@ float g_wheel_arm_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f
 
 #define WHEEL_BASE_M (0.176f)
 #define WHEEL_DIAMETER_M (0.064f)	//wheel diameter im meters
-#define DISTANCE_BETWEEN_WHEELS_M (0.137f)	//distance between wheels
+#define TRACK_WIDTH_M (0.137f)	//distance between wheels
 
 
 
@@ -89,7 +89,7 @@ int main2() {
 	//for (int i = (-36 - 4); i <= (48 - 4); i++)
 	{
 
-		//right_wheel = degrees(RightWheelAngle(radians(i), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
+		//right_wheel = degrees(RightWheelAngle(radians(i), WHEEL_BASE_M, TRACK_WIDTH_M));
 		servo_2 = i;
 		//left_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel), left_wheel_config));
 		right_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(servo_2), right_wheel_config));
@@ -101,9 +101,9 @@ int main2() {
 		//servo_2 = degrees(ServoAngleToSteeringAngle_rad(radians(servo_2), right_wheel_config));
 
 		left_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel), left_wheel_config));
-		//steering_angle = degrees(RightWheelAngleToVehicleSteeringAngle(radians(right_wheel), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
-		left_wheel_angle_from_steering = degrees(LeftWheelAngle(radians(steering_angle), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
-		right_wheel_angle_from_steering = degrees(RightWheelAngle(radians(steering_angle), WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M));
+		//steering_angle = degrees(RightWheelAngleToVehicleSteeringAngle(radians(right_wheel), WHEEL_BASE_M, TRACK_WIDTH_M));
+		left_wheel_angle_from_steering = degrees(LeftWheelAngle(radians(steering_angle), WHEEL_BASE_M, TRACK_WIDTH_M));
+		right_wheel_angle_from_steering = degrees(RightWheelAngle(radians(steering_angle), WHEEL_BASE_M, TRACK_WIDTH_M));
 		trackwidth = RearWheelTurnRadius(WHEEL_BASE_M, radians(left_wheel)) - RearWheelTurnRadius(WHEEL_BASE_M, radians(right_wheel));
 		printf("servo [%d] = wheel_FL: %f\t wheel_FR: %f\t servo: %f\t steering: %f\n", i, left_wheel, right_wheel, servo_2, steering_angle);
 		printf("Achermann:\tFL: %f\t\tFR: %f\n\n", left_wheel_angle_from_steering, right_wheel_angle_from_steering);
@@ -130,7 +130,7 @@ int main() {
 	arm_wheel_length = 24.5f;
 	//arm_wheel_angle = 16.46f;
 	//arm_wheel_length = 25.547f;
-	SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_wheel_angle, arm_wheel_length);
+	SteeringWheel g_steering_wheel(WHEEL_BASE_M, TRACK_WIDTH_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_wheel_angle, arm_wheel_length);
 	FILE* fptr;
 
 	fptr = fopen("out.txt", "w+");
@@ -201,8 +201,8 @@ int main22222() {
 
 	fprintf(fptr, "ANGLE: %f\n", arm_ang);
 	fprintf(fptr, "arm_len: %f\n", arm_len);
-	SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_ang, arm_len);
-	//SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
+	SteeringWheel g_steering_wheel(WHEEL_BASE_M, TRACK_WIDTH_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_ang, arm_len);
+	//SteeringWheel g_steering_wheel(WHEEL_BASE_M, TRACK_WIDTH_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
 
 	g_steering_wheel.SetRawAngleOffset(-4.0f);
 	fprintf(fptr, "Steering: ");

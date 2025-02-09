@@ -176,11 +176,15 @@ void loop() {
     }
 
     #if ENABLE_STEERING_SERVO == 1
-      g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
-    #elif ENABLE_REAR_STEERING_ONLY == 1
-      g_steering_angle_rad =  radians(VALIDATE_REAR_STEERING_ANGLE(degrees(purePersuitInfo.steeringAngle)));
+      #if ENABLE_SINGLE_AXE_STEERING == 1
+        g_steering_angle_rad =  radians(VALIDATE_REAR_STEERING_ANGLE(degrees(purePersuitInfo.steeringAngle)));
+      #elif ENABLE_REAR_AXE_STEERING == 1
+      g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(-(purePersuitInfo.steeringAngle))));
+      #else
+        g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
+      #endif
     #else
-      g_steering_angle_rad = purePersuitInfo.steeringAngle;
+        g_steering_angle_rad = purePersuitInfo.steeringAngle;
     #endif
 
     g_rear_axe_turn_radius_m = RearWheelTurnRadius(WHEEL_BASE_M, g_steering_angle_rad);

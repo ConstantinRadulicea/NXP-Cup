@@ -15,7 +15,7 @@
 
 #define WHEEL_BASE_M (0.176f)
 #define WHEEL_DIAMETER_M (0.064f)	//wheel diameter im meters
-#define DISTANCE_BETWEEN_WHEELS_M (0.137f)	//distance between wheels
+#define TRACK_WIDTH_M (0.137f)	//distance between wheels
 
 #define STEERING_SERVO_ANGLE_MIDDLE     90
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  126   // +36 -> -36 going right 126
@@ -37,7 +37,7 @@ int main333333333() {
 	arm_wheel_length = 24.5f;
 	//arm_wheel_angle = 16.46f;
 	//arm_wheel_length = 25.547f;
-	SteeringWheel g_steering_wheel(WHEEL_BASE_M, DISTANCE_BETWEEN_WHEELS_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_wheel_angle, arm_wheel_length);
+	SteeringWheel g_steering_wheel(WHEEL_BASE_M, TRACK_WIDTH_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_wheel_angle, arm_wheel_length);
 	g_steering_wheel.SetRawAngleOffset(STEERING_SERVO_ERROR);
 
 	float servo_angle, servo_raw_angle, steering_wheel_angle, right_wheel_angle, left_wheel, right_wheel_achermann_angle, left_wheel_achermann_angle;

@@ -13,7 +13,7 @@
 //#define RIGHT_WHEEL_MOTOR_PIN 23
 //#define LEFT_WHEEL_MOTOR_PIN 22
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
-#define DISTANCE_BETWEEN_WHEELS_M 0.145	//distance between wheels
+#define TRACK_WIDTH_M 0.145	//distance between wheels
 
 float kp = 0.0;
 float ki = 0.1;
@@ -22,7 +22,7 @@ float ki_sum = 0.5;
 
 
 void setup() {
-    PowerTrainSetup(WHEEL_DIAMETER_M, DISTANCE_BETWEEN_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
+    PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
     Serial.begin(SERIAL_PORT_BAUD_RATE);
     //while (!Serial) { delay(50); }
 }

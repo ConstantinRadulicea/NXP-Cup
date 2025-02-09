@@ -88,7 +88,7 @@ SSD1306AsciiWire display;
 */
 
 
-#if REAR_STEERING_MODE != 0
+#if SINGLE_AXE_MODE != 0
 #define ENABLE_LCDMENU_ENABLE_CAR_STEERING_WHEEL                  0
 #define ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET                0
 #endif
