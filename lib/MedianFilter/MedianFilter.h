@@ -150,6 +150,10 @@ public:
         this->_windowSize = 0;
     }
 
+    void clear(){
+        this->totSamples = 0;
+    }
+
     ~MedianFilter() {
         if (this->_queue) {
             delete[] this->_queue;

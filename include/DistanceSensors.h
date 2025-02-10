@@ -57,6 +57,8 @@ float AnalogToDistance_m(int analogValue);
 
 float getFrontObstacleDistanceAnalog_m();
 
+float readFrontObstacleDistanceAnalog_m();
+
 
 
 #endif

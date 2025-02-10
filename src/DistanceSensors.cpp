@@ -27,6 +27,8 @@ int distance_sensor1_analog_pin;
 int distance_sensor2_analog_pin;
 int distance_sensor3_analog_pin;
 
+float private_obstacle_distance_m = 0.0f;
+
 void DistanceSensorsSetupHCSR04(
 int _distance_sensor1_trig_pin, int _distance_sensor1_echo_pin,
 int _distance_sensor2_trig_pin, int _distance_sensor2_echo_pin,
@@ -67,8 +69,12 @@ connect (Pin 2- Pulse Width Output) to (Pin 4- Ranging Start/Stop)
 */
 
 
+
+// 0 1 2
+// 0 1 0
 inline void continous_loop_signal_generation(int signal_pin, int8_t _count) {
     if (_count == (int8_t)1) {
+      private_obstacle_distance_m = readFrontObstacleDistanceAnalog_m();
         digitalWrite(signal_pin, HIGH);
     }
     else {
@@ -251,7 +257,7 @@ float CalibrateDistance_linear(float sensor_data, float x, float c){
   return calibrated_data;
 }
 
-float getFrontObstacleDistanceAnalog_m(){
+float readFrontObstacleDistanceAnalog_m(){
   //static SimpleKalmanFilter simpleKalmanFilter(0.1f, 0.1f, 0.001f);
 
   #if ENABLE_DISTANCE_SENSOR1 == 1
@@ -311,4 +317,8 @@ float getFrontObstacleDistanceAnalog_m(){
   return estimated_distance;
 }
 
-
+float getFrontObstacleDistanceAnalog_m(){
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    return private_obstacle_distance_m;
+    }
+}

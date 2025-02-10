@@ -15,8 +15,8 @@ void AEB_setup(){
 
 
 AEB_out_t automatic_emergency_braking(){
-  static MedianFilter AEB_distance_filter(AEB_DISTANCE_FILTER_SIZE);
-  float AEB_distance_filtered_m = 0.0f;
+    static MedianFilter AEB_distance_filter(AEB_DISTANCE_FILTER_SIZE);
+    float AEB_distance_filtered_m = 0.0f;
     AEB_out_t out;
     
     out.active = (int8_t)0;
@@ -25,7 +25,6 @@ AEB_out_t automatic_emergency_braking(){
     out.active_loops_count = 0;
 
     out.obstacle_distance_m = getFrontObstacleDistanceAnalog_m();
-    AEB_distance_filtered_m = AEB_distance_filter.next(out.obstacle_distance_m);
 
     EnableEmergencyBrakeAfterDelay(&g_enable_emergency_brake, g_emergency_brake_enable_delay_s);
     out.enabled = g_enable_emergency_brake;
@@ -39,11 +38,13 @@ AEB_out_t automatic_emergency_braking(){
       return out;
     }
 
-    if (g_emergency_break_active != 0) {
-      out.obstacle_distance_m = AEB_distance_filtered_m;
-    }
+    //if (g_emergency_break_active != 0) {
+    //  out.obstacle_distance_m = AEB_distance_filter.next(out.obstacle_distance_m);
+    //}
+    //else{
+    //  AEB_distance_filter.clear();
+    //}
     
-
     
     if (out.obstacle_distance_m <= g_emergency_brake_activation_max_distance_m) {
     }
@@ -58,9 +59,7 @@ AEB_out_t automatic_emergency_braking(){
     g_emergency_break_active = (int8_t)1;
     g_emergency_break_loops_count++;
 
-    if (g_emergency_break_active != 0) {
-      out.obstacle_distance_m = AEB_distance_filtered_m;
-    }
+    
 
     out.active_loops_count = g_emergency_break_loops_count;
     out.active = g_emergency_break_active;
