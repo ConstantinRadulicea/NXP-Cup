@@ -30,7 +30,7 @@ void loop() {
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
   Point2D centerRearAxeCarPosition_vectorUnit;
-  float laneWidth, lookAheadDistance;
+  float lookAheadDistance;
   float temp_time;
   float timeStart;
   float speed_request_mps;
@@ -54,14 +54,11 @@ void loop() {
   carPosition.y = 0.0f;
 
   g_middle_lane_line_pixy_1 = yAxisABC();
-
-  laneWidth = (float)g_lane_width_vector_unit;
   
   lookAheadDistance = (float)MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f);
   
   g_pixy_1_vectors_processing.setCarPosition(carPosition);
-  g_pixy_1_vectors_processing.setLaneWidth(laneWidth);
-  
+  g_pixy_1_vectors_processing.setLaneWidth((float)g_lane_width_vector_unit);
   g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 
 /*
@@ -87,7 +84,7 @@ void loop() {
     
     carPosition.y = - MeterToVectorUnit(g_camera_offset_y_m);
     g_pixy_1_vectors_processing.setCarPosition(carPosition);
-
+    g_pixy_1_vectors_processing.setLaneWidth((float)g_lane_width_vector_unit);
     g_pixy_1_vectors_processing.setMinXaxisAngle(radians(g_min_x_axis_angle_vector_deg));
 
     if (g_enable_car_engine == 0) {
