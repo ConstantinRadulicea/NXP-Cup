@@ -25,7 +25,7 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
-#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 3
+#define OBSTACLE_DISTANCE_MEDIANFILTER_SIZE 5
 
 #ifndef ENABLE_DISTANCE_SENSOR1
   #define ENABLE_DISTANCE_SENSOR1 0

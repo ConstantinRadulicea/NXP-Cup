@@ -5,6 +5,8 @@
 #include "GlobalVariables.h"
 #include "EnableAfterDelay.h"
 
+#define AEB_DISTANCE_FILTER_SIZE 3
+
 typedef struct AEB_out_s{
 int8_t enabled;
 int8_t active;
