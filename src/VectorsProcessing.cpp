@@ -278,7 +278,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
     }
 
     bool VectorsProcessing::isFinishLineValid(FinishLine finishLine){
-        if(isVectorValid(finishLine.leftSegment) || isVectorValid(finishLine.rightSegment)){
+        if(isVectorValid(finishLine.leftSegment) && isVectorValid(finishLine.rightSegment)){
             return true;
         }
         return false;
@@ -573,6 +573,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 }
             }
         }
+
         return finishLine;
     }
 
