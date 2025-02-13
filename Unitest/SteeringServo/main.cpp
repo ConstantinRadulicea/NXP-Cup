@@ -120,7 +120,7 @@ int main2() {
 
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  117   // -> -27 going right 126
 #define STEERING_SERVO_ANGLE_MAX_LEFT   45     // -47 -> +45 going left 43 //49
-#define STEERING_SERVO_ERROR -6.3f
+#define STEERING_SERVO_ERROR -6.29f
 
 
 int main() {

@@ -190,7 +190,7 @@ public:
 	SteeringWheel(float wheel_base, float track_width, unsigned int servo_max_left_raw_angle = 0, unsigned int servo_middle_raw_angle = 90, unsigned int servo_max_right_raw_angle = 180)
 #endif // DEBUG_STEERINGWHEEL
 
-	
+
 		: steering_servo(servo_max_left_raw_angle, servo_middle_raw_angle, servo_max_right_raw_angle)
 	{
 		// positive angle: going left
@@ -199,6 +199,8 @@ public:
 		Point2D g_servo_position = Point2D{ 0.0f, 0.0f };
 		Point2D g_arm_wheel_position = Point2D{ 52.0f, -6.4f };
 		float g_servo_arm_circle_radius_mm = 24.0f;	// 24mm, 20mm
+
+		//float ggggg = angleBetweenLinesABC(xAxisABC(), points2lineABC(g_servo_position, g_arm_wheel_position));
 
 #ifdef DEBUG_STEERINGWHEEL
 		float g_arm_wheel_circle_radius_mm = wheel_arm_len;
@@ -239,7 +241,7 @@ public:
 		this->track_width = track_width;
 		this->steering_wheel_angle = 0.0f;
 		this->right_wheel_angle_rad = 0.0f;
-		
+
 		this->calculateMaxRanges();
 	}
 
@@ -327,7 +329,7 @@ public:
 	}
 
 private:
-	
+
 	SteeringConfiguration steering_config;
 	SteeringConfiguration steering_config_right_wheel_to_left_wheel;
 	float wheel_base;

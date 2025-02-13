@@ -64,7 +64,7 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW                 1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW_SINGLE_LINE               1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW                           1
-#define ENABLE_LCDMENU_CAMERA_OFFSET_Y                            1
+#define ENABLE_LCDMENU_CAMERA_OFFSET_Y                            0
 
 #define ENABLE_LCDMENU_ENABLE_DISTANCE_SENSOR1                    0
 #define ENABLE_LCDMENU_ENABLE_DISTANCE_SENSOR2                    0

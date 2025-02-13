@@ -57,7 +57,7 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(193,13): wa
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(57,8): warning C4101: 'temp_float': unreferenced local variable
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(244,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(247,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(38,8): warning C4101: 'cmp_result_1': unreferenced local variable
@@ -144,7 +144,7 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(193,13): wa
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(57,8): warning C4101: 'temp_float': unreferenced local variable
   (compiling source file 'SteeringWheel.h')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(244,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(247,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(38,8): warning C4101: 'cmp_result_1': unreferenced local variable
@@ -204,7 +204,7 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(193,13): wa
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(57,8): warning C4101: 'temp_float': unreferenced local variable
   (compiling source file 'Tests.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(244,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\PurePursuitGeometry.h(247,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file 'Tests.cpp')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(38,8): warning C4101: 'cmp_result_1': unreferenced local variable
