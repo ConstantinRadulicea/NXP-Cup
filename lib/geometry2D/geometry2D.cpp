@@ -1246,3 +1246,60 @@ int isNumber(const char* str, size_t str_length) {
         return 0;
     }
 }
+
+
+// Cross product for 2D vectors (returns a scalar)
+float crossProduct2D(Vector2D_components A, Vector2D_components B) {
+    return (A.i * B.j) - (A.j * B.i);
+}
+
+Vector2D pointsToVector2D(Point2D tail, Point2D head){
+	Vector2D result_vec;
+	result_vec.tail = tail;
+	result_vec.head = head;
+	return result_vec;
+}
+
+Vector2D_components getVector2D_components(Vector2D vec){
+	Vector2D_components result;
+	result.i = vec.head.x - vec.tail.x;
+	result.j = vec.head.y - vec.tail.y;
+	return result;
+}
+
+
+Vector2D_components getVector2D_componentsFromPoints(Point2D tail, Point2D head){
+	Vector2D_components result;
+	result.i = head.x - tail.x;
+	result.j = head.y - tail.y;
+	return result;
+}
+
+
+
+// Function to check if point P is inside triangle ABC
+int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P) {
+
+	Vector2D_components vec1, vec2;
+	float cross1, cross2, cross3;
+
+	vec1 = getVector2D_componentsFromPoints(A, B);
+	vec2 = getVector2D_componentsFromPoints(A, P);
+	cross1 = crossProduct2D(vec1, vec2);
+
+	vec1 = getVector2D_componentsFromPoints(B, C);
+	vec2 = getVector2D_componentsFromPoints(B, P);
+	cross2 = crossProduct2D(vec1, vec2);
+
+	vec1 = getVector2D_componentsFromPoints(C, A);
+	vec2 = getVector2D_componentsFromPoints(C, P);
+	cross3 = crossProduct2D(vec1, vec2);
+    
+    // Check if all cross products have the same sign (either all positive or all negative)
+    return (cross1 > 0.0f && cross2 > 0.0f && cross3 > 0.0f) || (cross1 < 0.0f && cross2 < 0.0f && cross3 < 0.0f);
+}
+
+// Function to check if point P is inside a quadrilateral defined by 4 points
+int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P) {
+    return isPointInTriangle(A, B, C, P) || isPointInTriangle(A, C, D, P);
+}

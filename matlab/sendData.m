@@ -11,7 +11,7 @@ g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
 g_enable_distance_sensor3 = 0.0;
 g_enable_remote_start_stop = 0.0;
-g_enable_finish_line_detection = 1;
+g_enable_finish_line_detection = 0;
 
 g_lane_width_vector_unit = 51.4;    % 51.4
 g_black_color_treshold = 0.2;
@@ -56,7 +56,7 @@ g_camera_offset_y_m = 0.0; %real_value = measured_value - offset    // offset = 
 
 g_max_speed_after_delay_s = 0.0;
 g_enable_finish_line_detection_after_delay_s = 0.0;
-g_max_speed_after_finish_line_detected_mps = 0.0;
+g_max_speed_after_finish_line_detected_mps = 0.7;
 
 values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...

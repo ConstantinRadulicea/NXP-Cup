@@ -278,7 +278,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
     }
 
     bool VectorsProcessing::isFinishLineValid(FinishLine finishLine){
-        if(isVectorValid(finishLine.leftSegment) && isVectorValid(finishLine.rightSegment)){
+        if(isVectorValid(finishLine.leftSegment) || isVectorValid(finishLine.rightSegment)){
             return true;
         }
         return false;
@@ -486,17 +486,24 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
     FinishLine VectorsProcessing::findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees){
         FinishLine finishLine;
         LineABC leftLine, rightLine, tempVectorLine;
-        float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev, laneWidth_max, laneWidth_min;
-        LineSegmentsDistancePoints laneWidth_;
+        float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev;
+        LineSegment leftLine_segment;
+        LineSegment rightLine_segment;
+        LineSegment vec_segment;
+        //float laneWidth_max, laneWidth_min;
+        //LineSegmentsDistancePoints laneWidth_;
 
         memset(&finishLine, 0, sizeof(FinishLine));
         if(!isVectorValid(leftLineVector) || !isVectorValid(rightLineVector)){
             return finishLine;
         }
+
+        leftLine_segment = VectorsProcessing::vectorToLineSegment(leftLineVector);
+        rightLine_segment = VectorsProcessing::vectorToLineSegment(rightLineVector);
         
-        laneWidth_ = distancePointsBwSegments(vectorToLineSegment(leftLineVector), vectorToLineSegment(rightLineVector));
-        laneWidth_min = euclidianDistance(laneWidth_.min.A, laneWidth_.min.B);
-        laneWidth_max = euclidianDistance(laneWidth_.max.A, laneWidth_.max.B);
+        //laneWidth_ = distancePointsBwSegments(vectorToLineSegment(leftLineVector), vectorToLineSegment(rightLineVector));
+        //laneWidth_min = euclidianDistance(laneWidth_.min.A, laneWidth_.min.B);
+        //laneWidth_max = euclidianDistance(laneWidth_.max.A, laneWidth_.max.B);
         //Serial1.print("%");
         //Serial1.println(laneWidth_min);
 
@@ -507,14 +514,16 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             return finishLine;
         }
 
-        if (floatCmp(laneWidth_min, 0.0f) <= 0) {
-            return finishLine;
-        }
+        //if (floatCmp(laneWidth_min, 0.0f) <= 0) {
+        //    return finishLine;
+        //}
 
         for (size_t i = 0; i < vectors.size(); i++) {
             if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
                 continue;
             }
+
+            vec_segment = VectorsProcessing::vectorToLineSegment(vectors[i]);
 
             tempVectorLine = vectorToLineABC(vectors[i]);
 
@@ -534,13 +543,21 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 //Serial1.println(minDistanceVectorToLeftLine);
                 //Serial1.print("%");
                 //Serial1.println(minDistanceVectorToRightLine);
-                if ((floatCmp(minDistanceVectorToLeftLine, laneWidth_min) > 0) || (floatCmp(minDistanceVectorToRightLine, laneWidth_min) > 0)) {
-                    continue;
-                }
+                //if ((floatCmp(minDistanceVectorToLeftLine, laneWidth_min) > 0) || (floatCmp(minDistanceVectorToRightLine, laneWidth_min) > 0)) {
+                //    continue;
+                //}
 
-                if (floatCmp((minDistanceVectorToLeftLine + minDistanceVectorToRightLine), laneWidth_min) >= 0) {
+                //if (floatCmp((minDistanceVectorToLeftLine + minDistanceVectorToRightLine), laneWidth_min) >= 0) {
+                //    continue;
+                //}
+
+                if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.A, rightLine_segment.B, vec_segment.A) == 0) {
                     continue;
                 }
+                if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.A, rightLine_segment.B, vec_segment.B) == 0) {
+                    continue;
+                }
+                
 
                 if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
                     continue;

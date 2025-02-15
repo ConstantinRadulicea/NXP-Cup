@@ -75,6 +75,17 @@ typedef struct LineSegment {
 	Point2D B;
 }LineSegment;
 
+typedef struct Vector2D {
+	Point2D tail;
+	Point2D head;
+}Vector2D;
+
+typedef struct Vector2D_components {
+	float i; // x axis
+	float j; // y axis
+}Vector2D_components;
+
+
 typedef struct LineSegmentsDistancePoints {
 	LineSegment min;
 	LineSegment max;
@@ -208,4 +219,19 @@ float angleBw3Points2D(Point2D origin, Point2D point_b, Point2D point_c);
 float NormalizeZeroToPi(float angle);
 
 int isNumber(const char* str, size_t str_length);
+
+float crossProduct2D(Vector2D_components A, Vector2D_components B);
+
+Vector2D pointsToVector2D(Point2D tail, Point2D head);
+
+Vector2D_components getVector2D_components(Vector2D vec);
+
+Vector2D_components getVector2D_componentsFromPoints(Point2D tail, Point2D head);
+
+int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P);
+
+int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P);
+
+
+
 #endif // !__GEOMETRY2D_H__
