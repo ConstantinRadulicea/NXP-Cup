@@ -520,6 +520,10 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         //}
 
         for (size_t i = 0; i < vectors.size(); i++) {
+            if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
+                continue;
+            }
+
             if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
                 continue;
             }
@@ -558,12 +562,6 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.B, rightLine_segment.A, vec_segment.B) == 0) {
                     continue;
                 }
-                
-
-                //if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
-                //    continue;
-                //}
-                
                 
 
                 //if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
