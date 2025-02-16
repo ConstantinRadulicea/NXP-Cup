@@ -77,14 +77,15 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         if (!isVectorValid(vec)) {
             return;
         }
+
+        if (VectorsProcessing::vectorMagnitude(vec) < MeterToVectorUnit(0.12f)) {
+            return;
+        }
         
         if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
             return;
         }
 
-        if (VectorsProcessing::vectorMagnitude(vec) <= MeterToVectorUnit(0.2)) {
-            return;
-        }
         
         
         /*
@@ -533,12 +534,12 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees))) <= 0) {
                 //Serial1.print("%");
                 //Serial1.println(angleRadiansError);
-                minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
-                minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
+                //minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
+                //minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
 
-                if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
-                    continue;
-                }
+                //if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
+                //    continue;
+                // }
                 //Serial1.print("%");
                 //Serial1.println(minDistanceVectorToLeftLine);
                 //Serial1.print("%");
@@ -551,21 +552,21 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 //    continue;
                 //}
 
-                if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.A, rightLine_segment.B, vec_segment.A) == 0) {
+                if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.B, rightLine_segment.A, vec_segment.A) == 0) {
                     continue;
                 }
-                if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.A, rightLine_segment.B, vec_segment.B) == 0) {
+                if (isPointInQuadrilateral(leftLine_segment.A, leftLine_segment.B, rightLine_segment.B, rightLine_segment.A, vec_segment.B) == 0) {
                     continue;
                 }
                 
 
-                if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
-                    continue;
-                }
+                //if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
+                //    continue;
+                //}
                 
                 
 
-                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
+                //if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
                     if (isVectorValid(finishLine.leftSegment)) {
                         angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
@@ -575,9 +576,9 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                     else{
                         finishLine.leftSegment = vectors[i];
                     }
-                }
+                //}
 
-                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
+                //if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
                     if (isVectorValid(finishLine.rightSegment)) {
                         angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
@@ -587,7 +588,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                     else{
                         finishLine.rightSegment = vectors[i];
                     }
-                }
+                //}
             }
         }
 
