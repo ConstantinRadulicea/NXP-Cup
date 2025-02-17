@@ -130,7 +130,6 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             middleLine_ = yAxisABC();
             middleLine_.C = -this->carPosition.x;
             return middleLine_;
-            //return lastMidLine;
         }
 
         if (this->isVectorValid(leftVector_)) {
@@ -156,7 +155,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         Serial.println("(" + String(rightLine.Ax) + ")x + " + "(" + String(rightLine.By) + ")y + " + "(" + String(rightLine.C) + ") = 0");
 */
         bisectorsOfTwoLinesABC(leftLine, rightLine, &acuteAngleBisector, &ottuseAngleBisector);
-        if (ottuseAngleBisector.Ax == 0.0f && ottuseAngleBisector.By == 0.0f)
+        if ((floatCmp(ottuseAngleBisector.Ax, 0.0f) == 1) && (floatCmp(ottuseAngleBisector.By, 0.0f) == 1))
         {
            middleLine_ = acuteAngleBisector;
         }
