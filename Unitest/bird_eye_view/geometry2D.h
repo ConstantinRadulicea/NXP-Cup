@@ -240,5 +240,7 @@ int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2);
 
 Point2D midPointLineSegment(LineSegment seg);
 
+float lengthLineSegment(LineSegment seg);
+
 
 #endif // !__GEOMETRY2D_H__

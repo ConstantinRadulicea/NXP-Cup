@@ -1341,3 +1341,7 @@ int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2){
 Point2D midPointLineSegment(LineSegment seg) {
 	return midPoint(seg.A, seg.B);
 }
+
+float lengthLineSegment(LineSegment seg) {
+	return euclidianDistance(seg.A, seg.B);
+}

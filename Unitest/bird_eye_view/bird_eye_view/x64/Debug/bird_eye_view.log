@@ -1,10 +1,10 @@
 ﻿  BirdEyeView.cpp
   geometry2D.cpp
-  main.cpp
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\geometry2D.cpp(535,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\geometry2D.cpp(536,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\geometry2D.cpp(1132,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\geometry2D.cpp(1155,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\geometry2D.cpp(1156,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  main.cpp
   Generating Code...
   bird_eye_view.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\x64\Debug\bird_eye_view.exe

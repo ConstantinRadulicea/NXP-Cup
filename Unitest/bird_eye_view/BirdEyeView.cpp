@@ -83,3 +83,229 @@ Point2D applyPerspectiveTransform(float H[3][3], Point2D p) {
     return result;
 }
 
+
+
+LineABC getMiddleLine(LineSegment segment_1, LineSegment segment_2) {
+    LineABC leftLine, rightLine, middleLine_, acuteAngleBisector, ottuseAngleBisector;
+    LineSegment leftVector_ = segment_1;
+    LineSegment rightVector_ = segment_2;
+
+    memset(&middleLine_, 0, sizeof(LineABC));
+
+    if (!isValidLineSegment(leftVector_) || !isValidLineSegment(rightVector_)) {
+        return middleLine_;
+    }
+
+    leftLine = lineSegmentToLineABC(leftVector_);
+    rightLine = lineSegmentToLineABC(rightVector_);
+
+    bisectorsOfTwoLinesABC(leftLine, rightLine, &acuteAngleBisector, &ottuseAngleBisector);
+
+    if ((floatCmp(ottuseAngleBisector.Ax, 0.0f) == 1) && (floatCmp(ottuseAngleBisector.By, 0.0f) == 1))
+    {
+        middleLine_ = acuteAngleBisector;
+    }
+    else if (fabsf(angleBetweenLinesABC(leftLine, acuteAngleBisector)) < fabsf(angleBetweenLinesABC(leftLine, ottuseAngleBisector)))
+    {
+        middleLine_ = acuteAngleBisector;
+    }
+    else {
+        middleLine_ = ottuseAngleBisector;
+    }
+    return middleLine_;
+}
+
+
+
+
+struct track_widths getTrackWidths(LineSegment left_segment_, LineSegment right_segment_, float frame_height_) {
+    LineABC left_line;
+    LineABC right_line;
+    LineABC middle_line;
+    LineABC lower_intersect_line, upper_intersect_line;
+    IntersectionLines temp_line_intersection;
+    LineSegment upper_segment, lower_segment;
+
+    struct track_widths result_track_widths;
+
+
+    memset(&result_track_widths, 0, sizeof(result_track_widths));
+
+
+    if (areLineSegmentsEqual(left_segment_, right_segment_)) {
+        return result_track_widths;
+    }
+
+    left_line = lineSegmentToLineABC(left_segment_);
+    right_line = lineSegmentToLineABC(right_segment_);
+
+    if (areLinesEqual(left_line, right_line)) {
+        return result_track_widths;
+    }
+
+    middle_line = getMiddleLine(left_segment_, right_segment_);
+    if (!isValidLineABC(middle_line)) {
+        return result_track_widths;
+    }
+
+    lower_intersect_line = xAxisABC();
+    temp_line_intersection = intersectionLinesABC(middle_line, lower_intersect_line);
+    if (temp_line_intersection.info == 2) {
+        return result_track_widths;
+    }
+    lower_intersect_line = perpendicularToLinePassingThroughPointABC(middle_line, temp_line_intersection.point);
+
+
+    upper_intersect_line = xAxisABC();
+    upper_intersect_line.C = -frame_height_;
+    temp_line_intersection = intersectionLinesABC(middle_line, upper_intersect_line);
+    if (temp_line_intersection.info == 2) {
+        return result_track_widths;
+    }
+    upper_intersect_line = perpendicularToLinePassingThroughPointABC(middle_line, temp_line_intersection.point);
+
+
+    temp_line_intersection = intersectionLinesABC(left_line, lower_intersect_line);
+    lower_segment.A = temp_line_intersection.point;
+
+    temp_line_intersection = intersectionLinesABC(right_line, lower_intersect_line);
+    lower_segment.B = temp_line_intersection.point;
+
+    temp_line_intersection = intersectionLinesABC(left_line, upper_intersect_line);
+    upper_segment.A = temp_line_intersection.point;
+
+    temp_line_intersection = intersectionLinesABC(right_line, upper_intersect_line);
+    upper_segment.B = temp_line_intersection.point;
+
+    result_track_widths.lower_segment = lower_segment;
+    result_track_widths.upper_segment = upper_segment;
+
+    return result_track_widths;
+}
+
+
+
+/*
+apparent_size = (actual_size * reference_distance) / actual_distance
+
+acctual_distance = (actual_size * reference_distance) / apparent_size
+
+*/
+struct track_widths srcViewToRealView(struct track_widths src_view, float real_track_width_m, float frame_width) {
+    struct track_widths real_view;
+    Point2D upper_midpoint, lower_midpoint, upper_real_modpoint;
+    float reference_distance, actual_size, apparent_size, actual_distance;
+    LineABC middle_line;
+    LineABC temp_line;
+    IntersectionPoints2D_2 temp_circle_intersection;
+    float lower_segment_length;
+
+    memset(&real_view, 0, sizeof(real_view));
+
+
+    lower_segment_length = lengthLineSegment(src_view.lower_segment);
+    if (floatCmp(lower_segment_length, 0.0f) == 0) {
+        return real_view;
+    }
+
+    if (floatCmp(real_track_width_m, 0.0f) == 0) {
+        return real_view;
+    }
+
+
+    upper_midpoint = midPointLineSegment(src_view.upper_segment);
+    lower_midpoint = midPointLineSegment(src_view.lower_segment);
+
+    reference_distance = euclidianDistance(upper_midpoint, lower_midpoint);
+    actual_size = real_track_width_m;
+    apparent_size = lengthLineSegment(src_view.upper_segment);
+
+
+
+    if (floatCmp(apparent_size, 0.0f) == 0) {
+        return real_view;
+    }
+    actual_distance = (actual_size * reference_distance) / apparent_size;
+
+    if (floatCmp(actual_distance, 0.0f) == 0) {
+        return real_view;
+    }
+
+
+
+    middle_line = points2lineABC(lower_midpoint, upper_midpoint);
+
+    // calculate lower segment
+    temp_line = perpendicularToLinePassingThroughPointABC(middle_line, lower_midpoint);
+    temp_circle_intersection = intersectionLineCircleABC(lower_midpoint, (actual_size / 2.0f), temp_line);
+
+    if (floatCmp(euclidianDistance(src_view.lower_segment.A, temp_circle_intersection.point1), euclidianDistance(src_view.lower_segment.A, temp_circle_intersection.point2)) < 0)
+    {
+        real_view.lower_segment.A = temp_circle_intersection.point1;
+        real_view.lower_segment.B = temp_circle_intersection.point2;
+    }
+    else
+    {
+        real_view.lower_segment.A = temp_circle_intersection.point2;
+        real_view.lower_segment.B = temp_circle_intersection.point1;
+    }
+
+
+    // calculate midpoint upper segment
+    temp_circle_intersection = intersectionLineCircleABC(lower_midpoint, actual_distance, middle_line);
+
+    if (floatCmp(euclidianDistance(upper_midpoint, temp_circle_intersection.point1), euclidianDistance(upper_midpoint, temp_circle_intersection.point1)) < 0)
+    {
+        upper_real_modpoint = temp_circle_intersection.point1;
+    }
+    else
+    {
+        upper_real_modpoint = temp_circle_intersection.point2;
+    }
+
+
+    // calculate upper segment
+    temp_line = perpendicularToLinePassingThroughPointABC(middle_line, upper_real_modpoint);
+    temp_circle_intersection = intersectionLineCircleABC(upper_real_modpoint, (actual_size / 2.0f), temp_line);
+
+    if (floatCmp(euclidianDistance(src_view.upper_segment.A, temp_circle_intersection.point1), euclidianDistance(src_view.upper_segment.A, temp_circle_intersection.point2)) < 0)
+    {
+        real_view.upper_segment.A = temp_circle_intersection.point1;
+        real_view.upper_segment.B = temp_circle_intersection.point2;
+    }
+    else
+    {
+        real_view.upper_segment.A = temp_circle_intersection.point2;
+        real_view.upper_segment.B = temp_circle_intersection.point1;
+    }
+
+
+
+    real_view.lower_segment.A.x -= lower_midpoint.x;
+    real_view.lower_segment.B.x -= lower_midpoint.x;
+    real_view.upper_segment.A.x -= lower_midpoint.x;
+    real_view.upper_segment.B.x -= lower_midpoint.x;
+
+    float temp_gg = ((float)(lower_midpoint.x) * ((float)actual_size / (float)lower_segment_length));
+
+    real_view.lower_segment.A.x += temp_gg;
+    real_view.lower_segment.B.x += temp_gg;
+    real_view.upper_segment.A.x += temp_gg;
+    real_view.upper_segment.B.x += temp_gg;
+
+
+    //real_view.lower_segment.A.x = ((float)(real_view.lower_segment.A.x) * ((float)actual_size / (float)lower_segment_length));
+    //real_view.lower_segment.B.x = ((float)(real_view.lower_segment.B.x) * ((float)actual_size / (float)lower_segment_length));
+    //real_view.upper_segment.A.x = ((float)(real_view.upper_segment.A.x) * ((float)actual_size / (float)lower_segment_length));
+    //real_view.upper_segment.B.x = ((float)(real_view.upper_segment.B.x) * ((float)actual_size / (float)lower_segment_length));
+
+    return real_view;
+}
+
+
+
+struct track_widths realViewToUncalibratedRealView(struct track_widths real_view, float real_track_width_m,float frame_height_, float frame_width) {
+    struct track_widths uncalibrated_real_view;
+
+    return uncalibrated_real_view;
+}
