@@ -27,6 +27,7 @@
 #include "TrajectoryMix.h"
 #include "SteeringWheel.h"
 #include "VectorsProcessing.h"
+#include "BirdEyeView.h"
 
 
 #define TRUE 1
@@ -200,6 +201,8 @@ extern VectorsProcessing g_pixy_1_vectors_processing;
 //VectorsProcessing pixy_2_vectorsProcessing;
 extern Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
+
+extern struct BirdEyeCalibrationData g_birdeye_calibrationdata;
 
 
 

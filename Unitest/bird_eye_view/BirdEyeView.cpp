@@ -116,8 +116,6 @@ LineABC getMiddleLine(LineSegment segment_1, LineSegment segment_2) {
 }
 
 
-
-
 struct track_widths getTrackWidths(LineSegment left_segment_, LineSegment right_segment_, float frame_height_) {
     LineABC left_line;
     LineABC right_line;
@@ -303,9 +301,34 @@ struct track_widths srcViewToRealView(struct track_widths src_view, float real_t
 }
 
 
+struct track_widths srcViewToUncalibratedSrcView(struct track_widths src_view, float frame_height_, float frame_width) {
+    struct track_widths uncalibrated_view;
+    Point2D upper_midpoint, lower_midpoint;
+    float distance;
+    float upper_segment_length, lower_segment_length;
+
+    upper_midpoint = midPointLineSegment(src_view.upper_segment);
+    lower_midpoint = midPointLineSegment(src_view.lower_segment);
+
+    distance = euclidianDistance(upper_midpoint, lower_midpoint);
+    upper_segment_length = lengthLineSegment(src_view.upper_segment);
+    lower_segment_length = lengthLineSegment(src_view.lower_segment);
+
+
+
+
+
+    return uncalibrated_view;
+}
+
+
 
 struct track_widths realViewToUncalibratedRealView(struct track_widths real_view, float real_track_width_m,float frame_height_, float frame_width) {
     struct track_widths uncalibrated_real_view;
+
+
+
+
 
     return uncalibrated_real_view;
 }

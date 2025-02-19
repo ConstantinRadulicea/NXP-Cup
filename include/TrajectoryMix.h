@@ -24,5 +24,7 @@ Vector calibrateVector(Vector vec, LineCalibrationData calibration_data);
 
 LineSegment calibrateLineSegment(LineSegment seg, LineCalibrationData calibration_data);
 
+Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector vec);
+
 
 #endif

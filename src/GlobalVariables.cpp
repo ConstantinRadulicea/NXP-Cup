@@ -105,6 +105,8 @@ LineCalibrationData g_line_calibration_data = {};
 float g_rear_axe_turn_radius_m = 0.0f;
 int8_t g_max_speed_delay_passed = 0;
 
+struct BirdEyeCalibrationData g_birdeye_calibrationdata = {};
+
 
 //SteeringWheel g_steering_wheel(STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, (unsigned int)0);
 #if ENABLE_STEERING_SERVO == 1

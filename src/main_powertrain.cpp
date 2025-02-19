@@ -132,6 +132,7 @@ void loop() {
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         if (g_start_line_calibration_acquisition == 0) {
           vec = calibrateVector(vec, g_line_calibration_data);
+          vec = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
         }
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
         g_pixy_1_vectors_processing.addVector(vec);

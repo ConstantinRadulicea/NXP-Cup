@@ -766,6 +766,16 @@ IntersectionPoints2D_2 intersectionLineCircleABC(Point2D circleCenter, float cir
 	return points;
 }
 
+int areLinesEqual(LineABC line1, LineABC line2) {
+	line1 = normalizeLineABC2MQ(line1);
+	line2 = normalizeLineABC2MQ(line2);
+	if ((floatCmp(line1.Ax, line2.Ax) == 0) && (floatCmp(line1.By, line2.By) == 0) && (floatCmp(line1.C, line2.C) == 0))
+	{
+		return 1;
+	}
+	return 0;
+}
+
 IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2) {
 	IntersectionLines inters;
 
@@ -774,7 +784,7 @@ IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2) {
 	if (floatCmp((line1.Ax * line2.By - line2.Ax * line1.By), 0.0f) == 0) {
 		line2 = normalizeLineABC2MQ(line2);
 		line1 = normalizeLineABC2MQ(line1);
-		if (memcmp(&line1, &line2, sizeof(inters) == 0))
+		if (areLinesEqual(line1, line2))
 		{
 			inters.info = 2;
 		}
@@ -1302,4 +1312,36 @@ int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P) {
 // Function to check if point P is inside a quadrilateral defined by 4 points
 int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P) {
     return isPointInTriangle(A, B, C, P) || isPointInTriangle(A, C, D, P);
+}
+
+int isValidLineSegment(LineSegment seg) {
+	if ((seg.A.x == seg.B.x) && (seg.A.y == seg.B.y)) {
+		return 0;
+	}
+	return 1;
+}
+
+
+int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2){
+	if (!arePoints2DEqual(seg1.A, seg2.A)) {
+		return 0;
+	}
+	if (!arePoints2DEqual(seg1.A, seg2.B)) {
+		return 0;
+	}
+	if (!arePoints2DEqual(seg1.B, seg2.A)) {
+		return 0;
+	}
+	if (!arePoints2DEqual(seg1.B, seg2.B)) {
+		return 0;
+	}
+	return 1;
+}
+
+Point2D midPointLineSegment(LineSegment seg) {
+	return midPoint(seg.A, seg.B);
+}
+
+float lengthLineSegment(LineSegment seg) {
+	return euclidianDistance(seg.A, seg.B);
 }

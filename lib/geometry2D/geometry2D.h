@@ -232,6 +232,15 @@ int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P);
 
 int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P);
 
+int isValidLineSegment(LineSegment seg);
+
+int areLinesEqual(LineABC line1, LineABC line2);
+
+int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2);
+
+Point2D midPointLineSegment(LineSegment seg);
+
+float lengthLineSegment(LineSegment seg);
 
 
 #endif // !__GEOMETRY2D_H__

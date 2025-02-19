@@ -64,6 +64,7 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW                 1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW_SINGLE_LINE               1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW                           1
+#define ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW                  1
 #define ENABLE_LCDMENU_CAMERA_OFFSET_Y                            0
 
 #define ENABLE_LCDMENU_ENABLE_DISTANCE_SENSOR1                    0
@@ -269,6 +270,10 @@ void settingsMenuRoutine() {
 
               #if ENABLE_LCDMENU_CAMERA_OFFSET_Y != 0
                 LCDMENU_CAMERA_OFFSET,
+              #endif
+              
+              #if ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW != 0
+                LCDMENU_BIRD_EYE_CALIBRATION_VIEW,
               #endif
               #if ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW != 0
                 LCDMENU_AUTOMATIC_CALIBRATION_VIEW,
@@ -855,6 +860,81 @@ void settingsMenuRoutine() {
         }
         }
         break;
+    #endif
+
+
+    #if ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW != 0
+    case LCDMENU_BIRD_EYE_CALIBRATION_VIEW:{
+      LineABC calibration_line;
+      enum calibration_state_enum{
+        UNCALIBRATE,
+        CALIBRATE,
+        NO_LINE,
+        DISPLAY_ONLY
+      };
+
+
+      calibration_state_enum calibration_state;
+      calibration_state = calibration_state_enum::DISPLAY_ONLY;
+
+      if (decrementButton != LOW) {
+        calibration_state = calibration_state_enum::UNCALIBRATE;
+      }
+      else if (incrementButton != LOW) {
+        calibration_state = calibration_state_enum::CALIBRATE;
+        calibration_line = closestLineToCurrentTrajectory(g_left_lane_line_pixy_1, g_right_lane_line_pixy_1);
+        if (isValidLineABC(calibration_line) == 0) {
+          calibration_state = calibration_state_enum::NO_LINE;
+        }
+      }
+      
+
+      display.setCursor(0, 0);
+
+      #if LCD_LIBRARY_ADAFRUIT != 0
+        display.clearDisplay();
+        display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
+        display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+      #elif LCD_LIBRARY_SSD1306Ascii != 0
+      display.clear();
+      #endif
+
+      if (calibration_state == calibration_state_enum::UNCALIBRATE) {
+        g_start_line_calibration_acquisition = 0;
+        g_birdeye_calibrationdata = BirdEyeCalibrationData{};
+        g_birdeye_calibrationdata.valid = 0;
+        display.println("UNCALIBRATE");
+      }
+      
+      if (calibration_state == calibration_state_enum::CALIBRATE) {
+          if (g_start_line_calibration_acquisition != 0) {
+            g_line_calibration_data = lineCalibration(calibration_line);
+            display.println("CALIBRATE");
+          }
+          else{
+            g_start_line_calibration_acquisition = 1;
+          }
+      }
+      else if (incrementButton == LOW && g_start_line_calibration_acquisition != 0) {
+        g_start_line_calibration_acquisition = 0;
+      }
+
+
+      display.print("Offset[rad]: ");
+      display.println(FloatToString(g_line_calibration_data.angle_offset, 5));
+      display.println("Rotation point:");
+      display.print("(x;y):");
+      display.println(String("(") + FloatToString(g_line_calibration_data.rotation_point.x, 2) + String(";") + FloatToString(g_line_calibration_data.rotation_point.y, 2) + String(")"));
+      display.print("x offset: ");
+      display.println(FloatToString(g_line_calibration_data.x_axis_offset, 5));
+      display.print("y offset: ");
+      display.println(FloatToString(g_line_calibration_data.y_axis_offset, 5));
+      #if LCD_LIBRARY_ADAFRUIT != 0
+        display.display();
+      #endif
+
+      break;
+    }
     #endif
 
     #if ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW != 0

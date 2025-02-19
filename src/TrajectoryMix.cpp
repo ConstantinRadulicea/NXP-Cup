@@ -1,4 +1,5 @@
 #include "TrajectoryMix.h"
+#include "BirdEyeView.h"
 
 LineABC closestLineToCurrentTrajectory(LineABC line1, LineABC line2){
   LineABC upper_line, lower_line, horizontal_middle_line, calibration_line;
@@ -85,6 +86,17 @@ LineSegment calibrateLineSegment(LineSegment seg, LineCalibrationData calibratio
     return calibrated_seg;
 }
 
+Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector vec){
+  Vector result;
+  LineSegment seg, calibrated_seg;
+  seg = VectorsProcessing::vectorToLineSegment(vec);
+
+  calibrated_seg = BirdEye_CalibrateLineSegment(calib_data, seg);
+
+  result = VectorsProcessing::lineSegmentToVector(calibrated_seg);
+  
+  return result;
+}
 
 //Vector uncalibrateVector(Vector vec, LineCalibrationData calibration_data){
 //  LineSegment seg, calibrated_seg;
