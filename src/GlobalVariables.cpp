@@ -91,6 +91,8 @@ float g_car_speed_mps = (float)STANDSTILL_SPEED;
 LineABC g_middle_lane_line_pixy_1;
 LineABC g_left_lane_line_pixy_1;
 LineABC g_right_lane_line_pixy_1;
+LineSegment g_left_lane_segment;
+LineSegment g_right_lane_segment;
 float g_loop_time_ms = 0.0f;
 float g_time_passed_ms = 0.0f;
 float g_emergency_brake_enable_remaining_delay_s = 0.0f;

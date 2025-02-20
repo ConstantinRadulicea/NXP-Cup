@@ -323,7 +323,7 @@ struct track_widths srcViewToUncalibratedSrcView(struct track_widths src_view, f
 
 
 
-struct track_widths realViewToUncalibratedRealView(struct track_widths real_view, float real_track_width_m,float frame_height_, float frame_width) {
+struct track_widths realViewToUncalibratedRealView(struct track_widths real_view, float real_track_width_m, float frame_height_, float frame_width) {
     struct track_widths uncalibrated_real_view;
 
 
@@ -332,3 +332,83 @@ struct track_widths realViewToUncalibratedRealView(struct track_widths real_view
 
     return uncalibrated_real_view;
 }
+
+
+struct BirdEyeCalibrationData CalculateBirdEyeCalibration_TrackWidths(struct track_widths src_track_widths, float frame_width, float frame_height, float real_track_width_m) {
+    struct track_widths dst_track_widths;
+    struct BirdEyeCalibrationData data;
+    data.valid = 0;
+
+    if (floatCmp(frame_height, 0.0f) <= 0) {
+        return data;
+    }
+    if (floatCmp(real_track_width_m, 0.0f) <= 0) {
+        return data;
+    }
+    if (floatCmp(frame_width, 0.0f) <= 0) {
+        return data;
+    }
+
+    data.src_track_width = lengthLineSegment(src_track_widths.lower_segment);
+
+    dst_track_widths = srcViewToRealView(src_track_widths, real_track_width_m, frame_width);
+
+    data.birdeye_src_matrix[0] = src_track_widths.lower_segment.A;
+    data.birdeye_src_matrix[1] = src_track_widths.upper_segment.A;
+    data.birdeye_src_matrix[2] = src_track_widths.lower_segment.B;
+    data.birdeye_src_matrix[3] = src_track_widths.upper_segment.B;
+
+    data.birdeye_dst_matrix[0] = dst_track_widths.lower_segment.A;
+    data.birdeye_dst_matrix[1] = dst_track_widths.upper_segment.A;
+    data.birdeye_dst_matrix[2] = dst_track_widths.lower_segment.B;
+    data.birdeye_dst_matrix[3] = dst_track_widths.upper_segment.B;
+
+    getPerspectiveTransform(data.birdeye_src_matrix, data.birdeye_dst_matrix, data.birdeye_transform_matrix);
+    data.valid = 1;
+    return data;
+}
+
+
+struct BirdEyeCalibrationData CalculateBirdEyeCalibration_lines(LineSegment left_segment, LineSegment right_segment, float frame_width, float frame_height, float real_track_width_m) {
+    struct track_widths src_track_widths;
+    struct BirdEyeCalibrationData data;
+    data.valid = 0;
+
+    if (!isValidLineSegment(left_segment)) {
+        return data;
+    }
+    if (!isValidLineSegment(right_segment)) {
+        return data;
+    }
+    if (floatCmp(frame_height, 0.0f) <= 0) {
+        return data;
+    }
+
+    src_track_widths = getTrackWidths(left_segment, right_segment, frame_height);
+    data = CalculateBirdEyeCalibration_TrackWidths(src_track_widths, frame_width, frame_height, real_track_width_m);
+    return data;
+}
+
+
+Point2D BirdEye_CalibratePoint(struct BirdEyeCalibrationData calib_data, Point2D point) {
+    Point2D result;
+    result = point;
+    if (calib_data.valid) {
+        result = applyPerspectiveTransform(calib_data.birdeye_transform_matrix, point);
+    }
+
+    return result;
+}
+
+
+LineSegment BirdEye_CalibrateLineSegment(struct BirdEyeCalibrationData calib_data, LineSegment seg) {
+    LineSegment result;
+    result = seg;
+    if (calib_data.valid) {
+        result.A = applyPerspectiveTransform(calib_data.birdeye_transform_matrix, seg.A);
+        result.B = applyPerspectiveTransform(calib_data.birdeye_transform_matrix, seg.B);
+    }
+
+    return result;
+}
+

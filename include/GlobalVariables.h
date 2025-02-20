@@ -155,6 +155,8 @@ extern float g_car_speed_mps;
 extern LineABC g_middle_lane_line_pixy_1;
 extern LineABC g_left_lane_line_pixy_1;
 extern LineABC g_right_lane_line_pixy_1;
+extern LineSegment g_left_lane_segment;
+extern LineSegment g_right_lane_segment;
 extern float g_loop_time_ms;
 extern float g_time_passed_ms;
 extern float g_emergency_brake_enable_remaining_delay_s;

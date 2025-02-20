@@ -130,9 +130,11 @@ void loop() {
       {
         vec = vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
+        if (g_birdeye_calibrationdata.valid){
+          vec = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
+        }
         if (g_start_line_calibration_acquisition == 0) {
           vec = calibrateVector(vec, g_line_calibration_data);
-          vec = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
         }
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
         g_pixy_1_vectors_processing.addVector(vec);
@@ -159,7 +161,8 @@ void loop() {
       FLD_out = finish_line_detection(&vectors);       
     #endif
 
-
+    g_left_lane_segment = VectorsProcessing::vectorToLineSegment(g_pixy_1_vectors_processing.getLeftVector());
+    g_right_lane_segment = VectorsProcessing::vectorToLineSegment(g_pixy_1_vectors_processing.getRightVector());
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     if (!isValidFloatNumber(&lookAheadDistance, __LINE__)) {

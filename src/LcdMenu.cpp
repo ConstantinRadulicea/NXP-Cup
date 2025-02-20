@@ -865,7 +865,7 @@ void settingsMenuRoutine() {
 
     #if ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW != 0
     case LCDMENU_BIRD_EYE_CALIBRATION_VIEW:{
-      LineABC calibration_line;
+      LineSegment left_line_segment, right_line_segment;
       enum calibration_state_enum{
         UNCALIBRATE,
         CALIBRATE,
@@ -882,8 +882,9 @@ void settingsMenuRoutine() {
       }
       else if (incrementButton != LOW) {
         calibration_state = calibration_state_enum::CALIBRATE;
-        calibration_line = closestLineToCurrentTrajectory(g_left_lane_line_pixy_1, g_right_lane_line_pixy_1);
-        if (isValidLineABC(calibration_line) == 0) {
+        left_line_segment = g_left_lane_segment;
+        right_line_segment = g_right_lane_segment;
+        if ((!isValidLineSegment(left_line_segment)) || (!isValidLineSegment(right_line_segment))) {
           calibration_state = calibration_state_enum::NO_LINE;
         }
       }
@@ -902,14 +903,21 @@ void settingsMenuRoutine() {
       if (calibration_state == calibration_state_enum::UNCALIBRATE) {
         g_start_line_calibration_acquisition = 0;
         g_birdeye_calibrationdata = BirdEyeCalibrationData{};
+        g_line_calibration_data = LineCalibrationData{};
         g_birdeye_calibrationdata.valid = 0;
         display.println("UNCALIBRATE");
       }
       
       if (calibration_state == calibration_state_enum::CALIBRATE) {
           if (g_start_line_calibration_acquisition != 0) {
-            g_line_calibration_data = lineCalibration(calibration_line);
-            display.println("CALIBRATE");
+            g_birdeye_calibrationdata = CalculateBirdEyeCalibration_lines(left_line_segment, right_line_segment, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
+            if(g_birdeye_calibrationdata.valid){
+              g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
+              display.println("CALIBRATE");
+            }
+            else{
+              display.println("NO LINE");
+            }
           }
           else{
             g_start_line_calibration_acquisition = 1;
@@ -920,15 +928,30 @@ void settingsMenuRoutine() {
       }
 
 
-      display.print("Offset[rad]: ");
-      display.println(FloatToString(g_line_calibration_data.angle_offset, 5));
-      display.println("Rotation point:");
-      display.print("(x;y):");
-      display.println(String("(") + FloatToString(g_line_calibration_data.rotation_point.x, 2) + String(";") + FloatToString(g_line_calibration_data.rotation_point.y, 2) + String(")"));
-      display.print("x offset: ");
-      display.println(FloatToString(g_line_calibration_data.x_axis_offset, 5));
-      display.print("y offset: ");
-      display.println(FloatToString(g_line_calibration_data.y_axis_offset, 5));
+      display.print("FL:(");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[1].x, 2));
+      display.print(";");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[1].y, 2));
+      display.println(")");
+
+      display.print("RL:(");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[0].x, 2));
+      display.print(";");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[0].y, 2));
+      display.println(")");
+
+      display.print("FR:(");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[3].x, 2));
+      display.print(";");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[3].y, 2));
+      display.println(")");
+
+      display.print("RR:(");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[2].x, 2));
+      display.print(";");
+      display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[2].y, 2));
+      display.println(")");
+
       #if LCD_LIBRARY_ADAFRUIT != 0
         display.display();
       #endif

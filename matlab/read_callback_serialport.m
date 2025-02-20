@@ -107,8 +107,8 @@ function read_callback_serialport(src, ~)
     
     xmin = 0;
     xmax = 80;
-    ymin = -80;
-    ymax = 80;
+    ymin = -200;
+    ymax = 300;
 
 %     [x1, y1] = plotLineABC(leftLine, xmin, xmax, xmin, xmax);
 %     [x2, y2] = plotLineABC(rightLine, xmin, xmax, xmin, xmax);

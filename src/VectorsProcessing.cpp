@@ -78,7 +78,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             return;
         }
 
-        if (VectorsProcessing::vectorMagnitude(vec) < MeterToVectorUnit(0.12f)) {
+        if (VectorsProcessing::vectorMagnitude(vec) < MeterToVectorUnit(0.15f)) {
             return;
         }
         

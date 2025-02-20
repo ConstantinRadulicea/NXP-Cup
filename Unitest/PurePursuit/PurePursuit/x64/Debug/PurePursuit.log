@@ -1,0 +1,12 @@
+﻿  main.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\PurePursuitGeometry.h(57,8): warning C4101: 'temp_float': unreferenced local variable
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\PurePursuitGeometry.h(253,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(8,61): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(9,63): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(9,84): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(12,38): warning C4305: 'initializing': truncation from 'double' to 'float'
+  PurePursuit.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\x64\Debug\PurePursuit.exe
