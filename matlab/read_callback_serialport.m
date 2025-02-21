@@ -105,10 +105,10 @@ function read_callback_serialport(src, ~)
 %     f_rightLine = @(x,y) x.*rightLine(1) + y.*rightLine(2) + rightLine(3);
 %     f_middleLaneLine = @(x,y) x.*middleLaneLine(1) + y.*middleLaneLine(2) + middleLaneLine(3);
     
-    xmin = 0;
-    xmax = 80;
+    xmin = -50;
+    xmax = 150;
     ymin = -200;
-    ymax = 300;
+    ymax = 200;
 
 %     [x1, y1] = plotLineABC(leftLine, xmin, xmax, xmin, xmax);
 %     [x2, y2] = plotLineABC(rightLine, xmin, xmax, xmin, xmax);

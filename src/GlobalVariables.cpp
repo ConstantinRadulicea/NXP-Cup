@@ -103,6 +103,7 @@ int8_t g_finish_line_detected_slowdown = 0;
 float g_steering_angle_rad = 0.0f;
 FinishLine g_finish_line = {};
 int8_t g_start_line_calibration_acquisition = 0;
+int8_t g_start_line_calibration_acquisition_birdeye = 0;
 LineCalibrationData g_line_calibration_data = {};
 float g_rear_axe_turn_radius_m = 0.0f;
 int8_t g_max_speed_delay_passed = 0;
@@ -123,7 +124,7 @@ Pixy2 g_pixy_1;
 
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
   float temp_float;
-  int total_fields = 47;
+  int total_fields = 56;
   std::stringstream ss(rawData);
   std::vector<std::string> fields;
   SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
@@ -275,6 +276,26 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
 
     g_max_speed_after_finish_line_detected_mps = std::stof(fields[46]);
 
+    struct track_widths temp_track_widths;
+
+    temp_track_widths.lower_segment.A.x = std::stof(fields[47]);
+    temp_track_widths.lower_segment.A.y = std::stof(fields[48]);
+    temp_track_widths.lower_segment.B.x = std::stof(fields[49]);
+    temp_track_widths.lower_segment.B.y = std::stof(fields[50]);
+
+    temp_track_widths.upper_segment.A.x = std::stof(fields[51]);
+    temp_track_widths.upper_segment.A.y = std::stof(fields[52]);
+    temp_track_widths.upper_segment.B.x = std::stof(fields[53]);
+    temp_track_widths.upper_segment.B.y = std::stof(fields[54]);
+
+    g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
+    temp_float = std::stof(fields[55]);
+    if (temp_float >= 0.5f) {
+      g_birdeye_calibrationdata.valid = 1;
+    }
+    else{
+      g_birdeye_calibrationdata.valid = 0;
+    }
 
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);

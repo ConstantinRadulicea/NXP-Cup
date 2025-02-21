@@ -921,6 +921,8 @@ void settingsMenuRoutine() {
           }
           else{
             g_start_line_calibration_acquisition = 1;
+            g_birdeye_calibrationdata.valid = 0;
+            display.println("UNCALIBRATE");
           }
       }
       else if (incrementButton == LOW && g_start_line_calibration_acquisition != 0) {
@@ -998,21 +1000,24 @@ void settingsMenuRoutine() {
 
         if (calibration_state == calibration_state_enum::UNCALIBRATE) {
           g_start_line_calibration_acquisition = 0;
+          g_start_line_calibration_acquisition_birdeye = 0;
           g_line_calibration_data = LineCalibrationData{};
           display.println("UNCALIBRATE");
         }
         
         if (calibration_state == calibration_state_enum::CALIBRATE) {
-            if (g_start_line_calibration_acquisition != 0) {
+            if (g_start_line_calibration_acquisition != 0 && g_start_line_calibration_acquisition_birdeye != 0) {
               g_line_calibration_data = lineCalibration(calibration_line);
               display.println("CALIBRATE");
             }
             else{
               g_start_line_calibration_acquisition = 1;
+              g_start_line_calibration_acquisition_birdeye = 1;
             }
         }
         else if (incrementButton == LOW && g_start_line_calibration_acquisition != 0) {
           g_start_line_calibration_acquisition = 0;
+          g_start_line_calibration_acquisition_birdeye = 0;
         }
 
 

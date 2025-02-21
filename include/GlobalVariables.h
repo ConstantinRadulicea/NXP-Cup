@@ -115,7 +115,6 @@ extern float g_line_image_frame_height;
 
 
 
-
 #define STEERING_SERVO_MAX_ANGLE MAX(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 #define STEERING_SERVO_MIN_ANGLE MIN(abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_RIGHT), abs(STEERING_SERVO_ANGLE_MIDDLE - STEERING_SERVO_ANGLE_MAX_LEFT))
 
@@ -168,6 +167,7 @@ extern float g_max_speed_after_finish_line_detected_mps; // m/s
 extern float g_steering_angle_rad;
 extern FinishLine g_finish_line;
 extern int8_t g_start_line_calibration_acquisition;
+extern int8_t g_start_line_calibration_acquisition_birdeye;
 
 extern LineCalibrationData g_line_calibration_data;
 extern float g_rear_axe_turn_radius_m;

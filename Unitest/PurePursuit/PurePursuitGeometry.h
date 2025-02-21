@@ -207,31 +207,16 @@ static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wa
 	Point2D nextWayPoint;
 	Point2D frontAxePosition;
 	float distance_bw_rearAxe_and_waipoint;
+	float distance_to_line, min_lookahead_distance;
 	frontAxePosition = rearAxePosition;
 	frontAxePosition.y += wheelBase;
 
 	info.frontAxePosition = frontAxePosition;
 
+	distance_to_line = distance2lineABC(frontAxePosition, wayPoints);
+	min_lookahead_distance = (sqrtf((distance_to_line * distance_to_line) / 2.0f) * 2.0f);
 
-	LineABC trajectory_line = yAxisABC();
-	trajectory_line.C = -(frontAxePosition.x);
-
-	IntersectionLines intersection_trajectory_waypoints = intersectionLinesABC(trajectory_line, wayPoints);
-	if (intersection_trajectory_waypoints.info == 0)
-	{
-		temp = euclidianDistance(frontAxePosition, intersection_trajectory_waypoints.point);
-		if (floatCmp(temp, lookAheadDistance) <= 0) {
-			lookAheadDistance = temp + (temp * 0.1f);
-		}
-	}
-
-
-
-	temp = distance2lineABC(frontAxePosition, wayPoints);
-	info.distanceToWayPoint = temp;
-	if (floatCmp(temp, lookAheadDistance) >= 0) {
-		lookAheadDistance = temp + (temp * 0.1f);
-	}
+	lookAheadDistance = MAX(min_lookahead_distance, lookAheadDistance);
 
 	intersectionPoints = intersectionLineCircleABC(frontAxePosition, lookAheadDistance, wayPoints);
 	if (floatCmp(intersectionPoints.point1.y, intersectionPoints.point2.y) > 0) {
@@ -251,6 +236,7 @@ static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wa
 	info.rearWheelTurnRadius = RearWheelTurnRadius(wheelBase, info.steeringAngle);
 	info.manouvreLength = fabsf(((2.0f * M_PI * info.rearWheelTurnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
 	info.turnPoint = rearAxePosition;
+	info.distanceToWayPoint = euclidianDistance(nextWayPoint, frontAxePosition);
 
 	if (floatCmp(info.TrajectoryToWayPointAngle, 0.0f) < 0) {
 		info.turnPoint.x += info.rearWheelTurnRadius;

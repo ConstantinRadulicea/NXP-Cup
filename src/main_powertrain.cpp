@@ -130,7 +130,7 @@ void loop() {
       {
         vec = vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
-        if (g_birdeye_calibrationdata.valid){
+        if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
           vec = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
         }
         if (g_start_line_calibration_acquisition == 0) {
