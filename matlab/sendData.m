@@ -5,7 +5,7 @@ fieldTerminator = ';';
 % 22 - 0
 g_enable_car_engine = 0.0;
 g_enable_car_steering_wheel = 0.0;
-g_enable_emergency_brake = 0.0;
+g_enable_emergency_brake = 1.0;
 g_enable_pixy_vector_approximation = 0.0;
 g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
@@ -18,11 +18,11 @@ g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 10.0;                       % 22
 g_lookahead_max_distance_cm = 40.0;                       % 40
 g_vehicle_min_speed_mps = 0.5;
-g_vehicle_max_speed_mps = 1.5;                                      % 
+g_vehicle_max_speed_mps = 2;                                      % 
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
-g_emergency_brake_activation_max_distance_m = 1.5;                     % 75
+g_emergency_brake_activation_max_distance_m = 0.1;                     % 75
 g_emergency_brake_speed_mps = 0.3;
 g_emergency_brake_distance_from_obstacle_m = 0.09;       % 14
 g_emergency_brake_enable_delay_s = 0.0;
@@ -47,28 +47,33 @@ g_max_acceleration = (g_friction_coefficient * g_downward_acceleration) - 100;
 g_max_deceleration = (g_friction_coefficient * g_downward_acceleration) - 100;
 
 
-g_camera_offset_y_m = 0.0; %real_value = measured_value - offset    // offset = measured_value - 0
+g_camera_offset_y_m = 0.2; %real_value = measured_value - offset    // offset = measured_value - 0
 
 g_max_speed_after_delay_s = 0.0;
 g_enable_finish_line_detection_after_delay_s = 0.0;
 g_max_speed_after_finish_line_detected_mps = 0.7;
 
 
-
-g_line_calibration_data_angle_offset = 0.028;
-g_line_calibration_data_rotation_point_x = 39.5;
-g_line_calibration_data_rotation_point_y = 26;
-g_line_calibration_data_x_axis_offset = -9.2;
+g_line_calibration_data_angle_offset = 0;
+g_line_calibration_data_rotation_point_x = 0;
+g_line_calibration_data_rotation_point_y = 0;
+g_line_calibration_data_x_axis_offset = 0;
 g_line_calibration_data_y_axis_offset = 0;
 
-BirdEye_calibration_TrackWidths_lower_segment_A_x = 6.49;
-BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.56;
-BirdEye_calibration_TrackWidths_lower_segment_B_x = 63.79;
-BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.56;
-BirdEye_calibration_TrackWidths_upper_segment_A_x = 23.53;
-BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.79;
-BirdEye_calibration_TrackWidths_upper_segment_B_x = 44.7;
-BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.2;
+% g_line_calibration_data_angle_offset = 0.028;
+% g_line_calibration_data_rotation_point_x = 39.5;
+% g_line_calibration_data_rotation_point_y = 26;
+% g_line_calibration_data_x_axis_offset = -9.2;
+% g_line_calibration_data_y_axis_offset = 0;
+
+BirdEye_calibration_TrackWidths_lower_segment_A_x = 6.5;   % RL x
+BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.81;  % RL y
+BirdEye_calibration_TrackWidths_lower_segment_B_x = 67.6;  % RR x
+BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.81;   % RR y
+BirdEye_calibration_TrackWidths_upper_segment_A_x = 20.89;  % FL x
+BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.6;  % FL y
+BirdEye_calibration_TrackWidths_upper_segment_B_x = 49.86;   % FR x
+BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.39;   % FR y
 BirdEye_calibration_valid = 1;
 
 values = [g_lane_width_vector_unit...
