@@ -856,7 +856,12 @@ void settingsMenuRoutine() {
           displayParameterValue(String("inf"), String("inf"));
         }
         else{
+          display.println("Single line calibration");
           displayParameterValue(FloatToString((upper_intersection.point.x - SCREEN_CENTER_X), 2), FloatToString((lower_intersection.point.x - SCREEN_CENTER_X), 2));
+          //displayParameterValue(FloatToString((upper_intersection.point.x), 2), FloatToString((lower_intersection.point.x), 2));
+          display.println("Upper x: " + FloatToString((upper_intersection.point.x), 2));
+          display.println("Lower x: " + FloatToString((lower_intersection.point.x), 2));
+          display.println("Frame width x: " + FloatToString((g_line_image_frame_width), 2));
         }
         }
         break;
@@ -1040,9 +1045,15 @@ void settingsMenuRoutine() {
         
     }
   }
-  else if(g_start_line_calibration_acquisition != 0){
-    g_start_line_calibration_acquisition = 0;
+  else{
+    if(g_start_line_calibration_acquisition != 0){
+      g_start_line_calibration_acquisition = 0;
+    }
+    if(g_start_line_calibration_acquisition_birdeye != 0){
+      g_start_line_calibration_acquisition_birdeye = 0;
+    }
   }
+
   
   #if ENABLE_DETATCH_MENU_AFTER_START_CAR_ENGINE == 1
   }

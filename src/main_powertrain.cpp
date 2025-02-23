@@ -137,15 +137,11 @@ void loop() {
           vec = calibrateVector(vec, g_line_calibration_data);
         }
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
+        vectors[i] = vec;
         g_pixy_1_vectors_processing.addVector(vec);
       }
       pixy_1_leftVectorOld = g_pixy_1_vectors_processing.getLeftVector();
       pixy_1_rightVectorOld = g_pixy_1_vectors_processing.getRightVector();
-
-      vectors.resize(g_pixy_1.line.numVectors);
-      for (size_t i = 0; i < g_pixy_1.line.numVectors; i++) {
-        vectors[i] = VectorsProcessing::mirrorVector(mirrorLine, g_pixy_1.line.vectors[i]);
-      }
     }
     else{
       p_camera_no_vector_detected_stopwatch_s += MillisToSec(g_loop_time_ms);

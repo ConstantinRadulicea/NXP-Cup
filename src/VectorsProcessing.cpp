@@ -522,6 +522,9 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
                 continue;
             }
+            if (vectorMagnitude(vectors[i]) < MeterToVectorUnit(0.05)){
+                continue;
+            }
 
             if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
                 continue;
@@ -537,8 +540,8 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees))) <= 0) {
                 //Serial1.print("%");
                 //Serial1.println(angleRadiansError);
-                //minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
-                //minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
+                minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
+                minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
 
                 //if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
                 //    continue;
@@ -563,7 +566,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 }
                 
 
-                //if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
+                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
                     if (isVectorValid(finishLine.leftSegment)) {
                         angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
@@ -573,9 +576,9 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                     else{
                         finishLine.leftSegment = vectors[i];
                     }
-                //}
+                }
 
-                //if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
+                if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
                     if (isVectorValid(finishLine.rightSegment)) {
                         angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
@@ -585,7 +588,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                     else{
                         finishLine.rightSegment = vectors[i];
                     }
-                //}
+                }
             }
         }
 
