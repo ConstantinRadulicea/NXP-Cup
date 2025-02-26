@@ -24,8 +24,10 @@ void loop() {
   size_t i;
   int8_t pixy_1_result;
   LineABC mirrorLine;
-  Vector vec, pixy_1_leftVectorOld, pixy_1_rightVectorOld;
-  std::vector<Vector> vectors;
+  Vector vec, pixy_1_leftVector, pixy_1_rightVector;
+  Vector pixy_1_leftVectorOld, pixy_1_rightVectorOld;
+  std::vector<Vector> uncalibrated_vectors;
+  std::vector<Vector> calibrated_vectors;
   std::vector<Intersection> intersections;
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
@@ -112,23 +114,24 @@ void loop() {
 /*===================================================START first camera============================================================================*/
     if(pixy_1_result >= ((int8_t)0)){
       p_camera_error_stopwatch_s = 0.0f;
-      vectors.resize(g_pixy_1.line.numVectors);
-      memcpy(vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
+      uncalibrated_vectors.resize(g_pixy_1.line.numVectors);
+      memcpy(uncalibrated_vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
 
       intersections.clear();
-      VectorsProcessing::findIntersections(vectors, intersections);
-      VectorsProcessing::filterVectorIntersections(vectors, intersections);
+      VectorsProcessing::findIntersections(uncalibrated_vectors, intersections);
+      VectorsProcessing::filterVectorIntersections(uncalibrated_vectors, intersections);
 
-      if (vectors.size() > 0){
+      if (uncalibrated_vectors.size() > 0){
         p_camera_no_vector_detected_stopwatch_s = 0.0f;
       }
       else{
         p_camera_no_vector_detected_stopwatch_s += MillisToSec(g_loop_time_ms);
       }
 
-      for (i=0; i < vectors.size(); i++)
+      calibrated_vectors.resize(uncalibrated_vectors.size());
+      for (i=0; i < uncalibrated_vectors.size(); i++)
       {
-        vec = vectors[i];
+        vec = uncalibrated_vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
           vec = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
@@ -137,11 +140,9 @@ void loop() {
           vec = calibrateVector(vec, g_line_calibration_data);
         }
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
-        vectors[i] = vec;
+        calibrated_vectors[i] = vec;
         g_pixy_1_vectors_processing.addVector(vec);
       }
-      pixy_1_leftVectorOld = g_pixy_1_vectors_processing.getLeftVector();
-      pixy_1_rightVectorOld = g_pixy_1_vectors_processing.getRightVector();
     }
     else{
       p_camera_no_vector_detected_stopwatch_s += MillisToSec(g_loop_time_ms);
@@ -149,17 +150,24 @@ void loop() {
       FailureModeMessage(&g_pixy_1, p_camera_error_stopwatch_s,"pixy getAllFeatures");
     }
 /*===================================================END first camera============================================================================*/
+    pixy_1_leftVectorOld = pixy_1_leftVector;
+    pixy_1_rightVectorOld = pixy_1_rightVector;
+    pixy_1_leftVector = g_pixy_1_vectors_processing.getLeftVector();
+    pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
+
+    g_left_lane_segment = VectorsProcessing::vectorToLineSegment(pixy_1_leftVector);
+    g_right_lane_segment = VectorsProcessing::vectorToLineSegment(pixy_1_rightVector);
+    g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
+    
 
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
       AEB_out = automatic_emergency_braking();
     #endif
     #if ENABLE_FINISH_LINE_DETECTION == 1
-      FLD_out = finish_line_detection(&vectors);       
+      FLD_out = finish_line_detection(&calibrated_vectors);       
     #endif
 
-    g_left_lane_segment = VectorsProcessing::vectorToLineSegment(g_pixy_1_vectors_processing.getLeftVector());
-    g_right_lane_segment = VectorsProcessing::vectorToLineSegment(g_pixy_1_vectors_processing.getRightVector());
-    g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
+
     lookAheadDistance = CalculateLookAheadDistance(MeterToVectorUnit(g_lookahead_min_distance_cm/100.0f), MeterToVectorUnit(g_lookahead_max_distance_cm/100.0f), g_middle_lane_line_pixy_1);
     if (!isValidFloatNumber(&lookAheadDistance, __LINE__)) {
       continue;
@@ -235,8 +243,8 @@ void loop() {
       }
     #endif
     
-    g_left_lane_line_pixy_1 = VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector());
-    g_right_lane_line_pixy_1 = VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector());
+    g_left_lane_line_pixy_1 = lineSegmentToLineABC(g_left_lane_segment);
+    g_right_lane_line_pixy_1 = lineSegmentToLineABC(g_right_lane_segment);
 
     temp_time = (float)millis();
     if (temp_time < timeStart){
@@ -249,7 +257,7 @@ void loop() {
     g_time_passed_ms += g_loop_time_ms;
 
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_leftVector, pixy_1_rightVector, VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
     #endif
   }
 }
