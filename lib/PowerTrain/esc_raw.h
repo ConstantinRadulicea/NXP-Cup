@@ -17,6 +17,9 @@
 #ifndef __ESC_RAW_H__
 #define __ESC_RAW_H__
 
+#define BATTERY_VOLTAGE_V 8.0
+#define MOTOR_RPM_PER_VOLT 850.0
+
 float RawToThrottle(float raw_value);
 float RawToRpm(float raw_value);
 float RpmToRaw(float rpm);

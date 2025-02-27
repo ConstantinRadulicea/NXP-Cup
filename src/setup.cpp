@@ -2,7 +2,6 @@
 
 
 
-
 #if (ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1) && SERIAL_PORT_TYPE_CONFIGURATION == 1 && defined(TEENSY40)
   #define ENABLE_SERIAL_BUFFER
   #define RX_BUFFER_SIZE 4092
@@ -22,9 +21,13 @@ void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
     while (pixy->init() < ((int8_t)0))
     {
       #if ENABLE_DRIVERMOTOR == 1
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest_slow((int)STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
-        }
+        #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+          g_onemotorpowertrain.SetSpeedRequest_slow(STANDSTILL_SPEED);
+        #else
+          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+            g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
+          }
+        #endif
       #endif
       g_steering_angle_rad = 0.0f;
       #if ENABLE_STEERING_SERVO == 1
@@ -61,11 +64,15 @@ void setup() {
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
-      g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
-      g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
-    }
+    #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+      OneMotorPowerTrainSetup(WHEEL_DIAMETER_M, LEFT_WHEEL_MOTOR_PIN);
+    #else
+      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
+        g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
+        g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
+      }
+    #endif
   #endif
 
   #if ENABLE_EMERGENCY_BREAKING == 1

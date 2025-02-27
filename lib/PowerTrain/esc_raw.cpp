@@ -15,8 +15,6 @@
 */
 
 #include "esc_raw.h"
-#define BATTERY_VOLTAGE_V 8.0
-#define MOTOR_RPM_PER_VOLT 850.0
 /*
 
 float _raw_to_rpm_correlation[] = {

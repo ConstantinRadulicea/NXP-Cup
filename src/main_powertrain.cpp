@@ -92,9 +92,13 @@ void loop() {
     if (g_enable_car_engine == 0) {
       FLD_deactivate();
       #if ENABLE_DRIVERMOTOR == 1
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
-        }
+        #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+          g_onemotorpowertrain.SetSpeedRequest_slow(STANDSTILL_SPEED);
+        #else
+          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+            g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
+          }
+        #endif
       #endif
     }
 
@@ -233,13 +237,15 @@ void loop() {
     #endif
 
 
-    
-
     #if ENABLE_DRIVERMOTOR == 1
       if (g_enable_car_engine != 0) {
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-          g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, g_rear_axe_turn_radius_m, SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
-        }
+        #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+          g_onemotorpowertrain.SetSpeedRequest_slow(g_car_speed_mps);
+        #else
+          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+            g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, g_rear_axe_turn_radius_m, SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
+          }
+        #endif
       }
     #endif
     

@@ -125,6 +125,14 @@ void power_train_sampling(){
 //	return -1;
 //}
 
+void MotorPinSetup(int motor_pin){
+    if (motor_pin >= 0) {
+        pinMode(motor_pin, OUTPUT);
+        LeftMotor.attach(motor_pin, 1148, 1832);
+        LeftMotor.write((int)90);
+    }
+}
+
 
 void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float _pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin)
 {
@@ -149,16 +157,9 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     temp_WheelRpmData.PulsePin = left_rpm_sensor_pin;
     setLeftWheelRpmData(temp_WheelRpmData);
 
-    if (left_motor_pin >= 0) {
-        pinMode(left_motor_pin, OUTPUT);
-        LeftMotor.attach(left_motor_pin, 1148, 1832);
-        LeftMotor.write((int)90);
-    }
-    if (right_motor_pin >= 0) {
-        pinMode(right_motor_pin, OUTPUT);
-        RightMotor.attach(right_motor_pin, 1148, 1832);
-        RightMotor.write((int)90);
-    }
+    MotorPinSetup(left_motor_pin);
+    MotorPinSetup(right_motor_pin);
+
     if (left_rpm_sensor_pin >= 0) {
         pinMode(right_rpm_sensor_pin, INPUT_PULLUP);
         attachInterrupt(digitalPinToInterrupt(left_rpm_sensor_pin), ISR_RpmSensorLeftWheel, RISING);

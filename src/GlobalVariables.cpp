@@ -297,10 +297,15 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
       g_birdeye_calibrationdata.valid = 0;
     }
 
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
-    g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
-  }
+  #if ENABLE_DRIVERMOTOR == 1
+    #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+    #else
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+      g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
+      g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
+    }
+    #endif
+  #endif
 }
 
 /*
