@@ -11,7 +11,7 @@ class OneMotorPowerTrain
 private:
     /* data */
 public:
-    OneMotorPowerTrain(float wheelDiameter_meters);
+    OneMotorPowerTrain(float wheelDiameter_meters, PWMServo motor_);
     ~OneMotorPowerTrain();
     void SetSpeedRequest(float speed_ms);
     void SetSpeedRequest_slow(float speed_ms);
@@ -20,7 +20,7 @@ public:
     void SetDiameter(float wheel_diameter);
 
     float wheelDiameter_meters;
-    PWMServo motor;
+    PWMServo &motor;
 };
 
 extern OneMotorPowerTrain g_onemotorpowertrain;

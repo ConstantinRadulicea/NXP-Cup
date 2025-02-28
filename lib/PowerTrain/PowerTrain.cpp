@@ -17,34 +17,34 @@
 #include "PowerTrain.h"
 
 
-IntervalTimer myTimer;
+static IntervalTimer myTimer;
 
 
-volatile PWMServo RightMotor;
-volatile PWMServo LeftMotor;
-volatile float pid_frequency_hz;
+volatile static PWMServo RightMotor;
+volatile static PWMServo LeftMotor;
+volatile static float pid_frequency_hz;
 
 
-void empty_function(){
+static void empty_function(){
 
 }
 
-void WriteToMotor(volatile PWMServo* motor_, float angle_arg) {
+static void WriteToMotor(volatile PWMServo* motor_, float angle_arg) {
     ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         motor_->write((int)angle_arg);
     }
 }
 
-void WriteToRightMotor(float angle_arg){
+static void WriteToRightMotor(float angle_arg){
     WriteToMotor(&RightMotor, angle_arg);
 }
 
-void WriteToLeftMotor(float angle_arg){
+static void WriteToLeftMotor(float angle_arg){
     WriteToMotor(&LeftMotor, angle_arg);
 }
 
 
-void WriteToRightMotorThrottle(float throttle){
+static void WriteToRightMotorThrottle(float throttle){
     float rawValue;
     rawValue = 90.0 + (throttle * 90.0);
     rawValue = MAX(rawValue, 90.0);
@@ -53,7 +53,7 @@ void WriteToRightMotorThrottle(float throttle){
     //Serial.println(String("%Right: ") + String(throttle, 2) + String(";") + String(rawValue));
 }
 
-void WriteToLeftMotorThrottle(float throttle){
+static void WriteToLeftMotorThrottle(float throttle){
     float rawValue;
     rawValue = 90.0 + (throttle * 90.0);
     rawValue = MAX(rawValue, 90.0);
@@ -65,14 +65,14 @@ void WriteToLeftMotorThrottle(float throttle){
 volatile PowerTrain g_powertrain(0.0, 0.0, 0.0, 0.0, WriteToLeftMotorThrottle, WriteToRightMotorThrottle);
 
 
-void on_pulse_right_motor(volatile struct RpmSensorData *data){
+static void on_pulse_right_motor(volatile struct RpmSensorData *data){
 }
 
-void on_pulse_left_motor(volatile struct RpmSensorData *data){
+static void on_pulse_left_motor(volatile struct RpmSensorData *data){
 }
 
 
-void power_train_sampling(){
+static void power_train_sampling(){
     float rpm, timePassed;
     RpmSensorData temp_WheelRpmData;
 
@@ -125,11 +125,11 @@ void power_train_sampling(){
 //	return -1;
 //}
 
-void MotorPinSetup(int motor_pin){
+static void MotorPinSetup(volatile PWMServo *servo_, int motor_pin){
     if (motor_pin >= 0) {
         pinMode(motor_pin, OUTPUT);
-        LeftMotor.attach(motor_pin, 1148, 1832);
-        LeftMotor.write((int)90);
+        servo_->attach(motor_pin, 1148, 1832);
+        servo_->write((int)90);
     }
 }
 
@@ -157,8 +157,8 @@ void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, fl
     temp_WheelRpmData.PulsePin = left_rpm_sensor_pin;
     setLeftWheelRpmData(temp_WheelRpmData);
 
-    MotorPinSetup(left_motor_pin);
-    MotorPinSetup(right_motor_pin);
+    MotorPinSetup(&LeftMotor, left_motor_pin);
+    MotorPinSetup(&RightMotor, right_motor_pin);
 
     if (left_rpm_sensor_pin >= 0) {
         pinMode(right_rpm_sensor_pin, INPUT_PULLUP);
