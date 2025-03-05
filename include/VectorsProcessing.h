@@ -99,6 +99,7 @@ public:
     static void filterVectorIntersection(std::vector<Vector> &vectors, Intersection &intersection);
     static Vector reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(Vector vec, Point2D point);
     static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees);
+    static int isSecondaryLineCenterInPrimaryCenterRange(LineSegment primary_line, LineSegment secondary_line, float error_angle_rad);
 };
 
 

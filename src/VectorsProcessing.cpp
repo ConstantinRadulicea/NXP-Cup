@@ -85,8 +85,6 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
             return;
         }
-
-        
         
         /*
         vec.print();
@@ -101,10 +99,36 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
     }
 
     Vector VectorsProcessing::getLeftVector(){
+        float left_line_size, right_line_size;
+        if (isVectorValid(this->leftVector) && isVectorValid(this->rightVector)) {
+            left_line_size = vectorMagnitude(this->leftVector);
+            right_line_size = vectorMagnitude(this->rightVector);
+            if (left_line_size >= right_line_size) {
+                return this->leftVector;
+            }
+            else if(isSecondaryLineCenterInPrimaryCenterRange(vectorToLineSegment(this->rightVector), vectorToLineSegment(this->leftVector), radians(45.0f)) == 0){
+                memset(&(this->leftVector), 0, sizeof(this->leftVector));
+            }
+        }
+        
+
         return this->leftVector;
     }
     
     Vector VectorsProcessing::getRightVector(){
+        float left_line_size, right_line_size;
+        if (isVectorValid(this->leftVector) && isVectorValid(this->rightVector)) {
+            left_line_size = vectorMagnitude(this->leftVector);
+            right_line_size = vectorMagnitude(this->rightVector);
+            if (right_line_size > left_line_size) {
+                return this->rightVector;
+            }
+            else if(isSecondaryLineCenterInPrimaryCenterRange(vectorToLineSegment(this->leftVector), vectorToLineSegment(this->rightVector), radians(45.0f)) == 0){
+                memset(&(this->rightVector), 0, sizeof(this->rightVector));
+            }
+        }
+        
+
         return this->rightVector;
     }
 
@@ -595,4 +619,20 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         return finishLine;
     }
 
+
+    int  VectorsProcessing::isSecondaryLineCenterInPrimaryCenterRange(LineSegment primary_line, LineSegment secondary_line, float error_angle_rad){
+        Point2D primary_center, secondary_center;
+        float angle1, angle2, min_angle;
+        float lateral_angle_trim;
+        error_angle_rad = fabsf(error_angle_rad);
+        lateral_angle_trim = M_PI_2 - error_angle_rad;
+
+        primary_center = midPointLineSegment(primary_line);
+        secondary_center = midPointLineSegment(secondary_line);
+
+        
+        angle1 = angleBw3Points2D(primary_center, secondary_center, primary_line.A);
+        angle2 = angleBw3Points2D(primary_center, secondary_center, primary_line.B);
+        return (int)(min_angle >= lateral_angle_trim);
+    }
 
