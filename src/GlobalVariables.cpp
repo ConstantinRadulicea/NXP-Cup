@@ -17,7 +17,70 @@
 #include "GlobalVariables.h"
 
 
-#if CAR1 == 1
+#if CAR_ID == 1
+int8_t g_enable_car_engine = 0;
+int8_t g_enable_car_steering_wheel = 0;
+int8_t g_enable_emergency_brake = 0;
+int8_t g_enable_pixy_vector_approximation = 0;
+int8_t g_enable_distance_sensor1 = 1;
+int8_t g_enable_distance_sensor2 = 1;
+int8_t g_enable_distance_sensor3 = 1;
+int8_t g_enable_remote_start_stop = 0;
+int8_t g_enable_finish_line_detection = 0;
+
+float g_lane_width_vector_unit = 45.0f;
+float g_black_color_treshold = 0.2f; // 0=black, 1=white
+float g_lookahead_min_distance_cm = 20.0f;
+float g_lookahead_max_distance_cm = 60.0f;
+float g_vehicle_min_speed_mps = 0.3f;   // m/s
+float g_vehicle_max_speed_mps = 2.5f;  // m/s
+float g_vehicle_max_speed_original_mps = 2.5f; // m/s
+float g_emergency_brake_activation_max_distance_m = 0.6f;
+float g_emergency_brake_speed_mps = 0.2f; // m/s
+float g_emergency_brake_distance_from_obstacle_m = 0.2f;   // 13.5f
+float g_steering_wheel_angle_offset_deg = -6.29f;      //-4.6f;
+float g_min_x_axis_angle_vector_deg = 15.0f;
+float g_max_speed_after_delay_mps = 1.5f; // m/s
+float g_max_speed_after_finish_line_detected_mps = 0.7f; // m/s
+float g_car_speed_mps_ki = -0.02f;
+float g_car_speed_mps_kd = -0.2f;
+float g_car_speed_mps_ki_min_max_impact = 0.3f;
+float g_finish_line_angle_tolerance = 15.0f;
+
+float g_powertrain_left_wheel_kp = 0.0;
+float g_powertrain_left_wheel_ki = 0.1;
+float g_powertrain_left_wheel_kd = 0.0;
+float g_powertrain_left_wheel_ki_max_sum = 0.4;
+float g_powertrain_right_wheel_kp = 0.0;
+float g_powertrain_right_wheel_ki = 0.1;
+float g_powertrain_right_wheel_kd = 0.0;
+float g_powertrain_right_wheel_ki_max_sum = 0.4;
+
+float g_friction_coefficient = 0.55f;
+float g_downward_acceleration = G_CONSTANT;
+
+float g_max_acceleration = -1.0f;
+float g_max_deceleration = -1.0f;
+
+float g_camera_offset_y_m = 0.0f;
+
+
+#if RACE_MODE == 1
+  float g_emergency_brake_enable_delay_s = 0.0f;
+  float g_max_speed_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
+#elif DEBUG_MODE == 1
+  float g_emergency_brake_enable_delay_s = 0.0f;
+  float g_max_speed_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
+#else
+  float g_emergency_brake_enable_delay_s = 0.0f;
+  float g_max_speed_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
+#endif
+
+
+#elif CAR_ID == 2
 int8_t g_enable_car_engine = 0;
 int8_t g_enable_car_steering_wheel = 0;
 int8_t g_enable_emergency_brake = 0;

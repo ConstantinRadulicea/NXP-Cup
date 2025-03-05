@@ -32,7 +32,7 @@
 //#define DEBUG_HOST_IPADDRESS "110.100.0.88"   // Constantin B020
 //#define DEBUG_HOST_IPADDRESS "192.168.45.243"   // Constantin phone
 //#define DEBUG_HOST_IPADDRESS "192.168.204.243"   // Constantin home
-#if CAR1 == 1
+#if CAR_ID == 1
   #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // Daniel phone
 #else
   #define DEBUG_HOST_IPADDRESS "192.168.254.243"   // edu
@@ -44,9 +44,9 @@
 #define SSDP_DEVICETYPE "urn:schemas-upnp-org:device:NXP-CAR:1"
 #define SSDP_NAME "NXP-CUP-CAR"
 
-#if CAR1 == 1
+#if CAR_ID == 1
   #define SSDP_SERIALNUMBER "1"
-#elif CAR2 == 1
+#elif CAR_ID == 2
     #define SSDP_SERIALNUMBER "2"
 #else
     #define SSDP_SERIALNUMBER "0"

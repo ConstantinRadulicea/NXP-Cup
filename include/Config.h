@@ -20,18 +20,17 @@
 
 #include <Arduino.h>
 
-#define CAR1 1
-#define CAR2 0
+#define CAR_ID 2
 
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define RACE_MODE 0
 #define TEMP_MODE 0
-#define SINGLE_AXE_MODE 0
+#define SINGLE_AXE_MODE 1
 #define REAR_AXE_STEERING_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
-#define SERIAL_PORT_TYPE_CONFIGURATION 1
+#define SERIAL_PORT_TYPE_CONFIGURATION 2
 
 #if SERIAL_PORT_TYPE_CONFIGURATION == 1
   #define SERIAL_PORT Serial1
@@ -153,7 +152,7 @@
   #define ENABLE_SINGLE_AXE_STEERING_NO_RPM 1
   #define ENABLE_DRIVERMOTOR 1
   #define ENABLE_SETTINGS_MENU 1
-  #define ENABLE_EMERGENCY_BREAKING 1
+  #define ENABLE_EMERGENCY_BREAKING 0
   #define ENABLE_DISTANCE_SENSOR1 0 
   #define ENABLE_DISTANCE_SENSOR2 1
   #define ENABLE_DISTANCE_SENSOR3 0
@@ -211,9 +210,31 @@
 
 #define EMERGENCY_BREAK_LIGHT_PIN 8
 
-
 #define RPM_SENSOR_LEFT_WHEEL_PIN 2
 #define RPM_SENSOR_RIGHT_WHEEL_PIN 3
+
+#if 1==1
+  #define STEERING_SERVO_PIN                22
+  #define RIGHT_WHEEL_MOTOR_PIN             -1
+  #define LEFT_WHEEL_MOTOR_PIN              23
+  #define EDF_MOTOR_PIN                     7
+  #define REMOTE_START_PIN                  -1
+  #define REMOTE_STOP_PIN                   -1
+
+  #define DISTANCE_SENSOR1_ANALOG_PIN       -1
+  #define DISTANCE_SENSOR2_ANALOG_PIN       20
+  #define DISTANCE_SENSOR3_ANALOG_PIN       -1
+
+  #define MENU_RIGHT_ARROW_BUTTON_PIN       14
+  #define MENU_LEFT_ARROW_BUTTON_PIN        15
+  #define MENU_DECREMENT_BUTTON_PIN         16
+  #define MENU_INCREMENT_BUTTON_PIN         17
+
+  #define EMERGENCY_BREAK_LIGHT_PIN         21
+
+  #define RPM_SENSOR_LEFT_WHEEL_PIN         -1
+  #define RPM_SENSOR_RIGHT_WHEEL_PIN        -1
+#endif
 
 
 #include "log.h"
