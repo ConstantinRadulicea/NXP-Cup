@@ -3,7 +3,7 @@ fieldTerminator = ';';
 % good bad
 % 17 - 3
 % 22 - 0
-g_enable_car_engine = 0.0;
+g_enable_car_engine = 01.0;
 g_enable_car_steering_wheel = 0.0;
 g_enable_emergency_brake = 0.0;
 g_enable_pixy_vector_approximation = 0.0;
@@ -26,7 +26,7 @@ g_emergency_brake_activation_max_distance_m = 0.1;                     % 75
 g_emergency_brake_speed_mps = 0.3;
 g_emergency_brake_distance_from_obstacle_m = 0.09;       % 14
 g_emergency_brake_enable_delay_s = 0.0;
-g_steering_wheel_angle_offset_deg = -6.29;            % -4.7;
+g_steering_wheel_angle_offset_deg = 2.9;            % -4.7;
 g_min_x_axis_angle_vector_deg = 10.0;
 g_max_speed_after_delay_mps = 0.3;
 g_finish_line_angle_tolerance = 30.0;
@@ -66,14 +66,14 @@ g_line_calibration_data_y_axis_offset = 0;
 % g_line_calibration_data_x_axis_offset = -9.2;
 % g_line_calibration_data_y_axis_offset = 0;
 
-BirdEye_calibration_TrackWidths_lower_segment_A_x = 6.5;   % RL x
-BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.81;  % RL y
-BirdEye_calibration_TrackWidths_lower_segment_B_x = 67.6;  % RR x
-BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.81;   % RR y
-BirdEye_calibration_TrackWidths_upper_segment_A_x = 20.89;  % FL x
-BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.6;  % FL y
-BirdEye_calibration_TrackWidths_upper_segment_B_x = 49.86;   % FR x
-BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.39;   % FR y
+BirdEye_calibration_TrackWidths_lower_segment_A_x = 13.47;   % RL x
+BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.76;  % RL y
+BirdEye_calibration_TrackWidths_lower_segment_B_x = 70.08;  % RR x
+BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.76;   % RR y
+BirdEye_calibration_TrackWidths_upper_segment_A_x = 28.97;  % FL x
+BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.69;  % FL y
+BirdEye_calibration_TrackWidths_upper_segment_B_x = 51.75;   % FR x
+BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.33;   % FR y
 BirdEye_calibration_valid = 1;
 
 values = [g_lane_width_vector_unit...
