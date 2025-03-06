@@ -633,6 +633,10 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         
         angle1 = angleBw3Points2D(primary_center, secondary_center, primary_line.A);
         angle2 = angleBw3Points2D(primary_center, secondary_center, primary_line.B);
+        min_angle = MIN(angle1, angle2);
+        //SERIAL_PORT.println("% angle1: " + String(degrees(angle1)));
+        //SERIAL_PORT.println("% angle2: " + String(degrees(angle2)));
+        //SERIAL_PORT.println("% angle2: " + String(degrees(angle2)));
         return (int)(min_angle >= lateral_angle_trim);
     }
 

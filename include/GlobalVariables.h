@@ -96,7 +96,7 @@ extern float g_line_image_frame_height;
   #elif CAR_ID == 2
     #define STEERING_SERVO_ANGLE_MIDDLE     90
     #define STEERING_SERVO_ANGLE_MAX_RIGHT  45
-    #define STEERING_SERVO_ANGLE_MAX_LEFT   117
+    #define STEERING_SERVO_ANGLE_MAX_LEFT   135
   #endif
 #endif
 

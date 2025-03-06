@@ -58,7 +58,14 @@ void setup() {
   g_steering_angle_rad = 0.0f;
   #if ENABLE_STEERING_SERVO == 1
     pinMode(STEERING_SERVO_PIN, OUTPUT);
-    g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
+    #if CAR_ID == 1
+      g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
+    #elif CAR_ID == 2
+      g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 1100, 1900);
+    #else
+      g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 1000, 2000);
+    #endif
+
     g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
     g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
   #endif
