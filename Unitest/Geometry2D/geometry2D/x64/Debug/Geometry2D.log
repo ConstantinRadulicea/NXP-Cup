@@ -1,0 +1,5 @@
+﻿  geometry2D.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.cpp(536,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.cpp(537,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.cpp(859,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  Geometry2D.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\x64\Debug\Geometry2D.exe

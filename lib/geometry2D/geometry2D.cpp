@@ -18,6 +18,9 @@
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
+//#define LOCAL_FLT_EPSILON 0.0001
+
+#define LOCAL_FLT_EPSILON FLT_EPSILON
 
 LineABC xAxisABC() {
 	LineABC line;
@@ -70,7 +73,7 @@ Point2D polyval(float* polynomial_coefficients, int polynomial_degree, float x) 
 }
 
 int floatCmp(float num1, float num2) {
-	if (fabs(num1 - num2) < FLT_EPSILON) {
+	if (fabsf(num1 - num2) < LOCAL_FLT_EPSILON) {
 		return 0;
 	}
 	else if (num1 > num2) {
@@ -780,23 +783,30 @@ IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2) {
 	IntersectionLines inters;
 
 	memset(&inters, 0, sizeof(inters));
+	inters.info = INTERSECTION_INFO_LINES_ERROR;
+
+	if (!isValidLineABC(line1) || !isValidLineABC(line2)) {
+		return inters;
+	}
+
+	
 
 	if (floatCmp((line1.Ax * line2.By - line2.Ax * line1.By), 0.0f) == 0) {
 		line2 = normalizeLineABC2MQ(line2);
 		line1 = normalizeLineABC2MQ(line1);
 		if (areLinesEqual(line1, line2))
 		{
-			inters.info = 2;
+			inters.info = INTERSECTION_INFO_LINES_ARE_EQUAL;
 		}
 		else {
-			inters.info = 1;
+			inters.info = INTERSECTION_INFO_LINES_ARE_PARALLEL;
 		}
 		return inters;
 	}
 
 	inters.point.x = (line1.By * line2.C - line2.By * line1.C) / (line1.Ax * line2.By - line2.Ax * line1.By);
 	inters.point.y = (line1.C * line2.Ax - line2.C * line1.Ax) / (line1.Ax * line2.By - line2.Ax * line1.By);
-
+	inters.info = INTERSECTION_INFO_ONE_INTERSECTION;
 	return inters;
 }
 
@@ -847,13 +857,19 @@ Point2D projectPointOnLineABC(Point2D point, LineABC line) {
 	return projectionPoint.point;
 }
 
-int isPointOnSegment(LineSegment segment, Point2D point) {	
+int isPointOnSegment(LineSegment segment, Point2D point) {
+	float ggg_1 = floatCmp(((segment.B.x - segment.A.x) * (point.y - segment.A.y)), ((segment.B.y - segment.A.y) * (point.x - segment.A.x)));
 	if (
-		((point.y < segment.A.y) != (point.y < segment.B.y)) &&
-		((point.x < segment.A.x) != (point.x < segment.B.x)) &&
-		(floatCmp(((segment.B.x - segment.A.x) * (point.y - segment.A.y)), ((segment.B.y - segment.A.y) * (point.x - segment.A.x))) == 0) ||
-		((floatCmp(segment.A.x, point.x) == 0) && (floatCmp(segment.A.y, point.y) == 0)) ||
-		((floatCmp(segment.B.x, point.x) == 0) && (floatCmp(segment.B.y, point.y) == 0))
+		(
+			(MIN(segment.A.x, segment.B.x) <= point.x) &&
+			(MAX(segment.A.x, segment.B.x) >= point.x) &&
+			(MIN(segment.A.y, segment.B.y) <= point.y) &&
+			(MAX(segment.A.y, segment.B.y) >= point.y) &&
+			(ggg_1 == 0)
+		)
+		||
+		arePoints2DEqual(segment.A, point) ||
+		arePoints2DEqual(segment.B, point)
 		)
 	{
 		return 1;
@@ -887,7 +903,7 @@ LineSegmentsDistancePoints distancePointsBwSegments(LineSegment segment1, LineSe
 	lineSegment2 = points2lineABC(segment2.A, segment2.B);
 
 	tempLinesIntersection = intersectionLinesABC(lineSegment1, lineSegment2);
-	if (tempLinesIntersection.info == 0) {
+	if (tempLinesIntersection.info == INTERSECTION_INFO_ONE_INTERSECTION) {
 		if (isPointOnSegment(segment1, tempLinesIntersection.point) == 1) {
 			minFound = 1;
 			minSet = 1;
@@ -1106,7 +1122,7 @@ float minDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line) {
 	IntersectionLines inters;
 
 	inters = intersectionLinesABC(lineSegmentToLineABC(vectorSegment), line);
-	if (inters.info == 0) {
+	if (inters.info == INTERSECTION_INFO_ONE_INTERSECTION) {
 		if (isPointOnSegment(vectorSegment, inters.point) != 0) {
 			return 0.0f;
 		}
@@ -1129,7 +1145,7 @@ float maxDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line) {
 
 Point2D circleAngleToPoint2D(Point2D circleCenter, float circleRadius, float angleRad) {
 	Point2D result_point = circleCenter;
-	circleRadius = fabs(circleRadius);
+	circleRadius = fabsf(circleRadius);
 	result_point.x += (circleRadius * cosf(angleRad));
 	result_point.y += (circleRadius * sinf(angleRad));
 
@@ -1152,8 +1168,8 @@ IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circl
 	int cmp_result_1, cmp_result_2;
 	float distance_between_centers;
 
-	circleRadius_1 = fabs(circleRadius_1);
-	circleRadius_2 = fabs(circleRadius_2);
+	circleRadius_1 = fabsf(circleRadius_1);
+	circleRadius_2 = fabsf(circleRadius_2);
 
 	distance_between_centers = euclidianDistance(circleCenter_1, circleCenter_2);
 
@@ -1344,4 +1360,146 @@ Point2D midPointLineSegment(LineSegment seg) {
 
 float lengthLineSegment(LineSegment seg) {
 	return euclidianDistance(seg.A, seg.B);
+}
+
+LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point) {
+	LineSegment result_seg;
+	LineABC line_a, line_b;
+	IntersectionLines point_a, point_b;
+
+	memset(&result_seg, 0, sizeof(LineSegment));
+
+	if (!isValidLineSegment(seg)) {
+		return result_seg;
+	}
+
+	if (isPointOnLineABC(view_point, line))
+	{
+		result_seg.A = view_point;
+		result_seg.B = view_point;
+		return result_seg;
+	}
+
+	line_a = points2lineABC(view_point, seg.A);
+	line_b = points2lineABC(view_point, seg.B);
+
+	point_a = intersectionLinesABC(line_a, line);
+	point_b = intersectionLinesABC(line_b, line);
+
+
+	if (point_a.info == INTERSECTION_INFO_ONE_INTERSECTION && point_b.info == INTERSECTION_INFO_ONE_INTERSECTION) {
+		result_seg.A = point_a.point;
+		result_seg.B = point_b.point;
+	}
+	else if (point_a.info == INTERSECTION_INFO_ONE_INTERSECTION)
+	{
+		result_seg.A = point_a.point;
+		result_seg.B = point_a.point;
+	}
+	else if (point_b.info == INTERSECTION_INFO_ONE_INTERSECTION)
+	{
+		result_seg.A = point_b.point;
+		result_seg.B = point_b.point;
+	}
+
+	return result_seg;
+}
+
+
+
+/**
+ * Checks if two floating-point numbers are approximately equal
+ */
+int areEqual(float a, float b) {
+	return fabs(a - b) < 1e-6;
+}
+
+/**
+ * Computes the intersection point of two line segments.
+ */
+IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2) {
+	IntersectionLines result;
+	result.info = INTERSECTION_INFO_LINES_ERROR; // Default to one intersection
+
+	if (!isValidLineSegment(seg1) || !isValidLineSegment(seg2)) {
+		return result;
+	}
+
+	float xA = seg1.A.x, yA = seg1.A.y;
+	float xB = seg1.B.x, yB = seg1.B.y;
+	float xC = seg2.A.x, yC = seg2.A.y;
+	float xD = seg2.B.x, yD = seg2.B.y;
+
+	// Compute determinant
+	float denom = (xB - xA) * (yD - yC) - (yB - yA) * (xD - xC);
+
+	// Check if lines are parallel
+	if (floatCmp(denom, 0) == 0) {
+		// Check if the two lines are actually the same
+		if (floatCmp((yB - yA) * (xC - xA), (xB - xA) * (yC - yA))) {
+			result.info = INTERSECTION_INFO_LINES_ARE_EQUAL;
+		}
+		else {
+			result.info = INTERSECTION_INFO_LINES_ARE_PARALLEL;
+		}
+		return result;
+	}
+
+	// Compute intersection parameters t and u
+	float t = ((xC - xA) * (yD - yC) - (yC - yA) * (xD - xC)) / denom;
+	float u = ((xC - xA) * (yB - yA) - (yC - yA) * (xB - xA)) / denom;
+
+	// Check if the intersection is within both segments
+	if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+		result.point.x = xA + t * (xB - xA);
+		result.point.y = yA + t * (yB - yA);
+		result.info = INTERSECTION_INFO_ONE_INTERSECTION;
+	}
+	else {
+		result.info = INTERSECTION_INFO_NO_INTERSECTION; // Segments do not intersect
+	}
+
+	return result;
+}
+
+
+
+int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point) {
+	IntersectionLines inters;
+	LineSegment temp_seg;
+
+	temp_seg.A = start_point;
+	temp_seg.B = finish_point;
+	inters = lineSegmentIntersection(temp_seg, segment);
+	if (inters.info == INTERSECTION_INFO_ONE_INTERSECTION) {
+		return 0;
+	}
+
+	return 1;
+}
+
+
+
+LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2) {
+	LineSegment result_seg;
+	int is_seg2_reachable, is_seg1_reachable;
+	is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
+	is_seg2_reachable = reachableWithouthPassingThroughSegment(start_point, seg1, midPointLineSegment(seg2));
+
+	if (is_seg1_reachable && is_seg2_reachable) {
+		if (lengthLineSegment(seg1) > lengthLineSegment(seg2)) {
+			result_seg = seg1;
+		}
+		else {
+			result_seg = seg2;
+		}
+	}
+	else if (is_seg1_reachable) {
+		result_seg = seg1;
+	}
+	else {
+		result_seg = seg2;
+	}
+
+	return result_seg;
 }

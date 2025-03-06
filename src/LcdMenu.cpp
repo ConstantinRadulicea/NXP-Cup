@@ -808,7 +808,7 @@ void settingsMenuRoutine() {
         upper_intersection = intersectionLinesABC(g_middle_lane_line_pixy_1, upper_line);
         lower_intersection = intersectionLinesABC(g_middle_lane_line_pixy_1, lower_line);
 
-        if (upper_intersection.info != 0) {
+        if (upper_intersection.info != INTERSECTION_INFO_ONE_INTERSECTION) {
           displayParameterValue(String("inf"), String("inf"));
         }
         else{
@@ -822,7 +822,7 @@ void settingsMenuRoutine() {
         right_lane_line_intersection = intersectionLinesABC(g_right_lane_line_pixy_1, middle_line);
         display.println();
         display.println(String("LaneWdth [vUnit]: "));
-        if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
+        if (left_lane_line_intersection.info == INTERSECTION_INFO_ONE_INTERSECTION && right_lane_line_intersection.info == INTERSECTION_INFO_ONE_INTERSECTION) {
           lane_width_ = euclidianDistance(left_lane_line_intersection.point, right_lane_line_intersection.point);
           display.println(FloatToString(lane_width_, 2));
         }
@@ -855,7 +855,7 @@ void settingsMenuRoutine() {
         upper_intersection = intersectionLinesABC(calibration_line, upper_line);
         lower_intersection = intersectionLinesABC(calibration_line, lower_line);
 
-        if (upper_intersection.info != 0) {
+        if (upper_intersection.info != INTERSECTION_INFO_ONE_INTERSECTION) {
           displayParameterValue(String("inf"), String("inf"));
         }
         else{

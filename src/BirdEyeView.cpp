@@ -148,7 +148,7 @@ struct track_widths getTrackWidths(LineSegment left_segment_, LineSegment right_
 
     lower_intersect_line = xAxisABC();
     temp_line_intersection = intersectionLinesABC(middle_line, lower_intersect_line);
-    if (temp_line_intersection.info == 2) {
+    if (temp_line_intersection.info == INTERSECTION_INFO_LINES_ARE_EQUAL) {
         return result_track_widths;
     }
     lower_intersect_line = perpendicularToLinePassingThroughPointABC(middle_line, temp_line_intersection.point);
@@ -157,7 +157,7 @@ struct track_widths getTrackWidths(LineSegment left_segment_, LineSegment right_
     upper_intersect_line = xAxisABC();
     upper_intersect_line.C = -frame_height_;
     temp_line_intersection = intersectionLinesABC(middle_line, upper_intersect_line);
-    if (temp_line_intersection.info == 2) {
+    if (temp_line_intersection.info == INTERSECTION_INFO_LINES_ARE_EQUAL) {
         return result_track_widths;
     }
     upper_intersect_line = perpendicularToLinePassingThroughPointABC(middle_line, temp_line_intersection.point);

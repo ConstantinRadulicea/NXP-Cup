@@ -99,9 +99,15 @@ typedef struct IntersectionPoints2D_2
 	int sameEquation;
 }IntersectionPoints2D_2;
 
+
+#define INTERSECTION_INFO_ONE_INTERSECTION 0
+#define INTERSECTION_INFO_LINES_ARE_PARALLEL 1
+#define INTERSECTION_INFO_LINES_ARE_EQUAL 2
+#define INTERSECTION_INFO_LINES_ERROR 3
+#define INTERSECTION_INFO_NO_INTERSECTION 4
 typedef struct IntersectionLines {
 	Point2D point;
-	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal
+	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal, 3 error
 }IntersectionLines;
 
 float NormalizePiToNegPi(float angle);
@@ -242,5 +248,13 @@ Point2D midPointLineSegment(LineSegment seg);
 
 float lengthLineSegment(LineSegment seg);
 
+LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point);
+
+IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2);
+
+
+int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point);
+
+LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
 
 #endif // !__GEOMETRY2D_H__

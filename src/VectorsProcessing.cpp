@@ -90,11 +90,13 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         vec.print();
         Serial.println("Carposition: " + String(carPosition.x));
         */
-        if (((float)vec.m_x0 >= carPosition.x) && (vectorMagnitude(vec) > vectorMagnitude(this->rightVector))) {
-            this->rightVector = vec;
+        if ((float)vec.m_x0 >= carPosition.x) {
+            this->rightVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->rightVector), vectorToLineSegment(vec)));
+            //this->rightVector = vec;
         }
-        else if(((float)vec.m_x0 < carPosition.x) && (vectorMagnitude(vec) > vectorMagnitude(this->leftVector))){
-            this->leftVector = vec;
+        else if((float)vec.m_x0 < carPosition.x){
+            this->leftVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->leftVector), vectorToLineSegment(vec)));
+            //this->leftVector = vec;
         }
     }
 

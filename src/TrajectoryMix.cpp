@@ -11,7 +11,7 @@ LineABC closestLineToCurrentTrajectory(LineABC line1, LineABC line2){
   left_lane_line_intersection = intersectionLinesABC(line1, horizontal_middle_line);
   right_lane_line_intersection = intersectionLinesABC(line2, horizontal_middle_line);
 
-  if (left_lane_line_intersection.info == 0 && right_lane_line_intersection.info == 0) {
+  if (left_lane_line_intersection.info == INTERSECTION_INFO_ONE_INTERSECTION && right_lane_line_intersection.info == INTERSECTION_INFO_ONE_INTERSECTION) {
     if (euclidianDistance(left_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y}) < euclidianDistance(right_lane_line_intersection.point, Point2D{SCREEN_CENTER_X, SCREEN_CENTER_Y})) {
       calibration_line = line1;
     }
@@ -19,10 +19,10 @@ LineABC closestLineToCurrentTrajectory(LineABC line1, LineABC line2){
       calibration_line = line2;
     }
   }
-  else if(left_lane_line_intersection.info == 0){
+  else if(left_lane_line_intersection.info == INTERSECTION_INFO_ONE_INTERSECTION){
     calibration_line = line1;
   }
-  else if(right_lane_line_intersection.info == 0){
+  else if(right_lane_line_intersection.info == INTERSECTION_INFO_ONE_INTERSECTION){
     calibration_line = line2;
   }
   else{
