@@ -1,9 +1,7 @@
 ﻿  geometry2D.cpp
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(524,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(525,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(1111,21): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(1134,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(1135,23): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(538,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(539,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\geometry2D.cpp(861,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   main.cpp
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(1,9): warning C4005: 'DEBUG_UNITTEST': macro redefinition
       C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(1,9):
@@ -72,6 +70,21 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(151,45): wa
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(171,45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(382,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(383,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(385,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(387,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(244,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(93,13): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(43,18): warning C4101: 'result_2': unreferenced local variable
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(43,28): warning C4101: 'result_3': unreferenced local variable
@@ -89,12 +102,12 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(123,9): warning C4
       C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(119,9):
       see previous definition of 'STEERING_SERVO_ERROR'
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(147,34): warning C4305: '+=': truncation from 'double' to 'float'
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(211,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(232,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(254,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(178,21): warning C4101: 'servo_raw_angle': unreferenced local variable
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(178,8): warning C4101: 'servo_angle': unreferenced local variable
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(154,34): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(218,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(239,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(261,48): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(185,21): warning C4101: 'servo_raw_angle': unreferenced local variable
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\main.cpp(185,8): warning C4101: 'servo_angle': unreferenced local variable
   SteeringWheel.h
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringServo.h(64,63): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   (compiling source file 'SteeringWheel.h')
@@ -151,6 +164,11 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(38,8): warn
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(87,8): warning C4101: 'cmp_result_1': unreferenced local variable
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(151,45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(171,45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(382,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(383,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(385,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(387,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(244,17): warning C4305: 'initializing': truncation from 'double' to 'float'
   Tests.cpp
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\Tests.cpp(1,9): warning C4005: 'DEBUG_UNITTEST': macro redefinition
       C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\Tests.cpp(1,9):
@@ -217,6 +235,21 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(151,45): wa
   (compiling source file 'Tests.cpp')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(171,45): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'Tests.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(382,30): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'Tests.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(383,15): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'Tests.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(385,18): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'Tests.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(387,17): warning C4305: 'initializing': truncation from 'double' to 'float'
+  (compiling source file 'Tests.cpp')
+  
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\SteeringWheel.h(244,17): warning C4305: 'initializing': truncation from 'double' to 'float'
   (compiling source file 'Tests.cpp')
   
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\SteeringServo\Tests.cpp(26,9): warning C4005: 'STEERING_SERVO_ANGLE_MAX_RIGHT': macro redefinition

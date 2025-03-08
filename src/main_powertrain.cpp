@@ -77,7 +77,11 @@ void loop() {
     #endif
     
     #if ENABLE_WIRELESS_DEBUG == 1
-    parseInputGlobalVariablesRoutine(SERIAL_PORT);
+      #if ENABLE_WIRELESS_DEBUG_LIMITED == 1
+      parseInputGlobalVariablesRoutine_limited(SERIAL_PORT);
+      #else
+        parseInputGlobalVariablesRoutine(SERIAL_PORT);
+      #endif
     #endif
 
     #if ENABLE_SETTINGS_MENU == 1

@@ -75,6 +75,17 @@ typedef struct LineSegment {
 	Point2D B;
 }LineSegment;
 
+typedef struct Vector2D {
+	Point2D tail;
+	Point2D head;
+}Vector2D;
+
+typedef struct Vector2D_components {
+	float i; // x axis
+	float j; // y axis
+}Vector2D_components;
+
+
 typedef struct LineSegmentsDistancePoints {
 	LineSegment min;
 	LineSegment max;
@@ -88,9 +99,15 @@ typedef struct IntersectionPoints2D_2
 	int sameEquation;
 }IntersectionPoints2D_2;
 
+
+#define INTERSECTION_INFO_ONE_INTERSECTION 0
+#define INTERSECTION_INFO_LINES_ARE_PARALLEL 1
+#define INTERSECTION_INFO_LINES_ARE_EQUAL 2
+#define INTERSECTION_INFO_LINES_ERROR 3
+#define INTERSECTION_INFO_NO_INTERSECTION 4
 typedef struct IntersectionLines {
 	Point2D point;
-	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal
+	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal, 3 error
 }IntersectionLines;
 
 float NormalizePiToNegPi(float angle);
@@ -208,4 +225,47 @@ float angleBw3Points2D(Point2D origin, Point2D point_b, Point2D point_c);
 float NormalizeZeroToPi(float angle);
 
 int isNumber(const char* str, size_t str_length);
+
+float crossProduct2D(Vector2D_components A, Vector2D_components B);
+
+Vector2D pointsToVector2D(Point2D tail, Point2D head);
+
+Vector2D_components getVector2D_components(Vector2D vec);
+
+Vector2D_components getVector2D_componentsFromPoints(Point2D tail, Point2D head);
+
+int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P);
+
+int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P);
+
+int isValidLineSegment(LineSegment seg);
+
+int areLinesEqual(LineABC line1, LineABC line2);
+
+int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2);
+
+Point2D midPointLineSegment(LineSegment seg);
+
+float lengthLineSegment(LineSegment seg);
+
+LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point);
+
+IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2);
+
+
+int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point);
+
+LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
+
+
+struct FourBarLinkage_Theta {
+	float theta_open;
+	float theta_crossed;
+	int valid;
+};
+
+struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2);
+
+struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4);
+
 #endif // !__GEOMETRY2D_H__

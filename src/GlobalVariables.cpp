@@ -593,6 +593,26 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.println();
 }
 
+
+#include "strtod_.h"
+void parseAndSetGlobalVariables_limited(std::vector<char>& rawData, char variableTerminator = ';'){
+  std::vector<float> fields;
+  char* ptr = rawData.data();
+  char* endPtr;
+
+  while (*ptr) {
+    double value = strtod_(ptr, &endPtr);
+    if (ptr == endPtr) {
+        SERIAL_PORT.println("ERROR: Invalid field");
+        return;
+    }
+    fields.push_back(value);
+    
+    // Move pointer to the next field
+    ptr = (*endPtr == variableTerminator) ? (endPtr + 1) : endPtr;
+}
+}
+
 void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){
   std::string serialInputBuffer;
   if(readRecordFromSerial(serialPort, String("\r\n"), serialInputBuffer)){
@@ -602,5 +622,22 @@ void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){
     //parseAndSetGlobalVariables(serialInputBuffer, ';');
     //g_enable_car_engine = 1;
     printGlobalVariables(serialPort);
+  }
+}
+
+
+void parseInputGlobalVariablesRoutine_limited(SERIAL_PORT_TYPE &serialPort){
+  std::vector<char> serialInputBuffer;
+  if(readRecordFromSerial_vector(serialPort, String("\r\n"), serialInputBuffer)){
+    serialInputBuffer.push_back('\0');
+    serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
+    serialPort.println(serialInputBuffer.data());
+    
+    //parseAndSetGlobalVariables_2(serialInputBuffer, ';');
+    //parseAndSetGlobalVariables(serialInputBuffer, ';');
+    //g_enable_car_engine = 1;
+    //printGlobalVariables(serialPort);
+    parseAndSetGlobalVariables_limited(serialInputBuffer, ';');
+    serialInputBuffer.pop_back();
   }
 }

@@ -178,7 +178,7 @@ static float SteeringAngleToServoAngle_rad(float steering_angle, SteeringConfigu
 
 //#define DEBUG_STEERINGWHEEL
 
-
+#define ENABLE_OLD_CONFIG 0
 
 class SteeringWheel
 {
@@ -200,8 +200,6 @@ public:
 		Point2D g_arm_wheel_position = Point2D{ 52.0f, -6.4f };
 		float g_servo_arm_circle_radius_mm = 24.0f;	// 24mm, 20mm
 
-		//float ggggg = angleBetweenLinesABC(xAxisABC(), points2lineABC(g_servo_position, g_arm_wheel_position));
-
 #ifdef DEBUG_STEERINGWHEEL
 		float g_arm_wheel_circle_radius_mm = wheel_arm_len;
 		float g_arm_wheel_angle_rad = NormalizePiToNegPi(radians(arm_ang));
@@ -211,6 +209,8 @@ public:
 		//float g_arm_wheel_circle_radius_mm = 25.547f;
 		float g_arm_wheel_circle_radius_mm = 24.5f;
 #endif // DEBUG_STEERINGWHEEL
+
+	#if ENABLE_OLD_CONFIG != 0
 
 		// float g_servo_arm_to_arm_wheel_rod_length_mm = 45.6188202f;	// not necessary to calculate manually, already done automatically
 		float g_servo_rod_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));
@@ -225,8 +225,6 @@ public:
 		this->steering_config.wheel_position = g_arm_wheel_position;
 
 
-
-
 		this->steering_config_right_wheel_to_left_wheel.servo_arm_forward_position_angle_rad = g_arm_wheel_forward_angle_position_rad;
 		this->steering_config_right_wheel_to_left_wheel.servo_arm_length = g_arm_wheel_circle_radius_mm;
 		this->steering_config_right_wheel_to_left_wheel.servo_position = g_arm_wheel_position;
@@ -234,7 +232,18 @@ public:
 		this->steering_config_right_wheel_to_left_wheel.wheel_arm_length = g_arm_wheel_circle_radius_mm;
 		this->steering_config_right_wheel_to_left_wheel.wheel_position = this->steering_config_right_wheel_to_left_wheel.servo_position;
 		this->steering_config_right_wheel_to_left_wheel.wheel_position.x = -(this->steering_config_right_wheel_to_left_wheel.wheel_position.x);
+	
+#else
+		arm_wheel_angle_rad = NormalizePiToNegPi(radians(19.167f));		//16.46
+		LineABC temp_line1 = points2lineABC(g_servo_position, g_arm_wheel_position);
+		this->theta1 = -angleBetweenLinesABC(xAxisABC(), temp_line1);
 
+		float ideal_driver = 23.142f + 6.4f;
+		float base = euclidianDistance(g_servo_position, g_arm_wheel_position); // Base link length
+		float driver = g_servo_arm_circle_radius_mm;// Driver link length
+		float coupler = 44.3040733;// Coupler link length
+		float follower = g_arm_wheel_circle_radius_mm;// Follower link length
+#endif
 
 
 		this->wheel_base = wheel_base;
@@ -246,8 +255,16 @@ public:
 	}
 
 	void setSteeringWheelAngleDeg(float steering_wheel_angle) {
+		float servo_raw_angle_deg;
 		steering_wheel_angle = this->vaildAngleDeg(steering_wheel_angle);
-		float servo_raw_angle_deg = degrees(SteeringAngleToServoAngle_rad(radians(steering_wheel_angle), this->steering_config));
+	#if ENABLE_OLD_CONFIG != 0
+		servo_raw_angle_deg = degrees(SteeringAngleToServoAngle_rad(radians(steering_wheel_angle), this->steering_config));
+#else
+		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, ideal_driver, coupler, follower, theta1, radians(steering_wheel_angle) - M_PI_2);
+		FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, driver, coupler, follower, theta1, temp_theta4.theta_crossed);
+		servo_raw_angle_deg = degrees(temp_theta2.theta_crossed + M_PI_2);
+#endif
+
 		this->steering_servo.setAngleDeg(servo_raw_angle_deg);
 		this->steering_wheel_angle = steering_wheel_angle;
 	}
@@ -282,8 +299,20 @@ public:
 	}
 
 	void calculateMaxRanges() {
+#if ENABLE_OLD_CONFIG != 0
 		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg()), this->steering_config));
 		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config));
+#else
+		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver, coupler, follower, theta1, radians(this->steering_servo.getMaxLeftAngleDeg()) - M_PI_2);
+		FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, ideal_driver, coupler, follower, theta1, temp_theta4.theta_crossed);
+		this->SteeringWheel_MaxLeftAngle = degrees(temp_theta2.theta_crossed + M_PI_2);
+		
+		temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver, coupler, follower, theta1, radians(this->steering_servo.getMaxRightAngleDeg()) - M_PI_2);
+		temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, ideal_driver, coupler, follower, theta1, temp_theta4.theta_crossed);
+		this->SteeringWheel_MaxRightAngle = degrees(temp_theta2.theta_crossed + M_PI_2);
+		this->SteeringWheel_MaxLeftAngle = 180.0f;
+		this->SteeringWheel_MaxRightAngle = -180.0f;
+#endif
 	}
 
 	void setMaxLeftAngle_deg(float deg) {
@@ -310,12 +339,22 @@ public:
 
 
 	float getRightWheelAngle_deg() {
+#if ENABLE_OLD_CONFIG != 0
 		return degrees(ServoRawAngleToWheelAngle_rad(radians(this->steering_wheel_angle), this->steering_config));
+#else
+		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, ideal_driver, coupler, follower, theta1, radians(this->steering_wheel_angle) - M_PI_2);
+		return degrees(temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle_rad);
+#endif
 	}
 
 	float getLeftWheelAngle_deg() {
 		float right_wheel_angle = this->getRightWheelAngle_deg();
+#if ENABLE_OLD_CONFIG != 0
 		return degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel_angle), this->steering_config_right_wheel_to_left_wheel));
+#else
+		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, ideal_driver, coupler, follower, -theta1, radians(right_wheel_angle) - M_PI_2);
+		return degrees(temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle_rad);
+#endif
 	}
 
 	float getLeftWheelAchermannAngle_deg() {
@@ -340,6 +379,13 @@ private:
 	float SteeringWheel_MaxRightAngle;
 	float right_wheel_angle_rad;
 
+	float ideal_driver = 23.142 + 6.4;
+	float base = 52.3923645; // Base link length
+	float driver = 24;// Driver link length
+	float coupler = 44.3040733;// Coupler link length
+	float follower = 24.5;// Follower link length
+	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
+	float arm_wheel_angle_rad;
 
 };
 

@@ -124,6 +124,13 @@ int main2() {
 
 
 int main() {
+	Point2D g_servo_position = Point2D{ 0.0f, 0.0f };
+	Point2D g_arm_wheel_position = Point2D{ 52.0f, -6.4f };
+
+	LineABC temo_line1 = points2lineABC(g_servo_position, g_arm_wheel_position);
+	float ffff = angleBetweenLinesABC(xAxisABC(), temo_line1);
+
+
 	float arm_wheel_angle;
 	float arm_wheel_length;
 	arm_wheel_angle = 19.167f;
@@ -144,7 +151,7 @@ int main() {
 	fprintf(fptr, "\n");
 	fprintf(fptr, "steering_angle\tvalid_steering_angle\tachermann_left_wheel\tachermann_right_wheel\tleft_wheel_angle\tright_wheel_angle\tleft_wheel_error\tright_wheel_error\tservo_angle\tservo_raw_angle");
 	fprintf(fptr, "\n");
-	for (float i = -40; i <= 40; i+=0.1)
+	for (float i = -20; i <= 20; i+=0.1)
 	{
 		g_steering_wheel.SetRawAngleOffset(STEERING_SERVO_ERROR);
 		//g_steering_wheel.setMaxLeftAngle_deg(40.0f);

@@ -18,6 +18,9 @@
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
+//#define LOCAL_FLT_EPSILON 0.0001
+
+#define LOCAL_FLT_EPSILON FLT_EPSILON
 
 LineABC xAxisABC() {
 	LineABC line;
@@ -35,7 +38,7 @@ LineABC yAxisABC() {
 	return line;
 }
 
-int isValidLineABC(LineABC line){
+int isValidLineABC(LineABC line) {
 	if (floatCmp(line.Ax, 0.0f) == 0 && floatCmp(line.By, 0.0f) == 0) {
 		return 0;
 	}
@@ -43,7 +46,7 @@ int isValidLineABC(LineABC line){
 }
 
 // result = A - B;
-LineABC LineAbcSubtraction(LineABC A, LineABC B){
+LineABC LineAbcSubtraction(LineABC A, LineABC B) {
 	LineABC res;
 	res.Ax = A.Ax - B.Ax;
 	res.By = A.By - B.By;
@@ -70,13 +73,20 @@ Point2D polyval(float* polynomial_coefficients, int polynomial_degree, float x) 
 }
 
 int floatCmp(float num1, float num2) {
-	if (fabs(num1 - num2) < FLT_EPSILON) {
+	if (fabsf(num1 - num2) < LOCAL_FLT_EPSILON) {
 		return 0;
 	}
 	else if (num1 > num2) {
 		return 1;
 	}
 	return -1;
+}
+
+int arePoints2DEqual(Point2D point1, Point2D point2) {
+	if (floatCmp(point1.x, point2.x) == 0 && floatCmp(point1.y, point2.y) == 0) {
+		return 1;
+	}
+	return 0;
 }
 
 int gaussianElimination3(float A[3][3 + 1], float x[3], int n) {
@@ -388,6 +398,10 @@ int isLineParallelToYaxisABC(LineABC line) {
 
 float angleBetweenLinesMQ(LineMQ line1, LineMQ line2) {
 	float angle;
+	if (floatCmp((line1.m * line2.m), -1.0f) == 0) {
+		return M_PI_2;
+	}
+
 	angle = atanf(fabsf((line1.m - line2.m)) / (1.0f + (line1.m * line2.m)));
 	return angle;
 }
@@ -546,25 +560,25 @@ LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle) {
 
 
 Point2D rotatePointAroundPoint(Point2D point, Point2D center, float angle) {
-    // Translate the point to the origin (relative to the center point)
-    float translatedX = point.x - center.x;
-    float translatedY = point.y - center.y;
+	// Translate the point to the origin (relative to the center point)
+	float translatedX = point.x - center.x;
+	float translatedY = point.y - center.y;
 
-    // Calculate the rotated coordinates
-    float cosTheta = cosf(angle);
-    float sinTheta = sinf(angle);
-    float rotatedX = translatedX * cosTheta - translatedY * sinTheta;
-    float rotatedY = translatedX * sinTheta + translatedY * cosTheta;
+	// Calculate the rotated coordinates
+	float cosTheta = cosf(angle);
+	float sinTheta = sinf(angle);
+	float rotatedX = translatedX * cosTheta - translatedY * sinTheta;
+	float rotatedY = translatedX * sinTheta + translatedY * cosTheta;
 
-    // Translate the point back to the original center
-    Point2D rotatedPoint;
-    rotatedPoint.x = rotatedX + center.x;
-    rotatedPoint.y = rotatedY + center.y;
+	// Translate the point back to the original center
+	Point2D rotatedPoint;
+	rotatedPoint.x = rotatedX + center.x;
+	rotatedPoint.y = rotatedY + center.y;
 
-    return rotatedPoint;
+	return rotatedPoint;
 }
 
-LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center, float angle){
+LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center, float angle) {
 	LineSegment rotatedLineSegment;
 	rotatedLineSegment.A = rotatePointAroundPoint(lineSegment.A, center, angle);
 	rotatedLineSegment.B = rotatePointAroundPoint(lineSegment.B, center, angle);
@@ -573,32 +587,27 @@ LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center
 
 float angleBetweenLinesABC(LineABC line1, LineABC line2) {
 	float angle;
+	int are_parallel;
+	int are_perpendicular;
 	LineMQ line1Mq, line2Mq;
 
-	if (isLineParallelToXaxisABC(line1) && isLineParallelToXaxisABC(line2)) {
-		return 0.0f;	/* line1 // line2 // Y */
+	are_parallel = areParallelABC(line1, line2);
+	if (are_parallel) {
+		return 0.0f;
+	}
+	are_perpendicular = arePerpenticularABC(line1, line2);
+	if (are_perpendicular) {
+		return M_PI_2;
 	}
 
 	if (isLineParallelToYaxisABC(line1))
 	{
-		if (isLineParallelToXaxisABC(line2)) {
-			return M_PI_2;
-		}
-		else if (isLineParallelToYaxisABC(line2)) {
-			return 0.0f;	/* line1 // line2 // Y */
-		}
 		line1Mq = lineABC2MQ(line2);
 		line2Mq.m = 0;
 		line2Mq.q = 0;
 		angle = M_PI_2 - angleBetweenLinesMQ(line1Mq, line2Mq);
 	}
 	else if (isLineParallelToYaxisABC(line2)) {
-		if (isLineParallelToXaxisABC(line1)) {
-			return M_PI_2;
-		}
-		else if (isLineParallelToYaxisABC(line1)) {
-			return 0.0f;	/* line1 // line2 // Y */
-		}
 		line1Mq = lineABC2MQ(line1);
 		line2Mq.m = 0;
 		line2Mq.q = 0;
@@ -616,6 +625,11 @@ float angleBetweenLinesABC(LineABC line1, LineABC line2) {
 LineABC points2lineABC(Point2D point1, Point2D point2) {
 	LineMQ lineMq;
 	LineABC lineAbc;
+
+	if (arePoints2DEqual(point1, point2)) {
+		return LineABC{ 0.0f, 0.0f, 0.0f };
+	}
+
 
 	if (floatCmp(point1.x, point2.x) == 0) { // perpendicular to y axis
 		lineAbc = yAxisABC();
@@ -755,27 +769,44 @@ IntersectionPoints2D_2 intersectionLineCircleABC(Point2D circleCenter, float cir
 	return points;
 }
 
+int areLinesEqual(LineABC line1, LineABC line2) {
+	line1 = normalizeLineABC2MQ(line1);
+	line2 = normalizeLineABC2MQ(line2);
+	if ((floatCmp(line1.Ax, line2.Ax) == 0) && (floatCmp(line1.By, line2.By) == 0) && (floatCmp(line1.C, line2.C) == 0))
+	{
+		return 1;
+	}
+	return 0;
+}
+
 IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2) {
 	IntersectionLines inters;
 
 	memset(&inters, 0, sizeof(inters));
+	inters.info = INTERSECTION_INFO_LINES_ERROR;
+
+	if (!isValidLineABC(line1) || !isValidLineABC(line2)) {
+		return inters;
+	}
+
+
 
 	if (floatCmp((line1.Ax * line2.By - line2.Ax * line1.By), 0.0f) == 0) {
 		line2 = normalizeLineABC2MQ(line2);
 		line1 = normalizeLineABC2MQ(line1);
-		if (memcmp(&line1, &line2, sizeof(inters) == 0))
+		if (areLinesEqual(line1, line2))
 		{
-			inters.info = 2;
+			inters.info = INTERSECTION_INFO_LINES_ARE_EQUAL;
 		}
 		else {
-			inters.info = 1;
+			inters.info = INTERSECTION_INFO_LINES_ARE_PARALLEL;
 		}
 		return inters;
 	}
 
 	inters.point.x = (line1.By * line2.C - line2.By * line1.C) / (line1.Ax * line2.By - line2.Ax * line1.By);
 	inters.point.y = (line1.C * line2.Ax - line2.C * line1.Ax) / (line1.Ax * line2.By - line2.Ax * line1.By);
-
+	inters.info = INTERSECTION_INFO_ONE_INTERSECTION;
 	return inters;
 }
 
@@ -784,7 +815,7 @@ float triangleAngleA(float AC, float CB, float BA) {
 	if (floatCmp(AC, 0.0f) == 0 || floatCmp(BA, 0.0f) == 0) {
 		return 0.0f;
 	}
-	
+
 	angle = acosf(((AC * AC) + (BA * BA) - (CB * CB)) / (2.0f * AC * BA));
 	return angle;
 }
@@ -826,13 +857,19 @@ Point2D projectPointOnLineABC(Point2D point, LineABC line) {
 	return projectionPoint.point;
 }
 
-int isPointOnSegment(LineSegment segment, Point2D point) {	
+int isPointOnSegment(LineSegment segment, Point2D point) {
+	float ggg_1 = floatCmp(((segment.B.x - segment.A.x) * (point.y - segment.A.y)), ((segment.B.y - segment.A.y) * (point.x - segment.A.x)));
 	if (
-		((point.y < segment.A.y) != (point.y < segment.B.y)) &&
-		((point.x < segment.A.x) != (point.x < segment.B.x)) &&
-		(floatCmp(((segment.B.x - segment.A.x) * (point.y - segment.A.y)), ((segment.B.y - segment.A.y) * (point.x - segment.A.x))) == 0) ||
-		((floatCmp(segment.A.x, point.x) == 0) && (floatCmp(segment.A.y, point.y) == 0)) ||
-		((floatCmp(segment.B.x, point.x) == 0) && (floatCmp(segment.B.y, point.y) == 0))
+		(
+			(MIN(segment.A.x, segment.B.x) <= point.x) &&
+			(MAX(segment.A.x, segment.B.x) >= point.x) &&
+			(MIN(segment.A.y, segment.B.y) <= point.y) &&
+			(MAX(segment.A.y, segment.B.y) >= point.y) &&
+			(ggg_1 == 0)
+			)
+		||
+		arePoints2DEqual(segment.A, point) ||
+		arePoints2DEqual(segment.B, point)
 		)
 	{
 		return 1;
@@ -866,7 +903,7 @@ LineSegmentsDistancePoints distancePointsBwSegments(LineSegment segment1, LineSe
 	lineSegment2 = points2lineABC(segment2.A, segment2.B);
 
 	tempLinesIntersection = intersectionLinesABC(lineSegment1, lineSegment2);
-	if (tempLinesIntersection.info == 0) {
+	if (tempLinesIntersection.info == INTERSECTION_INFO_ONE_INTERSECTION) {
 		if (isPointOnSegment(segment1, tempLinesIntersection.point) == 1) {
 			minFound = 1;
 			minSet = 1;
@@ -1085,7 +1122,7 @@ float minDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line) {
 	IntersectionLines inters;
 
 	inters = intersectionLinesABC(lineSegmentToLineABC(vectorSegment), line);
-	if (inters.info == 0) {
+	if (inters.info == INTERSECTION_INFO_ONE_INTERSECTION) {
 		if (isPointOnSegment(vectorSegment, inters.point) != 0) {
 			return 0.0f;
 		}
@@ -1108,7 +1145,7 @@ float maxDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line) {
 
 Point2D circleAngleToPoint2D(Point2D circleCenter, float circleRadius, float angleRad) {
 	Point2D result_point = circleCenter;
-	circleRadius = fabs(circleRadius);
+	circleRadius = fabsf(circleRadius);
 	result_point.x += (circleRadius * cosf(angleRad));
 	result_point.y += (circleRadius * sinf(angleRad));
 
@@ -1131,8 +1168,8 @@ IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circl
 	int cmp_result_1, cmp_result_2;
 	float distance_between_centers;
 
-	circleRadius_1 = fabs(circleRadius_1);
-	circleRadius_2 = fabs(circleRadius_2);
+	circleRadius_1 = fabsf(circleRadius_1);
+	circleRadius_2 = fabsf(circleRadius_2);
 
 	distance_between_centers = euclidianDistance(circleCenter_1, circleCenter_2);
 
@@ -1173,7 +1210,7 @@ IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circl
 float NormalizePiToNegPi(float angle)
 {
 	float newAngle = angle;
-	while (newAngle <= -M_PI) newAngle += (2.0f*M_PI);
+	while (newAngle <= -M_PI) newAngle += (2.0f * M_PI);
 	while (newAngle > M_PI) newAngle -= (2.0f * M_PI);
 	return newAngle;
 }
@@ -1189,49 +1226,350 @@ float NormalizeZeroToPi(float angle) {
 
 
 int isNumber(const char* str, size_t str_length) {
-    int dots = 0;
-    int numbers = 0;
+	int dots = 0;
+	int numbers = 0;
 	int pluses = 0, minuses = 0;
 
-    for (size_t i = 0; i < str_length; i++)
-    {
-        if (str[i] >= '0' && str[i] <= '9') {
-            numbers++;
-        }
-		else if (str[i] == '+'){
+	for (size_t i = 0; i < str_length; i++)
+	{
+		if (str[i] >= '0' && str[i] <= '9') {
+			numbers++;
+		}
+		else if (str[i] == '+') {
 			pluses++;
 			if (pluses > 1) {
-                break;
-            }
+				break;
+			}
 		}
-		else if (str[i] == '-'){
+		else if (str[i] == '-') {
 			minuses++;
 			if (minuses > 1) {
-                break;
-            }
+				break;
+			}
 		}
-        else if (str[i] == '.') {
-            dots++;
-            if (dots > 1) {
-                break;
-            }
-        }
-        else if (str[i] == ' ') {
-            if (numbers > 0 || dots > 0 || pluses > 0 || minuses > 0) {
-                break;
-            }
-        }
-        else if (str[i] == '\0') {
-            break;
-        }
-        else {
-            break;
-        }
-    }
-    if (numbers > 0) {
-        return 1;
-    }
-    else {
-        return 0;
-    }
+		else if (str[i] == '.') {
+			dots++;
+			if (dots > 1) {
+				break;
+			}
+		}
+		else if (str[i] == ' ') {
+			if (numbers > 0 || dots > 0 || pluses > 0 || minuses > 0) {
+				break;
+			}
+		}
+		else if (str[i] == '\0') {
+			break;
+		}
+		else {
+			break;
+		}
+	}
+	if (numbers > 0) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+
+// Cross product for 2D vectors (returns a scalar)
+float crossProduct2D(Vector2D_components A, Vector2D_components B) {
+	return (A.i * B.j) - (A.j * B.i);
+}
+
+Vector2D pointsToVector2D(Point2D tail, Point2D head) {
+	Vector2D result_vec;
+	result_vec.tail = tail;
+	result_vec.head = head;
+	return result_vec;
+}
+
+Vector2D_components getVector2D_components(Vector2D vec) {
+	Vector2D_components result;
+	result.i = vec.head.x - vec.tail.x;
+	result.j = vec.head.y - vec.tail.y;
+	return result;
+}
+
+
+Vector2D_components getVector2D_componentsFromPoints(Point2D tail, Point2D head) {
+	Vector2D_components result;
+	result.i = head.x - tail.x;
+	result.j = head.y - tail.y;
+	return result;
+}
+
+
+
+// Function to check if point P is inside triangle ABC
+int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P) {
+
+	Vector2D_components vec1, vec2;
+	float cross1, cross2, cross3;
+
+	vec1 = getVector2D_componentsFromPoints(A, B);
+	vec2 = getVector2D_componentsFromPoints(A, P);
+	cross1 = crossProduct2D(vec1, vec2);
+
+	vec1 = getVector2D_componentsFromPoints(B, C);
+	vec2 = getVector2D_componentsFromPoints(B, P);
+	cross2 = crossProduct2D(vec1, vec2);
+
+	vec1 = getVector2D_componentsFromPoints(C, A);
+	vec2 = getVector2D_componentsFromPoints(C, P);
+	cross3 = crossProduct2D(vec1, vec2);
+
+	// Check if all cross products have the same sign (either all positive or all negative)
+	return (cross1 > 0.0f && cross2 > 0.0f && cross3 > 0.0f) || (cross1 < 0.0f && cross2 < 0.0f && cross3 < 0.0f);
+}
+
+// Function to check if point P is inside a quadrilateral defined by 4 points
+int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P) {
+	return isPointInTriangle(A, B, C, P) || isPointInTriangle(A, C, D, P);
+}
+
+int isValidLineSegment(LineSegment seg) {
+	if ((seg.A.x == seg.B.x) && (seg.A.y == seg.B.y)) {
+		return 0;
+	}
+	return 1;
+}
+
+
+int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2) {
+	if (!arePoints2DEqual(seg1.A, seg2.A)) {
+		return 0;
+	}
+	if (!arePoints2DEqual(seg1.A, seg2.B)) {
+		return 0;
+	}
+	if (!arePoints2DEqual(seg1.B, seg2.A)) {
+		return 0;
+	}
+	if (!arePoints2DEqual(seg1.B, seg2.B)) {
+		return 0;
+	}
+	return 1;
+}
+
+Point2D midPointLineSegment(LineSegment seg) {
+	return midPoint(seg.A, seg.B);
+}
+
+float lengthLineSegment(LineSegment seg) {
+	return euclidianDistance(seg.A, seg.B);
+}
+
+LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point) {
+	LineSegment result_seg;
+	LineABC line_a, line_b;
+	IntersectionLines point_a, point_b;
+
+	memset(&result_seg, 0, sizeof(LineSegment));
+
+	if (!isValidLineSegment(seg)) {
+		return result_seg;
+	}
+
+	if (isPointOnLineABC(view_point, line))
+	{
+		result_seg.A = view_point;
+		result_seg.B = view_point;
+		return result_seg;
+	}
+
+	line_a = points2lineABC(view_point, seg.A);
+	line_b = points2lineABC(view_point, seg.B);
+
+	point_a = intersectionLinesABC(line_a, line);
+	point_b = intersectionLinesABC(line_b, line);
+
+
+	if (point_a.info == INTERSECTION_INFO_ONE_INTERSECTION && point_b.info == INTERSECTION_INFO_ONE_INTERSECTION) {
+		result_seg.A = point_a.point;
+		result_seg.B = point_b.point;
+	}
+	else if (point_a.info == INTERSECTION_INFO_ONE_INTERSECTION)
+	{
+		result_seg.A = point_a.point;
+		result_seg.B = point_a.point;
+	}
+	else if (point_b.info == INTERSECTION_INFO_ONE_INTERSECTION)
+	{
+		result_seg.A = point_b.point;
+		result_seg.B = point_b.point;
+	}
+
+	return result_seg;
+}
+
+
+
+/**
+ * Checks if two floating-point numbers are approximately equal
+ */
+int areEqual(float a, float b) {
+	return fabs(a - b) < 1e-6;
+}
+
+/**
+ * Computes the intersection point of two line segments.
+ */
+IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2) {
+	IntersectionLines result;
+	result.info = INTERSECTION_INFO_LINES_ERROR; // Default to one intersection
+
+	if (!isValidLineSegment(seg1) || !isValidLineSegment(seg2)) {
+		return result;
+	}
+
+	float xA = seg1.A.x, yA = seg1.A.y;
+	float xB = seg1.B.x, yB = seg1.B.y;
+	float xC = seg2.A.x, yC = seg2.A.y;
+	float xD = seg2.B.x, yD = seg2.B.y;
+
+	// Compute determinant
+	float denom = (xB - xA) * (yD - yC) - (yB - yA) * (xD - xC);
+
+	// Check if lines are parallel
+	if (floatCmp(denom, 0) == 0) {
+		// Check if the two lines are actually the same
+		if (floatCmp((yB - yA) * (xC - xA), (xB - xA) * (yC - yA))) {
+			result.info = INTERSECTION_INFO_LINES_ARE_EQUAL;
+		}
+		else {
+			result.info = INTERSECTION_INFO_LINES_ARE_PARALLEL;
+		}
+		return result;
+	}
+
+	// Compute intersection parameters t and u
+	float t = ((xC - xA) * (yD - yC) - (yC - yA) * (xD - xC)) / denom;
+	float u = ((xC - xA) * (yB - yA) - (yC - yA) * (xB - xA)) / denom;
+
+	// Check if the intersection is within both segments
+	if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+		result.point.x = xA + t * (xB - xA);
+		result.point.y = yA + t * (yB - yA);
+		result.info = INTERSECTION_INFO_ONE_INTERSECTION;
+	}
+	else {
+		result.info = INTERSECTION_INFO_NO_INTERSECTION; // Segments do not intersect
+	}
+
+	return result;
+}
+
+
+
+int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point) {
+	IntersectionLines inters;
+	LineSegment temp_seg;
+
+	temp_seg.A = start_point;
+	temp_seg.B = finish_point;
+	inters = lineSegmentIntersection(temp_seg, segment);
+	if (inters.info == INTERSECTION_INFO_ONE_INTERSECTION) {
+		return 0;
+	}
+
+	return 1;
+}
+
+
+
+LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2) {
+	LineSegment result_seg;
+	int is_seg2_reachable, is_seg1_reachable;
+	is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
+	is_seg2_reachable = reachableWithouthPassingThroughSegment(start_point, seg1, midPointLineSegment(seg2));
+
+	if (is_seg1_reachable && is_seg2_reachable) {
+		if (lengthLineSegment(seg1) > lengthLineSegment(seg2)) {
+			result_seg = seg1;
+		}
+		else {
+			result_seg = seg2;
+		}
+	}
+	else if (is_seg1_reachable) {
+		result_seg = seg1;
+	}
+	else {
+		result_seg = seg2;
+	}
+
+	return result_seg;
+}
+
+
+/*
+	theta1 : Angle between base and x-axis [radians]
+	theta2 : The angle of the driver (crank) and x-axis [radians]
+	theta3 : The angle of the coupler and x-axis [radians]
+	theta4 : The angle of the follower and x-axis [radians]
+*/
+struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2) {
+	FourBarLinkage_Theta result;
+	result.valid = 0;
+
+	//Calculate the intermediate terms
+	theta2 = theta2 - theta1;
+	theta2 = fmodf((theta2 + M_PI), (2.0f * M_PI)) - M_PI;
+	float P_1 = -2.0f * driver * follower * sinf(theta2); // First part of the numerator
+	float P_2 = 2.0f * follower * (base - driver * cosf(theta2)); // Second part of the numerator
+	float P_3 = (base * base) + (driver * driver) - (coupler * coupler) + (follower * follower) - 2.0f * base * driver * cosf(theta2); // Denominator
+
+
+	// Check the discriminant for real solutions
+	float discriminant = (P_1 * P_1) + (P_2 * P_2) - (P_3 * P_3);
+	if (floatCmp(discriminant, 0.0f) < 0 || floatCmp(P_3, P_2) == 0) {
+		result.valid = 0;
+		return result;
+	}
+
+	// Calculate the angles for both open and crossed configurations
+	float theta4_crossed = 2.0f * atanf((-P_1 + sqrtf(discriminant)) / (P_3 - P_2));
+	float theta4_open = 2.0f * atanf((-P_1 - sqrtf(discriminant)) / (P_3 - P_2));
+
+
+	theta4_crossed = theta4_crossed + theta1;
+	theta4_open = theta4_open + theta1;
+
+	theta4_open = fmodf(theta4_open + M_PI, 2 * M_PI) - M_PI;
+	theta4_crossed = fmodf(theta4_crossed + M_PI, 2 * M_PI) - M_PI;
+
+	result.theta_open = theta4_open;
+	result.theta_crossed = theta4_crossed;
+	result.valid = 1;
+
+	return result;
+}
+
+
+/*
+	theta1 : Angle between base and x-axis [radians]
+	theta2 : The angle of the driver (crank) and x-axis [radians]
+	theta3 : The angle of the coupler and x-axis [radians]
+	theta4 : The angle of the follower and x-axis [radians]
+*/
+struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4) {
+	FourBarLinkage_Theta result;
+
+	float theta4_local = M_PI - theta4 + (theta1);
+	theta4_local = fmodf(theta4_local + M_PI, 2.0f * M_PI) - M_PI;
+
+	result = FourBarLinkage_Theta2ToTheta4(base, follower, coupler, driver, 0.0f, theta4_local);
+
+	if (result.valid != 0) {
+		result.theta_open = M_PI - result.theta_open + (theta1);
+		result.theta_open = fmodf(result.theta_open + M_PI, 2.0f * M_PI) - M_PI;
+
+		result.theta_crossed = M_PI - result.theta_crossed + (theta1);
+		result.theta_crossed = fmodf(result.theta_crossed + M_PI, 2.0f * M_PI) - M_PI;
+	}
+
+	return result;
 }
