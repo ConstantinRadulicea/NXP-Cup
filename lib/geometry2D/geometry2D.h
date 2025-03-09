@@ -257,4 +257,15 @@ int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segm
 
 LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
 
+
+struct FourBarLinkage_Theta {
+	float theta_open;
+	float theta_crossed;
+	int valid;
+};
+
+struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2);
+
+struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4);
+
 #endif // !__GEOMETRY2D_H__
