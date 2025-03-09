@@ -185,191 +185,8 @@ Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
-void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
-  float temp_float;
-  int total_fields = 56;
-  std::stringstream ss(rawData);
-  std::vector<std::string> fields;
-  SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-    int i = 0;
-    while (ss.good()) {
-        std::string substr;
-        getline(ss, substr, variableTerminator);
-        SERIAL_PORT.print(String("[") + String(i)+ String("]") + String(substr.c_str()) + String(";"));
-        if (isNumber(substr.data(), substr.length()) == 0) {
-          g_enable_car_engine = 0;
-          g_enable_car_steering_wheel = 0;
-          SERIAL_PORT.println();
-          SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-          SERIAL_PORT.println("ERROR: invaild field");
-          return;
-        }
-        fields.push_back(substr);
-        i++;
-    }
-    SERIAL_PORT.println();
-    if (fields.size() < total_fields) {
-      SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-      SERIAL_PORT.println(String("ERROR: missing ") + String(total_fields - fields.size()) + String(" fields"));
-      return;
-    }
-    
+#define TOTAL_GLOBAL_PARAMETERS 56
 
-    g_lane_width_vector_unit = std::stof(fields[0]);
-    g_lookahead_min_distance_cm = std::stof(fields[1]);
-    g_lookahead_max_distance_cm = std::stof(fields[2]);
-    g_emergency_brake_activation_max_distance_m = std::stof(fields[3]);
-    g_vehicle_min_speed_mps = std::stof(fields[4]);
-    g_vehicle_max_speed_original_mps = std::stof(fields[5]);
-    g_black_color_treshold = std::stof(fields[6]);
-    
-    temp_float = std::stof(fields[7]);
-    if (temp_float >= 0.5f) {
-      g_enable_car_engine = 1;
-    }
-    else{
-      g_enable_car_engine = 0;
-    }
-
-    temp_float = std::stof(fields[8]);
-    if (temp_float >= 0.5f) {
-      g_enable_car_steering_wheel = 1;
-    }
-    else{
-      g_enable_car_steering_wheel = 0;
-    }
-
-    g_emergency_brake_speed_mps = std::stof(fields[9]);
-    g_emergency_brake_distance_from_obstacle_m = std::stof(fields[10]);
-    
-    temp_float = std::stof(fields[11]);
-    if (temp_float >= 0.5f) {
-      g_enable_emergency_brake = 1;
-    }
-    else{
-      g_enable_emergency_brake = 0;
-    }
-
-    temp_float = std::stof(fields[12]);
-    if (temp_float >= 0.5f) {
-      g_enable_pixy_vector_approximation = 1;
-    }
-    else{
-      g_enable_pixy_vector_approximation = 0;
-    }
-
-    temp_float = std::stof(fields[13]);
-    if (temp_float >= 0.5f) {
-      g_enable_distance_sensor1 = 1;
-    }
-    else{
-      g_enable_distance_sensor1 = 0;
-    }
-
-    temp_float = std::stof(fields[14]);
-    if (temp_float >= 0.5f) {
-      g_enable_distance_sensor2 = 1;
-    }
-    else{
-      g_enable_distance_sensor2 = 0;
-    }
-
-    g_emergency_brake_enable_delay_s = std::stof(fields[15]);
-    g_steering_wheel_angle_offset_deg = std::stof(fields[16]);
-
-
-    temp_float = std::stof(fields[17]);
-    if (temp_float >= 0.5f) {
-      g_enable_distance_sensor3 = 1;
-    }
-    else{
-      g_enable_distance_sensor3 = 0;
-    }
-
-    g_min_x_axis_angle_vector_deg = std::stof(fields[18]);
-    g_max_speed_after_delay_mps = std::stof(fields[19]);
-
-    temp_float = std::stof(fields[20]);
-    if (temp_float >= 0.5f) {
-      g_enable_remote_start_stop = 1;
-    }
-    else{
-      g_enable_remote_start_stop = 0;
-    }
-
-    g_car_speed_mps_ki = std::stof(fields[21]);
-    g_car_speed_mps_kd = std::stof(fields[22]);
-    g_car_speed_mps_ki_min_max_impact = std::stof(fields[23]);
-    g_finish_line_angle_tolerance = std::stof(fields[24]);
-
-    temp_float = std::stof(fields[25]);
-    if (temp_float >= 0.5f) {
-      g_enable_finish_line_detection = 1;
-    }
-    else{
-      g_enable_finish_line_detection = 0;
-    }
-
-    g_powertrain_left_wheel_kp = std::stof(fields[26]);
-    g_powertrain_left_wheel_ki = std::stof(fields[27]);
-    g_powertrain_left_wheel_kd = std::stof(fields[28]);
-    g_powertrain_left_wheel_ki_max_sum = std::stof(fields[29]);
-
-    g_powertrain_right_wheel_kp = std::stof(fields[30]);
-    g_powertrain_right_wheel_ki = std::stof(fields[31]);
-    g_powertrain_right_wheel_kd = std::stof(fields[32]);
-    g_powertrain_right_wheel_ki_max_sum = std::stof(fields[33]);
-
-    g_friction_coefficient = std::stof(fields[34]);
-    g_downward_acceleration = std::stof(fields[35]);
-
-
-    g_max_acceleration = std::stof(fields[36]);
-    g_max_deceleration = std::stof(fields[37]);
-
-    g_line_calibration_data.angle_offset = std::stof(fields[38]);
-    g_line_calibration_data.rotation_point.x = std::stof(fields[39]);
-    g_line_calibration_data.rotation_point.y = std::stof(fields[40]);
-    g_line_calibration_data.x_axis_offset = std::stof(fields[41]);
-    g_line_calibration_data.y_axis_offset = std::stof(fields[42]);
-
-    g_max_speed_after_delay_s = std::stof(fields[43]);
-    g_enable_finish_line_detection_after_delay_s = std::stof(fields[44]);
-    g_camera_offset_y_m = std::stof(fields[45]);
-
-    g_max_speed_after_finish_line_detected_mps = std::stof(fields[46]);
-
-    struct track_widths temp_track_widths;
-
-    temp_track_widths.lower_segment.A.x = std::stof(fields[47]);
-    temp_track_widths.lower_segment.A.y = std::stof(fields[48]);
-    temp_track_widths.lower_segment.B.x = std::stof(fields[49]);
-    temp_track_widths.lower_segment.B.y = std::stof(fields[50]);
-
-    temp_track_widths.upper_segment.A.x = std::stof(fields[51]);
-    temp_track_widths.upper_segment.A.y = std::stof(fields[52]);
-    temp_track_widths.upper_segment.B.x = std::stof(fields[53]);
-    temp_track_widths.upper_segment.B.y = std::stof(fields[54]);
-
-    g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
-    temp_float = std::stof(fields[55]);
-    if (temp_float >= 0.5f) {
-      g_birdeye_calibrationdata.valid = 1;
-    }
-    else{
-      g_birdeye_calibrationdata.valid = 0;
-    }
-
-  #if ENABLE_DRIVERMOTOR == 1
-    #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
-    #else
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
-      g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
-    }
-    #endif
-  #endif
-}
 
 /*
 void parseAndSetGlobalVariables(std::string& rawData, char variableTerminator = ';') {
@@ -594,6 +411,208 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
 }
 
 
+void setGlobalVariables(std::vector<float> &fields){
+  int total_fields = TOTAL_GLOBAL_PARAMETERS;
+  float temp_float;
+
+  if (fields.size() < total_fields) {
+    SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+    SERIAL_PORT.println(String("ERROR: missing ") + String(total_fields - fields.size()) + String(" fields"));
+    return;
+  }
+
+  
+  g_lane_width_vector_unit = fields[0];
+  g_lookahead_min_distance_cm = fields[1];
+  g_lookahead_max_distance_cm = fields[2];
+  g_emergency_brake_activation_max_distance_m = fields[3];
+  g_vehicle_min_speed_mps = fields[4];
+  g_vehicle_max_speed_original_mps = fields[5];
+  g_black_color_treshold = fields[6];
+  
+  temp_float = fields[7];
+  if (temp_float >= 0.5f) {
+    g_enable_car_engine = 1;
+  }
+  else{
+    g_enable_car_engine = 0;
+  }
+
+  temp_float = fields[8];
+  if (temp_float >= 0.5f) {
+    g_enable_car_steering_wheel = 1;
+  }
+  else{
+    g_enable_car_steering_wheel = 0;
+  }
+#if ENABLE_WIRELESS_DEBUG_LIMITED == 0 
+  g_emergency_brake_speed_mps = fields[9];
+  g_emergency_brake_distance_from_obstacle_m = fields[10];
+  
+  temp_float = fields[11];
+  if (temp_float >= 0.5f) {
+    g_enable_emergency_brake = 1;
+  }
+  else{
+    g_enable_emergency_brake = 0;
+  }
+
+  temp_float = fields[12];
+  if (temp_float >= 0.5f) {
+    g_enable_pixy_vector_approximation = 1;
+  }
+  else{
+    g_enable_pixy_vector_approximation = 0;
+  }
+
+  temp_float = fields[13];
+  if (temp_float >= 0.5f) {
+    g_enable_distance_sensor1 = 1;
+  }
+  else{
+    g_enable_distance_sensor1 = 0;
+  }
+
+  temp_float = fields[14];
+  if (temp_float >= 0.5f) {
+    g_enable_distance_sensor2 = 1;
+  }
+  else{
+    g_enable_distance_sensor2 = 0;
+  }
+
+  g_emergency_brake_enable_delay_s = fields[15];
+  g_steering_wheel_angle_offset_deg = fields[16];
+
+
+  temp_float = fields[17];
+  if (temp_float >= 0.5f) {
+    g_enable_distance_sensor3 = 1;
+  }
+  else{
+    g_enable_distance_sensor3 = 0;
+  }
+
+  g_min_x_axis_angle_vector_deg = fields[18];
+  g_max_speed_after_delay_mps = fields[19];
+
+  temp_float = fields[20];
+  if (temp_float >= 0.5f) {
+    g_enable_remote_start_stop = 1;
+  }
+  else{
+    g_enable_remote_start_stop = 0;
+  }
+
+  g_car_speed_mps_ki = fields[21];
+  g_car_speed_mps_kd = fields[22];
+  g_car_speed_mps_ki_min_max_impact = fields[23];
+  g_finish_line_angle_tolerance = fields[24];
+
+  temp_float = fields[25];
+  if (temp_float >= 0.5f) {
+    g_enable_finish_line_detection = 1;
+  }
+  else{
+    g_enable_finish_line_detection = 0;
+  }
+
+  g_powertrain_left_wheel_kp = fields[26];
+  g_powertrain_left_wheel_ki = fields[27];
+  g_powertrain_left_wheel_kd = fields[28];
+  g_powertrain_left_wheel_ki_max_sum = fields[29];
+
+  g_powertrain_right_wheel_kp = fields[30];
+  g_powertrain_right_wheel_ki = fields[31];
+  g_powertrain_right_wheel_kd = fields[32];
+  g_powertrain_right_wheel_ki_max_sum = fields[33];
+
+  g_friction_coefficient = fields[34];
+  g_downward_acceleration = fields[35];
+
+
+  g_max_acceleration = fields[36];
+  g_max_deceleration = fields[37];
+
+  g_line_calibration_data.angle_offset = fields[38];
+  g_line_calibration_data.rotation_point.x = fields[39];
+  g_line_calibration_data.rotation_point.y = fields[40];
+  g_line_calibration_data.x_axis_offset = fields[41];
+  g_line_calibration_data.y_axis_offset = fields[42];
+
+  g_max_speed_after_delay_s = fields[43];
+  g_enable_finish_line_detection_after_delay_s = fields[44];
+  g_camera_offset_y_m = fields[45];
+
+  g_max_speed_after_finish_line_detected_mps = fields[46];
+
+  struct track_widths temp_track_widths;
+
+  temp_track_widths.lower_segment.A.x = fields[47];
+  temp_track_widths.lower_segment.A.y = fields[48];
+  temp_track_widths.lower_segment.B.x = fields[49];
+  temp_track_widths.lower_segment.B.y = fields[50];
+
+  temp_track_widths.upper_segment.A.x = fields[51];
+  temp_track_widths.upper_segment.A.y = fields[52];
+  temp_track_widths.upper_segment.B.x = fields[53];
+  temp_track_widths.upper_segment.B.y = fields[54];
+
+  g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
+  temp_float = fields[55];
+  if (temp_float >= 0.5f) {
+    g_birdeye_calibrationdata.valid = 1;
+  }
+  else{
+    g_birdeye_calibrationdata.valid = 0;
+  }
+
+#if ENABLE_DRIVERMOTOR == 1
+  #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+  #else
+  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
+    g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
+  }
+  #endif
+#endif
+#endif
+}
+
+
+void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';') {
+  float temp_float;
+  int total_fields = TOTAL_GLOBAL_PARAMETERS;
+  std::stringstream ss(rawData);
+  std::vector<float> fields;
+  SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+    int i = 0;
+    while (ss.good()) {
+        std::string substr;
+        getline(ss, substr, variableTerminator);
+        SERIAL_PORT.print(String("[") + String(i)+ String("]") + String(substr.c_str()) + String(";"));
+        if (isNumber(substr.data(), substr.length()) == 0) {
+          g_enable_car_engine = 0;
+          g_enable_car_steering_wheel = 0;
+          SERIAL_PORT.println();
+          SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+          SERIAL_PORT.println("ERROR: invaild field");
+          return;
+        }
+        fields.push_back(std::stof(substr));
+        i++;
+    }
+    SERIAL_PORT.println();
+    if (fields.size() < total_fields) {
+      SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
+      SERIAL_PORT.println(String("ERROR: missing ") + String(total_fields - fields.size()) + String(" fields"));
+      return;
+    }
+    
+    setGlobalVariables(fields);
+}
+
+
 #include "strtod_.h"
 void parseAndSetGlobalVariables_limited(std::vector<char>& rawData, char variableTerminator = ';'){
   std::vector<float> fields;
@@ -603,6 +622,7 @@ void parseAndSetGlobalVariables_limited(std::vector<char>& rawData, char variabl
   while (*ptr) {
     double value = strtod_(ptr, &endPtr);
     if (ptr == endPtr) {
+        SERIAL_PORT.print(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
         SERIAL_PORT.println("ERROR: Invalid field");
         return;
     }
@@ -610,7 +630,8 @@ void parseAndSetGlobalVariables_limited(std::vector<char>& rawData, char variabl
     
     // Move pointer to the next field
     ptr = (*endPtr == variableTerminator) ? (endPtr + 1) : endPtr;
-}
+  }
+  setGlobalVariables(fields);
 }
 
 void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){

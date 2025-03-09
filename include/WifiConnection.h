@@ -18,6 +18,7 @@
 #define __WIFICONNECTION_H__
 
 #include <HardwareSerial.h>
+#include "FloatToString.h"
 
 #define ESP8266_ENABLE_SSDP 1
 #define ESP8266_ENABLE_SERVER 1
@@ -103,7 +104,7 @@ static void serial2WifiConnect(SERIAL_PORT_TYPE &serialPort, String initSequence
   #if ESP8266_ENABLE_CLIENT != 0
     Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(hostname));
   #endif
-  serialPort.println(commentChar + String(port));
+  serialPort.println(commentChar + FloatToString((float)port, 0));
 
     #if ESP8266_ENABLE_SSDP != 0
       serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_ENABLE_STRING));
@@ -129,8 +130,8 @@ static void printSerial2WifiInfo(SERIAL_PORT_TYPE &serialPort, String initSequen
   serialPort.println(commentChar + String("SSID: ") + wifiSsid);
   serialPort.println(commentChar + String("PASSWORD: ") + wifiPassword);
   serialPort.println(commentChar + String("HOSTNAME: ") + hostname);
-  serialPort.println(commentChar + String("PORT: ") + String(port));
-  
+  serialPort.println(commentChar + String("PORT: ") + FloatToString((float)port, 0));
+
 }
 
 #endif
