@@ -6,6 +6,7 @@
 
 // https://www.geogebra.org/classic/BueCG9ch
 
+#define ENABLE_OLD_CONFIG 0
 
 struct SteeringConfiguration {
 	Point2D servo_position;
@@ -16,6 +17,8 @@ struct SteeringConfiguration {
 	float servo_arm_forward_position_angle_rad;
 };
 
+
+#if ENABLE_OLD_CONFIG != 0
 // positive angle: going left
 // negative angle: goinf right
 static Point2D ServoArmPosition(float steering_angle, SteeringConfiguration steering_config) {
@@ -175,10 +178,100 @@ static float SteeringAngleToServoAngle_rad(float steering_angle, SteeringConfigu
 	return servo_angle;
 }
 
+#endif
+
+static float SteeringAngleToServoAngle_rad_2(float steering_wheel_angle) {
+	float ideal_driver = 23.1418591;
+	float ideal_base = 52.0f;
+	float ideal_theta1 = 0.0;
+	float base = 52.3923645; // Base link length
+	float driver = 24;// Driver link length
+	float coupler = 44.3040733;// Coupler link length
+	float ideal_coupler = 43.956;
+	float follower = 24.5;// Follower link length
+	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
+
+
+	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(ideal_base, ideal_driver, ideal_coupler, follower, ideal_theta1, steering_wheel_angle - M_PI_2);
+	FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, driver, coupler, follower, theta1, temp_theta4.theta_crossed);
+	float servo_raw_angle_rad = temp_theta2.theta_crossed + M_PI_2;
+	return servo_raw_angle_rad;
+}
+
+static float ServoAngleToSteeringAngle_rad(float servo_angle) {
+	float ideal_driver = 23.1418591;
+	float ideal_base = 52.0f;
+	float ideal_theta1 = 0.0;
+	float base = 52.3923645; // Base link length
+	float driver = 24;// Driver link length
+	float coupler = 44.3040733;// Coupler link length
+	float ideal_coupler = 43.956;
+	float follower = 24.5;// Follower link length
+	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
+
+
+	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver,coupler, follower, theta1, servo_angle - M_PI_2);
+	FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(ideal_base, ideal_driver, ideal_coupler, follower, ideal_theta1, temp_theta4.theta_crossed);
+	float steering_angle_rad = temp_theta2.theta_crossed + M_PI_2;
+	return steering_angle_rad;
+}
+
+
+static float ServoAngleToRightWheelAngle_rad_2(float servo_angle) {
+	float ideal_driver = 23.1418591;
+	float ideal_base = 52.0f;
+	float ideal_theta1 = 0.0;
+	float base = 52.3923645; // Base link length
+	float driver = 24;// Driver link length
+	float coupler = 44.3040733;// Coupler link length
+	float ideal_coupler = 43.956;
+	float follower = 24.5;// Follower link length
+	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
+	float arm_wheel_angle = (radians(19.167));
+
+
+	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver, coupler, follower, theta1, servo_angle - M_PI_2);
+	float wheel_angle_rad = temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle;
+	return wheel_angle_rad;
+}
+
+
+static float SteeringAngleToRightWheelAngle_rad_2(float servo_angle) {
+	float ideal_driver = 23.1418591;
+	float ideal_base = 52.0f;
+	float ideal_theta1 = 0.0;
+	float base = 52.3923645; // Base link length
+	float driver = 24;// Driver link length
+	float coupler = 44.3040733;// Coupler link length
+	float ideal_coupler = 43.956;
+	float follower = 24.5;// Follower link length
+	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
+	float arm_wheel_angle = (radians(19.167));
+
+	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(ideal_base, ideal_driver, ideal_coupler, follower, ideal_theta1, servo_angle - M_PI_2);
+	float wheel_angle_rad = temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle;
+	return wheel_angle_rad;
+}
+
+static float RightWheelAngleToLeftWheelAngle_rad_2(float tight_wheel_angle) {
+	float ideal_driver = 23.1418591;
+	float ideal_base = 52.0f;
+	float ideal_theta1 = 0.0;
+	float base = 52.3923645; // Base link length
+	float driver = 24;// Driver link length
+	float coupler = 44.3040733;// Coupler link length
+	float ideal_coupler = 43.956;
+	float follower = 24.5;// Follower link length
+	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
+	float arm_wheel_angle = (radians(19.167));
+
+
+	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta4ToTheta2(ideal_base * 2.0f, follower, ideal_coupler*2.0f, follower, ideal_theta1, tight_wheel_angle - M_PI_2 - arm_wheel_angle);
+	float wheel_angle_rad = temp_theta4.theta_crossed + M_PI_2 - arm_wheel_angle;
+	return wheel_angle_rad;
+}
 
 //#define DEBUG_STEERINGWHEEL
-
-#define ENABLE_OLD_CONFIG 0
 
 class SteeringWheel
 {
@@ -260,9 +353,7 @@ public:
 	#if ENABLE_OLD_CONFIG != 0
 		servo_raw_angle_deg = degrees(SteeringAngleToServoAngle_rad(radians(steering_wheel_angle), this->steering_config));
 #else
-		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, ideal_driver, coupler, follower, theta1, radians(steering_wheel_angle) - M_PI_2);
-		FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, driver, coupler, follower, theta1, temp_theta4.theta_crossed);
-		servo_raw_angle_deg = degrees(temp_theta2.theta_crossed + M_PI_2);
+		servo_raw_angle_deg = degrees(SteeringAngleToServoAngle_rad_2(radians(steering_wheel_angle)));
 #endif
 
 		this->steering_servo.setAngleDeg(servo_raw_angle_deg);
@@ -303,15 +394,8 @@ public:
 		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg()), this->steering_config));
 		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config));
 #else
-		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver, coupler, follower, theta1, radians(this->steering_servo.getMaxLeftAngleDeg()) - M_PI_2);
-		FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, ideal_driver, coupler, follower, theta1, temp_theta4.theta_crossed);
-		this->SteeringWheel_MaxLeftAngle = degrees(temp_theta2.theta_crossed + M_PI_2);
-		
-		temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver, coupler, follower, theta1, radians(this->steering_servo.getMaxRightAngleDeg()) - M_PI_2);
-		temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, ideal_driver, coupler, follower, theta1, temp_theta4.theta_crossed);
-		this->SteeringWheel_MaxRightAngle = degrees(temp_theta2.theta_crossed + M_PI_2);
-		this->SteeringWheel_MaxLeftAngle = 180.0f;
-		this->SteeringWheel_MaxRightAngle = -180.0f;
+		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg())));
+		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg())));
 #endif
 	}
 
@@ -342,8 +426,7 @@ public:
 #if ENABLE_OLD_CONFIG != 0
 		return degrees(ServoRawAngleToWheelAngle_rad(radians(this->steering_wheel_angle), this->steering_config));
 #else
-		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, ideal_driver, coupler, follower, theta1, radians(this->steering_wheel_angle) - M_PI_2);
-		return degrees(temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle_rad);
+		return degrees(SteeringAngleToRightWheelAngle_rad_2(radians(this->steering_wheel_angle)));
 #endif
 	}
 
@@ -352,8 +435,7 @@ public:
 #if ENABLE_OLD_CONFIG != 0
 		return degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel_angle), this->steering_config_right_wheel_to_left_wheel));
 #else
-		FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, ideal_driver, coupler, follower, -theta1, radians(right_wheel_angle) - M_PI_2);
-		return degrees(temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle_rad);
+		return degrees(RightWheelAngleToLeftWheelAngle_rad_2(radians(right_wheel_angle)));
 #endif
 	}
 
@@ -379,10 +461,13 @@ private:
 	float SteeringWheel_MaxRightAngle;
 	float right_wheel_angle_rad;
 
-	float ideal_driver = 23.142 + 6.4;
+	float ideal_driver = 23.1418591;
+	float ideal_base = 52.0f;
+	float ideal_theta1 = 0.0;
 	float base = 52.3923645; // Base link length
 	float driver = 24;// Driver link length
 	float coupler = 44.3040733;// Coupler link length
+	float ideal_coupler = 43.956;
 	float follower = 24.5;// Follower link length
 	float theta1 = radians(-7.016501778106786);// Angle between base and x - axis[radians]
 	float arm_wheel_angle_rad;

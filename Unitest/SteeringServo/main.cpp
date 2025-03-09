@@ -38,81 +38,6 @@ float g_wheel_arm_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f
 
 
 
-
-int main2() {
-	float result_1, result_2, result_3;
-	float servo, wheels, servo_2, right_wheel, left_wheel, left_wheel_angle_from_steering, right_wheel_angle_from_steering;
-	float trackwidth;
-	float steering_angle = 0.0f;
-	left_wheel = 0.0f;
-	wheels = 0.0f;
-
-	SteeringConfiguration right_wheel_config;
-	right_wheel_config.servo_arm_forward_position_angle_rad = g_servo_arm_forward_angle_position_rad;
-	right_wheel_config.servo_arm_length = g_servo_arm_circle_radius_mm;
-	right_wheel_config.servo_position = g_servo_position;
-	right_wheel_config.wheel_arm_forward_position_angle_rad = g_wheel_arm_forward_angle_position_rad;
-	right_wheel_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
-	right_wheel_config.wheel_position = g_arm_wheel_position;
-
-	SteeringConfiguration left_wheel_config;
-	left_wheel_config.servo_arm_forward_position_angle_rad = g_wheel_arm_forward_angle_position_rad;
-	left_wheel_config.servo_arm_length = g_arm_wheel_circle_radius_mm;
-	left_wheel_config.servo_position = g_arm_wheel_position;
-	left_wheel_config.wheel_arm_forward_position_angle_rad = NormalizePiToNegPi((M_PI_2 * 3.0f) + g_arm_wheel_angle_rad);;
-	left_wheel_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
-	left_wheel_config.wheel_position = left_wheel_config.servo_position;
-	left_wheel_config.wheel_position.x = -(left_wheel_config.wheel_position.x);
-
-
-	SteeringConfiguration center_wheel_config;
-	center_wheel_config.servo_arm_forward_position_angle_rad = g_wheel_arm_forward_angle_position_rad;
-	center_wheel_config.servo_arm_length = g_arm_wheel_circle_radius_mm;
-	center_wheel_config.servo_position = g_arm_wheel_position;
-	center_wheel_config.wheel_arm_forward_position_angle_rad = NormalizePiToNegPi((M_PI_2 * 3.0f));
-	center_wheel_config.wheel_arm_length = g_arm_wheel_circle_radius_mm;
-	center_wheel_config.wheel_position = g_servo_position;
-	center_wheel_config.wheel_position.y = right_wheel_config.wheel_position.y;
-
-	center_wheel_config.wheel_arm_length = fabs(center_wheel_config.wheel_arm_length * sinf(center_wheel_config.wheel_arm_forward_position_angle_rad));
-
-
-
-	//result_1 = degrees(WheelAngleToServoRawAngle_rad(radians(-36), right_wheel_config)); // -0.936093390 rad
-	//result_2 = degrees(ServoRawAngleToWheelAngle_rad(radians(-36), right_wheel_config)); // 40
-	//result_1 = degrees(WheelAngleToServoRawAngle_rad(radians(47), right_wheel_config)); // -0.936093390 rad
-	//result_2 = degrees(ServoRawAngleToWheelAngle_rad(radians(47), right_wheel_config)); // -40
-
-	
-	//for (int i = -46; i <= 46; i++)
-	for (int i = -39; i <= 39; i++)
-	//for (int i = (-36 - 4); i <= (48 - 4); i++)
-	{
-
-		//right_wheel = degrees(RightWheelAngle(radians(i), WHEEL_BASE_M, TRACK_WIDTH_M));
-		servo_2 = i;
-		//left_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel), left_wheel_config));
-		right_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(servo_2), right_wheel_config));
-		steering_angle = degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel), center_wheel_config));
-
-		//servo_2 = degrees(WheelAngleToServoRawAngle_rad(radians(right_wheel), right_wheel_config));
-
-		servo_2 = degrees(SteeringAngleToServoAngle_rad(radians(steering_angle), right_wheel_config));
-		//servo_2 = degrees(ServoAngleToSteeringAngle_rad(radians(servo_2), right_wheel_config));
-
-		left_wheel = degrees(ServoRawAngleToWheelAngle_rad(radians(right_wheel), left_wheel_config));
-		//steering_angle = degrees(RightWheelAngleToVehicleSteeringAngle(radians(right_wheel), WHEEL_BASE_M, TRACK_WIDTH_M));
-		left_wheel_angle_from_steering = degrees(LeftWheelAngle(radians(steering_angle), WHEEL_BASE_M, TRACK_WIDTH_M));
-		right_wheel_angle_from_steering = degrees(RightWheelAngle(radians(steering_angle), WHEEL_BASE_M, TRACK_WIDTH_M));
-		trackwidth = RearWheelTurnRadius(WHEEL_BASE_M, radians(left_wheel)) - RearWheelTurnRadius(WHEEL_BASE_M, radians(right_wheel));
-		printf("servo [%d] = wheel_FL: %f\t wheel_FR: %f\t servo: %f\t steering: %f\n", i, left_wheel, right_wheel, servo_2, steering_angle);
-		printf("Achermann:\tFL: %f\t\tFR: %f\n\n", left_wheel_angle_from_steering, right_wheel_angle_from_steering);
-		//printf("%f\n", trackwidth);
-	}
-	return 0;
-}
-
-
 #define STEERING_SERVO_ANGLE_MIDDLE     90
 #define STEERING_SERVO_ANGLE_MAX_RIGHT  126   // +36 -> -36 going right 126
 #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
@@ -124,12 +49,14 @@ int main2() {
 
 
 int main() {
-	Point2D g_servo_position = Point2D{ 0.0f, 0.0f };
-	Point2D g_arm_wheel_position = Point2D{ 52.0f, -6.4f };
+	Point2D g_servo_position = Point2D{ 0.0f, -(23.142f + 6.4f) };
+	Point2D g_arm_wheel_position = Point2D{ (52.0f - 8.044f), ( - 6.4f - 23.142 )};
 
 	LineABC temo_line1 = points2lineABC(g_servo_position, g_arm_wheel_position);
 	float ffff = angleBetweenLinesABC(xAxisABC(), temo_line1);
-
+	ffff = euclidianDistance(g_servo_position, g_arm_wheel_position);
+	g_servo_position = Point2D{ 0.0f, -(24.0f) };
+	ffff = euclidianDistance(g_servo_position, g_arm_wheel_position);
 
 	float arm_wheel_angle;
 	float arm_wheel_length;
@@ -151,9 +78,10 @@ int main() {
 	fprintf(fptr, "\n");
 	fprintf(fptr, "steering_angle\tvalid_steering_angle\tachermann_left_wheel\tachermann_right_wheel\tleft_wheel_angle\tright_wheel_angle\tleft_wheel_error\tright_wheel_error\tservo_angle\tservo_raw_angle");
 	fprintf(fptr, "\n");
-	for (float i = -20; i <= 20; i+=0.1)
+	for (float i = -40; i <= 40; i+=0.1)
 	{
 		g_steering_wheel.SetRawAngleOffset(STEERING_SERVO_ERROR);
+		//g_steering_wheel.SetRawAngleOffset(0.0f);
 		//g_steering_wheel.setMaxLeftAngle_deg(40.0f);
 		//g_steering_wheel.setMaxRightAngle_deg(-40.0f);
 
@@ -179,116 +107,3 @@ int main() {
 	return 0;
 }
 
-
-int main22222() {
-
-	float servo_angle, servo_raw_angle, steering_wheel_angle, right_wheel_angle, left_wheel_angle, right_wheel_achermann_angle, left_wheel_achermann_angle;
-	float right_wheel_error, left_wheel_error;
-	float valid_angle;
-	float average_left_err, average_right_err;
-	float max_left_err, max_right_err;
-	int i;
-	FILE* fptr;
-
-	fptr = fopen("out.txt", "w");
-
-	float start_steer_ang, stop_steer_ang;
-	start_steer_ang = 16.0f;
-	stop_steer_ang = 21.0f;
-
-	//for (float arm_len = 24.5f; arm_len <= 24.51f; arm_len += 0.01f)
-	for (float arm_len = 24.5f; arm_len <= 24.51f; arm_len += 0.01f)
-	{
-
-	
-
-	//for (float arm_ang = 19.1f; arm_ang <= 19.167f; arm_ang += 0.01f)
-		for (float arm_ang = 19.167f; arm_ang <= 19.267f; arm_ang += 0.01f)
-	{
-
-	fprintf(fptr, "ANGLE: %f\n", arm_ang);
-	fprintf(fptr, "arm_len: %f\n", arm_len);
-	SteeringWheel g_steering_wheel(WHEEL_BASE_M, TRACK_WIDTH_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT, arm_ang, arm_len);
-	//SteeringWheel g_steering_wheel(WHEEL_BASE_M, TRACK_WIDTH_M, STEERING_SERVO_ANGLE_MAX_LEFT, STEERING_SERVO_ANGLE_MIDDLE, STEERING_SERVO_ANGLE_MAX_RIGHT);
-
-	g_steering_wheel.SetRawAngleOffset(-4.0f);
-	fprintf(fptr, "Steering: ");
-	for (i = -40; i <= 40; i++)
-	{
-		valid_angle = g_steering_wheel.vaildAngleDeg(i);
-		g_steering_wheel.setSteeringWheelAngleDeg(valid_angle);
-
-		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
-		right_wheel_angle = g_steering_wheel.getRightWheelAngle_deg();
-		left_wheel_angle = g_steering_wheel.getLeftWheelAngle_deg();
-		right_wheel_achermann_angle = g_steering_wheel.getRightWheelAchermannAngle_deg();
-		left_wheel_achermann_angle = g_steering_wheel.getLeftWheelAchermannAngle_deg();
-		right_wheel_error = fabsf(right_wheel_achermann_angle - right_wheel_angle);
-		left_wheel_error = fabsf(left_wheel_achermann_angle - left_wheel_angle);
-
-
-
-		//fprintf(fptr, "%.2f, ", steering_wheel_angle);
-		fprintf(fptr, "%.2f\n", steering_wheel_angle);
-	}
-	
-	fprintf(fptr, "\n");
-	fprintf(fptr, "LEFT: ");
-	for (i = -40; i <= 40; i++)
-	{
-		valid_angle = g_steering_wheel.vaildAngleDeg(i);
-		g_steering_wheel.setSteeringWheelAngleDeg(valid_angle);
-
-		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
-		right_wheel_angle = g_steering_wheel.getRightWheelAngle_deg();
-		left_wheel_angle = g_steering_wheel.getLeftWheelAngle_deg();
-		right_wheel_achermann_angle = g_steering_wheel.getRightWheelAchermannAngle_deg();
-		left_wheel_achermann_angle = g_steering_wheel.getLeftWheelAchermannAngle_deg();
-		right_wheel_error = fabsf(right_wheel_achermann_angle - right_wheel_angle);
-		left_wheel_error = fabsf(left_wheel_achermann_angle - left_wheel_angle);
-
-		//fprintf(fptr, "%.2f, ", left_wheel_error);
-		fprintf(fptr, "%.2f\n", left_wheel_error);
-	}
-	fprintf(fptr, "\n");
-	fprintf(fptr, "RIGHT: ");
-	average_left_err = 0.0f;
-	average_right_err = 0.0f;
-	max_left_err = 0.0f;
-	max_right_err = 0.0f;
-	for (i = -40; i <= 40; i++)
-	{
-		valid_angle = g_steering_wheel.vaildAngleDeg(i);
-		g_steering_wheel.setSteeringWheelAngleDeg(valid_angle);
-
-		steering_wheel_angle = g_steering_wheel.getSteeringWheelAngle();
-		right_wheel_angle = g_steering_wheel.getRightWheelAngle_deg();
-		left_wheel_angle = g_steering_wheel.getLeftWheelAngle_deg();
-		right_wheel_achermann_angle = g_steering_wheel.getRightWheelAchermannAngle_deg();
-		left_wheel_achermann_angle = g_steering_wheel.getLeftWheelAchermannAngle_deg();
-		right_wheel_error = fabsf(right_wheel_achermann_angle - right_wheel_angle);
-		left_wheel_error = fabsf(left_wheel_achermann_angle - left_wheel_angle);
-
-		average_left_err += left_wheel_error;
-		average_right_err += right_wheel_error;
-		max_left_err = fmaxf(max_left_err, left_wheel_error);
-		max_right_err = fmaxf(max_right_err, right_wheel_error);
-
-		//fprintf(fptr, "%.2f, ", right_wheel_error);
-		fprintf(fptr, "%.2f\n", right_wheel_error);
-	}
-	average_left_err = average_left_err / (float)i;
-	average_right_err = average_right_err / (float)i;
-	fprintf(fptr, "\nAVERAGE_LEFT: %.2f\n", average_left_err);
-	fprintf(fptr, "AVERAGE_RIGHT: %.2f\n", average_right_err);
-	fprintf(fptr, "MAX_LEFT: %.2f\n", max_left_err);
-	fprintf(fptr, "MAX_RIGHT: %.2f\n", max_right_err);
-	fprintf(fptr, "\n");
-	fprintf(fptr, "\n");
-
-	}
-	fprintf(fptr, "===============================================================================\n");
-	}
-	fclose(fptr);
-	return 0;
-}

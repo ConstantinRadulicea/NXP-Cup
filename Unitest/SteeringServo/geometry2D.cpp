@@ -1513,8 +1513,8 @@ LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, Li
 */
 struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2) {
 	FourBarLinkage_Theta result;
-	result.valid = 0;
-
+	//result.valid = 0;
+	memset(&result, 0, sizeof(FourBarLinkage_Theta));
 	//Calculate the intermediate terms
 	theta2 = theta2 - theta1;
 	theta2 = fmodf((theta2 + M_PI), (2.0f * M_PI)) - M_PI;
