@@ -1,12 +1,12 @@
 /*
 * Copyright 2023 Constantin Dumitru Petre RĂDULICEA
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *   http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -134,7 +134,7 @@ protected:
         }
 
         else {   // going middle
-            new_servo_angle = 0.0f;
+            //new_servo_angle = 0.0f;
         }
         return new_servo_angle;
     }
@@ -158,25 +158,25 @@ public:
         this->SteeringServo_MaxRightAngle = 0.0f;
         this->SteeringServo_MaxLeftAngle = 0.0f;
         this->raw_angle_deg = 0.0f;
-}
+    }
 
     //                                              130                                    90                                       40
     SteeringServo(unsigned int servo_max_left_angle = 0, unsigned int servo_middle_angle = 90, unsigned int servo_max_right_angle = 180)
-    #ifndef DEBUG_UNITTEST
+#ifndef DEBUG_UNITTEST
         : PWMServo()
-    #endif
+#endif
     {
         this->SteeringAngleOffset = 0.0f;
         this->SteeringServoAngle = 0;
-        this->ServoMaxLeftAngle = (int) servo_max_left_angle;
-        this->ServoMiddleAngle = (int) servo_middle_angle;
-        this->ServoMaxRightAngle = (int) servo_max_right_angle;
+        this->ServoMaxLeftAngle = (int)servo_max_left_angle;
+        this->ServoMiddleAngle = (int)servo_middle_angle;
+        this->ServoMaxRightAngle = (int)servo_max_right_angle;
         this->ServoMiddleAngle_calibrated = this->ServoMiddleAngle;
         this->calculateMaxRanges();
         this->raw_angle_deg = servo_middle_angle;
     }
 
-    ~SteeringServo(){}
+    ~SteeringServo() {}
 
     // raw_servo_value = request_angle - offset
     void setMiddleAngleOffset(float offset) {
@@ -188,25 +188,25 @@ public:
     // It interprets the received value as the steering servo angle and converts it to the corresponding angle for the servo motor
     // angle < 0: going right
     // angle > 0: going left
-    void setAngleDeg(float steering_angle){
+    void setAngleDeg(float steering_angle) {
         int new_servo_angle = this->ServoMiddleAngle_calibrated;
         int cmpResult;
-        
-        
+
+
         steering_angle = vaildAngleDeg(steering_angle);
         this->SteeringServoAngle = steering_angle;
         //steering_angle = steering_angle - this->SteeringAngleOffset;
         //steering_angle = vaildAngleDeg(steering_angle);
 
         new_servo_angle = inputAngleToCalibratedRawAngle(steering_angle);
-        
+
         this->raw_angle_deg = new_servo_angle;
-        #ifndef DEBUG_UNITTEST
-            this->write(new_servo_angle);
-        #endif // DEBUG_UNITTEST
+#ifndef DEBUG_UNITTEST
+        this->write(new_servo_angle);
+#endif // DEBUG_UNITTEST
     }
 
-    float vaildAngleDeg(float angle){
+    float vaildAngleDeg(float angle) {
         float valid_angle;
         float min_steering_angle;
         float max_steering_angle;
@@ -218,17 +218,17 @@ public:
     }
 
 
-    float getAngleDeg(){
+    float getAngleDeg() {
         return this->SteeringServoAngle;
     }
 
     // -1: left, 0: forward, 1: right
-    static int AngleToDirectionDeg(float angle){
+    static int AngleToDirectionDeg(float angle) {
         int cmp_result = floatCmp(angle, 0.0);
         if (cmp_result > 0) {
             return -1;
         }
-        else if(cmp_result < 0.0){
+        else if (cmp_result < 0.0) {
             return 1;
         }
         else {
@@ -237,12 +237,12 @@ public:
     }
 
 
-    float getMaxLeftAngleDeg(){
+    float getMaxLeftAngleDeg() {
         return SteeringServo_MaxLeftAngle;
     }
 
 
-    float getMaxRightAngleDeg(){
+    float getMaxRightAngleDeg() {
         return SteeringServo_MaxRightAngle;
     }
 

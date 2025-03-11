@@ -134,7 +134,7 @@ protected:
         }
 
         else {   // going middle
-            new_servo_angle = 0.0f;
+            //new_servo_angle = 0.0f;
         }
         return new_servo_angle;
     }

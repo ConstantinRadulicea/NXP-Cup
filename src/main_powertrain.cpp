@@ -184,6 +184,7 @@ void loop() {
     centerRearAxeCarPosition_vectorUnit.x = carPosition.x;
     centerRearAxeCarPosition_vectorUnit.y = carPosition.y - MeterToVectorUnit(WHEEL_BASE_M);
     purePersuitInfo = purePursuitComputeABC(centerRearAxeCarPosition_vectorUnit, g_middle_lane_line_pixy_1, (float)MeterToVectorUnit(WHEEL_BASE_M), lookAheadDistance);
+
     if (!isValidFloatNumber(&(purePersuitInfo.steeringAngle), __LINE__)) {
       continue;
     }
@@ -199,6 +200,8 @@ void loop() {
     #else
         g_steering_angle_rad = purePersuitInfo.steeringAngle;
     #endif
+
+    //SERIAL_PORT.println("% " + String(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle))));
 
     g_rear_axe_turn_radius_m = RearWheelTurnRadius(WHEEL_BASE_M, g_steering_angle_rad);
     if (!isValidFloatNumber(&(g_rear_axe_turn_radius_m), __LINE__)) {

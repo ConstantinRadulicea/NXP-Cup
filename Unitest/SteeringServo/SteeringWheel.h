@@ -194,11 +194,15 @@ static float SteeringAngleToServoAngle_rad_2(float steering_wheel_angle) {
 
 	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(ideal_base, ideal_driver, ideal_coupler, follower, ideal_theta1, steering_wheel_angle - M_PI_2);
 	FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(base, driver, coupler, follower, theta1, temp_theta4.theta_crossed);
+	
+	if (temp_theta4.valid == 0 || temp_theta2.valid == 0) {
+		return 0.0f;
+	}
 	float servo_raw_angle_rad = temp_theta2.theta_crossed + M_PI_2;
 	return servo_raw_angle_rad;
 }
 
-static float ServoAngleToSteeringAngle_rad(float servo_angle) {
+static float ServoAngleToSteeringAngle_rad_2(float servo_angle) {
 	float ideal_driver = 23.1418591;
 	float ideal_base = 52.0f;
 	float ideal_theta1 = 0.0;
@@ -212,6 +216,11 @@ static float ServoAngleToSteeringAngle_rad(float servo_angle) {
 
 	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver,coupler, follower, theta1, servo_angle - M_PI_2);
 	FourBarLinkage_Theta temp_theta2 = FourBarLinkage_Theta4ToTheta2(ideal_base, ideal_driver, ideal_coupler, follower, ideal_theta1, temp_theta4.theta_crossed);
+	
+	if (temp_theta4.valid == 0 || temp_theta2.valid == 0) {
+		return 0.0f;
+	}
+
 	float steering_angle_rad = temp_theta2.theta_crossed + M_PI_2;
 	return steering_angle_rad;
 }
@@ -231,6 +240,10 @@ static float ServoAngleToRightWheelAngle_rad_2(float servo_angle) {
 
 
 	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(base, driver, coupler, follower, theta1, servo_angle - M_PI_2);
+	
+	if (temp_theta4.valid == 0) {
+		return 0.0f;
+	}
 	float wheel_angle_rad = temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle;
 	return wheel_angle_rad;
 }
@@ -249,6 +262,10 @@ static float SteeringAngleToRightWheelAngle_rad_2(float servo_angle) {
 	float arm_wheel_angle = (radians(19.167));
 
 	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta2ToTheta4(ideal_base, ideal_driver, ideal_coupler, follower, ideal_theta1, servo_angle - M_PI_2);
+	
+	if (temp_theta4.valid == 0) {
+		return 0.0f;
+	}
 	float wheel_angle_rad = temp_theta4.theta_crossed + M_PI_2 + arm_wheel_angle;
 	return wheel_angle_rad;
 }
@@ -267,6 +284,10 @@ static float RightWheelAngleToLeftWheelAngle_rad_2(float tight_wheel_angle) {
 
 
 	FourBarLinkage_Theta temp_theta4 = FourBarLinkage_Theta4ToTheta2(ideal_base * 2.0f, follower, ideal_coupler*2.0f, follower, ideal_theta1, tight_wheel_angle - M_PI_2 - arm_wheel_angle);
+	
+	if (temp_theta4.valid == 0) {
+		return 0.0f;
+	}
 	float wheel_angle_rad = temp_theta4.theta_crossed + M_PI_2 - arm_wheel_angle;
 	return wheel_angle_rad;
 }
@@ -394,8 +415,8 @@ public:
 		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg()), this->steering_config));
 		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg()), this->steering_config));
 #else
-		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxLeftAngleDeg())));
-		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad(radians(this->steering_servo.getMaxRightAngleDeg())));
+		this->SteeringWheel_MaxLeftAngle = degrees(ServoAngleToSteeringAngle_rad_2(radians(this->steering_servo.getMaxLeftAngleDeg())));
+		this->SteeringWheel_MaxRightAngle = degrees(ServoAngleToSteeringAngle_rad_2(radians(this->steering_servo.getMaxRightAngleDeg())));
 #endif
 	}
 

@@ -43,9 +43,10 @@ float g_wheel_arm_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f
 #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
 #define STEERING_SERVO_ERROR -4.0f
 
-#define STEERING_SERVO_ANGLE_MAX_RIGHT  117   // -> -27 going right 126
-#define STEERING_SERVO_ANGLE_MAX_LEFT   45     // -47 -> +45 going left 43 //49
-#define STEERING_SERVO_ERROR -6.29f
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  140   // -> -27 going right 126
+#define STEERING_SERVO_ANGLE_MAX_LEFT   40     // -47 -> +45 going left 43 //49
+#define STEERING_SERVO_ERROR -10.0f
+
 
 
 int main() {
@@ -86,6 +87,8 @@ int main() {
 		//g_steering_wheel.setMaxRightAngle_deg(-40.0f);
 
 		valid_angle = g_steering_wheel.vaildAngleDeg(i);
+		//valid_angle = i;
+		printf("%f\n", valid_angle);
 		g_steering_wheel.setSteeringWheelAngleDeg(valid_angle);
 
 		servo_angle = g_steering_wheel.steering_servo.getAngleDeg();

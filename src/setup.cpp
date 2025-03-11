@@ -49,7 +49,7 @@ int isValidFloatNumber(float *num, int line){
     return 1;
 }
 
-
+// 834 <---> 
 
 void setup() {
   int8_t pixyResult;
@@ -61,7 +61,7 @@ void setup() {
     #if CAR_ID == 1
       g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
     #elif CAR_ID == 2
-      g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 1100, 1900);
+      g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500 + 1000 - 666, 2500 - 1000 + 666);
     #else
       g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 1000, 2000);
     #endif
