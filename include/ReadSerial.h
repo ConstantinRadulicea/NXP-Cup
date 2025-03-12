@@ -75,7 +75,7 @@ static bool readRecordFromSerial(SERIAL_PORT_TYPE &serialPort, String recordTerm
 
 
 static bool readRecordFromSerial_vector(SERIAL_PORT_TYPE &serialPort, String recordTermintor, std::vector<char>& record){
-  static std::vector<char> inputBuffer = std::vector<char>();
+  static std::vector<char> inputBuffer;
   static bool terminatorFound = false;
 
   char tempChar, lastTerminatorCharacter;

@@ -77,11 +77,8 @@ void loop() {
     #endif
     
     #if ENABLE_WIRELESS_DEBUG == 1
-      #if ENABLE_WIRELESS_DEBUG_LIMITED == 1
-      parseInputGlobalVariablesRoutine_limited(SERIAL_PORT);
-      #else
-        parseInputGlobalVariablesRoutine(SERIAL_PORT);
-      #endif
+      parseInputGlobalVariablesRoutine_optimized(SERIAL_PORT);
+      //parseInputGlobalVariablesRoutine(SERIAL_PORT);
     #endif
 
     #if ENABLE_SETTINGS_MENU == 1
@@ -225,8 +222,8 @@ void loop() {
 
     if (p_camera_no_vector_detected_stopwatch_s >= CAMERA_NO_VECTOR_DETECTED_TIMEOUT_S)
     {
-      #if ENABLE_SERIAL_PRINT != 0
-        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + String(p_camera_no_vector_detected_stopwatch_s) + String(" s"));
+      #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
+        SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + FloatToString(p_camera_no_vector_detected_stopwatch_s, 2) + String(" s"));
       #endif
       g_vehicle_max_speed_mps = MIN(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps);
     }

@@ -96,7 +96,7 @@ void setup() {
 
   // serial Initialization
   #if ENABLE_SERIAL_PRINT == 1 || ENABLE_WIRELESS_DEBUG == 1
-  #if SERIAL_PORT_TYPE_CONFIGURATION == 1
+  #if SERIAL_PORT_TYPE_CONFIGURATION == 1 && defined(TEENSY40)
     #ifdef ENABLE_SERIAL_BUFFER
       SERIAL_PORT.addMemoryForRead(RX_BUFFER, RX_BUFFER_SIZE);
       SERIAL_PORT.addMemoryForWrite(TX_BUFFER, TX_BUFFER_SIZE);

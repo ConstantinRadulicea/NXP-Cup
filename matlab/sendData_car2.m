@@ -4,7 +4,7 @@ fieldTerminator = ';';
 % 17 - 3
 % 22 - 0
 g_enable_car_engine = 0.0;
-g_enable_car_steering_wheel = 0.0;
+g_enable_car_steering_wheel = 00.0;
 g_enable_emergency_brake = 0.0;
 g_enable_pixy_vector_approximation = 0.0;
 g_enable_distance_sensor1 = 0.0;

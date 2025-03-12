@@ -210,7 +210,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';');
 void printGlobalVariables(SERIAL_PORT_TYPE &serialPort);
 
-void parseInputGlobalVariablesRoutine_limited(SERIAL_PORT_TYPE &serialPort);
+void parseInputGlobalVariablesRoutine_optimized(SERIAL_PORT_TYPE &serialPort);
 
 
 #endif

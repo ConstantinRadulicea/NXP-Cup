@@ -445,7 +445,7 @@ void setGlobalVariables(std::vector<float> &fields){
   else{
     g_enable_car_steering_wheel = 0;
   }
-#if ENABLE_WIRELESS_DEBUG_LIMITED == 0 
+#if ENABLE_WIRELESS_DEBUG_LIMITED == 0
   g_emergency_brake_speed_mps = fields[9];
   g_emergency_brake_distance_from_obstacle_m = fields[10];
   
@@ -614,7 +614,7 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
 
 
 #include "strtod_.h"
-void parseAndSetGlobalVariables_limited(std::vector<char>& rawData, char variableTerminator = ';'){
+void parseAndSetGlobalVariables_optimized(std::vector<char>& rawData, char variableTerminator = ';'){
   std::vector<float> fields;
   char* ptr = rawData.data();
   char* endPtr;
@@ -647,7 +647,7 @@ void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){
 }
 
 
-void parseInputGlobalVariablesRoutine_limited(SERIAL_PORT_TYPE &serialPort){
+void parseInputGlobalVariablesRoutine_optimized(SERIAL_PORT_TYPE &serialPort){
   std::vector<char> serialInputBuffer;
   if(readRecordFromSerial_vector(serialPort, String("\r\n"), serialInputBuffer)){
     serialInputBuffer.push_back('\0');
@@ -657,8 +657,13 @@ void parseInputGlobalVariablesRoutine_limited(SERIAL_PORT_TYPE &serialPort){
     //parseAndSetGlobalVariables_2(serialInputBuffer, ';');
     //parseAndSetGlobalVariables(serialInputBuffer, ';');
     //g_enable_car_engine = 1;
-    //printGlobalVariables(serialPort);
-    parseAndSetGlobalVariables_limited(serialInputBuffer, ';');
+    
+
+    #if ENABLE_WIRELESS_DEBUG_LIMITED == 0
+      printGlobalVariables(serialPort);
+    #endif
+    parseAndSetGlobalVariables_optimized(serialInputBuffer, ';');
+
     serialInputBuffer.pop_back();
   }
 }
