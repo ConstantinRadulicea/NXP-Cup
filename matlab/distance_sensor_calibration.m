@@ -4,6 +4,10 @@ close all;
 
 real_distance_m = [0.07 0.1 0.14 0.16 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1 1.1 1.5];
 sensor_data_m = [0.012 0.05 0.09 0.1 0.126 0.198 0.288 0.36 0.492 0.594 0.666 0.756 0.846 0.936 1.272];
+
+real_distance_m = [0.05 0.1 0.2 0.40 0.60 0.8 1.1];
+sensor_data_m = [-0.09 -0.054 0 0.113 0.233 0.353 0.533];
+
 offset_data = sensor_data_m - real_distance_m;
 n_samples = length(real_distance_m);
 
