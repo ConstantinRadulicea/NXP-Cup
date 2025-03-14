@@ -221,7 +221,7 @@
   #define STEERING_SERVO_PIN                22
   #define RIGHT_WHEEL_MOTOR_PIN             -1
   #define LEFT_WHEEL_MOTOR_PIN              23
-  #define EDF_MOTOR_PIN                     7
+  #define EDF_MOTOR_PIN                     3
   #define REMOTE_START_PIN                  -1
   #define REMOTE_STOP_PIN                   -1
 
