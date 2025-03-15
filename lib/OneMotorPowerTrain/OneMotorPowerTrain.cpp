@@ -14,11 +14,17 @@ static void MotorPinSetup(int motor_pin){
     }
 }
 
-static void WriteToMotorThrottle(float throttle){
+
+static float ThrottleToRawSpeed(float throttle){
     float rawValue;
     rawValue = 90.0 + (throttle * 90.0);
     rawValue = MAX(rawValue, 90.0);
     rawValue = MIN(rawValue, 180.0);
+    return rawValue;
+}
+
+static void WriteToMotorThrottle(float throttle){
+    float rawValue = ThrottleToRawSpeed(throttle);
     _motor.write((int)rawValue);
     //Serial.println(String("%Right: ") + String(throttle, 2) + String(";") + String(rawValue));
 }
@@ -32,6 +38,8 @@ void OneMotorPowerTrainSetup(float wheel_diameter_m, int motor_pin){
 
 OneMotorPowerTrain::OneMotorPowerTrain(float wheelDiameter_meters_, PWMServo motor_) : motor(motor_) {
     this->wheelDiameter_meters = wheelDiameter_meters_;
+    this->m_requested_raw_speed = ThrottleToRawSpeed(0.0f);
+    this->m_requested_speed_ms = 0.0f;
 }
 
 void OneMotorPowerTrain::attach(int pin, int min, int max) {
@@ -46,7 +54,17 @@ void OneMotorPowerTrain::SetDiameter(float wheel_diameter) {
 void OneMotorPowerTrain::SetSpeedRequest(float speed_ms) {
     float throttle_request_temp;
     throttle_request_temp = RpmToThrottle(this->MpsToRPM(speed_ms));
+    this->m_requested_raw_speed = ThrottleToRawSpeed(throttle_request_temp);
+    this->m_requested_speed_ms = speed_ms;
     WriteToMotorThrottle(throttle_request_temp);
+}
+
+float OneMotorPowerTrain::GetSpeedRequest_raw() {
+    return this->m_requested_raw_speed;
+}
+
+float OneMotorPowerTrain::GetSpeedRequest() {
+    return this->m_requested_speed_ms;
 }
 
 void OneMotorPowerTrain::SetSpeedRequest_slow(float speed_ms) {

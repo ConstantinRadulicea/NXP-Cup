@@ -15,6 +15,11 @@
 */
 
 #include "GlobalVariables.h"
+#if ENABLE_SINGLE_AXE_STEERING_NO_RPM == 0
+  #include "PowerTrain.h"
+#else
+  #include "OneMotorPowerTrain.h"
+#endif
 
 
 #if CAR_ID == 1

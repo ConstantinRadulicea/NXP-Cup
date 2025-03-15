@@ -17,6 +17,7 @@
 #include "setup.h"
 #include "features/automatic_emergency_braking.h"
 #include "features/finish_line_detection.h"
+#include "WheelRpm.h"
 
 /*====================================================================================================================================*/
 

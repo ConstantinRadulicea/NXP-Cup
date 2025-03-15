@@ -15,6 +15,7 @@
 */
 
 #include "DistanceSensors.h"
+#include "WheelRpm.h"
 
 IntervalTimer myTimer_2;
 

@@ -20,6 +20,12 @@
 #include "WheelRpm.h"
 #include "FloatToString.h"
 
+#if ENABLE_SINGLE_AXE_STEERING_NO_RPM == 0
+  #include "PowerTrain.h"
+#else
+  #include "OneMotorPowerTrain.h"
+#endif
+
 void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
@@ -77,6 +83,9 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_loop_time_ms, n_decimals));
 
+
+  #if ENABLE_SINGLE_AXE_STEERING_NO_RPM == 0
+
   temp_rpmData = getLeftWheelRpmData();
   adjusted_rpm = getCurrentRpm_adjusted(&temp_rpmData);
   serialPort.print(semicolonChar);
@@ -91,12 +100,29 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(adjusted_rpm, n_decimals));
 
+
 ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_powertrain.GetLeftWheelSpeedRequest_raw(), n_decimals));
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_powertrain.GetRightWheelSpeedRequest_raw(), n_decimals));
 }
+#else
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
+serialPort.print(semicolonChar);
+serialPort.print(FloatToString(g_onemotorpowertrain.GetSpeedRequest(), 2));
+
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
+
+serialPort.print(semicolonChar);
+serialPort.print(FloatToString(g_onemotorpowertrain.GetSpeedRequest_raw(), 2));
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
+#endif
 
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_line_calibration_data.angle_offset, n_decimals));

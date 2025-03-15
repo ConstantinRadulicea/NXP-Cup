@@ -19,7 +19,13 @@ public:
     void attach(int pin, int min, int max);
     void SetDiameter(float wheel_diameter);
 
+    float GetSpeedRequest_raw();
+    
+    float GetSpeedRequest();
+
     float wheelDiameter_meters;
+    float m_requested_speed_ms;
+    float m_requested_raw_speed;
     PWMServo &motor;
 };
 

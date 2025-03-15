@@ -4,7 +4,12 @@
 #include "GlobalVariables.h"
 #include "features/automatic_emergency_braking.h"
 #include "features/finish_line_detection.h"
-#include "OneMotorPowerTrain.h"
+
+#if ENABLE_SINGLE_AXE_STEERING_NO_RPM == 0
+  #include "PowerTrain.h"
+#else
+  #include "OneMotorPowerTrain.h"
+#endif
 
 #define CAMERA_NO_VECTOR_DETECTED_TIMEOUT_S 0.1f
 #define CAMERA_ERROR_TIMEOUT_S 0.1f
