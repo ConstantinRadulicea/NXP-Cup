@@ -64,5 +64,11 @@ static String FloatToString(float num, int decimals){
     return String(buf);
 }
 
+static char* FloatToC_str(float num, int decimals){
+    char buf[100];
+    floatToString(num, buf, 99, decimals);
+    return buf;
+}
+
 
 #endif

@@ -267,6 +267,10 @@ void loop() {
     g_loop_time_ms = MAX(g_loop_time_ms, 0.0f);
     g_time_passed_ms += g_loop_time_ms;
 
+    #if (ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0) && defined(TEENSYLC)
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("ms:") + FloatToString(g_loop_time_ms, 0));
+    #endif
+
     #if ENABLE_SERIAL_PRINT == 1
         printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_leftVector, pixy_1_rightVector, VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
     #endif

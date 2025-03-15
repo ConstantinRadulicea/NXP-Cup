@@ -14,8 +14,8 @@
 
 
 void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
-  #if ENABLE_SERIAL_PRINT == 1
-    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("seconds [") + String(time_passed) + String("] ERROR: " + errorText));
+  #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("seconds [") + FloatToString(time_passed, 2) + String("] ERROR: " + errorText));
   #endif
   if (time_passed >= CAMERA_ERROR_TIMEOUT_S){
     //g_car_speed_mps = (float)STANDSTILL_SPEED;
@@ -111,14 +111,15 @@ void setup() {
 
   #if ENABLE_WIRELESS_DEBUG == 1
     serial2WifiConnect(SERIAL_PORT, String(DEBUG_WIFI_INIT_SEQUENCE), String(DEBUG_WIFI_SSID), String(DEBUG_WIFI_PASSWORD), String(DEBUG_HOST_IPADDRESS), DEBUG_HOST_PORT);
+    //serial2WifiConnectC_str(SERIAL_PORT, DEBUG_WIFI_INIT_SEQUENCE, DEBUG_WIFI_SSID, DEBUG_WIFI_PASSWORD, DEBUG_HOST_IPADDRESS, DEBUG_HOST_PORT);
   #endif
 
   pixyResult = -1;
   while (pixyResult != PIXY_RESULT_OK)
   {
     pixyResult = g_pixy_1.init();
-    #if ENABLE_SERIAL_PRINT == 1
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + String(pixyResult));
+    #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.init() = ") + FloatToString(pixyResult, 0));
     #endif
     delay(100);
   }
@@ -133,7 +134,7 @@ void setup() {
   while (pixyResult != PIXY_RESULT_OK)
   {
     pixyResult = g_pixy_1.changeProg("line");
-    #if ENABLE_SERIAL_PRINT == 1
+    #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
       SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("g_pixy_1.changeProg(line) = ") + String(pixyResult));
     #endif
     delay(100);
@@ -142,7 +143,7 @@ void setup() {
   g_line_image_frame_width = g_pixy_1.frameWidth;
   g_line_image_frame_height = g_pixy_1.frameHeight;
 
-  #if ENABLE_SERIAL_PRINT == 1
+  #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
   #endif
 }

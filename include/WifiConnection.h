@@ -19,6 +19,7 @@
 
 #include <HardwareSerial.h>
 #include "FloatToString.h"
+#include "Config.h"
 
 #define ESP8266_ENABLE_SSDP 1
 #define ESP8266_ENABLE_SERVER 1
@@ -94,44 +95,12 @@
 #endif
 
 
-static void serial2WifiConnect(SERIAL_PORT_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
-  String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-  serialPort.print(initSequence);
-  serialPort.println(commentChar + String(ESP8266_CONFIGURATION));
-  //serialPort.println(commentChar + String("CLIENT"));
-  serialPort.println(commentChar + wifiSsid);
-  serialPort.println(commentChar + wifiPassword);
-  #if ESP8266_ENABLE_CLIENT != 0
-    Serial.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(hostname));
-  #endif
-  serialPort.println(commentChar + FloatToString((float)port, 0));
-
-    #if ESP8266_ENABLE_SSDP != 0
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_ENABLE_STRING));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_DEVICETYPE));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_NAME));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_SERIALNUMBER));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNAME));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELNUMBER));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MODELURL));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MANUFACTURER));
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String(SSDP_MANUFACTURERURL));
-    #else
-      serialPort.println(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING + String("DISABLE_SSDP"));
-    #endif
-}
+void serial2WifiConnect(SERIAL_PORT_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port);
 
 /*==============================================================================*/
 
-static void printSerial2WifiInfo(SERIAL_PORT_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port){
-  
-  String commentChar = String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING);
-  serialPort.print(commentChar + String("WIFI INIT SEQUENCE: ") + initSequence);
-  serialPort.println(commentChar + String("SSID: ") + wifiSsid);
-  serialPort.println(commentChar + String("PASSWORD: ") + wifiPassword);
-  serialPort.println(commentChar + String("HOSTNAME: ") + hostname);
-  serialPort.println(commentChar + String("PORT: ") + FloatToString((float)port, 0));
+void printSerial2WifiInfo(SERIAL_PORT_TYPE &serialPort, String initSequence, String wifiSsid, String wifiPassword, String hostname, int port);
 
-}
+void serial2WifiConnectC_str(SERIAL_PORT_TYPE &serialPort, const char* initSequence, const char* wifiSsid, const char* wifiPassword, const char* hostname, int port);
 
 #endif

@@ -322,95 +322,95 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
 
   serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING));
 
-  serialPort.print(String(g_lane_width_vector_unit, n_decimals));
+  serialPort.print(FloatToString(g_lane_width_vector_unit, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_lookahead_min_distance_cm, n_decimals));
+  serialPort.print(FloatToString(g_lookahead_min_distance_cm, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_lookahead_max_distance_cm, n_decimals));
+  serialPort.print(FloatToString(g_lookahead_max_distance_cm, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_activation_max_distance_m, n_decimals));
+  serialPort.print(FloatToString(g_emergency_brake_activation_max_distance_m, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_vehicle_min_speed_mps, n_decimals));
+  serialPort.print(FloatToString(g_vehicle_min_speed_mps, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_vehicle_max_speed_original_mps, n_decimals));
+  serialPort.print(FloatToString(g_vehicle_max_speed_original_mps, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_black_color_treshold, n_decimals));
+  serialPort.print(FloatToString(g_black_color_treshold, n_decimals));
   serialPort.print(separatorCharacter);
   //serialPort.print(String(g_car_length_cm));
   //serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_car_engine, n_decimals));
+  serialPort.print(FloatToString(g_enable_car_engine, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_car_steering_wheel, n_decimals));
+  serialPort.print(FloatToString(g_enable_car_steering_wheel, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_speed_mps, n_decimals));
+  serialPort.print(FloatToString(g_emergency_brake_speed_mps, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_distance_from_obstacle_m, n_decimals));
+  serialPort.print(FloatToString(g_emergency_brake_distance_from_obstacle_m, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_emergency_brake, n_decimals));
+  serialPort.print(FloatToString(g_enable_emergency_brake, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_pixy_vector_approximation, n_decimals));
+  serialPort.print(FloatToString(g_enable_pixy_vector_approximation, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_distance_sensor1, n_decimals));
+  serialPort.print(FloatToString(g_enable_distance_sensor1, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_distance_sensor2, n_decimals));
+  serialPort.print(FloatToString(g_enable_distance_sensor2, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_emergency_brake_enable_delay_s, n_decimals));
+  serialPort.print(FloatToString(g_emergency_brake_enable_delay_s, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_steering_wheel_angle_offset_deg, n_decimals));
+  serialPort.print(FloatToString(g_steering_wheel_angle_offset_deg, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_distance_sensor3, n_decimals));
+  serialPort.print(FloatToString(g_enable_distance_sensor3, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_min_x_axis_angle_vector_deg, n_decimals));
+  serialPort.print(FloatToString(g_min_x_axis_angle_vector_deg, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_max_speed_after_delay_mps, n_decimals));
+  serialPort.print(FloatToString(g_max_speed_after_delay_mps, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_remote_start_stop, n_decimals));
+  serialPort.print(FloatToString(g_enable_remote_start_stop, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_mps_ki, n_decimals));
+  serialPort.print(FloatToString(g_car_speed_mps_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_mps_kd, n_decimals));
+  serialPort.print(FloatToString(g_car_speed_mps_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_car_speed_mps_ki_min_max_impact, n_decimals));
+  serialPort.print(FloatToString(g_car_speed_mps_ki_min_max_impact, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_finish_line_angle_tolerance, n_decimals));
+  serialPort.print(FloatToString(g_finish_line_angle_tolerance, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_enable_finish_line_detection, n_decimals));
+  serialPort.print(FloatToString(g_enable_finish_line_detection, n_decimals));
   serialPort.print(separatorCharacter);
 
-  serialPort.print(String(g_powertrain_left_wheel_kp, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_left_wheel_kp, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_left_wheel_ki, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_left_wheel_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_left_wheel_kd, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_left_wheel_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_left_wheel_ki_max_sum, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_left_wheel_ki_max_sum, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_kp, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_right_wheel_kp, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_ki, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_right_wheel_ki, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_kd, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_right_wheel_kd, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_powertrain_right_wheel_ki_max_sum, n_decimals));
+  serialPort.print(FloatToString(g_powertrain_right_wheel_ki_max_sum, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_friction_coefficient, n_decimals));
+  serialPort.print(FloatToString(g_friction_coefficient, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_downward_acceleration, n_decimals));
+  serialPort.print(FloatToString(g_downward_acceleration, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_max_acceleration, n_decimals));
+  serialPort.print(FloatToString(g_max_acceleration, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_max_deceleration, n_decimals));
+  serialPort.print(FloatToString(g_max_deceleration, n_decimals));
 
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_line_calibration_data.angle_offset, n_decimals));
+  serialPort.print(FloatToString(g_line_calibration_data.angle_offset, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_line_calibration_data.rotation_point.x, n_decimals));
+  serialPort.print(FloatToString(g_line_calibration_data.rotation_point.x, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_line_calibration_data.rotation_point.y, n_decimals));
+  serialPort.print(FloatToString(g_line_calibration_data.rotation_point.y, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_line_calibration_data.x_axis_offset, n_decimals));
+  serialPort.print(FloatToString(g_line_calibration_data.x_axis_offset, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(String(g_line_calibration_data.y_axis_offset, n_decimals));
+  serialPort.print(FloatToString(g_line_calibration_data.y_axis_offset, n_decimals));
 
   serialPort.println();
 }
@@ -450,7 +450,7 @@ void setGlobalVariables(std::vector<float> &fields){
   else{
     g_enable_car_steering_wheel = 0;
   }
-#if ENABLE_WIRELESS_DEBUG_LIMITED == 0
+#if ENABLE_WIRELESS_DEBUG_LIMITED != 999
   g_emergency_brake_speed_mps = fields[9];
   g_emergency_brake_distance_from_obstacle_m = fields[10];
   
@@ -619,9 +619,9 @@ void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator 
 
 
 #include "strtod_.h"
-void parseAndSetGlobalVariables_optimized(std::vector<char>& rawData, char variableTerminator = ';'){
+void parseAndSetGlobalVariables_optimized(std::vector<char>* rawData, char variableTerminator = ';'){
   std::vector<float> fields;
-  char* ptr = rawData.data();
+  char* ptr = rawData->data();
   char* endPtr;
 
   while (*ptr) {
@@ -653,11 +653,15 @@ void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort){
 
 
 void parseInputGlobalVariablesRoutine_optimized(SERIAL_PORT_TYPE &serialPort){
-  std::vector<char> serialInputBuffer;
-  if(readRecordFromSerial_vector(serialPort, String("\r\n"), serialInputBuffer)){
-    serialInputBuffer.push_back('\0');
-    serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input: "));
-    serialPort.println(serialInputBuffer.data());
+  std::vector<char> *serialInputBuffer;
+  if(readRecordFromSerial_vector(serialPort, String("\r\n"), &serialInputBuffer)){
+    serialPort.print(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Input["));
+    serialPort.print(FloatToString((float)serialInputBuffer->size(), 0));
+    serialPort.print("]: ");
+    //char tempchar = 0;
+    //serialInputBuffer.push_back(tempchar);
+    serialPort.println(serialInputBuffer->data());
+    
     
     //parseAndSetGlobalVariables_2(serialInputBuffer, ';');
     //parseAndSetGlobalVariables(serialInputBuffer, ';');
@@ -668,7 +672,5 @@ void parseInputGlobalVariablesRoutine_optimized(SERIAL_PORT_TYPE &serialPort){
       printGlobalVariables(serialPort);
     #endif
     parseAndSetGlobalVariables_optimized(serialInputBuffer, ';');
-
-    serialInputBuffer.pop_back();
   }
 }

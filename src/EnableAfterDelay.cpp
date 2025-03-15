@@ -1,7 +1,7 @@
 
 #include "EnableAfterDelay.h"
 
-void EnableAfterDelay(int8_t *enable_ptr, int* started_count, float* remaining_delay_s, float seconds){
+static void EnableAfterDelay(int8_t *enable_ptr, int* started_count, float* remaining_delay_s, float seconds){
     if (enable_ptr == NULL) {
       return;
     }
