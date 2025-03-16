@@ -67,6 +67,9 @@ extern float g_finish_line_angle_tolerance;
 extern float g_emergency_brake_enable_delay_s;
 extern int8_t g_max_speed_delay_passed;
 
+extern int8_t g_enable_change_aeb_max_distance_after_delay_passed;
+extern float g_enable_change_aeb_max_distance_after_delay_s;
+
 
 
 /*====================================================================================================================================*/

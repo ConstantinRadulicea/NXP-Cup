@@ -26,6 +26,7 @@ g_emergency_brake_activation_max_distance_m = 0.1;                     % 75
 g_emergency_brake_speed_mps = 0.3;
 g_emergency_brake_distance_from_obstacle_m = 0.09;       % 14
 g_emergency_brake_enable_delay_s = 0.0;
+g_enable_change_aeb_max_distance_after_delay_s = 0.0;
 g_steering_wheel_angle_offset_deg = -6.29;            % -4.7;
 g_min_x_axis_angle_vector_deg = 10.0;
 g_max_speed_after_delay_mps = 0.3;
@@ -131,7 +132,8 @@ values = [g_lane_width_vector_unit...
     BirdEye_calibration_TrackWidths_upper_segment_A_y...
     BirdEye_calibration_TrackWidths_upper_segment_B_x...
     BirdEye_calibration_TrackWidths_upper_segment_B_y...
-    BirdEye_calibration_valid];
+    BirdEye_calibration_valid...
+    g_enable_change_aeb_max_distance_after_delay_s];
 
 outputString = '';
 

@@ -132,6 +132,9 @@ float g_max_deceleration = -1.0f;
 
 float g_camera_offset_y_m = 0.0f;
 
+int8_t g_enable_change_aeb_max_distance_after_delay_passed = 0;
+float g_enable_change_aeb_max_distance_after_delay_s = 0.0f;
+
 
 #if RACE_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;
@@ -190,7 +193,7 @@ Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
-#define TOTAL_GLOBAL_PARAMETERS 56
+#define TOTAL_GLOBAL_PARAMETERS 57
 
 
 /*
@@ -338,21 +341,21 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(separatorCharacter);
   //serialPort.print(String(g_car_length_cm));
   //serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_car_engine, n_decimals));
+  serialPort.print(FloatToString(g_enable_car_engine, 0));
   serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_car_steering_wheel, n_decimals));
+  serialPort.print(FloatToString(g_enable_car_steering_wheel, 0));
   serialPort.print(separatorCharacter);
   serialPort.print(FloatToString(g_emergency_brake_speed_mps, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(FloatToString(g_emergency_brake_distance_from_obstacle_m, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_emergency_brake, n_decimals));
+  serialPort.print(FloatToString(g_enable_emergency_brake, 0));
   serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_pixy_vector_approximation, n_decimals));
+  serialPort.print(FloatToString(g_enable_pixy_vector_approximation, 0));
   serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_distance_sensor1, n_decimals));
+  serialPort.print(FloatToString(g_enable_distance_sensor1, 0));
   serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_distance_sensor2, n_decimals));
+  serialPort.print(FloatToString(g_enable_distance_sensor2, 0));
   serialPort.print(separatorCharacter);
   serialPort.print(FloatToString(g_emergency_brake_enable_delay_s, n_decimals));
   serialPort.print(separatorCharacter);
@@ -374,7 +377,7 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(separatorCharacter);
   serialPort.print(FloatToString(g_finish_line_angle_tolerance, n_decimals));
   serialPort.print(separatorCharacter);
-  serialPort.print(FloatToString(g_enable_finish_line_detection, n_decimals));
+  serialPort.print(FloatToString(g_enable_finish_line_detection, 0));
   serialPort.print(separatorCharacter);
 
   serialPort.print(FloatToString(g_powertrain_left_wheel_kp, n_decimals));
@@ -411,6 +414,11 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
   serialPort.print(FloatToString(g_line_calibration_data.x_axis_offset, n_decimals));
   serialPort.print(separatorCharacter);
   serialPort.print(FloatToString(g_line_calibration_data.y_axis_offset, n_decimals));
+  serialPort.print(separatorCharacter);
+  serialPort.print(FloatToString(g_birdeye_calibrationdata.valid, 0));
+
+  serialPort.print(separatorCharacter);
+  serialPort.print(FloatToString(g_enable_change_aeb_max_distance_after_delay_s, n_decimals));
 
   serialPort.println();
 }
@@ -571,6 +579,8 @@ void setGlobalVariables(std::vector<float> &fields){
   else{
     g_birdeye_calibrationdata.valid = 0;
   }
+
+  g_enable_change_aeb_max_distance_after_delay_s = fields[56];
 
 #if ENABLE_DRIVERMOTOR == 1
   #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0

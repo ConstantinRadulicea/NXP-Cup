@@ -49,7 +49,13 @@ void EnableEmergencyBrakeAfterDelay(int8_t* g_enable_finish_line_detection_ptr, 
 
 
 void EnableSlowSpeedAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
-    static int started_count = 0;
-    static float remaining_delay_s = 0.0f;
- EnableAfterDelay(g_enable_finish_line_detection_ptr, &started_count, &remaining_delay_s, seconds);
+  static int started_count = 0;
+  static float remaining_delay_s = 0.0f;
+EnableAfterDelay(g_enable_finish_line_detection_ptr, &started_count, &remaining_delay_s, seconds);
+}
+
+void EnableChangeAEBMaxDistanceAfterDelay(int8_t* g_enable_finish_line_detection_ptr, float seconds){
+  static int started_count = 0;
+  static float remaining_delay_s = 0.0f;
+EnableAfterDelay(g_enable_finish_line_detection_ptr, &started_count, &remaining_delay_s, seconds);
 }

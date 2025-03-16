@@ -17,7 +17,10 @@ void AEB_setup(){
 AEB_out_t automatic_emergency_braking(){
     static MedianFilter AEB_distance_filter(AEB_DISTANCE_FILTER_SIZE);
     float AEB_distance_filtered_m = 0.0f;
+    float local_emergency_brake_activation_max_distance_m;
     AEB_out_t out;
+
+    local_emergency_brake_activation_max_distance_m = g_emergency_brake_activation_max_distance_m;
     
     out.active = (int8_t)0;
     out.speed_request_mps = 0.0f;
@@ -37,6 +40,18 @@ AEB_out_t automatic_emergency_braking(){
       digitalWrite(EMERGENCY_BREAK_LIGHT_PIN, LOW);
       return out;
     }
+    if (floatCmp(g_emergency_brake_enable_delay_s, 0.1f) > 0) {
+      
+      EnableChangeAEBMaxDistanceAfterDelay(&g_enable_change_aeb_max_distance_after_delay_passed, g_enable_change_aeb_max_distance_after_delay_s);
+      if (g_enable_change_aeb_max_distance_after_delay_passed) {
+        local_emergency_brake_activation_max_distance_m = local_emergency_brake_activation_max_distance_m;
+      }
+      else{
+        local_emergency_brake_activation_max_distance_m = g_emergency_brake_distance_from_obstacle_m;
+      }
+      
+    }
+    
 
     //if (g_emergency_break_active != 0) {
     //  out.obstacle_distance_m = AEB_distance_filter.next(out.obstacle_distance_m);
@@ -46,7 +61,7 @@ AEB_out_t automatic_emergency_braking(){
     //}
     
     
-    if (out.obstacle_distance_m <= g_emergency_brake_activation_max_distance_m) {
+    if (out.obstacle_distance_m <= local_emergency_brake_activation_max_distance_m) {
     }
     else{
         g_emergency_break_active = 0;

@@ -50,6 +50,7 @@ SSD1306AsciiWire display;
 
 #define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE                     1
 #define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY         1
+#define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY         1
 #define ENABLE_LCDMENU_EMERGENCY_BRAKE_MIN_SPEED                  1
 #define ENABLE_LCDMENU_EMERGENCY_BREAK_DISTANCE_M                 1
 #define ENABLE_LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M   1
@@ -243,6 +244,9 @@ void settingsMenuRoutine() {
               #endif
               #if ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY != 0
                 LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY,
+              #endif
+              #if ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY != 0
+                LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY,
               #endif
               #if ENABLE_LCDMENU_EMERGENCY_BRAKE_MIN_SPEED != 0
                 LCDMENU_EMERGENCY_BRAKE_MIN_SPEED,
@@ -688,6 +692,22 @@ void settingsMenuRoutine() {
         displayParameterValue(String("ENABLE_EMER_BRAKE_AFTER_DLY"), FloatToString(g_emergency_brake_enable_delay_s, 2));
         break;
     #endif
+
+    #if ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY != 0
+      case LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY:
+        if (incrementButton == HIGH) {
+          g_enable_change_aeb_max_distance_after_delay_s += 0.5f;
+        } else if (decrementButton == HIGH) {
+          g_enable_change_aeb_max_distance_after_delay_s -= 0.5f;
+        }
+        g_enable_change_aeb_max_distance_after_delay_s = MAX(g_enable_change_aeb_max_distance_after_delay_s, 0.0f);
+
+        displayParameterValue(String("ENABLE_AEB_CHG_MAX_DIST_AFTER_DLY"), FloatToString(g_enable_change_aeb_max_distance_after_delay_s, 2));
+        break;
+    #endif
+
+    
+
 
     #if ENABLE_LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY != 0
       case LCDMENU_ENABLE_LINE_DETECTION_AFTER_DELAY:
