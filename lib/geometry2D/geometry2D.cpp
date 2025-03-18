@@ -1339,19 +1339,10 @@ int isValidLineSegment(LineSegment seg) {
 
 
 int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2) {
-	if (!arePoints2DEqual(seg1.A, seg2.A)) {
-		return 0;
+	if ((arePoints2DEqual(seg1.A, seg2.A) || arePoints2DEqual(seg1.A, seg2.B)) && (arePoints2DEqual(seg1.B, seg2.A) || arePoints2DEqual(seg1.B, seg2.B))) {
+		return 1;
 	}
-	if (!arePoints2DEqual(seg1.A, seg2.B)) {
-		return 0;
-	}
-	if (!arePoints2DEqual(seg1.B, seg2.A)) {
-		return 0;
-	}
-	if (!arePoints2DEqual(seg1.B, seg2.B)) {
-		return 0;
-	}
-	return 1;
+	return 0;
 }
 
 Point2D midPointLineSegment(LineSegment seg) {
@@ -1502,6 +1493,21 @@ LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, Li
 	}
 
 	return result_seg;
+}
+
+
+
+/*
+seg1 = middle
+seg2 = end
+*/
+int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2) {
+	LineSegment result_seg;
+	int is_seg2_reachable, is_seg1_reachable;
+	is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
+	is_seg2_reachable = reachableWithouthPassingThroughSegment(start_point, seg1, midPointLineSegment(seg2));
+
+	return is_seg2_reachable;
 }
 
 

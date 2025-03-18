@@ -69,6 +69,9 @@ float g_max_deceleration = -1.0f;
 
 float g_camera_offset_y_m = 0.0f;
 
+int8_t g_enable_change_aeb_max_distance_after_delay_passed = 0;
+float g_enable_change_aeb_max_distance_after_delay_s = 0.0f;
+
 
 #if RACE_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;

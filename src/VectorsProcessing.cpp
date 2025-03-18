@@ -94,21 +94,36 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         LineABC new_vect_line = vectorToLineABC(vec);
         LineABC Horizontal_car_line = xAxisABC();
         Horizontal_car_line.C = -carPosition.y;
+        IntersectionLines inters;
+        int temp_int;
 
-        IntersectionLines inters = intersectionLinesABC(Horizontal_car_line, new_vect_line);
+        inters = intersectionLinesABC(Horizontal_car_line, new_vect_line);
         if (inters.info != INTERSECTION_INFO_ONE_INTERSECTION) {
             return;
         }
         
+        //inters.point.x = vec.m_x0;
+        //inters.point.y = vec.m_y0;
 
         if ((float)inters.point.x >= carPosition.x) {
-            this->rightVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->rightVector), vectorToLineSegment(vec)));
+            temp_int = isReachableSegment(carPosition, vectorToLineSegment(this->leftVector), vectorToLineSegment(vec));
+            if (temp_int) {
+                this->rightVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->rightVector), vectorToLineSegment(vec)));
+            }
+            
+            
             //this->rightVector = vec;
         }
         else if(inters.point.x < carPosition.x){
-            this->leftVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->leftVector), vectorToLineSegment(vec)));
+            temp_int = isReachableSegment(carPosition, vectorToLineSegment(this->rightVector), vectorToLineSegment(vec));
+            if (temp_int)
+            {
+                this->leftVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->leftVector), vectorToLineSegment(vec)));
+            }
+            
             //this->leftVector = vec;
         }
+        
     }
 
     Vector VectorsProcessing::getLeftVector(){
