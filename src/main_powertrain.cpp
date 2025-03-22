@@ -25,7 +25,7 @@ void loop() {
   size_t i;
   int8_t pixy_1_result;
   LineABC mirrorLine;
-  Vector vec, pixy_1_leftVector, pixy_1_rightVector;
+  Vector vec, pixy_1_leftVector, pixy_1_rightVector, calibrated_vector;
   Vector pixy_1_leftVectorOld, pixy_1_rightVectorOld;
   std::vector<Vector> uncalibrated_vectors;
   std::vector<Vector> calibrated_vectors;
@@ -139,14 +139,17 @@ void loop() {
       {
         vec = uncalibrated_vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
+        vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
+        calibrated_vector = vec;
+
         if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
-          vec = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
+          calibrated_vector = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
         }
         if (g_start_line_calibration_acquisition == 0) {
-          vec = calibrateVector(vec, g_line_calibration_data);
+          calibrated_vector = calibrateVector(vec, g_line_calibration_data);
         }
-        vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
-        calibrated_vectors[i] = vec;
+        
+        calibrated_vectors[i] = calibrated_vector;
         g_pixy_1_vectors_processing.addVector(vec);
       }
     }
@@ -166,11 +169,17 @@ void loop() {
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     
 
+
+    #if ENABLE_FINISH_LINE_DETECTION == 1
+      FLD_out = finish_line_detection(&calibrated_vectors);
+      if (FLD_out.active != 0) {
+        g_enable_emergency_brake = 1;
+        g_enable_change_aeb_max_distance_after_delay_passed = 1;
+      }
+          
+    #endif
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
       AEB_out = automatic_emergency_braking();
-    #endif
-    #if ENABLE_FINISH_LINE_DETECTION == 1
-      FLD_out = finish_line_detection(&calibrated_vectors);       
     #endif
 
 

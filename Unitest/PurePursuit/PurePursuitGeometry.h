@@ -45,7 +45,7 @@ static float carTrajectoryAndWayPointAngle(Point2D carPos, Point2D nextWayPoint)
 	temp = carPos;
 	temp.y += lookAheadDistance;
 	TrajectoryToWayPointAngle = triangleAngleA(lookAheadDistance, euclidianDistance(nextWayPoint, temp), lookAheadDistance);
-	
+
 	if (floatCmp(carPos.x, nextWayPoint.x) < 0) {
 		TrajectoryToWayPointAngle = -TrajectoryToWayPointAngle;
 	}
@@ -58,7 +58,7 @@ static float steeringWheelAngle(float TrajectoryToWayPointAngle, float wheelBase
 	if (floatCmp(nextWayPointDistance, 0.0f) == 0) {
 		return 0.0f;
 	}
-	
+
 	angle = atanf((2.0f * wheelBase * sinf(TrajectoryToWayPointAngle)) / nextWayPointDistance);
 	return angle;
 }
@@ -67,7 +67,7 @@ static float steeringWheelAngle(float TrajectoryToWayPointAngle, float wheelBase
 static float turnRadiusByWaypoint(float TrajectoryToWayPointAngle, float wheelBase, float nextWayPointDistance) {
 	float angle;
 	float temp_float;
-	
+
 	temp_float = sinf(TrajectoryToWayPointAngle);
 	if (floatCmp(temp_float, 0.0f) == 0) {
 		return 0.0f;
@@ -133,13 +133,13 @@ static float purePursuitComputeSteeringWheelAngle(Point2D carPos, LineMQ wayPoin
 	Point2D nextWayPoint;
 
 	temp = distance2lineMQ(carPos, wayPoints);
-	
+
 	if (floatCmp(temp, lookAheadDistance) >= 0) {
 		lookAheadDistance = temp + (temp * 0.1f);
 	}
 
 	intersectionPoints = intersectionLineCircleMQ(carPos, lookAheadDistance, wayPoints);
-	
+
 	if (floatCmp(intersectionPoints.point1.y, intersectionPoints.point2.y) > 0) {
 		nextWayPoint = intersectionPoints.point1;
 	}
@@ -188,7 +188,7 @@ static PurePursuitInfo purePursuitComputeMQ(Point2D rearAxePosition, LineMQ wayP
 	info.manouvreLength = fabsf(((2.0f * M_PI * info.rearWheelTurnRadius) * info.TrajectoryToWayPointAngle) / (2.0f * M_PI));
 	info.turnPoint = rearAxePosition;
 
-	
+
 
 	if (floatCmp(info.TrajectoryToWayPointAngle, 0.0f) < 0) {
 		info.turnPoint.x += info.rearWheelTurnRadius;
@@ -200,7 +200,7 @@ static PurePursuitInfo purePursuitComputeMQ(Point2D rearAxePosition, LineMQ wayP
 	return info;
 }
 
-static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wayPoints, float wheelBase, float lookAheadDistance) {
+static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wayPoints, float wheelBase, float _lookAheadDistance) {
 	float temp;
 	PurePursuitInfo info;
 	IntersectionPoints2D_2 intersectionPoints;
@@ -216,7 +216,7 @@ static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wa
 	distance_to_line = distance2lineABC(frontAxePosition, wayPoints);
 	min_lookahead_distance = (sqrtf((distance_to_line * distance_to_line) / 2.0f) * 2.0f);
 
-	lookAheadDistance = MAX(min_lookahead_distance, lookAheadDistance);
+	float lookAheadDistance = MAX(min_lookahead_distance, _lookAheadDistance);
 
 	intersectionPoints = intersectionLineCircleABC(frontAxePosition, lookAheadDistance, wayPoints);
 	if (floatCmp(intersectionPoints.point1.y, intersectionPoints.point2.y) > 0) {
@@ -314,7 +314,7 @@ static float RightWheelAngle(float steering_angle, float wheel_base, float track
 		return 0;
 	}
 
-		
+
 	if (floatCmp(steering_angle, 0.0f) == 0) {
 		return 0;
 	}

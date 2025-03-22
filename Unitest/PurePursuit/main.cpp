@@ -1,4 +1,6 @@
 #include "PurePursuitGeometry.h"
+#include "math.h"
+#include "stdio.h"
 
 #define LANE_WIDTH_M 0.535f
 #define WHEEL_BASE_M 0.175
@@ -33,9 +35,31 @@ Point2D carPosition = Point2D{ 39.5, 0};
 int main() {
 	PurePursuitInfo purePersuitInfo;
 	float lookAheadDistance = euclidianDistance(carPosition, calculated_waypoint);
+	lookAheadDistance = 0.0f;
 	centerRearAxeCarPosition_vectorUnit.x = carPosition.x;
 	centerRearAxeCarPosition_vectorUnit.y = carPosition.y - MeterToVectorUnit(WHEEL_BASE_M);
 	purePersuitInfo = purePursuitComputeABC(centerRearAxeCarPosition_vectorUnit, g_middle_lane_line_pixy_1, (float)MeterToVectorUnit(WHEEL_BASE_M), lookAheadDistance);
+
+
+
+	float minDistance = 0.1f;
+	float maxDistance = 0.4f;
+	float distanceSpan = maxDistance - minDistance;
+
+
+	for (int i = -90; i <= 90; i++)
+	{
+		float angleCurrentTrajectoryAndMiddleLane = radians(i);
+
+		float newLookAheadDistance = minDistance + ((((float)M_PI_4 - angleCurrentTrajectoryAndMiddleLane) / (float)M_PI_4) * distanceSpan);
+
+		newLookAheadDistance = MAX(newLookAheadDistance, minDistance);
+		newLookAheadDistance = MIN(newLookAheadDistance, maxDistance);
+
+		printf("%d -> %f\n", i, newLookAheadDistance);
+	}
+
+
 
 
 
