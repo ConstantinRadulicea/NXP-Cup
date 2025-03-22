@@ -98,7 +98,7 @@ protected:
         }
 
         else {   // going middle
-            new_servo_angle = 0.0f;
+            new_servo_angle = this->ServoMiddleAngle_calibrated;
         }
         return new_servo_angle;
     }
@@ -178,9 +178,26 @@ public:
 
     ~SteeringServo() {}
 
+    float validRawAngle(float angle) {
+        float result = angle;
+        if (floatCmp(this->ServoMaxLeftAngle, this->ServoMaxRightAngle) >= 0)
+        {
+            result = MIN(result, this->ServoMaxLeftAngle);
+            result = MAX(result, this->ServoMaxRightAngle);
+        }
+        else
+        {
+            result = MAX(result, this->ServoMaxLeftAngle);
+            result = MIN(result, this->ServoMaxRightAngle);
+        }
+        return result;
+    }
+
     // raw_servo_value = request_angle - offset
     void setMiddleAngleOffset(float offset) {
-        this->ServoMiddleAngle_calibrated = this->inputAngleToUncalibratedRawAngle(-offset);
+        this->ServoMiddleAngle_calibrated = this->ServoMiddleAngle - offset;
+        this->ServoMiddleAngle_calibrated = this->validRawAngle(this->ServoMiddleAngle_calibrated);
+        //this->ServoMiddleAngle_calibrated = this->inputAngleToUncalibratedRawAngle(-offset);
         this->SteeringAngleOffset = offset;
         this->calculateMaxRanges();
     }

@@ -43,9 +43,9 @@ float g_wheel_arm_forward_angle_position_rad = NormalizePiToNegPi((M_PI_2 * 3.0f
 #define STEERING_SERVO_ANGLE_MAX_LEFT   48     // -47 -> +47 going left 43 //49
 #define STEERING_SERVO_ERROR -4.0f
 
-#define STEERING_SERVO_ANGLE_MAX_RIGHT  140   // -> -27 going right 126
-#define STEERING_SERVO_ANGLE_MAX_LEFT   40     // -47 -> +45 going left 43 //49
-#define STEERING_SERVO_ERROR -10.0f
+#define STEERING_SERVO_ANGLE_MAX_RIGHT  (90+43)
+#define STEERING_SERVO_ANGLE_MAX_LEFT   (90-36)
+#define STEERING_SERVO_ERROR -7.5f
 
 
 
@@ -79,7 +79,7 @@ int main() {
 	fprintf(fptr, "\n");
 	fprintf(fptr, "steering_angle\tvalid_steering_angle\tachermann_left_wheel\tachermann_right_wheel\tleft_wheel_angle\tright_wheel_angle\tleft_wheel_error\tright_wheel_error\tservo_angle\tservo_raw_angle");
 	fprintf(fptr, "\n");
-	for (float i = -40; i <= 40; i+=0.1)
+	for (float i = -50; i <= 50; i+=0.1)
 	{
 		g_steering_wheel.SetRawAngleOffset(STEERING_SERVO_ERROR);
 		//g_steering_wheel.SetRawAngleOffset(0.0f);

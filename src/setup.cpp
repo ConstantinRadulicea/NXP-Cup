@@ -62,7 +62,9 @@ void setup() {
     #if CAR_ID == 1
       g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
     #elif CAR_ID == 2
-      g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500 + 1000 - 666, 2500 - 1000 + 666);
+    g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500 + 1000 - 666, 2500 - 1000 + 666);
+    //g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 500, 2500);
+
     #else
       g_steering_wheel.steering_servo.attach(STEERING_SERVO_PIN, 1000, 2000);
     #endif
