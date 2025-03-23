@@ -39,6 +39,7 @@ void loop() {
   float speed_request_mps;
   float p_camera_no_vector_detected_stopwatch_s = 0.0f;
   float p_camera_error_stopwatch_s = 0.0f;
+  float local_unvalidated_steering_angle_rad;
 
   AEB_out_t AEB_out;
   FLD_out_t FLD_out;
@@ -199,14 +200,19 @@ void loop() {
     #if ENABLE_STEERING_SERVO == 1
       #if ENABLE_SINGLE_AXE_STEERING == 1
         g_steering_angle_rad =  radians(VALIDATE_REAR_STEERING_ANGLE(degrees(purePersuitInfo.steeringAngle)));
+        local_unvalidated_steering_angle_rad = purePersuitInfo.steeringAngle;
       #elif ENABLE_REAR_AXE_STEERING == 1
       g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(-(purePersuitInfo.steeringAngle))));
+      local_unvalidated_steering_angle_rad = -(purePersuitInfo.steeringAngle);
       #else
         g_steering_angle_rad = radians(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle)));
+        local_unvalidated_steering_angle_rad = purePersuitInfo.steeringAngle;
       #endif
     #else
         g_steering_angle_rad = purePersuitInfo.steeringAngle;
+        local_unvalidated_steering_angle_rad = purePersuitInfo.steeringAngle;
     #endif
+
 
     //SERIAL_PORT.println("% " + String(g_steering_wheel.vaildAngleDeg(degrees(purePersuitInfo.steeringAngle))));
 
@@ -238,7 +244,7 @@ void loop() {
       g_vehicle_max_speed_mps = MIN(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps);
     }
     
-    g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, g_steering_angle_rad);
+    g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, local_unvalidated_steering_angle_rad);
     
     if (!isValidFloatNumber(&(g_car_speed_mps), __LINE__)) {
       continue;

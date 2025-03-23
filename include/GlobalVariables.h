@@ -94,8 +94,8 @@ extern float g_line_image_frame_height;
 #if ENABLE_STEERING_SERVO == 1
   #if CAR_ID == 1
     #define STEERING_SERVO_ANGLE_MIDDLE     90
-    #define STEERING_SERVO_ANGLE_MAX_RIGHT  117   // -> -27 going right 126
-    #define STEERING_SERVO_ANGLE_MAX_LEFT   45     // -47 -> +45 going left 43 //49
+    #define STEERING_SERVO_ANGLE_MAX_RIGHT  (90+27)   // -> -27 going right 126
+    #define STEERING_SERVO_ANGLE_MAX_LEFT   (90-40)     // -47 -> +45 going left 43 //49
   #elif CAR_ID == 2
     #define STEERING_SERVO_ANGLE_MIDDLE     90
     #define STEERING_SERVO_ANGLE_MAX_RIGHT  (90+43)
