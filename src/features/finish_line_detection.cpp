@@ -15,7 +15,7 @@ void FLD_deactivate(){
     memset(&g_finish_line, 0, sizeof(g_finish_line));
 }
 
-FLD_out_t finish_line_detection(std::vector<Vector> *vectors){
+FLD_out_t finish_line_detection(std::vector<Vector> *vectors, Vector left_line, Vector right_line){
     FLD_out_t out;
 
     out.active = (int8_t)0;
@@ -26,7 +26,7 @@ FLD_out_t finish_line_detection(std::vector<Vector> *vectors){
     out.enabled = g_enable_finish_line_detection;
 
     if (g_enable_finish_line_detection != 0 && g_finish_line_detected_slowdown == 0) {
-      g_finish_line = VectorsProcessing::findStartFinishLine((*vectors), g_pixy_1_vectors_processing.getLeftVector(), g_pixy_1_vectors_processing.getRightVector(), g_pixy_1_vectors_processing.getMiddleLine(), g_finish_line_angle_tolerance);
+      g_finish_line = VectorsProcessing::findStartFinishLine((*vectors), left_line, right_line, g_pixy_1_vectors_processing.getMiddleLine(), g_finish_line_angle_tolerance);
       if (VectorsProcessing::isFinishLineValid(g_finish_line)) {
         consecutiveValidFinishLines += 1;
         g_finish_line_detected_now = 1;

@@ -936,6 +936,7 @@ void settingsMenuRoutine() {
         display.println("UNCALIBRATE");
       }
       
+      
       if (calibration_state == calibration_state_enum::CALIBRATE) {
           if (g_start_line_calibration_acquisition != 0) {
             g_birdeye_calibrationdata = CalculateBirdEyeCalibration_lines(left_line_segment, right_line_segment, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
@@ -981,6 +982,15 @@ void settingsMenuRoutine() {
       display.print(";");
       display.print(FloatToString(g_birdeye_calibrationdata.birdeye_src_matrix[2].y, 2));
       display.println(")");
+
+
+      //left_line_segment = BirdEye_CalibrateLineSegment(g_birdeye_calibrationdata, left_line_segment);
+      //right_line_segment = BirdEye_CalibrateLineSegment(g_birdeye_calibrationdata, right_line_segment);
+
+      display.println();
+
+      display.print("Track_w:");
+      display.println(FloatToString(g_lane_width_vector_unit, 2));
 
       #if LCD_LIBRARY_ADAFRUIT != 0
         display.display();

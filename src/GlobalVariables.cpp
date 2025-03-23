@@ -31,7 +31,7 @@ int8_t g_enable_distance_sensor1 = 1;
 int8_t g_enable_distance_sensor2 = 1;
 int8_t g_enable_distance_sensor3 = 1;
 int8_t g_enable_remote_start_stop = 0;
-int8_t g_enable_finish_line_detection = 0;
+int8_t g_enable_finish_line_detection = 1;
 
 float g_lane_width_vector_unit = 45.0f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white

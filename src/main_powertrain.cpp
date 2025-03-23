@@ -144,10 +144,10 @@ void loop() {
         calibrated_vector = vec;
 
         if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
-          calibrated_vector = BirdEye_CalibrateVector(g_birdeye_calibrationdata, vec);
+          calibrated_vector = BirdEye_CalibrateVector(g_birdeye_calibrationdata, calibrated_vector);
         }
         if (g_start_line_calibration_acquisition == 0) {
-          calibrated_vector = calibrateVector(vec, g_line_calibration_data);
+          calibrated_vector = calibrateVector(calibrated_vector, g_line_calibration_data);
         }
         
         calibrated_vectors[i] = calibrated_vector;
@@ -160,10 +160,23 @@ void loop() {
       FailureModeMessage(&g_pixy_1, p_camera_error_stopwatch_s,"pixy getAllFeatures");
     }
 /*===================================================END first camera============================================================================*/
-    pixy_1_leftVectorOld = pixy_1_leftVector;
-    pixy_1_rightVectorOld = pixy_1_rightVector;
-    pixy_1_leftVector = g_pixy_1_vectors_processing.getLeftVector();
-    pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
+
+pixy_1_leftVector = g_pixy_1_vectors_processing.getLeftVector();
+pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
+
+pixy_1_leftVectorOld = pixy_1_leftVector;
+pixy_1_rightVectorOld = pixy_1_rightVector;
+
+    if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
+      pixy_1_leftVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_leftVectorOld);
+      pixy_1_rightVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_rightVectorOld);
+    }
+    if (g_start_line_calibration_acquisition == 0) {
+      pixy_1_leftVectorOld = calibrateVector(pixy_1_leftVectorOld, g_line_calibration_data);
+      pixy_1_rightVectorOld = calibrateVector(pixy_1_rightVectorOld, g_line_calibration_data);
+    }
+
+
 
     g_left_lane_segment = VectorsProcessing::vectorToLineSegment(pixy_1_leftVector);
     g_right_lane_segment = VectorsProcessing::vectorToLineSegment(pixy_1_rightVector);
@@ -172,7 +185,7 @@ void loop() {
 
 
     #if ENABLE_FINISH_LINE_DETECTION == 1
-      FLD_out = finish_line_detection(&calibrated_vectors);
+      FLD_out = finish_line_detection(&calibrated_vectors, pixy_1_leftVectorOld, pixy_1_rightVectorOld);
       if (FLD_out.active != 0) {
         g_enable_emergency_brake = 1;
         g_enable_change_aeb_max_distance_after_delay_passed = 1;
