@@ -1,7 +1,11 @@
 
 #include "features/finish_line_detection.h"
 
+
+
 static unsigned int consecutiveValidFinishLines = 0;
+static int local_detected_line_before = 0;
+static float timer_remaining_s = 0.5f;
 
 void FLD_setup(){
 
@@ -12,11 +16,14 @@ void FLD_deactivate(){
     g_finish_line_detected_now = 0;
     g_finish_line_detected = 0;
     g_finish_line_detected_slowdown = 0;
+    local_detected_line_before = 0;
+    timer_remaining_s = 0.5f;
     memset(&g_finish_line, 0, sizeof(g_finish_line));
 }
 
 FLD_out_t finish_line_detection(std::vector<Vector> *vectors, Vector left_line, Vector right_line){
     FLD_out_t out;
+    
 
     out.active = (int8_t)0;
     out.speed_request_mps = 0.0f;
@@ -32,7 +39,8 @@ FLD_out_t finish_line_detection(std::vector<Vector> *vectors, Vector left_line, 
         g_finish_line_detected_now = 1;
         if (consecutiveValidFinishLines >= CONSECUTUVE_FINISH_LINE_DETECTED_ACTIVATION) {
           g_finish_line_detected = 1;
-          g_finish_line_detected_slowdown = 1;
+          local_detected_line_before = 1;
+          //g_finish_line_detected_slowdown = 1;
           out.speed_request_mps = g_max_speed_after_finish_line_detected_mps;
         }
       }
@@ -45,7 +53,15 @@ FLD_out_t finish_line_detection(std::vector<Vector> *vectors, Vector left_line, 
         memset(&g_finish_line, 0, sizeof(g_finish_line));
       }
     }
-
+    if (local_detected_line_before != 0 && g_finish_line_detected_now != 1)
+    {
+      timer_remaining_s -= (g_loop_time_ms / 1000.0f);;
+      if (timer_remaining_s <= 0.0f)
+      {
+        g_finish_line_detected_slowdown = 1;
+      }
+    }
+    
     out.active = g_finish_line_detected_slowdown;
     out.detected_this_loop = g_finish_line_detected;
     if (out.active) {

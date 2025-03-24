@@ -151,7 +151,7 @@ void loop() {
         }
         
         calibrated_vectors[i] = calibrated_vector;
-        g_pixy_1_vectors_processing.addVector(vec);
+        g_pixy_1_vectors_processing.addVector(calibrated_vector);
       }
     }
     else{
@@ -167,14 +167,14 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
 pixy_1_leftVectorOld = pixy_1_leftVector;
 pixy_1_rightVectorOld = pixy_1_rightVector;
 
-    if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
-      pixy_1_leftVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_leftVectorOld);
-      pixy_1_rightVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_rightVectorOld);
-    }
-    if (g_start_line_calibration_acquisition == 0) {
-      pixy_1_leftVectorOld = calibrateVector(pixy_1_leftVectorOld, g_line_calibration_data);
-      pixy_1_rightVectorOld = calibrateVector(pixy_1_rightVectorOld, g_line_calibration_data);
-    }
+    //if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
+    //  pixy_1_leftVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_leftVectorOld);
+    //  pixy_1_rightVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_rightVectorOld);
+    //}
+    //if (g_start_line_calibration_acquisition == 0) {
+    //  pixy_1_leftVectorOld = calibrateVector(pixy_1_leftVectorOld, g_line_calibration_data);
+    //  pixy_1_rightVectorOld = calibrateVector(pixy_1_rightVectorOld, g_line_calibration_data);
+    //}
 
 
 
