@@ -192,7 +192,7 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
         g_enable_emergency_brake = 1;
         g_enable_change_aeb_max_distance_after_delay_passed = 1;
       }
-          
+
     #endif
     #if ENABLE_EMERGENCY_BREAKING == 1   // handling emergency braking
       AEB_out = automatic_emergency_braking();
