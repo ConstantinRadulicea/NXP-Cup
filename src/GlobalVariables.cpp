@@ -461,7 +461,7 @@ void setGlobalVariables(std::vector<float> &fields){
   else{
     g_enable_car_steering_wheel = 0;
   }
-#if ENABLE_WIRELESS_DEBUG_LIMITED != 999
+#if ENABLE_WIRELESS_DEBUG_LIMITED == 0
   g_emergency_brake_speed_mps = fields[9];
   g_emergency_brake_distance_from_obstacle_m = fields[10];
   
