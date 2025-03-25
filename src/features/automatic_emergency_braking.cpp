@@ -43,6 +43,10 @@ AEB_out_t automatic_emergency_braking(){
     if (floatCmp(g_emergency_brake_enable_delay_s, 0.1f) > 0) {
       
       EnableChangeAEBMaxDistanceAfterDelay(&g_enable_change_aeb_max_distance_after_delay_passed, g_enable_change_aeb_max_distance_after_delay_s);
+      if (floatCmp(g_enable_change_aeb_max_distance_after_delay_s, 0.01f) < 0) {
+        g_enable_change_aeb_max_distance_after_delay_passed = 1;
+      }
+      
       if (g_enable_change_aeb_max_distance_after_delay_passed) {
         local_emergency_brake_activation_max_distance_m = local_emergency_brake_activation_max_distance_m;
       }

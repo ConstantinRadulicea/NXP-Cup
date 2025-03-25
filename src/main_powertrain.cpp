@@ -161,11 +161,13 @@ void loop() {
     }
 /*===================================================END first camera============================================================================*/
 
+pixy_1_leftVectorOld = pixy_1_leftVector;
+pixy_1_rightVectorOld = pixy_1_rightVector;
+
 pixy_1_leftVector = g_pixy_1_vectors_processing.getLeftVector();
 pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
 
-pixy_1_leftVectorOld = pixy_1_leftVector;
-pixy_1_rightVectorOld = pixy_1_rightVector;
+
 
     //if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
     //  pixy_1_leftVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_leftVectorOld);
@@ -185,7 +187,7 @@ pixy_1_rightVectorOld = pixy_1_rightVector;
 
 
     #if ENABLE_FINISH_LINE_DETECTION == 1
-      FLD_out = finish_line_detection(&calibrated_vectors, pixy_1_leftVectorOld, pixy_1_rightVectorOld);
+      FLD_out = finish_line_detection(&calibrated_vectors, pixy_1_leftVector, pixy_1_rightVector);
       if (FLD_out.active != 0) {
         g_enable_emergency_brake = 1;
         g_enable_change_aeb_max_distance_after_delay_passed = 1;

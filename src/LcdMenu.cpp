@@ -700,7 +700,7 @@ void settingsMenuRoutine() {
         } else if (decrementButton == HIGH) {
           g_enable_change_aeb_max_distance_after_delay_s -= 0.5f;
         }
-        g_enable_change_aeb_max_distance_after_delay_s = MAX(g_enable_change_aeb_max_distance_after_delay_s, 0.0f);
+        g_enable_change_aeb_max_distance_after_delay_s = MAX(g_enable_change_aeb_max_distance_after_delay_s, -1.0f);
 
         displayParameterValue(String("ENABLE_AEB_CHG_MAX_DIST_AFTER_DLY"), FloatToString(g_enable_change_aeb_max_distance_after_delay_s, 2));
         break;
