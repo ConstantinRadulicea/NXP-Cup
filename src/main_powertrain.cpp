@@ -40,6 +40,7 @@ void loop() {
   float p_camera_no_vector_detected_stopwatch_s = 0.0f;
   float p_camera_error_stopwatch_s = 0.0f;
   float local_unvalidated_steering_angle_rad;
+  g_loop_time_ms = 0.0f;
 
   AEB_out_t AEB_out;
   FLD_out_t FLD_out;
@@ -143,7 +144,7 @@ void loop() {
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
         calibrated_vector = vec;
 
-        if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
+        if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition == 0){
           calibrated_vector = BirdEye_CalibrateVector(g_birdeye_calibrationdata, calibrated_vector);
         }
         if (g_start_line_calibration_acquisition == 0) {
@@ -287,6 +288,14 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
     g_left_lane_line_pixy_1 = lineSegmentToLineABC(g_left_lane_segment);
     g_right_lane_line_pixy_1 = lineSegmentToLineABC(g_right_lane_segment);
 
+    #if (ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0) && defined(TEENSYLC)
+      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("ms:") + FloatToString(g_loop_time_ms, 0));
+    #endif
+
+    #if ENABLE_SERIAL_PRINT == 1
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_leftVector, pixy_1_rightVector, VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
+    #endif
+
     temp_time = (float)millis();
     if (temp_time < timeStart){
       timeStart = temp_time;
@@ -296,14 +305,6 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
     g_loop_time_ms = temp_time - timeStart;
     g_loop_time_ms = MAX(g_loop_time_ms, 0.0f);
     g_time_passed_ms += g_loop_time_ms;
-
-    #if (ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0) && defined(TEENSYLC)
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("ms:") + FloatToString(g_loop_time_ms, 0));
-    #endif
-
-    #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_leftVector, pixy_1_rightVector, VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
-    #endif
   }
 }
 

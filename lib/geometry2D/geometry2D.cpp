@@ -1330,11 +1330,8 @@ int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P
 	return isPointInTriangle(A, B, C, P) || isPointInTriangle(A, C, D, P);
 }
 
-int isValidLineSegment(LineSegment seg) {
-	if ((seg.A.x == seg.B.x) && (seg.A.y == seg.B.y)) {
-		return 0;
-	}
-	return 1;
+int isValidLineSegment(LineSegment seg) {	
+	return !arePoints2DEqual(seg.A, seg.B);
 }
 
 

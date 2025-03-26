@@ -26,5 +26,7 @@ LineSegment calibrateLineSegment(LineSegment seg, LineCalibrationData calibratio
 
 Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector vec);
 
+LineSegment BirdEye_CalibrateLineSegmentScaledToVector(struct BirdEyeCalibrationData calib_data, LineSegment seg);
+
 
 #endif

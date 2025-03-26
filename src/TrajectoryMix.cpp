@@ -86,10 +86,8 @@ LineSegment calibrateLineSegment(LineSegment seg, LineCalibrationData calibratio
     return calibrated_seg;
 }
 
-Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector vec){
-  Vector result;
-  LineSegment seg, calibrated_seg;
-  seg = VectorsProcessing::vectorToLineSegment(vec);
+LineSegment BirdEye_CalibrateLineSegmentScaledToVector(struct BirdEyeCalibrationData calib_data, LineSegment seg){
+  LineSegment calibrated_seg;
 
   calibrated_seg = BirdEye_CalibrateLineSegment(calib_data, seg);
   
@@ -97,7 +95,17 @@ Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector 
   calibrated_seg.A.y = MeterToVectorUnit(calibrated_seg.A.y);
   calibrated_seg.B.x = MeterToVectorUnit(calibrated_seg.B.x);
   calibrated_seg.B.y = MeterToVectorUnit(calibrated_seg.B.y);
+  
+  return calibrated_seg;
+}
 
+
+Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector vec){
+  Vector result;
+  LineSegment seg, calibrated_seg;
+  seg = VectorsProcessing::vectorToLineSegment(vec);
+
+  calibrated_seg = BirdEye_CalibrateLineSegmentScaledToVector(calib_data, seg);
   result = VectorsProcessing::lineSegmentToVector(calibrated_seg);
   
   return result;
