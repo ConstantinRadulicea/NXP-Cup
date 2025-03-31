@@ -67,14 +67,14 @@ g_line_calibration_data_y_axis_offset = 0;
 % g_line_calibration_data_y_axis_offset = 0;
 
 g_lane_width_vector_unit = 56.61;    % 51.4
-BirdEye_calibration_TrackWidths_lower_segment_A_x = 9.25;   % RL x
-BirdEye_calibration_TrackWidths_lower_segment_A_y = -1.76;  % RL y
-BirdEye_calibration_TrackWidths_lower_segment_B_x = 65.65;  % RR x
-BirdEye_calibration_TrackWidths_lower_segment_B_y = 1.76;   % RR y
-BirdEye_calibration_TrackWidths_upper_segment_A_x = 25.44;  % FL x
-BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.45;  % FL y
-BirdEye_calibration_TrackWidths_upper_segment_B_x = 42.85;   % FR x
-BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.54;   % FR y
+BirdEye_calibration_TrackWidths_lower_segment_A_x = 11.46;   % RL x
+BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.6;  % RL y
+BirdEye_calibration_TrackWidths_lower_segment_B_x = 69.53;  % RR x
+BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.6;   % RR y
+BirdEye_calibration_TrackWidths_upper_segment_A_x = 28.92;  % FL x
+BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.78;  % FL y
+BirdEye_calibration_TrackWidths_upper_segment_B_x = 49.91;   % FR x
+BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.21;   % FR y
 BirdEye_calibration_valid = 1;
 
 values = [g_lane_width_vector_unit...
