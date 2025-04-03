@@ -289,7 +289,7 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
     g_right_lane_line_pixy_1 = lineSegmentToLineABC(g_right_lane_segment);
 
     #if (ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0) && defined(TEENSYLC)
-      SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("ms:") + FloatToString(g_loop_time_ms, 0));
+      //SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("ms:") + FloatToString(g_loop_time_ms, 0));
     #endif
 
     #if ENABLE_SERIAL_PRINT == 1

@@ -2,8 +2,8 @@ clc;
 clear;
 close all;
 
-server = serialport("COM11",230400);
-% server = serialport("COM6",230400);
+% server = serialport("COM11",230400);
+server = serialport("COM6",230400);
 
 server.UserData.lastFlushed = 1;
 server.UserData.cameraView_figure = figure('Name','cameraView');

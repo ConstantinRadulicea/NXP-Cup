@@ -14,7 +14,7 @@ g_enable_remote_start_stop = 0.0;
 g_enable_finish_line_detection = 0;
 
 g_black_color_treshold = 0.2;
-g_lookahead_min_distance_cm = 22.0;                       % 22
+g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 50.0;                       % 40
 g_vehicle_min_speed_mps = 0.5;
 g_vehicle_max_speed_mps = 2.5;                                      % 
@@ -70,11 +70,11 @@ g_lane_width_vector_unit = 59.66;    % 51.4
 BirdEye_calibration_TrackWidths_lower_segment_A_x = 8.44;   % RL x
 BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.78;  % RL y
 BirdEye_calibration_TrackWidths_lower_segment_B_x = 68.08;  % RR x
-BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.7;   % RR y
-BirdEye_calibration_TrackWidths_upper_segment_A_x = 24.9;  % FL x
+BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.70;   % RR y
+BirdEye_calibration_TrackWidths_upper_segment_A_x = 24.9;   % FL x
 BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.68;  % FL y
-BirdEye_calibration_TrackWidths_upper_segment_B_x = 48.88;   % FR x
-BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.32;   % FR y
+BirdEye_calibration_TrackWidths_upper_segment_B_x = 48.88;  % FR x
+BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.32;  % FR y
 BirdEye_calibration_valid = 1;
 
 values = [g_lane_width_vector_unit...

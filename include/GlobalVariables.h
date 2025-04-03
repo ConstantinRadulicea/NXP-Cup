@@ -86,8 +86,8 @@ extern float g_line_image_frame_height;
 
 #define LANE_WIDTH_M 0.535f
 
-#define MeterToVectorUnit(m) ((float)(m) * ((float)g_lane_width_vector_unit / (float)LANE_WIDTH_M))
-#define VectorUnitToMeter(v_unit) ((float)(v_unit) * ((float)LANE_WIDTH_M / (float)g_lane_width_vector_unit))
+#define MeterToVectorUnit(m) ((float)(m) * ((float)g_lane_width_vector_unit *( 1.0f / (float)LANE_WIDTH_M)))
+#define VectorUnitToMeter(v_unit) ((float)(v_unit) * ((float)LANE_WIDTH_M * (1.0f / (float)g_lane_width_vector_unit)))
 
 
 
@@ -146,9 +146,9 @@ extern float g_line_image_frame_height;
   #define DISTANCE_SENSOR3_CALIBRATION_FORMULA_C (-0.056)
 
   #elif CAR_ID == 2
-  #define DISTANCE_SENSOR1_OFFSET_M (0.07)
-  #define DISTANCE_SENSOR2_OFFSET_M (0.07)   // calibrated_data = sensor_data - offset
-  #define DISTANCE_SENSOR3_OFFSET_M (0.07)
+  #define DISTANCE_SENSOR1_OFFSET_M (0.059)
+  #define DISTANCE_SENSOR2_OFFSET_M (0.059)   // calibrated_data = sensor_data - offset
+  #define DISTANCE_SENSOR3_OFFSET_M (0.059)
 
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_X (-0.696)
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_C (-0.201)
@@ -221,13 +221,12 @@ extern Pixy2 g_pixy_1;
 extern struct BirdEyeCalibrationData g_birdeye_calibrationdata;
 
 
-
+void initialize_g_birdeye_calibrationdata();
 void parseInputGlobalVariablesRoutine(SERIAL_PORT_TYPE &serialPort);
 void parseAndSetGlobalVariables_2(std::string& rawData, char variableTerminator = ';');
 void parseAndSetGlobalVariables(std::vector<char>& rawData, char variableTerminator = ';');
 void printGlobalVariables(SERIAL_PORT_TYPE &serialPort);
 
 void parseInputGlobalVariablesRoutine_optimized(SERIAL_PORT_TYPE &serialPort);
-
 
 #endif

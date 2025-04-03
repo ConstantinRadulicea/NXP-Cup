@@ -62,7 +62,7 @@ public:
     MedianFilter(unsigned int windowSize) {
         this->totSamples = 0;
         this->_windowSize = windowSize;
-        if (windowSize <= 0) {
+        if (windowSize <= 1) {
             this->_queue = NULL;
             this->_tempQueue = NULL;
             return;

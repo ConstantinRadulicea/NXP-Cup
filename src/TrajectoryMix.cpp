@@ -106,6 +106,7 @@ Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector 
   seg = VectorsProcessing::vectorToLineSegment(vec);
 
   calibrated_seg = BirdEye_CalibrateLineSegmentScaledToVector(calib_data, seg);
+
   result = VectorsProcessing::lineSegmentToVector(calibrated_seg);
   
   return result;
