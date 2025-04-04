@@ -97,7 +97,9 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
     temp_track_widths.upper_segment.B.x = 48.88f;  // FR x
     temp_track_widths.upper_segment.B.y = 52.32f;  // FR y
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
-    g_birdeye_calibrationdata.valid = 1;
+    if (g_birdeye_calibrationdata.valid != 0) {
+      g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
+    }
 }
 
 #elif CAR_ID == 2
@@ -175,7 +177,10 @@ void initialize_g_birdeye_calibrationdata() {
     temp_track_widths.lower_segment.B.x = 69.53f;   // RR x
     temp_track_widths.lower_segment.B.y = 0.6f;      // RR y
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
-    g_birdeye_calibrationdata.valid = 1;
+    if (g_birdeye_calibrationdata.valid != 0) {
+      g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
+    }
+    
 }
 
 

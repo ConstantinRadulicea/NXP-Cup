@@ -25,10 +25,11 @@ void loop() {
   size_t i;
   int8_t pixy_1_result;
   LineABC mirrorLine;
-  Vector vec, pixy_1_leftVector, pixy_1_rightVector, calibrated_vector;
-  Vector pixy_1_leftVectorOld, pixy_1_rightVectorOld;
+  Vector vec;
+  LineSegment pixy_1_leftVector, pixy_1_rightVector, calibrated_vector;
+  LineSegment pixy_1_leftVectorOld, pixy_1_rightVectorOld;
   std::vector<Vector> uncalibrated_vectors;
-  std::vector<Vector> calibrated_vectors;
+  std::vector<LineSegment> calibrated_vectors;
   std::vector<Intersection> intersections;
   PurePursuitInfo purePersuitInfo;
   Point2D carPosition;
@@ -142,13 +143,13 @@ void loop() {
         vec = uncalibrated_vectors[i];
         vec = VectorsProcessing::mirrorVector(mirrorLine, vec);
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
-        calibrated_vector = vec;
+        calibrated_vector = VectorsProcessing::vectorToLineSegment(vec);
 
         if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition == 0){
-          calibrated_vector = BirdEye_CalibrateVector(g_birdeye_calibrationdata, calibrated_vector);
+          calibrated_vector = BirdEye_CalibrateLineSegmentScaledToVector(g_birdeye_calibrationdata, calibrated_vector);
         }
         if (g_start_line_calibration_acquisition == 0) {
-          calibrated_vector = calibrateVector(calibrated_vector, g_line_calibration_data);
+          calibrated_vector = calibrateLineSegment(calibrated_vector, g_line_calibration_data);
         }
         
         calibrated_vectors[i] = calibrated_vector;
@@ -181,8 +182,8 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
 
 
 
-    g_left_lane_segment = VectorsProcessing::vectorToLineSegment(pixy_1_leftVector);
-    g_right_lane_segment = VectorsProcessing::vectorToLineSegment(pixy_1_rightVector);
+    g_left_lane_segment = pixy_1_leftVector;
+    g_right_lane_segment = pixy_1_rightVector;
     g_middle_lane_line_pixy_1 = g_pixy_1_vectors_processing.getMiddleLine();
     
 
@@ -293,7 +294,7 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
     #endif
 
     #if ENABLE_SERIAL_PRINT == 1
-        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_leftVector, pixy_1_rightVector, VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getLeftVector()), VectorsProcessing::vectorToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
+        printDataToSerial(SERIAL_PORT, pixy_1_leftVectorOld, pixy_1_rightVectorOld, pixy_1_leftVector, pixy_1_rightVector, lineSegmentToLineABC(g_pixy_1_vectors_processing.getLeftVector()), lineSegmentToLineABC(g_pixy_1_vectors_processing.getRightVector()), g_middle_lane_line_pixy_1, purePersuitInfo, AEB_out.obstacle_distance_m, g_car_speed_mps);
     #endif
 
     temp_time = (float)millis();

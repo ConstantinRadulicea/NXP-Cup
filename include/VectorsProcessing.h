@@ -23,17 +23,17 @@
 #include <vector>
 
 typedef struct FinishLine{
-    Vector leftSegment;
-    Vector rightSegment;
+    LineSegment leftSegment;
+    LineSegment rightSegment;
 }FinishLine;
 
 class VectorsProcessing
 {
 private:
-    Vector leftVector;
-    Vector rightVector;
-    Vector left_calibrated;
-    Vector right_calibrated;
+LineSegment leftVector;
+LineSegment rightVector;
+LineSegment left_calibrated;
+LineSegment right_calibrated;
     Point2D carPosition;
     float minXaxeAngle;
     float laneWidth;
@@ -62,15 +62,15 @@ public:
 
     bool hasMiddleLine();
 
-    void addVector(Vector vec);
+    void addVector(LineSegment vec);
 
-    Vector getLeftVector();
+    LineSegment getLeftVector();
     
-    Vector getRightVector();
+    LineSegment getRightVector();
 
-    void setLeftVector(Vector vec);
+    void setLeftVector(LineSegment vec);
 
-    void setRightVector(Vector vec);
+    void setRightVector(LineSegment vec);
 
     LineABC getMiddleLine();
     
@@ -79,7 +79,7 @@ public:
     static LineABC vectorToLineABC(Vector vec);
 
     static float vectorMagnitude(Vector vec1);
-    static float vectorAngleWithXaxis(Vector vec1);
+    static float lineSegmentAngleWithXaxis(LineSegment vec1);
     
     ~VectorsProcessing();
 
@@ -100,7 +100,7 @@ public:
     static std::vector<Vector>::iterator findVectorByIndex(std::vector<Vector> &vectors, uint8_t index);
     static void filterVectorIntersection(std::vector<Vector> &vectors, Intersection &intersection);
     static Vector reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(Vector vec, Point2D point);
-    static FinishLine findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees);
+    static FinishLine findStartFinishLine(std::vector<LineSegment> &vectors, LineSegment leftLineVector, LineSegment rightLineVector, LineABC middleLine, float maxErrorAngleDegrees);
     static int isSecondaryLineCenterInPrimaryCenterRange(LineSegment primary_line, LineSegment secondary_line, float error_angle_rad);
 };
 

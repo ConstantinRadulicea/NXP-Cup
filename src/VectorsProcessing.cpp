@@ -63,26 +63,26 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
     }
 
     bool VectorsProcessing::hasLeftVector(){
-        return this->isVectorValid(this->leftVector);
+        return isValidLineSegment(this->leftVector);
     }
     bool VectorsProcessing::hasRightVector(){
-        return this->isVectorValid(this->rightVector);
+        return isValidLineSegment(this->rightVector);
     }
 
     bool VectorsProcessing::hasMiddleLine(){
         return (this->hasLeftVector() || this->hasLeftVector());
     }
 
-    void VectorsProcessing::addVector(Vector vec){
-        if (!isVectorValid(vec)) {
+    void VectorsProcessing::addVector(LineSegment vec){
+        if (!isValidLineSegment(vec)) {
             return;
         }
 
-        if (VectorsProcessing::vectorMagnitude(vec) < MeterToVectorUnit(0.15f)) {
+        if (lengthLineSegment(vec) < MeterToVectorUnit(0.15f)) {
             return;
         }
         
-        if (this->minXaxeAngle >= 0.0f && fabs(this->vectorAngleWithXaxis(vec)) < this->minXaxeAngle) {
+        if (this->minXaxeAngle >= 0.0f && fabs(this->lineSegmentAngleWithXaxis(vec)) < this->minXaxeAngle) {
             return;
         }
         
@@ -91,7 +91,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         Serial.println("Carposition: " + String(carPosition.x));
         */
 
-        LineABC new_vect_line = vectorToLineABC(vec);
+        LineABC new_vect_line = lineSegmentToLineABC(vec);
         LineABC Horizontal_car_line = xAxisABC();
         Horizontal_car_line.C = -carPosition.y;
         IntersectionLines inters;
@@ -106,19 +106,19 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         //inters.point.y = vec.m_y0;
 
         if ((float)inters.point.x >= carPosition.x) {
-            temp_int = isReachableSegment(carPosition, vectorToLineSegment(this->leftVector), vectorToLineSegment(vec));
+            temp_int = isReachableSegment(carPosition, this->leftVector, vec);
             if (temp_int) {
-                this->rightVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->rightVector), vectorToLineSegment(vec)));
+                this->rightVector = getLongestReachableSegment(carPosition, this->rightVector, vec);
             }
             
             
             //this->rightVector = vec;
         }
         else if(inters.point.x < carPosition.x){
-            temp_int = isReachableSegment(carPosition, vectorToLineSegment(this->rightVector), vectorToLineSegment(vec));
+            temp_int = isReachableSegment(carPosition, this->rightVector, vec);
             if (temp_int)
             {
-                this->leftVector = lineSegmentToVector(getLongestReachableSegment(carPosition, vectorToLineSegment(this->leftVector), vectorToLineSegment(vec)));
+                this->leftVector = getLongestReachableSegment(carPosition, this->leftVector, vec);
             }
             
             //this->leftVector = vec;
@@ -126,15 +126,15 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         
     }
 
-    Vector VectorsProcessing::getLeftVector(){
+    LineSegment VectorsProcessing::getLeftVector(){
         float left_line_size, right_line_size;
-        if (isVectorValid(this->leftVector) && isVectorValid(this->rightVector)) {
-            left_line_size = vectorMagnitude(this->leftVector);
-            right_line_size = vectorMagnitude(this->rightVector);
+        if (isValidLineSegment(this->leftVector) && isValidLineSegment(this->rightVector)) {
+            left_line_size = lengthLineSegment(this->leftVector);
+            right_line_size = lengthLineSegment(this->rightVector);
             if (left_line_size >= right_line_size) {
                 return this->leftVector;
             }
-            else if(isSecondaryLineCenterInPrimaryCenterRange(vectorToLineSegment(this->rightVector), vectorToLineSegment(this->leftVector), radians(45.0f)) == 0){
+            else if(isSecondaryLineCenterInPrimaryCenterRange(this->rightVector, this->leftVector, radians(45.0f)) == 0){
                 memset(&(this->leftVector), 0, sizeof(this->leftVector));
             }
         }
@@ -143,15 +143,15 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         return this->leftVector;
     }
     
-    Vector VectorsProcessing::getRightVector(){
+    LineSegment VectorsProcessing::getRightVector(){
         float left_line_size, right_line_size;
-        if (isVectorValid(this->leftVector) && isVectorValid(this->rightVector)) {
-            left_line_size = vectorMagnitude(this->leftVector);
-            right_line_size = vectorMagnitude(this->rightVector);
+        if (isValidLineSegment(this->leftVector) && isValidLineSegment(this->rightVector)) {
+            left_line_size = lengthLineSegment(this->leftVector);
+            right_line_size = lengthLineSegment(this->rightVector);
             if (right_line_size > left_line_size) {
                 return this->rightVector;
             }
-            else if(isSecondaryLineCenterInPrimaryCenterRange(vectorToLineSegment(this->leftVector), vectorToLineSegment(this->rightVector), radians(45.0f)) == 0){
+            else if(isSecondaryLineCenterInPrimaryCenterRange((this->leftVector), (this->rightVector), radians(45.0f)) == 0){
                 memset(&(this->rightVector), 0, sizeof(this->rightVector));
             }
         }
@@ -160,16 +160,16 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         return this->rightVector;
     }
 
-    void VectorsProcessing::setLeftVector(Vector vec){
+    void VectorsProcessing::setLeftVector(LineSegment vec){
         this->leftVector = vec;
     }
 
-    void VectorsProcessing::setRightVector(Vector vec){
+    void VectorsProcessing::setRightVector(LineSegment vec){
         this->rightVector = vec;
     }
 
     LineABC VectorsProcessing::getMiddleLine(){
-        Vector leftVector_, rightVector_;
+        LineSegment leftVector_, rightVector_;
         LineABC leftLine, rightLine, middleLine_, acuteAngleBisector, ottuseAngleBisector;
         leftVector_ = this->getLeftVector();
         rightVector_ = this->getRightVector();
@@ -178,25 +178,25 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         rightLine = yAxisABC();
         
 
-        if (!this->isVectorValid(leftVector_) && !this->isVectorValid(rightVector_)){
+        if (!isValidLineSegment(leftVector_) && !isValidLineSegment(rightVector_)){
             middleLine_ = yAxisABC();
             middleLine_.C = -this->carPosition.x;
             return middleLine_;
         }
 
-        if (this->isVectorValid(leftVector_)) {
-            leftLine = this->vectorToLineABC(leftVector_);
+        if (isValidLineSegment(leftVector_)) {
+            leftLine = lineSegmentToLineABC(leftVector_);
         }
 
-        if (this->isVectorValid(rightVector_)) {
-            rightLine = this->vectorToLineABC(rightVector_);
+        if (isValidLineSegment(rightVector_)) {
+            rightLine = lineSegmentToLineABC(rightVector_);
         }
 
-        if (!this->isVectorValid(rightVector_)) {
+        if (!isValidLineSegment(rightVector_)) {
             rightLine = parallelLineAtDistanceABC(leftLine, this->laneWidth, 1);
         }
 
-        if (!this->isVectorValid(leftVector_)) {
+        if (!isValidLineSegment(leftVector_)) {
             leftLine = parallelLineAtDistanceABC(rightLine, this->laneWidth, 0);
         }
 /*
@@ -251,10 +251,10 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
 
         return euclidianDistance(point1, point2);
     }
-    float VectorsProcessing::vectorAngleWithXaxis(Vector vec1){
+    float VectorsProcessing::lineSegmentAngleWithXaxis(LineSegment vec1){
         LineABC line2;
 
-        line2 = vectorToLineABC(vec1);
+        line2 = lineSegmentToLineABC(vec1);
         return angleBetweenLinesABC(xAxisABC(), line2);
     }
     
@@ -330,7 +330,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
     }
 
     bool VectorsProcessing::isFinishLineValid(FinishLine finishLine){
-        if(isVectorValid(finishLine.leftSegment) || isVectorValid(finishLine.rightSegment)){
+        if(isValidLineSegment(finishLine.leftSegment) || isValidLineSegment(finishLine.rightSegment)){
             return true;
         }
         return false;
@@ -535,7 +535,7 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         return newVector;
     }
 
-    FinishLine VectorsProcessing::findStartFinishLine(std::vector<Vector> &vectors, Vector leftLineVector, Vector rightLineVector, LineABC middleLine, float maxErrorAngleDegrees){
+    FinishLine VectorsProcessing::findStartFinishLine(std::vector<LineSegment> &vectors, LineSegment leftLineVector, LineSegment rightLineVector, LineABC middleLine, float maxErrorAngleDegrees){
         FinishLine finishLine;
         LineABC leftLine, rightLine, tempVectorLine;
         float minDistanceVectorToLeftLine, minDistanceVectorToRightLine, angleRadiansError, angleRadiansError_prev;
@@ -546,12 +546,12 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         //LineSegmentsDistancePoints laneWidth_;
 
         memset(&finishLine, 0, sizeof(FinishLine));
-        if(!isVectorValid(leftLineVector) || !isVectorValid(rightLineVector)){
+        if(!isValidLineSegment(leftLineVector) || !isValidLineSegment(rightLineVector)){
             return finishLine;
         }
 
-        leftLine_segment = VectorsProcessing::vectorToLineSegment(leftLineVector);
-        rightLine_segment = VectorsProcessing::vectorToLineSegment(rightLineVector);
+        leftLine_segment = leftLineVector;
+        rightLine_segment = rightLineVector;
         
         //laneWidth_ = distancePointsBwSegments(vectorToLineSegment(leftLineVector), vectorToLineSegment(rightLineVector));
         //laneWidth_min = euclidianDistance(laneWidth_.min.A, laneWidth_.min.B);
@@ -559,8 +559,8 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         //Serial1.print("%");
         //Serial1.println(laneWidth_min);
 
-        leftLine = vectorToLineABC(leftLineVector);
-        rightLine = vectorToLineABC(rightLineVector);
+        leftLine = lineSegmentToLineABC(leftLineVector);
+        rightLine = lineSegmentToLineABC(rightLineVector);
 
         if (floatCmp(fabs(angleBetweenLinesABC(leftLine, rightLine)), radians(45.0f)) >= 0) {
             return finishLine;
@@ -571,20 +571,20 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         //}
 
         for (size_t i = 0; i < vectors.size(); i++) {
-            if (vectorMagnitude(vectors[i]) > MeterToVectorUnit(0.15)){
+            if (lengthLineSegment(vectors[i]) > MeterToVectorUnit(0.15)){
                 continue;
             }
-            if (vectorMagnitude(vectors[i]) < MeterToVectorUnit(0.05)){
-                continue;
-            }
-
-            if (areVectorsEqual(vectors[i], leftLineVector) || areVectorsEqual(vectors[i], rightLineVector)) {
+            if (lengthLineSegment(vectors[i]) < MeterToVectorUnit(0.05)){
                 continue;
             }
 
-            vec_segment = VectorsProcessing::vectorToLineSegment(vectors[i]);
+            if (areLineSegmentsEqual(vectors[i], leftLineVector) || areLineSegmentsEqual(vectors[i], rightLineVector)) {
+                continue;
+            }
 
-            tempVectorLine = vectorToLineABC(vectors[i]);
+            vec_segment = vectors[i];
+
+            tempVectorLine = lineSegmentToLineABC(vectors[i]);
 
             angleRadiansError = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, tempVectorLine))));
             //angleRadiansError = angleBetweenLinesABC(middleLine, tempVectorLine);
@@ -592,8 +592,8 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
             if (floatCmp(angleRadiansError, radians(fabs(maxErrorAngleDegrees))) <= 0) {
                 //Serial1.print("%");
                 //Serial1.println(angleRadiansError);
-                minDistanceVectorToLeftLine = minDistanceVectorToLine(vectors[i], leftLine);
-                minDistanceVectorToRightLine = minDistanceVectorToLine(vectors[i], rightLine);
+                minDistanceVectorToLeftLine = minDistanceLineSegmentToLine(vectors[i], leftLine);
+                minDistanceVectorToRightLine = minDistanceLineSegmentToLine(vectors[i], rightLine);
 
                 //if ((floatCmp(minDistanceVectorToLeftLine, 0.0f) <= 0) || (floatCmp(minDistanceVectorToRightLine, 0.0f) <= 0)) {
                 //    continue;
@@ -619,8 +619,8 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 
 
                 if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) <= 0) {
-                    if (isVectorValid(finishLine.leftSegment)) {
-                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.leftSegment)))));
+                    if (isValidLineSegment(finishLine.leftSegment)) {
+                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, lineSegmentToLineABC(finishLine.leftSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
                             finishLine.leftSegment = vectors[i];
                         }
@@ -631,8 +631,8 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
                 }
 
                 if (floatCmp(minDistanceVectorToLeftLine, minDistanceVectorToRightLine) > 0) {
-                    if (isVectorValid(finishLine.rightSegment)) {
-                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, vectorToLineABC(finishLine.rightSegment)))));
+                    if (isValidLineSegment(finishLine.rightSegment)) {
+                        angleRadiansError_prev = fabs((M_PI_2 - fabs(angleBetweenLinesABC(middleLine, lineSegmentToLineABC(finishLine.rightSegment)))));
                         if (floatCmp(angleRadiansError, angleRadiansError_prev) < 0) {
                             finishLine.rightSegment = vectors[i];
                         }

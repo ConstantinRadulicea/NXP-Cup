@@ -19,6 +19,6 @@ void FLD_setup();
 
 void FLD_deactivate();
 
-FLD_out_t finish_line_detection(std::vector<Vector> *vectors, Vector left_line, Vector right_line);
+FLD_out_t finish_line_detection(std::vector<LineSegment> *vectors, LineSegment left_line, LineSegment right_line);
 
 #endif

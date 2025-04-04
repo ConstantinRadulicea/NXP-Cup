@@ -59,21 +59,6 @@ LineCalibrationData lineCalibration(LineABC measured_line){
   return calibrationData;
 }
 
-Vector calibrateVector(Vector vec, LineCalibrationData calibration_data){
-  LineSegment seg, calibrated_seg;
-  Vector calibrated_vec;
-  seg = VectorsProcessing::vectorToLineSegment(vec);
-  calibrated_seg = rotateLineSegmentAroundPoint(seg, calibration_data.rotation_point, -(calibration_data.angle_offset));
-  calibrated_seg.A.x -= calibration_data.x_axis_offset;
-  calibrated_seg.A.y -= calibration_data.y_axis_offset;
-
-  calibrated_seg.B.x -= calibration_data.x_axis_offset;
-  calibrated_seg.B.y -= calibration_data.y_axis_offset;
-
-  calibrated_vec = VectorsProcessing::lineSegmentToVector(calibrated_seg);
-  return calibrated_vec;
-}
-
 
 LineSegment calibrateLineSegment(LineSegment seg, LineCalibrationData calibration_data) {
     LineSegment calibrated_seg;
@@ -99,18 +84,6 @@ LineSegment BirdEye_CalibrateLineSegmentScaledToVector(struct BirdEyeCalibration
   return calibrated_seg;
 }
 
-
-Vector BirdEye_CalibrateVector(struct BirdEyeCalibrationData calib_data, Vector vec){
-  Vector result;
-  LineSegment seg, calibrated_seg;
-  seg = VectorsProcessing::vectorToLineSegment(vec);
-
-  calibrated_seg = BirdEye_CalibrateLineSegmentScaledToVector(calib_data, seg);
-
-  result = VectorsProcessing::lineSegmentToVector(calibrated_seg);
-  
-  return result;
-}
 
 //Vector uncalibrateVector(Vector vec, LineCalibrationData calibration_data){
 //  LineSegment seg, calibrated_seg;

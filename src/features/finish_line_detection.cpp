@@ -21,7 +21,7 @@ void FLD_deactivate(){
     memset(&g_finish_line, 0, sizeof(g_finish_line));
 }
 
-FLD_out_t finish_line_detection(std::vector<Vector> *vectors, Vector left_line, Vector right_line){
+FLD_out_t finish_line_detection(std::vector<LineSegment> *vectors, LineSegment left_line, LineSegment right_line){
     FLD_out_t out;
     
 

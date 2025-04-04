@@ -26,7 +26,17 @@
   #include "OneMotorPowerTrain.h"
 #endif
 
-void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vector rightVectorOld, Vector leftVector, Vector rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float frontObstacleDistance, float carSpeed_){
+void serialprint_linesegment(SERIAL_PORT_TYPE &serialPort, LineSegment seg, String separator){
+  serialPort.print(FloatToString(seg.A.x, 1));
+  serialPort.print(separator);
+  serialPort.print(FloatToString(seg.A.y, 1));
+  serialPort.print(separator);
+  serialPort.print(FloatToString(seg.B.x, 1));
+  serialPort.print(separator);
+  serialPort.print(FloatToString(seg.B.y, 1));
+}
+
+void printDataToSerial(SERIAL_PORT_TYPE &serialPort, LineSegment leftVectorOld, LineSegment rightVectorOld, LineSegment leftVector, LineSegment rightVector, LineABC leftLine, LineABC rightLine, LineABC laneMiddleLine, PurePursuitInfo purePersuitInfo, float frontObstacleDistance, float carSpeed_){
   String commaCharStr;
   char semicolonChar;
   RpmSensorData temp_rpmData;
@@ -44,14 +54,13 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
 
   commaCharStr = String(',');
   semicolonChar = ';';
-
-  serialPort.print(String(leftVectorOld.m_x0) + commaCharStr + String(leftVectorOld.m_y0) + commaCharStr + String(leftVectorOld.m_x1) + commaCharStr + String(leftVectorOld.m_y1));
+  serialprint_linesegment(serialPort, leftVectorOld, commaCharStr);
   serialPort.print(semicolonChar);
-  serialPort.print(String(rightVectorOld.m_x0) + commaCharStr + String(rightVectorOld.m_y0) + commaCharStr + String(rightVectorOld.m_x1) + commaCharStr + String(rightVectorOld.m_y1));
+  serialprint_linesegment(serialPort, rightVectorOld, commaCharStr);
   serialPort.print(semicolonChar);
-  serialPort.print(String(leftVector.m_x0) + commaCharStr + String(leftVector.m_y0) + commaCharStr + String(leftVector.m_x1) + commaCharStr + String(leftVector.m_y1));
+  serialprint_linesegment(serialPort, leftVector, commaCharStr);
   serialPort.print(semicolonChar);
-  serialPort.print(String(rightVector.m_x0) + commaCharStr + String(rightVector.m_y0) + commaCharStr + String(rightVector.m_x1) + commaCharStr + String(rightVector.m_y1));
+  serialprint_linesegment(serialPort, rightVector, commaCharStr);
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(leftLine.Ax, n_decimals) + commaCharStr + FloatToString(leftLine.By, n_decimals) + commaCharStr + FloatToString(leftLine.C, n_decimals));
   serialPort.print(semicolonChar);
@@ -75,9 +84,12 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, Vector leftVectorOld, Vecto
   serialPort.print(semicolonChar);
   serialPort.print(String(g_finish_line_detected));
   serialPort.print(semicolonChar);
-  serialPort.print(String(g_finish_line.leftSegment.m_x0) + commaCharStr + String(g_finish_line.leftSegment.m_y0) + commaCharStr + String(g_finish_line.leftSegment.m_x1) + commaCharStr + String(g_finish_line.leftSegment.m_y1));
+
+
+
+  serialprint_linesegment(serialPort, g_finish_line.leftSegment, commaCharStr);
   serialPort.print(semicolonChar);
-  serialPort.print(String(g_finish_line.rightSegment.m_x0) + commaCharStr + String(g_finish_line.rightSegment.m_y0) + commaCharStr + String(g_finish_line.rightSegment.m_x1) + commaCharStr + String(g_finish_line.rightSegment.m_y1));
+  serialprint_linesegment(serialPort, g_finish_line.rightSegment, commaCharStr);
   serialPort.print(semicolonChar);
   serialPort.print(String(g_finish_line_detected_now));
   serialPort.print(semicolonChar);
