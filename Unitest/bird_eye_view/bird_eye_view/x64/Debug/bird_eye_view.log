@@ -37,6 +37,14 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\geometry2D.cpp(1702,74): wa
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main.cpp(32,159): warning C4305: 'argument': truncation from 'double' to 'float'
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main.cpp(31,12): warning C4101: 'H': unreferenced local variable
   main2.cpp
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(57,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(40,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(41,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(42,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(43,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(44,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(45,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(46,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(47,43): warning C4305: '=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\main2.cpp(77,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Generating Code...
   bird_eye_view.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\bird_eye_view\x64\Debug\bird_eye_view.exe

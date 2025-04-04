@@ -26,6 +26,26 @@ void initialize_g_birdeye_calibrationdata() {
     temp_track_widths.lower_segment.A.y = -0.6f;    // RL y
     temp_track_widths.lower_segment.B.x = 69.53f;   // RR x
     temp_track_widths.lower_segment.B.y = 0.6f;      // RR y
+
+
+    temp_track_widths.lower_segment.A.x = 8.44f;   // RL x
+    temp_track_widths.lower_segment.A.y = -0.78f;  // RL y
+    temp_track_widths.lower_segment.B.x = 68.08f;  // RR x
+    temp_track_widths.lower_segment.B.y = 0.70f;    // RR y
+    temp_track_widths.upper_segment.A.x = 24.9f;   // FL x
+    temp_track_widths.upper_segment.A.y = 51.68f;  // FL y
+    temp_track_widths.upper_segment.B.x = 48.88f;  // FR x
+    temp_track_widths.upper_segment.B.y = 52.32f;  // FR y
+
+    temp_track_widths.lower_segment.A.x = 4.3;   // RL x
+    temp_track_widths.lower_segment.A.y = 3.12;  // RL y
+    temp_track_widths.lower_segment.B.x = 66.05;  // RR x
+    temp_track_widths.lower_segment.B.y = -3.20;    // RR y
+    temp_track_widths.upper_segment.A.x = 28.58;   // FL x
+    temp_track_widths.upper_segment.A.y = 53.28;  // FL y
+    temp_track_widths.upper_segment.B.x = 52.3;  // FR x
+    temp_track_widths.upper_segment.B.y = 50.79;  // FR y
+
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
 }
 
@@ -58,11 +78,11 @@ void main() {
     LineSegment calibrated_vector, uncalibrated_vector;
     initialize_g_birdeye_calibrationdata();
 
-    uncalibrated_vector.A.x = 0;
-    uncalibrated_vector.A.y = 0;
+    uncalibrated_vector.A.x = 10;
+    uncalibrated_vector.A.y = 2;
 
-    uncalibrated_vector.B.x = 1;
-    uncalibrated_vector.B.y = 7;
+    uncalibrated_vector.B.x = 15;
+    uncalibrated_vector.B.y = 30;
 
 
     calibrated_vector = BirdEye_CalibrateLineSegmentScaledToVector(g_birdeye_calibrationdata, uncalibrated_vector);

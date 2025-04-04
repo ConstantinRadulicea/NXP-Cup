@@ -296,7 +296,7 @@ struct track_widths srcViewToRealView(struct track_widths src_view, float real_t
     // calculate midpoint upper segment
     temp_circle_intersection = intersectionLineCircleABC(lower_midpoint, actual_distance, middle_line);
 
-    if (floatCmp(euclidianDistance(upper_midpoint, temp_circle_intersection.point1), euclidianDistance(upper_midpoint, temp_circle_intersection.point1)) < 0)
+    if (floatCmp(euclidianDistance(upper_midpoint, temp_circle_intersection.point1), euclidianDistance(upper_midpoint, temp_circle_intersection.point2)) < 0)
     {
         upper_real_modpoint = temp_circle_intersection.point1;
     }
