@@ -8,7 +8,7 @@ struct track_widths {
     LineSegment lower_segment;
 };
 
-struct BirdEyeCalibrationData{
+struct BirdEyeCalibrationData {
     Point2D birdeye_src_matrix[4]; // {bottom_left, top_left, bottom_right, top_right}
     Point2D birdeye_dst_matrix[4]; // {bottom_left, top_left, bottom_right, top_right}
     float src_track_width;
@@ -16,7 +16,7 @@ struct BirdEyeCalibrationData{
     int valid;
 };
 
-void getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]);
+int getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]);
 
 Point2D applyPerspectiveTransform(float H[3][3], Point2D p);
 

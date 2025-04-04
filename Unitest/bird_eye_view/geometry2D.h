@@ -25,8 +25,20 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
 
-#define M_PI       3.14159265358979323846f   // pi
-#define M_PI_2     1.57079632679489661923f   // pi/2
+#define M_E		2.7182818284590452354
+#define M_LOG2E		1.4426950408889634074
+#define M_LOG10E	0.43429448190325182765
+#define M_LN2		_M_LN2
+#define M_LN10		2.30258509299404568402
+#define M_PI		3.14159265358979323846
+#define M_PI_2		1.57079632679489661923
+#define M_PI_4		0.78539816339744830962
+#define M_1_PI		0.31830988618379067154
+#define M_2_PI		0.63661977236758134308
+#define M_2_SQRTPI	1.12837916709551257390
+#define M_SQRT2		1.41421356237309504880
+#define M_SQRT1_2	0.70710678118654752440
+
 #define DEG_TO_RAD 0.01745329251994329576f
 #define RAD_TO_DEG 57.2957795130823208767f
 #define G_CONSTANT 9.80665f
@@ -99,9 +111,15 @@ typedef struct IntersectionPoints2D_2
 	int sameEquation;
 }IntersectionPoints2D_2;
 
+
+#define INTERSECTION_INFO_ONE_INTERSECTION 0
+#define INTERSECTION_INFO_LINES_ARE_PARALLEL 1
+#define INTERSECTION_INFO_LINES_ARE_EQUAL 2
+#define INTERSECTION_INFO_LINES_ERROR 3
+#define INTERSECTION_INFO_NO_INTERSECTION 4
 typedef struct IntersectionLines {
 	Point2D point;
-	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal
+	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal, 3 error
 }IntersectionLines;
 
 float NormalizePiToNegPi(float angle);
@@ -125,6 +143,7 @@ int floatCmp(float num1, float num2);
 
 int gaussianElimination3(float A[3][3 + 1], float x[3], int n);
 int gaussianElimination2(float A[2][2 + 1], float x[2], int n);
+int gaussianElimination8(float A[8][8 + 1], float x[8]);
 
 ParabolaABC points2parabola_3(Point2D point1, Point2D point2, Point2D point3);
 
@@ -242,5 +261,26 @@ Point2D midPointLineSegment(LineSegment seg);
 
 float lengthLineSegment(LineSegment seg);
 
+LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point);
+
+IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2);
+
+
+int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point);
+
+LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
+
+
+struct FourBarLinkage_Theta {
+	float theta_open;
+	float theta_crossed;
+	int valid;
+};
+
+struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2);
+
+struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4);
+
+int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
 
 #endif // !__GEOMETRY2D_H__

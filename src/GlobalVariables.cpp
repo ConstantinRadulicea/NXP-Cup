@@ -182,8 +182,8 @@ void initialize_g_birdeye_calibrationdata() {
 #endif
 
 
-float g_line_image_frame_width = 78.0f;
-float g_line_image_frame_height = 51.0f;
+float g_line_image_frame_width = 79.0f;
+float g_line_image_frame_height = 52.0f;
 //float g_wheel_base_vector_unit = (float)MeterToVectorUnit(WHEEL_BASE_M);
 int8_t g_emergency_break_active = 0;
 unsigned int g_emergency_break_loops_count = 0;

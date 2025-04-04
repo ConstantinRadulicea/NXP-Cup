@@ -284,11 +284,11 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
         point1 = mirrorImageABC(line, point1);
         point2 = mirrorImageABC(line, point2);
 
-        vec.m_x0 = (uint8_t)point1.x;
-        vec.m_y0 = (uint8_t)point1.y;
+        vec.m_x0 = (int)point1.x;
+        vec.m_y0 = (int)point1.y;
 
-        vec.m_x1 = (uint8_t)point2.x;
-        vec.m_y1 = (uint8_t)point2.y;
+        vec.m_x1 = (int)point2.x;
+        vec.m_y1 = (int)point2.y;
         return vec;
     }
     
@@ -343,11 +343,11 @@ VectorsProcessing::VectorsProcessing(float carPositionX, float carPositionY, flo
 
     Vector VectorsProcessing::lineSegmentToVector(LineSegment seg){
         Vector vec;
-        vec.m_x0 = seg.A.x;
-        vec.m_y0 = seg.A.y;
+        vec.m_x0 = (int)seg.A.x;
+        vec.m_y0 = (int)seg.A.y;
 
-        vec.m_x1 = seg.B.x;
-        vec.m_y1 = seg.B.y;
+        vec.m_x1 = (int)seg.B.x;
+        vec.m_y1 = (int)seg.B.y;
 
         return vec;
     }

@@ -74,8 +74,8 @@ extern float g_enable_change_aeb_max_distance_after_delay_s;
 
 /*====================================================================================================================================*/
 
-//#define IMAGE_MAX_X 78.0f
-//#define IMAGE_MAX_Y 51.0f
+//#define IMAGE_MAX_X 79.0f
+//#define IMAGE_MAX_Y 52.0f
 
 
 extern float g_line_image_frame_width;

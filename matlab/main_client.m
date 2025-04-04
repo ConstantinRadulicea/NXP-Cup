@@ -1,4 +1,4 @@
-clc;
+q2wclc;
 clear;
 close all;
 

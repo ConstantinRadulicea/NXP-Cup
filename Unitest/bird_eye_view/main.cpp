@@ -19,14 +19,14 @@
 
 #define LANE_WIDTH_M 0.53
 
-LineSegment left_line_segment = LineSegment{ Point2D{4.0, 1.0}, Point2D{17.0, 44.0} };
-LineSegment right_line_segment = LineSegment{ Point2D{63.0, 1.0}, Point2D{48.0, 44.0} };
+static LineSegment left_line_segment = LineSegment{ Point2D{4.0, 1.0}, Point2D{17.0, 44.0} };
+static LineSegment right_line_segment = LineSegment{ Point2D{63.0, 1.0}, Point2D{48.0, 44.0} };
 
-float g_line_image_frame_width = 78.0f;
-float g_line_image_frame_height = 51.0f;
+static float g_line_image_frame_width = 78.0f;
+static float g_line_image_frame_height = 51.0f;
 
 BirdEyeCalibrationData g_birdeye_calibrationdata;
-int main() {
+int main2() {
 
     float *H[3][3];
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_lines(left_line_segment, right_line_segment, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);

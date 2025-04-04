@@ -44,7 +44,7 @@ void solveLinearSystem(float A[8][9], float* solution) {
 }
 
 // Compute Perspective Transformation Matrix
-void getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
+int getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
     float A[8][9] = { 0.0f };
     float h[8];
 
@@ -67,12 +67,14 @@ void getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
         A[i * 2 + 1][8] = y_p;
     }
 
-    solveLinearSystem(A, h);
+    //solveLinearSystem(A, h);
+    int res = gaussianElimination8(A, h);
 
     // Construct Homography Matrix
     H[0][0] = h[0]; H[0][1] = h[1]; H[0][2] = h[2];
     H[1][0] = h[3]; H[1][1] = h[4]; H[1][2] = h[5];
     H[2][0] = h[6]; H[2][1] = h[7]; H[2][2] = 1.0f;
+    return res;
 }
 
 
@@ -405,8 +407,12 @@ struct BirdEyeCalibrationData CalculateBirdEyeCalibration_TrackWidths(struct tra
     data.birdeye_dst_matrix[2] = dst_track_widths.lower_segment.B;
     data.birdeye_dst_matrix[3] = dst_track_widths.upper_segment.B;
 
-    getPerspectiveTransform(data.birdeye_src_matrix, data.birdeye_dst_matrix, data.birdeye_transform_matrix);
-    data.valid = 1;
+    data.valid = 0;
+    int res = getPerspectiveTransform(data.birdeye_src_matrix, data.birdeye_dst_matrix, data.birdeye_transform_matrix);
+    if (res == CONSISTENT_ECUATION_SYSTEM) {
+        data.valid = 1;
+    }
+    
     return data;
 }
 

@@ -16,7 +16,7 @@ struct BirdEyeCalibrationData {
     int valid;
 };
 
-void getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]);
+int getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]);
 
 Point2D applyPerspectiveTransform(float H[3][3], Point2D p);
 

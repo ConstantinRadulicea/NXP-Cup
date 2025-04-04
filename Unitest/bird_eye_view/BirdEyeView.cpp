@@ -1,5 +1,6 @@
 #include "BirdEyeView.h"
 #include "math.h"
+#include <stdint.h>
 
 
 // Solve 8x8 linear system using Gaussian Elimination
@@ -43,8 +44,8 @@ void solveLinearSystem(float A[8][9], float* solution) {
 }
 
 // Compute Perspective Transformation Matrix
-void getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
-    float A[8][9] = { 0 };
+int getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
+    float A[8][9] = { 0.0f };
     float h[8];
 
     for (int i = 0; i < 4; i++) {
@@ -60,28 +61,71 @@ void getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
 
         A[i * 2 + 1][3] = x;
         A[i * 2 + 1][4] = y;
-        A[i * 2 + 1][5] = 1;
+        A[i * 2 + 1][5] = 1.0f;
         A[i * 2 + 1][6] = -x * y_p;
         A[i * 2 + 1][7] = -y * y_p;
         A[i * 2 + 1][8] = y_p;
     }
 
-    solveLinearSystem(A, h);
+    //solveLinearSystem(A, h);
+    int res = gaussianElimination8(A, h);
 
     // Construct Homography Matrix
     H[0][0] = h[0]; H[0][1] = h[1]; H[0][2] = h[2];
     H[1][0] = h[3]; H[1][1] = h[4]; H[1][2] = h[5];
-    H[2][0] = h[6]; H[2][1] = h[7]; H[2][2] = 1.0;
+    H[2][0] = h[6]; H[2][1] = h[7]; H[2][2] = 1.0f;
+    return res;
 }
+
 
 // Apply Perspective Transformation
 Point2D applyPerspectiveTransform(float H[3][3], Point2D p) {
-    Point2D result;
+    Point2D result = {};
     float w = H[2][0] * p.x + H[2][1] * p.y + H[2][2];
+
+    if (floatCmp(w, 0.0f) == 0) {
+        return result;
+    }
     result.x = (H[0][0] * p.x + H[0][1] * p.y + H[0][2]) / w;
     result.y = (H[1][0] * p.x + H[1][1] * p.y + H[1][2]) / w;
+
+
     return result;
 }
+
+/*
+
+#define FIXED_POINT_SCALE 10000 // scaling factor for 3 decimal places
+
+// Fixed-point version of the Perspective Transformation
+Point2D applyPerspectiveTransform(float H[3][3], Point2D p) {
+    Point2D result = {};  // Default initialization
+
+    // Convert the point and matrix to fixed-point values
+    int32_t p_x = (int32_t)(p.x * FIXED_POINT_SCALE);
+    int32_t p_y = (int32_t)(p.y * FIXED_POINT_SCALE);
+
+    // Calculate the value of w using fixed-point
+    int32_t w = H[2][0] * p_x + H[2][1] * p_y + (int32_t)(H[2][2] * FIXED_POINT_SCALE);
+
+    // Avoid division by zero
+    if (abs(w) < 1) {
+        return result;  // Return zeroed result if division by zero would occur
+    }
+
+    // Compute the perspective transformation for x and y
+    int32_t x_w = H[0][0] * p_x + H[0][1] * p_y + (int32_t)(H[0][2] * FIXED_POINT_SCALE);
+    int32_t y_w = H[1][0] * p_x + H[1][1] * p_y + (int32_t)(H[1][2] * FIXED_POINT_SCALE);
+
+    // Perform the division and convert back to float
+    result.x = (float)((float)x_w / (float)w);
+    result.y = (float)((float)y_w / (float)w);
+
+    return result;
+}
+
+*/
+
 
 
 
@@ -363,8 +407,12 @@ struct BirdEyeCalibrationData CalculateBirdEyeCalibration_TrackWidths(struct tra
     data.birdeye_dst_matrix[2] = dst_track_widths.lower_segment.B;
     data.birdeye_dst_matrix[3] = dst_track_widths.upper_segment.B;
 
-    getPerspectiveTransform(data.birdeye_src_matrix, data.birdeye_dst_matrix, data.birdeye_transform_matrix);
-    data.valid = 1;
+    data.valid = 0;
+    int res = getPerspectiveTransform(data.birdeye_src_matrix, data.birdeye_dst_matrix, data.birdeye_transform_matrix);
+    if (res == CONSISTENT_ECUATION_SYSTEM) {
+        data.valid = 1;
+    }
+    
     return data;
 }
 
