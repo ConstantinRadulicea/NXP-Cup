@@ -609,7 +609,9 @@ void setGlobalVariables(std::vector<float> &fields){
   g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
   temp_float = fields[55];
   if (temp_float >= 0.5f) {
-    g_birdeye_calibrationdata.valid = 1;
+    if (g_birdeye_calibrationdata.valid != 0) {
+      g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
+    }
   }
   else{
     g_birdeye_calibrationdata.valid = 0;

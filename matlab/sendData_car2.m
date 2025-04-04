@@ -11,7 +11,7 @@ g_enable_distance_sensor1 = 0.0;
 g_enable_distance_sensor2 = 1.0;
 g_enable_distance_sensor3 = 0.0;
 g_enable_remote_start_stop = 0.0;
-g_enable_finish_line_detection = 1;
+g_enable_finish_line_detection = 0;
 
 g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22

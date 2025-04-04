@@ -11,15 +11,10 @@ void setup(){
 }
 
 
-Vector calibrated_vector = {};
-Vector uncalibrated_vector = {};
+LineSegment calibrated_vector = {};
+LineSegment uncalibrated_vector = {};
 
-void loop2(){
-    uncalibrated_vector.m_x0 = 0;
-    uncalibrated_vector.m_y0 = 0;
-
-    uncalibrated_vector.m_x1 = 0;
-    uncalibrated_vector.m_y1 = 19;
+void loop(){
 
     for (int y = 0; y < g_line_image_frame_height+1; y++)
     {
@@ -27,12 +22,12 @@ void loop2(){
 
         for (int x = 0; x < g_line_image_frame_width+1; x++)
         {
-            uncalibrated_vector.m_x1 = x;
-            uncalibrated_vector.m_y1 = y;
+            uncalibrated_vector.B.x = x;
+            uncalibrated_vector.B.y = y;
             calibrated_vector = uncalibrated_vector;
 
             if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition == 0){
-                calibrated_vector = BirdEye_CalibrateVector(g_birdeye_calibrationdata, calibrated_vector);
+                calibrated_vector = BirdEye_CalibrateLineSegmentScaledToVector(g_birdeye_calibrationdata, calibrated_vector);
             }
             if (g_start_line_calibration_acquisition == 0) {
                 //calibrated_vector = calibrateVector(calibrated_vector, g_line_calibration_data);
@@ -41,9 +36,9 @@ void loop2(){
             Serial.print(";");
             Serial.print(String(y));
             Serial.print(";");
-            Serial.print(String(calibrated_vector.m_x1));
+            Serial.print(String(calibrated_vector.B.x));
             Serial.print(";");
-            Serial.print(String(calibrated_vector.m_y1));
+            Serial.print(String(calibrated_vector.B.y));
             Serial.println();
         }
     }
@@ -60,7 +55,7 @@ void loop2(){
 
 
 
-void loop(){
+void loop2(){
     for (size_t i = 0; i < 3; i++)
     {
         for (size_t j = 0; j < 3; j++)
