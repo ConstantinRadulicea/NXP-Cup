@@ -65,94 +65,101 @@ function read_callback_serialport(src, ~)
     src.UserData.right_wheel_speed_request_raw(end+1) = right_wheel_speed_request_raw;
     src.UserData.right_wheel_speed_request_raw = src.UserData.right_wheel_speed_request_raw(end - sample_batch_size + 1:end);
     
-    if(toc(startTime) < 0.9)
+    if(toc(startTime) < (1/30))
         return;
     end
     startTime = tic;
 
     y_array = 1:1:length(src.UserData.wheels_rpm.left.raw_rpm);
-    set(0, 'CurrentFigure', src.UserData.wheelRpm_figure)
-    % plot(y_array, src.UserData.wheels_rpm.left.raw_rpm, 'DisplayName', 'LeftWheel_RawRpm');
+    % set(0, 'CurrentFigure', src.UserData.wheelRpm_figure)
+    % % plot(y_array, src.UserData.wheels_rpm.left.raw_rpm, 'DisplayName', 'LeftWheel_RawRpm');
+    % % hold on;
+    % plot(y_array, src.UserData.wheels_rpm.left.adjusted_rpm, 'DisplayName', 'LeftWheel_AdjustedRpm');
     % hold on;
-    plot(y_array, src.UserData.wheels_rpm.left.adjusted_rpm, 'DisplayName', 'LeftWheel_AdjustedRpm');
-    hold on;
-    % plot(y_array, src.UserData.wheels_rpm.right.raw_rpm, 'DisplayName', 'RightWheel_RawRpm');
+    % % plot(y_array, src.UserData.wheels_rpm.right.raw_rpm, 'DisplayName', 'RightWheel_RawRpm');
+    % % hold on;
+    % plot(y_array, src.UserData.wheels_rpm.right.adjusted_rpm, 'DisplayName', 'RightWheel_AdjustedRpm');
+    % hold off;
+    % legend show;
+    % 
+    % set(0, 'CurrentFigure', src.UserData.wheelSpeedRequestRaw_figure)
+    % plot(y_array, src.UserData.left_wheel_speed_request_raw, 'DisplayName', 'LeftWheel speed request RAW');
     % hold on;
-    plot(y_array, src.UserData.wheels_rpm.right.adjusted_rpm, 'DisplayName', 'RightWheel_AdjustedRpm');
-    hold off;
-    legend show;
-
-    set(0, 'CurrentFigure', src.UserData.wheelSpeedRequestRaw_figure)
-    plot(y_array, src.UserData.left_wheel_speed_request_raw, 'DisplayName', 'LeftWheel speed request RAW');
-    hold on;
-    plot(y_array, src.UserData.right_wheel_speed_request_raw, 'DisplayName', 'RightWheel speed request RAW');
-    hold off;
-    legend show;
+    % plot(y_array, src.UserData.right_wheel_speed_request_raw, 'DisplayName', 'RightWheel speed request RAW');
+    % hold off;
+    % legend show;
 
     leftVectorOld = str2double(leftVectorOld_str(:, 1))';
+    leftVectorOld = line_coordinates_to_matrix(leftVectorOld);
+
     rightVectorOld = str2double(rightVectorOld_str(:, 1))';
+    rightVectorOld = line_coordinates_to_matrix(rightVectorOld);
+
     leftVector = str2double(leftVector_str(:, 1))';
+    leftVector = line_coordinates_to_matrix(leftVector);
+
     rightVector = str2double(rightVector_str(:, 1))';
+    rightVector = line_coordinates_to_matrix(rightVector);
+
     leftLine = str2double(leftLine_str(:, 1))';
     rightLine = str2double(rightLine_str(:, 1))';
     middleLaneLine = str2double(middleLaneLine_str(:, 1))';
     carPosition = str2double(carPosition_str(:, 1))';
     newWayPointPosition = str2double(newWayPointPosition_str(:, 1))';
+
     finish_line_left_segment = str2double(finish_line_left_segment_str(:, 1))';
+    finish_line_left_segment = line_coordinates_to_matrix(finish_line_left_segment);
+
     finish_line_right_segment = str2double(finish_line_right_segment_str(:, 1))';
+    finish_line_right_segment = line_coordinates_to_matrix(finish_line_right_segment);
 
 %     f_leftLine = @(x,y) x.*leftLine(1) + y.*leftLine(2) + leftLine(3);
 %     f_rightLine = @(x,y) x.*rightLine(1) + y.*rightLine(2) + rightLine(3);
 %     f_middleLaneLine = @(x,y) x.*middleLaneLine(1) + y.*middleLaneLine(2) + middleLaneLine(3);
     
     xmin = -50;
-    xmax = 150;
-    ymin = -200;
-    ymax = 200;
-
-%     [x1, y1] = plotLineABC(leftLine, xmin, xmax, xmin, xmax);
-%     [x2, y2] = plotLineABC(rightLine, xmin, xmax, xmin, xmax);
+    xmax = 130;
+    ymin = -20;
+    ymax = 120;
+    x_limits = [xmin, xmax];
+    y_limits = [ymin, ymax];
     
-    [x3, y3] = plotLineABC(middleLaneLine, xmin, xmax, ymin, ymax);
+    middle_line_vector = plotLineABC(middleLaneLine, xmin, xmax, ymin, ymax);
 
-%     plot([leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o");
-%     hold on;
-%     plot([rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o");
-%     hold on;
-%     plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], x3, y3, carPosition(1), carPosition(2), "^", newWayPointPosition(1), newWayPointPosition(2), "*");
- % figure(1, 'Name','Camera view');
- set(0, 'CurrentFigure', src.UserData.cameraView_figure)
-plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
-        [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], ...
-        x3, y3, carPosition(1), carPosition(2), "^", ...
-        newWayPointPosition(1), newWayPointPosition(2), "*", ...
-        [leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o", ...
-        [rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o", ...
-        [finish_line_left_segment(1) finish_line_left_segment(3)], [finish_line_left_segment(2) finish_line_left_segment(4)], "-.s", ...
-        [finish_line_right_segment(1) finish_line_right_segment(3)], [finish_line_right_segment(2) finish_line_right_segment(4)], "-.s");
-    text(leftVector(1), leftVector(2), "1");
-    text(leftVector(3), leftVector(4), "2");
-    text(rightVector(1), rightVector(2), "1");
-    text(rightVector(3), rightVector(4), "2");
-    myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
-    text(xmin, ymax-3, myText);
-    myText = sprintf("Gas: %.2f%%", carAcceleration * 100);
-    text(xmin, ymax-7, myText);
-    myText = sprintf("Obstacle distance [m]: %.3f", frontObstacleDistance);
-    text(xmin, ymax-11, myText);
-    myText = sprintf("LookAheadDistance[cm]: %.2f", lookAheadDistance);
-    text(xmin, ymax-15, myText);
-    myText = sprintf("g_car_speed_mps[raw]: %.2f", carSpeedRaw);
-    text(xmin, ymax-19, myText);
-    myText = sprintf("FinishLine[1/0]: %d", g_finish_line_detected);
-    text(xmin, ymax-23, myText);
-    myText = sprintf("FinishLineNow[1/0]: %d", g_finish_line_detected_now);
-    text(xmin, ymax-27, myText);
-    myText = sprintf("LoopTime[ms]: %d", g_loop_time_ms);
-    text(xmin, ymax-31, myText);
+update_car_view_scene(src.UserData.cameraView_figure, middle_line_vector, leftVector, rightVector, leftVectorOld, rightVectorOld, finish_line_left_segment, finish_line_right_segment, carPosition, newWayPointPosition, steeringWheelAngle, carAcceleration, frontObstacleDistance, lookAheadDistance, carSpeedRaw, g_finish_line_detected, g_finish_line_detected_now, g_loop_time_ms, x_limits, y_limits);
 
-    
-    xlim([xmin xmax])
-    ylim([ymin ymax])
+%  set(0, 'CurrentFigure', src.UserData.cameraView_figure)
+% plot([leftVector(1) leftVector(3)], [leftVector(2) leftVector(4)], ...
+%         [rightVector(1) rightVector(3)], [rightVector(2) rightVector(4)], ...
+%         x3, y3, carPosition(1), carPosition(2), "^", ...
+%         newWayPointPosition(1), newWayPointPosition(2), "*", ...
+%         [leftVectorOld(1) leftVectorOld(3)], [leftVectorOld(2) leftVectorOld(4)], "--o", ...
+%         [rightVectorOld(1) rightVectorOld(3)], [rightVectorOld(2) rightVectorOld(4)], "--o", ...
+%         [finish_line_left_segment(1) finish_line_left_segment(3)], [finish_line_left_segment(2) finish_line_left_segment(4)], "-.s", ...
+%         [finish_line_right_segment(1) finish_line_right_segment(3)], [finish_line_right_segment(2) finish_line_right_segment(4)], "-.s");
+%     text(leftVector(1), leftVector(2), "1");
+%     text(leftVector(3), leftVector(4), "2");
+%     text(rightVector(1), rightVector(2), "1");
+%     text(rightVector(3), rightVector(4), "2");
+%     myText = sprintf('SteeringAngle: %.2f°', steeringWheelAngle * (180/pi));
+%     text(xmin, ymax-3, myText);
+%     myText = sprintf("Gas: %.2f%%", carAcceleration * 100);
+%     text(xmin, ymax-7, myText);
+%     myText = sprintf("Obstacle distance [m]: %.3f", frontObstacleDistance);
+%     text(xmin, ymax-11, myText);
+%     myText = sprintf("LookAheadDistance[cm]: %.2f", lookAheadDistance);
+%     text(xmin, ymax-15, myText);
+%     myText = sprintf("g_car_speed_mps[raw]: %.2f", carSpeedRaw);
+%     text(xmin, ymax-19, myText);
+%     myText = sprintf("FinishLine[1/0]: %d", g_finish_line_detected);
+%     text(xmin, ymax-23, myText);
+%     myText = sprintf("FinishLineNow[1/0]: %d", g_finish_line_detected_now);
+%     text(xmin, ymax-27, myText);
+%     myText = sprintf("LoopTime[ms]: %d", g_loop_time_ms);
+%     text(xmin, ymax-31, myText);
+% 
+% 
+%     xlim([xmin xmax])
+%     ylim([ymin ymax])
 
 end
