@@ -17,6 +17,8 @@
 
 #include "LcdMenu.h"
 
+#include "features/automatic_emergency_braking.h"
+
 
 
 
@@ -429,12 +431,40 @@ void settingsMenuRoutine() {
 
     #if ENABLE_LCDMENU_MAIN_VIEW != 0
       case LCDMENU_MAIN_VIEW:
-        displayParameterValue(String("Loop ms: ")+FloatToString(g_loop_time_ms, 2), String("Timer s: ")+FloatToString((g_time_passed_ms / 1000.0f), 2));
-      break;
+      {
+        
+        float obstacle_distance = getFrontObstacleDistanceAnalog_m();
+
+        #if LCD_LIBRARY_ADAFRUIT != 0
+          display.clearDisplay();
+          display.setTextSize(PARAMETER_NAME_TEXT_SIZE);
+          display.setTextColor(PARAMETER_NAME_TEXT_COLOR);
+        #elif LCD_LIBRARY_SSD1306Ascii != 0
+        display.clear();
+        #endif
+        display.setCursor(0, 0);
+
+        display.print("Loop ms: ");
+        display.println(FloatToString(g_loop_time_ms, 2));
+
+        display.print("Timer s: ");
+        display.println(FloatToString((g_time_passed_ms / 1000.0f), 2));
+        display.print("Obst_Dist[m]: ");
+        display.println(FloatToString(obstacle_distance, 4));
+
+  
+  
+        #if LCD_LIBRARY_ADAFRUIT != 0
+          display.display();
+        #endif
+      
+      }
+        break;
     #endif
 
     #if ENABLE_LCDMENU_ENABLE_CAR_ENGINE != 0
       case LCDMENU_ENABLE_CAR_ENGINE:
+      {
         if (incrementButton == HIGH) {
           g_emergency_brake_enable_delay_started_count = 0;
           g_emergency_brake_enable_remaining_delay_s = 0.0f;
@@ -449,6 +479,7 @@ void settingsMenuRoutine() {
         else{
           displayParameterValue(String("ENABLE_ENGINE"), String("Disabled"));
         }
+      }
         break;
       #endif
     
@@ -472,6 +503,7 @@ void settingsMenuRoutine() {
 
     #if ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE != 0  
       case LCDMENU_ENABLE_EMERGENCY_BRAKE:
+      {
         if (incrementButton == HIGH) {
           g_enable_emergency_brake = 1;
         }
@@ -485,6 +517,7 @@ void settingsMenuRoutine() {
         else{
           displayParameterValue(String("ENABLE_EMERG_BRK"), String("Disabled"));
         }
+      }
       break;
     #endif
 

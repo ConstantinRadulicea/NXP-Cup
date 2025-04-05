@@ -132,9 +132,9 @@ extern float g_line_image_frame_height;
 #endif
 
 #if CAR_ID == 1
-  #define DISTANCE_SENSOR1_OFFSET_M (0.07)
-  #define DISTANCE_SENSOR2_OFFSET_M (0.07)   // calibrated_data = sensor_data - offset
-  #define DISTANCE_SENSOR3_OFFSET_M (0.07)
+  #define DISTANCE_SENSOR1_OFFSET_M (0.069)
+  #define DISTANCE_SENSOR2_OFFSET_M (0.069)   // calibrated_data = sensor_data - offset
+  #define DISTANCE_SENSOR3_OFFSET_M (0.069)
 
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_X (-0.124)
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_C (-0.056)
@@ -146,9 +146,11 @@ extern float g_line_image_frame_height;
   #define DISTANCE_SENSOR3_CALIBRATION_FORMULA_C (-0.056)
 
   #elif CAR_ID == 2
-  #define DISTANCE_SENSOR1_OFFSET_M (0.059)
-  #define DISTANCE_SENSOR2_OFFSET_M (0.059)   // calibrated_data = sensor_data - offset
-  #define DISTANCE_SENSOR3_OFFSET_M (0.059)
+
+
+  #define DISTANCE_SENSOR1_OFFSET_M (0.068)
+  #define DISTANCE_SENSOR2_OFFSET_M (0.068)   // calibrated_data = sensor_data - offset
+  #define DISTANCE_SENSOR3_OFFSET_M (0.068)
 
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_X (-0.696)
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_C (-0.201)
@@ -158,6 +160,7 @@ extern float g_line_image_frame_height;
 
   #define DISTANCE_SENSOR3_CALIBRATION_FORMULA_X (-0.696)
   #define DISTANCE_SENSOR3_CALIBRATION_FORMULA_C (-0.201)
+
 #endif
 
 /*====================================================================================================================================*/
