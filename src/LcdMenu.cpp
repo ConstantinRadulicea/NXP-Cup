@@ -50,7 +50,7 @@ SSD1306AsciiWire display;
 
 #define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE                     1
 #define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_AFTER_DELAY         1
-#define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY         1
+#define ENABLE_LCDMENU_ENABLE_EMERGENCY_BRAKE_MAX_DISTANCE_AFTER_DELAY         0
 #define ENABLE_LCDMENU_EMERGENCY_BRAKE_MIN_SPEED                  1
 #define ENABLE_LCDMENU_EMERGENCY_BREAK_DISTANCE_M                 1
 #define ENABLE_LCDMENU_EMERGENCY_BRAKE_DISTANCE_FROM_OBSTACLE_M   1
@@ -599,9 +599,9 @@ void settingsMenuRoutine() {
     #if ENABLE_LCDMENU_MIN_SPEED != 0
       case LCDMENU_MIN_SPEED:
         if (incrementButton == HIGH) {
-          g_vehicle_min_speed_mps += 0.01f;
+          g_vehicle_min_speed_mps += 0.05f;
         } else if (decrementButton == HIGH) {
-          g_vehicle_min_speed_mps -= 0.01f;
+          g_vehicle_min_speed_mps -= 0.05f;
         }
         g_vehicle_min_speed_mps = MAX(g_vehicle_min_speed_mps, 0.0f);
         displayParameterValue(String("g_vehicle_min_speed_mps"), FloatToString(g_vehicle_min_speed_mps, 3));
@@ -645,9 +645,9 @@ void settingsMenuRoutine() {
     #if ENABLE_LCDMENU_MAX_SPEED != 0
       case LCDMENU_MAX_SPEED:
         if (incrementButton == HIGH) {
-          g_vehicle_max_speed_original_mps += 0.01f;
+          g_vehicle_max_speed_original_mps += 0.05f;
         } else if (decrementButton == HIGH) {
-          g_vehicle_max_speed_original_mps -= 0.01f;
+          g_vehicle_max_speed_original_mps -= 0.05f;
         }
         g_vehicle_max_speed_original_mps = MAX(g_vehicle_max_speed_original_mps, 0.0f);
 
@@ -658,9 +658,9 @@ void settingsMenuRoutine() {
     #if ENABLE_LCDMENU_MAX_SPEED_AFTER_DELAY != 0
       case LCDMENU_MAX_SPEED_AFTER_DELAY:
         if (incrementButton == HIGH) {
-          g_max_speed_after_delay_mps += 0.01f;
+          g_max_speed_after_delay_mps += 0.05f;
         } else if (decrementButton == HIGH) {
-          g_max_speed_after_delay_mps -= 0.01f;
+          g_max_speed_after_delay_mps -= 0.05f;
         }
         g_max_speed_after_delay_mps = MAX(g_max_speed_after_delay_mps, 0.0f);
         displayParameterValue(String("g_vehicle_max_speed_after_delay_mps"), FloatToString(g_max_speed_after_delay_mps, 4));
@@ -751,9 +751,9 @@ void settingsMenuRoutine() {
     #if ENABLE_LCDMENU_EMERGENCY_BREAK_DISTANCE_M != 0
       case LCDMENU_EMERGENCY_BREAK_DISTANCE_M:
         if (incrementButton == HIGH) {
-          g_emergency_brake_activation_max_distance_m += 0.005f;
+          g_emergency_brake_activation_max_distance_m += 0.05f;
         } else if (decrementButton == HIGH) {
-          g_emergency_brake_activation_max_distance_m -= 0.005f;
+          g_emergency_brake_activation_max_distance_m -= 0.05f;
         }
         g_emergency_brake_activation_max_distance_m = MAX(g_emergency_brake_activation_max_distance_m, 0.0f);
 

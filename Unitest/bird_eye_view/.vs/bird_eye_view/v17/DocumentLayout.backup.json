@@ -52,7 +52,7 @@
               "RelativeDocumentMoniker": "BirdEyeView.cpp",
               "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\bird_eye_view\\BirdEyeView.cpp",
               "RelativeToolTip": "BirdEyeView.cpp",
-              "ViewState": "AgIAAAwBAAAAAAAAAAAwwCoBAAAiAAAAAAAAAA==",
+              "ViewState": "AgIAALcBAAAAAAAAAAAQwMIBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-04-04T22:41:58.907Z",
               "EditorCaption": ""
@@ -67,8 +67,7 @@
               "RelativeToolTip": "BirdEyeView.h",
               "ViewState": "AgIAAA4AAAAAAAAAAAAAwBgAAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-04-04T17:04:58.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T17:04:58.375Z"
             },
             {
               "$type": "Document",
@@ -80,8 +79,7 @@
               "RelativeToolTip": "geometry2D.h",
               "ViewState": "AgIAAAcBAAAAAAAAAAAuwB4BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2025-04-04T17:03:45.375Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-04-04T17:03:45.375Z"
             },
             {
               "$type": "Document",

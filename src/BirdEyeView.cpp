@@ -54,7 +54,7 @@ int getPerspectiveTransform(Point2D src[4], Point2D dst[4], float H[3][3]) {
 
         A[i * 2][0] = x;
         A[i * 2][1] = y;
-        A[i * 2][2] = 1;
+        A[i * 2][2] = 1.0f;
         A[i * 2][6] = -x * x_p;
         A[i * 2][7] = -y * x_p;
         A[i * 2][8] = x_p;
@@ -246,11 +246,11 @@ struct track_widths srcViewToRealView(struct track_widths src_view, float real_t
 
 
     lower_segment_length = lengthLineSegment(src_view.lower_segment);
-    if (floatCmp(lower_segment_length, 0.0f) == 0) {
+    if (floatCmp(lower_segment_length, 0.0f) <= 0) {
         return real_view;
     }
 
-    if (floatCmp(real_track_width_m, 0.0f) == 0) {
+    if (floatCmp(real_track_width_m, 0.0f) <= 0) {
         return real_view;
     }
 
@@ -264,12 +264,12 @@ struct track_widths srcViewToRealView(struct track_widths src_view, float real_t
 
 
 
-    if (floatCmp(apparent_size, 0.0f) == 0) {
+    if (floatCmp(apparent_size, 0.0f) <= 0) {
         return real_view;
     }
     actual_distance = (actual_size * reference_distance) / apparent_size;
 
-    if (floatCmp(actual_distance, 0.0f) == 0) {
+    if (floatCmp(actual_distance, 0.0f) <= 0) {
         return real_view;
     }
 

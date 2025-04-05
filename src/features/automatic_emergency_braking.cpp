@@ -48,7 +48,7 @@ AEB_out_t automatic_emergency_braking(){
       }
       
       if (g_enable_change_aeb_max_distance_after_delay_passed) {
-        local_emergency_brake_activation_max_distance_m = local_emergency_brake_activation_max_distance_m;
+        local_emergency_brake_activation_max_distance_m = g_emergency_brake_activation_max_distance_m;
       }
       else{
         local_emergency_brake_activation_max_distance_m = g_emergency_brake_distance_from_obstacle_m;
