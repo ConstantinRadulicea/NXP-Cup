@@ -1,5 +1,10 @@
 function read_callback_serialport(src, ~)
-    persistent startTime
+    persistent startTime start_sampling_time
+
+    if isempty(start_sampling_time)
+        start_sampling_time = tic;
+        return
+    end
     
     if isempty(startTime)
         startTime = tic;
@@ -47,6 +52,10 @@ function read_callback_serialport(src, ~)
     right_wheel_adjusted_rpm = str2double(raw_data(23,1));
     left_wheel_speed_request_raw = str2double(raw_data(24,1));
     right_wheel_speed_request_raw = str2double(raw_data(25,1));
+    left_wheel_speed_request = str2double(raw_data(26,1));
+    right_wheel_speed_request = str2double(raw_data(27,1));
+    left_wheel_speed = str2double(raw_data(28,1));
+    right_wheel_speed = str2double(raw_data(29,1));
     
     sample_batch_size = length(src.UserData.wheels_rpm.left.raw_rpm) + 1;
     sample_batch_max_size = 1500;
@@ -65,10 +74,15 @@ function read_callback_serialport(src, ~)
     src.UserData.right_wheel_speed_request_raw(end+1) = right_wheel_speed_request_raw;
     src.UserData.right_wheel_speed_request_raw = src.UserData.right_wheel_speed_request_raw(end - sample_batch_size + 1:end);
     
-    if(toc(startTime) < (1/30))
+    if(toc(startTime) < (1/10))
         return;
     end
     startTime = tic;
+    
+
+    plot_wheel_speed(src.UserData.wheelRpm_figure, toc(start_sampling_time), left_wheel_speed, right_wheel_speed);
+    plot_wheel_speed_request(src.UserData.wheelSpeedRequest_figure, toc(start_sampling_time), left_wheel_speed_request, right_wheel_speed_request);
+
 
     y_array = 1:1:length(src.UserData.wheels_rpm.left.raw_rpm);
     % set(0, 'CurrentFigure', src.UserData.wheelRpm_figure)

@@ -11,13 +11,15 @@ server = tcpclient(car_ip_address,car_port)
 server.UserData.lastFlushed = 1;
 server.UserData.cameraView_figure = figure('Name','cameraView');
 server.UserData.wheelRpm_figure = figure('Name','Wheels Rpm');
-server.UserData.wheelSpeedRequestRaw_figure = figure('Name','Wheels speed request Raw');
+% server.UserData.wheelSpeedRequestRaw_figure = figure('Name','Wheels speed request Raw');
+server.UserData.wheelSpeedRequest_figure = figure('Name','Wheels speed request');
 
 
 
 server.UserData.wheels_rpm.left.raw_rpm = [];
 server.UserData.wheels_rpm.left.adjusted_rpm = [];
 server.UserData.wheels_rpm.right.raw_rpm = [];
+server.UserData.wheels_rpm.right.adjusted_rpm = [];
 server.UserData.wheels_rpm.right.adjusted_rpm = [];
 
 

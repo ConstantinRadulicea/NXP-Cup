@@ -118,12 +118,21 @@ ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
   serialPort.print(FloatToString(g_powertrain.GetLeftWheelSpeedRequest_raw(), n_decimals));
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_powertrain.GetRightWheelSpeedRequest_raw(), n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(FloatToString(g_powertrain.GetLeftWheelSpeedRequest(), n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(FloatToString(g_powertrain.GetRightWheelSpeedRequest(), n_decimals));
+
+  serialPort.print(semicolonChar);
+  serialPort.print(FloatToString(g_powertrain.GetLeftWheelSpeed(), n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(FloatToString(g_powertrain.GetRightWheelSpeed(), n_decimals));
 }
 #else
 serialPort.print(semicolonChar);
 serialPort.print("0.0");
 serialPort.print(semicolonChar);
-serialPort.print(FloatToString(g_onemotorpowertrain.GetSpeedRequest(), 2));
+serialPort.print("0.0");
 
 serialPort.print(semicolonChar);
 serialPort.print("0.0");
@@ -132,6 +141,16 @@ serialPort.print("0.0");
 
 serialPort.print(semicolonChar);
 serialPort.print(FloatToString(g_onemotorpowertrain.GetSpeedRequest_raw(), 2));
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
+
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
+serialPort.print(semicolonChar);
+serialPort.print(FloatToString(g_onemotorpowertrain.GetSpeedRequest(), 2));
+
+serialPort.print(semicolonChar);
+serialPort.print("0.0");
 serialPort.print(semicolonChar);
 serialPort.print("0.0");
 #endif
