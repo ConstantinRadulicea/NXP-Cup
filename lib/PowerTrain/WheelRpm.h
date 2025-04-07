@@ -30,12 +30,12 @@
 #define ENCODER_ISR_ATTR
 #endif
 
-#define RPM_SENSOR_PULSES_PER_REVOLUTION (20)
-#define MillisToMicros(val) ((val)*1000)
-#define MicrosToMillis(val) ((val)/1000)
-#define MicrosToSec(val) ((val)/1000000)
-#define SecToMicros(val) ((val)*1000000)
-#define MillisToSec(val) ((val) / 1000)
+#define RPM_SENSOR_PULSES_PER_REVOLUTION (20.0f)
+#define MillisToMicros(val) ((val)*1000.0f)
+#define MicrosToMillis(val) ((val)/1000.0f)
+#define MicrosToSec(val) ((val)/1000000.0f)
+#define SecToMicros(val) ((val)*1000000.0f)
+#define MillisToSec(val) ((val) / 1000.0f)
 
 
 
@@ -47,6 +47,7 @@ typedef struct RpmSensorData {
     float TotalRotations;
     float Rpm;
     unsigned long LastSampleTimestamp_us;
+    unsigned long LastImpulseTimestamp_us;
     MedianFilter RpmAverage;
     void (*on_pulse)(volatile struct RpmSensorData *data);
     float TimePassedFromLastSample_us;

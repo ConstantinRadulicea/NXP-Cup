@@ -16,7 +16,7 @@
 
 #include "WheelRpm.h"
 
-#define MEDIAN_FILTER_SIZE 5
+#define MEDIAN_FILTER_SIZE 5 // 5
 
 
 void enableCpuCyclesCount(){
@@ -64,16 +64,22 @@ volatile RpmSensorData LeftWheelRpmData = {
     
     if(time_now_us < data->LastSampleTimestamp_us){
         data->LastSampleTimestamp_us = time_now_us;
+        data->LastImpulseTimestamp_us = time_now_us;
         return;
     }
     elapsed_time_us = time_now_us - data->LastSampleTimestamp_us;
-    if (elapsed_time_us < (unsigned long)MillisToMicros(0.5f)) {
-        //data->LastSampleTimestamp_us = time_now_us;
+    if ((time_now_us - data->LastImpulseTimestamp_us) < (unsigned long)MillisToMicros(0.5f)) {
+        data->LastImpulseTimestamp_us = time_now_us;
         return;
     }
+    //if (elapsed_time_us < (unsigned long)MillisToMicros(0.5f)) {
+    //    //data->LastSampleTimestamp_us = time_now_us;
+    //    return;
+    //}
     
     data->TotalInterrupts += 1;
     data->LastSampleTimestamp_us = time_now_us;
+    data->LastImpulseTimestamp_us = time_now_us;
 
     // Update the total rotations
     data->TotalRotations += (1.0 / (float)RPM_SENSOR_PULSES_PER_REVOLUTION);
@@ -190,9 +196,12 @@ volatile RpmSensorData LeftWheelRpmData = {
 
     if(time_now_us < temp_WheelRpmData.LastSampleTimestamp_us){
         elapsed_time_us = (float)temp_WheelRpmData.LastSampleTimestamp_us - (float)time_now_us + temp_WheelRpmData.TimePassedFromLastSample_us;
+        //elapsed_time_us = (float)temp_WheelRpmData.LastSampleTimestamp_us - (float)time_now_us;
     }
     else{
         elapsed_time_us = (float)time_now_us - (float)temp_WheelRpmData.LastSampleTimestamp_us + temp_WheelRpmData.TimePassedFromLastSample_us;
+        //elapsed_time_us = (float)time_now_us - (float)temp_WheelRpmData.LastSampleTimestamp_us;
+
     }
     return elapsed_time_us;
 }
