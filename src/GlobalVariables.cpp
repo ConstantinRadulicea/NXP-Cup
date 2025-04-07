@@ -121,8 +121,8 @@ float g_black_color_treshold = 0.2f; // 0=black, 1=white
 float g_lookahead_min_distance_cm = 20.0f;
 float g_lookahead_max_distance_cm = 50.0f;
 float g_vehicle_min_speed_mps = 0.35f;   // m/s
-float g_vehicle_max_speed_mps = 2.5f;  // m/s
-float g_vehicle_max_speed_original_mps = 2.5f; // m/s
+float g_vehicle_max_speed_mps = 2.0f;  // m/s
+float g_vehicle_max_speed_original_mps = 2.0f; // m/s
 float g_emergency_brake_activation_max_distance_m = 1.5f;
 float g_emergency_brake_speed_mps = 0.35f; // m/s
 float g_emergency_brake_distance_from_obstacle_m = 0.1f;   // 13.5f
@@ -144,7 +144,7 @@ float g_powertrain_right_wheel_ki = 0.1;
 float g_powertrain_right_wheel_kd = 0.0;
 float g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-float g_friction_coefficient = 0.8f;
+float g_friction_coefficient = 0.5f;
 float g_downward_acceleration = G_CONSTANT;
 
 float g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);

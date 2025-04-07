@@ -74,7 +74,7 @@ function read_callback_serialport(src, ~)
     src.UserData.right_wheel_speed_request_raw(end+1) = right_wheel_speed_request_raw;
     src.UserData.right_wheel_speed_request_raw = src.UserData.right_wheel_speed_request_raw(end - sample_batch_size + 1:end);
     
-    if(toc(startTime) < (1/10))
+    if(toc(startTime) < (1/2))
         return;
     end
     startTime = tic;
