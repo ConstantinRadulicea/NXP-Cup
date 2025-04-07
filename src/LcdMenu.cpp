@@ -38,6 +38,8 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_ENABLE_CAR_ENGINE                          1
 #define ENABLE_LCDMENU_ENABLE_CAR_STEERING_WHEEL                  1
 #define ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET                1
+#define ENABLE_LCDMENU_FRICTION_COEEFFICIENT                      1
+
 #define ENABLE_LCDMENU_MIN_SPEED                                  1
 #define ENABLE_LCDMENU_MAX_SPEED                                  1
 #define ENABLE_LCDMENU_MAX_SPEED_AFTER_DELAY                      1
@@ -211,6 +213,9 @@ void settingsMenuRoutine() {
               #if ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET != 0
                 LCDMENU_STEERING_WHEEL_ANGLE_OFFSET,
               #endif
+              #if ENABLE_LCDMENU_FRICTION_COEEFFICIENT != 0
+                LCDMENU_FRICTION_COEEFFICIENT,
+              #endif
               #if ENABLE_LCDMENU_MIN_SPEED != 0
                 LCDMENU_MIN_SPEED,
               #endif
@@ -374,7 +379,7 @@ void settingsMenuRoutine() {
     
     switch (lcdMenuIndex) {
     
-    #if ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET != 0
+      #if ENABLE_LCDMENU_STEERING_WHEEL_ANGLE_OFFSET != 0
       case LCDMENU_STEERING_WHEEL_ANGLE_OFFSET:
         if (incrementButton == HIGH) {
           g_steering_wheel_angle_offset_deg += 0.1f;
@@ -386,7 +391,19 @@ void settingsMenuRoutine() {
       break;
     #endif
 
+    #if ENABLE_LCDMENU_FRICTION_COEEFFICIENT != 0
+    case LCDMENU_FRICTION_COEEFFICIENT:
+      if (incrementButton == HIGH) {
+        g_friction_coefficient += 0.01f;
+      } else if (decrementButton == HIGH) {
+        g_friction_coefficient -= 0.01f;
+      }
 
+      g_friction_coefficient = MAX(g_friction_coefficient, 0.0f);
+
+      displayParameterValue(String("g_friction_coefficient"), FloatToString(g_friction_coefficient, 3));
+    break;
+  #endif
 
     #if ENABLE_LCDMENU_CAMERA_OFFSET_Y != 0
       case LCDMENU_CAMERA_OFFSET:
@@ -410,8 +427,9 @@ void settingsMenuRoutine() {
           g_finish_line_angle_tolerance += 0.1f;
         } else if (decrementButton == HIGH) {
           g_finish_line_angle_tolerance -= 0.1f;
-          g_finish_line_angle_tolerance = MIN(g_finish_line_angle_tolerance, 0.0f);
         }
+
+        g_finish_line_angle_tolerance = MAX(g_finish_line_angle_tolerance, 0.0f);
 
         displayParameterValue(String("FINISH_LIN_ANG"), FloatToString(g_finish_line_angle_tolerance, 2));
       break;
