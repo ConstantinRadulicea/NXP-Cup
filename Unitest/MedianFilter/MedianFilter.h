@@ -34,35 +34,67 @@ private:
 
 
     // An optimized version of Bubble Sort
-    static void bubbleSort(float arr[], int n)
+    //static void bubbleSort(float arr[], int n)
+    //{
+    //    int i, j;
+    //    int swapped;
+    //    float temp;
+    //    for (i = 0; i < n - 1; i++) {
+    //        swapped = 0;
+    //        for (j = 0; j < n - i - 1; j++) {
+    //            if (arr[j] > arr[j + 1]) {
+    //                //swap(arr[j], arr[j + 1]);
+    //                temp = arr[j];
+    //                arr[j] = arr[j + 1];
+    //                arr[j + 1] = temp;
+    //                swapped = 1;
+    //            }
+    //        }
+
+    //        // If no two elements were swapped
+    //        // by inner loop, then break
+    //        if (swapped == 0)
+    //            break;
+    //    }
+    //}
+
+    static void bubbleSort(float* _arr, size_t _n_elem)
     {
-        int i, j;
-        int swapped;
+        if (_n_elem <= 1) return;
+
+        char ord;
+        float* arr;
+        size_t i, first_order;
+        arr = _arr;
+        first_order = _n_elem;
         float temp;
-        for (i = 0; i < n - 1; i++) {
-            swapped = 0;
-            for (j = 0; j < n - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    //swap(arr[j], arr[j + 1]);
-                    temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                    swapped = 1;
+
+        do {
+            ord = (char)1;
+            for (i = (size_t)0; i < first_order - (size_t)1; i++)
+            {
+                if (arr[i] > arr[i + (size_t)1])
+                {
+                    temp = arr[i];
+                    arr[i] = arr[i + (size_t)1];
+                    arr[i + (size_t)1] = temp;
+                    ord = (char)0;
                 }
             }
-
-            // If no two elements were swapped
-            // by inner loop, then break
-            if (swapped == 0)
-                break;
-        }
+            first_order -= 1;
+        } while (!ord);
     }
+
+
+
+
+
 public:
 
     MedianFilter(unsigned int windowSize) {
         this->totSamples = 0;
         this->_windowSize = windowSize;
-        if (windowSize <= 0) {
+        if (windowSize <= 1) {
             this->_queue = NULL;
             this->_tempQueue = NULL;
             return;
@@ -148,6 +180,10 @@ public:
     MedianFilter() {
         this->totSamples = 0;
         this->_windowSize = 0;
+    }
+
+    void clear() {
+        this->totSamples = 0;
     }
 
     ~MedianFilter() {

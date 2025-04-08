@@ -132,9 +132,9 @@ extern float g_line_image_frame_height;
 #endif
 
 #if CAR_ID == 1
-  #define DISTANCE_SENSOR1_OFFSET_M (0.069)
-  #define DISTANCE_SENSOR2_OFFSET_M (0.069)   // calibrated_data = sensor_data - offset
-  #define DISTANCE_SENSOR3_OFFSET_M (0.069)
+  #define DISTANCE_SENSOR1_OFFSET_M (0.0694)
+  #define DISTANCE_SENSOR2_OFFSET_M (0.0694)   // calibrated_data = sensor_data - offset
+  #define DISTANCE_SENSOR3_OFFSET_M (0.0694)
 
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_X (-0.124)
   #define DISTANCE_SENSOR1_CALIBRATION_FORMULA_C (-0.056)

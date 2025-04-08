@@ -1,9 +1,8 @@
 ﻿  main.cpp
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\MedianFilter.h(81,28): warning C4018: '<': signed/unsigned mismatch
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\MedianFilter.h(113,28): warning C4018: '<': signed/unsigned mismatch
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\MedianFilter.h(116,28): warning C4018: '<': signed/unsigned mismatch
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\MedianFilter.h(148,28): warning C4018: '<': signed/unsigned mismatch
   (compiling source file 'main.cpp')
   
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\main.cpp(13,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   MedianFilter.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\MedianFilter\x64\Debug\MedianFilter.exe

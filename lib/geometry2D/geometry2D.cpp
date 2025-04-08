@@ -1566,7 +1566,12 @@ IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2) {
 	float u = ((xC - xA) * (yB - yA) - (yC - yA) * (xB - xA)) / denom;
 
 	// Check if the intersection is within both segments
-	if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+	//if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+	//	result.point.x = xA + t * (xB - xA);
+	//	result.point.y = yA + t * (yB - yA);
+	//	result.info = INTERSECTION_INFO_ONE_INTERSECTION;
+	//}
+	if ((floatCmp(t, 0.0f) >= 0) && (floatCmp(t, 1.0f) <= 0) && (floatCmp(u, 0.0f) >= 0) && (floatCmp(u, 1.0f) <= 0)) {
 		result.point.x = xA + t * (xB - xA);
 		result.point.y = yA + t * (yB - yA);
 		result.info = INTERSECTION_INFO_ONE_INTERSECTION;
@@ -1629,9 +1634,10 @@ seg2 = end
 int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2) {
 	LineSegment result_seg;
 	int is_seg2_reachable, is_seg1_reachable;
-	is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
+	//is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
 	is_seg2_reachable = reachableWithouthPassingThroughSegment(start_point, seg1, midPointLineSegment(seg2));
 
+	//return (is_seg1_reachable == 1) && (is_seg2_reachable == 1);
 	return is_seg2_reachable;
 }
 
