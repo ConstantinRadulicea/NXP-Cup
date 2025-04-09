@@ -144,7 +144,7 @@ float g_powertrain_right_wheel_ki = 0.1;
 float g_powertrain_right_wheel_kd = 0.0;
 float g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-float g_friction_coefficient = 0.5f;
+float g_friction_coefficient = 0.7f;
 float g_downward_acceleration = G_CONSTANT;
 
 float g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);

@@ -473,6 +473,8 @@ void settingsMenuRoutine() {
         display.println(FloatToString((g_time_passed_ms / 1000.0f), 2));
         display.print("Obst_Dist[m]: ");
         display.println(FloatToString(obstacle_distance, 4));
+        display.print("Finish_NOW: ");
+        display.println(FloatToString(g_finish_line_detected_now, 0));
 
   
   

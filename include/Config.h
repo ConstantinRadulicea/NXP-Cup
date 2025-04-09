@@ -20,13 +20,13 @@
 
 #include <Arduino.h>
 
-#define CAR_ID 1
+#define CAR_ID 2
 
 
-#define DEBUG_MODE 1
+#define DEBUG_MODE 0
 #define RACE_MODE 0
 #define TEMP_MODE 0
-#define SINGLE_AXE_MODE 0
+#define SINGLE_AXE_MODE 1
 #define REAR_AXE_STEERING_MODE 0
 
 #define SERIAL_PORT_BAUD_RATE 230400  //230400
