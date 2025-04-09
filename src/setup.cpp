@@ -148,5 +148,7 @@ void setup() {
   #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("Setup completed!"));
   #endif
-  initialize_g_birdeye_calibrationdata();
+  #if ENABLE_BIRDEYEVIEW != 0
+    initialize_g_birdeye_calibrationdata();
+  #endif
 }

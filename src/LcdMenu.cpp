@@ -66,7 +66,7 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_MAX_SPEED_CAR_SPEED_KD                     0
 #define ENABLE_LCDMENU_CAR_SPEED_KI_MIN_MAX_IMPACT                0
 
-#define ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW                 1
+#define ENABLE_LCDMENU_AUTOMATIC_CALIBRATION_VIEW                 0
 #define ENABLE_LCDMENU_CALIBRATION_VIEW_SINGLE_LINE               1
 #define ENABLE_LCDMENU_CALIBRATION_VIEW                           1
 #define ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW                  1
@@ -100,6 +100,10 @@ SSD1306AsciiWire display;
 #endif
 
 #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+#endif
+
+#if ENABLE_BIRDEYEVIEW == 0
+#define ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW                  0
 #endif
 
 

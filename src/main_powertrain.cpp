@@ -145,12 +145,14 @@ void loop() {
         vec = VectorsProcessing::reComputeVectorStartEnd_basedOnDistanceOfPointXaxis(vec, carPosition);
         calibrated_vector = VectorsProcessing::vectorToLineSegment(vec);
 
-        if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition == 0){
-          calibrated_vector = BirdEye_CalibrateLineSegmentScaledToVector(g_birdeye_calibrationdata, calibrated_vector);
-        }
-        if (g_start_line_calibration_acquisition == 0) {
-          calibrated_vector = calibrateLineSegment(calibrated_vector, g_line_calibration_data);
-        }
+        #if ENABLE_BIRDEYEVIEW != 0
+          if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition == 0){
+            calibrated_vector = BirdEye_CalibrateLineSegmentScaledToVector(g_birdeye_calibrationdata, calibrated_vector);
+          }
+        #endif
+        //if (g_start_line_calibration_acquisition == 0) {
+        //  calibrated_vector = calibrateLineSegment(calibrated_vector, g_line_calibration_data);
+        //}
         
         calibrated_vectors[i] = calibrated_vector;
         g_pixy_1_vectors_processing.addVector(calibrated_vector);
@@ -299,7 +301,7 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
 
     temp_time = (float)millis();
     if (temp_time < timeStart){
-      timeStart = temp_time;
+      timeStart = 0.0f;
       temp_time = 0.0f;
     }
     
