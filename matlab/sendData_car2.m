@@ -17,7 +17,7 @@ g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 50.0;                       % 40
 g_vehicle_min_speed_mps = 0.3;
-g_vehicle_max_speed_mps = 2.5;                                      % 
+g_vehicle_max_speed_mps = 2;                                      % 
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
@@ -40,7 +40,7 @@ g_powertrain_right_wheel_ki = 0.1;
 g_powertrain_right_wheel_kd = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-g_friction_coefficient = 0.5;
+g_friction_coefficient = 0.7;
 g_downward_acceleration = 9.80665;
 
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);
@@ -67,14 +67,15 @@ g_line_calibration_data_y_axis_offset = 0;
 % g_line_calibration_data_y_axis_offset = 0;
 
 g_lane_width_vector_unit = 56.61;    % 56.61
-BirdEye_calibration_TrackWidths_lower_segment_A_x = 11.46;   % RL x
-BirdEye_calibration_TrackWidths_lower_segment_A_y = -0.6;    % RL y
-BirdEye_calibration_TrackWidths_lower_segment_B_x = 69.53;   % RR x
-BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.6;     % RR y
-BirdEye_calibration_TrackWidths_upper_segment_A_x = 28.92;   % FL x
-BirdEye_calibration_TrackWidths_upper_segment_A_y = 51.78;   % FL y
-BirdEye_calibration_TrackWidths_upper_segment_B_x = 49.91;   % FR x
-BirdEye_calibration_TrackWidths_upper_segment_B_y = 52.21;   % FR y
+BirdEye_calibration_TrackWidths_upper_segment_A_x = 31.59f;   % FL x
+BirdEye_calibration_TrackWidths_upper_segment_A_y = 52.15f;   % FL y
+BirdEye_calibration_TrackWidths_upper_segment_B_x = 51.31f;   % FR x
+BirdEye_calibration_TrackWidths_upper_segment_B_y = 51.84f;   % FR y
+BirdEye_calibration_TrackWidths_lower_segment_A_x = 11.28f;   % RL x
+BirdEye_calibration_TrackWidths_lower_segment_A_y = 0.44f;    % RL y
+BirdEye_calibration_TrackWidths_lower_segment_B_x = 69.50f;   % RR x
+BirdEye_calibration_TrackWidths_lower_segment_B_y = -0.44f;   % RR y
+
 BirdEye_calibration_valid = 01;
 
 values = [g_lane_width_vector_unit...

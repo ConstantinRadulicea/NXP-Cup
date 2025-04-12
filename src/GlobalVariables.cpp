@@ -31,7 +31,7 @@ int8_t g_enable_distance_sensor1 = 1;
 int8_t g_enable_distance_sensor2 = 1;
 int8_t g_enable_distance_sensor3 = 1;
 int8_t g_enable_remote_start_stop = 0;
-int8_t g_enable_finish_line_detection = 1;
+int8_t g_enable_finish_line_detection = 0;
 
 float g_lane_width_vector_unit = 59.66f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white
@@ -89,14 +89,14 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
   void initialize_g_birdeye_calibrationdata() {
     struct track_widths temp_track_widths = {};
 
-    temp_track_widths.lower_segment.A.x = 4.3;   // RL x
-    temp_track_widths.lower_segment.A.y = 3.12;  // RL y
-    temp_track_widths.lower_segment.B.x = 66.05;  // RR x
-    temp_track_widths.lower_segment.B.y = -3.20;    // RR y
-    temp_track_widths.upper_segment.A.x = 28.58;   // FL x
-    temp_track_widths.upper_segment.A.y = 53.28;  // FL y
-    temp_track_widths.upper_segment.B.x = 52.3;  // FR x
-    temp_track_widths.upper_segment.B.y = 50.79;  // FR y
+    temp_track_widths.upper_segment.A.x = 25.07;   // FL x
+    temp_track_widths.upper_segment.A.y = 51.60;  // FL y
+    temp_track_widths.upper_segment.B.x = 48.85;  // FR x
+    temp_track_widths.upper_segment.B.y = 52.39;  // FR y
+    temp_track_widths.lower_segment.A.x = 9.4;   // RL x
+    temp_track_widths.lower_segment.A.y = -0.98;  // RL y
+    temp_track_widths.lower_segment.B.x = 68.00;  // RR x
+    temp_track_widths.lower_segment.B.y = 0.98;    // RR y
 
 
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
@@ -114,7 +114,7 @@ int8_t g_enable_distance_sensor1 = 1;
 int8_t g_enable_distance_sensor2 = 1;
 int8_t g_enable_distance_sensor3 = 1;
 int8_t g_enable_remote_start_stop = 0;
-int8_t g_enable_finish_line_detection = 1;
+int8_t g_enable_finish_line_detection = 0;
 
 float g_lane_width_vector_unit = 56.61f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white
@@ -171,14 +171,14 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
 
 void initialize_g_birdeye_calibrationdata() {
     struct track_widths temp_track_widths = {};
-    temp_track_widths.upper_segment.A.x = 28.92f;   // FL x
-    temp_track_widths.upper_segment.A.y = 51.78f;   // FL y
-    temp_track_widths.upper_segment.B.x = 49.91f;   // FR x
-    temp_track_widths.upper_segment.B.y = 52.21f;   // FR y
-    temp_track_widths.lower_segment.A.x = 11.46f;   // RL x
-    temp_track_widths.lower_segment.A.y = -0.6f;    // RL y
-    temp_track_widths.lower_segment.B.x = 69.53f;   // RR x
-    temp_track_widths.lower_segment.B.y = 0.6f;      // RR y
+    temp_track_widths.upper_segment.A.x = 31.59f;   // FL x
+    temp_track_widths.upper_segment.A.y = 52.15f;   // FL y
+    temp_track_widths.upper_segment.B.x = 51.31f;   // FR x
+    temp_track_widths.upper_segment.B.y = 51.84f;   // FR y
+    temp_track_widths.lower_segment.A.x = 11.28f;   // RL x
+    temp_track_widths.lower_segment.A.y = 0.44f;    // RL y
+    temp_track_widths.lower_segment.B.x = 69.50f;   // RR x
+    temp_track_widths.lower_segment.B.y = -0.44f;      // RR y
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);
     if (g_birdeye_calibrationdata.valid != 0) {
       g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
