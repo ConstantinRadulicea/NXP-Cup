@@ -40,7 +40,7 @@ g_powertrain_right_wheel_ki = 0.1;
 g_powertrain_right_wheel_kd = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-g_friction_coefficient = 0.7;
+g_friction_coefficient = 0.5;
 g_downward_acceleration = 9.80665;
 
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);
@@ -77,7 +77,7 @@ BirdEye_calibration_TrackWidths_lower_segment_B_x = 68.00;  % RR x
 BirdEye_calibration_TrackWidths_lower_segment_B_y = 0.98;   % RR y
 
 
-BirdEye_calibration_valid = 1;
+BirdEye_calibration_valid = 0;
 
 values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...

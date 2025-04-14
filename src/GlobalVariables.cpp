@@ -38,8 +38,8 @@ float g_black_color_treshold = 0.2f; // 0=black, 1=white
 float g_lookahead_min_distance_cm = 20.0f;
 float g_lookahead_max_distance_cm = 50.0f;
 float g_vehicle_min_speed_mps = 0.5f;   // m/s
-float g_vehicle_max_speed_mps = 2.5f;  // m/s
-float g_vehicle_max_speed_original_mps = 2.5f; // m/s
+float g_vehicle_max_speed_mps = 2.0f;  // m/s
+float g_vehicle_max_speed_original_mps = 2.0f; // m/s
 float g_emergency_brake_activation_max_distance_m = 1.5f;
 float g_emergency_brake_speed_mps = 0.3f; // m/s
 float g_emergency_brake_distance_from_obstacle_m = 0.1f;   // 13.5f
@@ -50,7 +50,7 @@ float g_max_speed_after_finish_line_detected_mps = 0.7f; // m/s
 float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
-float g_finish_line_angle_tolerance = 30.0f;
+float g_finish_line_angle_tolerance = 35.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -103,6 +103,7 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
     if (g_birdeye_calibrationdata.valid != 0) {
       g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
     }
+    g_birdeye_calibrationdata.valid = 0;
 }
 
 #elif CAR_ID == 2
@@ -133,7 +134,7 @@ float g_max_speed_after_finish_line_detected_mps = 0.7f; // m/s
 float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
-float g_finish_line_angle_tolerance = 30.0f;
+float g_finish_line_angle_tolerance = 35.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -144,7 +145,7 @@ float g_powertrain_right_wheel_ki = 0.1;
 float g_powertrain_right_wheel_kd = 0.0;
 float g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-float g_friction_coefficient = 0.7f;
+float g_friction_coefficient = 0.5f;
 float g_downward_acceleration = G_CONSTANT;
 
 float g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);
@@ -183,6 +184,7 @@ void initialize_g_birdeye_calibrationdata() {
     if (g_birdeye_calibrationdata.valid != 0) {
       g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
     }
+    g_birdeye_calibrationdata.valid = 0;
     
 }
 
