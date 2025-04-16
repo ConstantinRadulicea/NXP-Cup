@@ -125,6 +125,11 @@ extern float g_line_image_frame_height;
 #define WHEEL_BASE_M 0.175
 #define WHEEL_DIAMETER_M 0.064	//wheel diameter im meters
 #define TRACK_WIDTH_M 0.137	//distance between wheels
+#if CAR_ID == 1
+  #define TRACK_WIDTH_REAR_WHEELS_M TRACK_WIDTH_M //0.162	//distance between rear wheels
+#else
+  #define TRACK_WIDTH_REAR_WHEELS_M TRACK_WIDTH_M //distance between rear wheels
+#endif
 
 #define POWERTRAIN_PID_FREQUENCY_HZ 50
 #ifdef TEENSYLC

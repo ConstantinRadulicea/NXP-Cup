@@ -74,11 +74,11 @@ void setup() {
   #endif
 
   #if ENABLE_DRIVERMOTOR == 1
-    #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
+    #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0  
       OneMotorPowerTrainSetup(WHEEL_DIAMETER_M, LEFT_WHEEL_MOTOR_PIN);
     #else
       ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
+        PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_REAR_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
         g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
         g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
       }
