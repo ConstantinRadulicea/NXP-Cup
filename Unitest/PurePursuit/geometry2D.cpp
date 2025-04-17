@@ -89,6 +89,69 @@ int arePoints2DEqual(Point2D point1, Point2D point2) {
 	return 0;
 }
 
+
+#define C_2D_ARRAY_AT(arr, tot_cols, col) (arr[row * tot_cols + col])
+
+//static int gaussianElimination_general(float* A, float* x, int n) {
+//	int j, i, k;
+//	int pivot_row;
+//	float factor;
+//	float temp;
+//	float sum;
+//	float A_i_i = 0.0f;
+//	float A_i_j = 0.0f;
+//	float A_j_j = 0.0f;
+//	float A_j_i = 0.0f;
+//
+//
+//	// partial_pivot
+//	for (i = 0; i < n; i++) {
+//		pivot_row = i;
+//		for (j = i + 1; j < n; j++) {
+//			if (fabsf(A[j][i]) > fabsf(A[pivot_row][i])) {
+//				pivot_row = j;
+//			}
+//		}
+//		if (pivot_row != i) {
+//			for (j = i; j <= n; j++) {
+//				temp = A[i][j];
+//				A[i][j] = A[pivot_row][j];
+//				A[pivot_row][j] = temp;
+//			}
+//		}
+//		for (j = i + 1; j < n; j++) {
+//			factor = A[j][i] / A[i][i];
+//			for (k = i; k <= n; k++) {
+//				A[j][k] -= factor * A[i][k];
+//			}
+//		}
+//	}
+//
+//
+//	for (i = 0; i < n; i++)
+//	{
+//		sum = 0;
+//		for (j = 0; j < n; j++)
+//		{
+//			sum += A[i][j];
+//		}
+//		if ((sum == 0.0f) && (A[i][n] != 0.0f)) {
+//			memset(x, 0, sizeof(float) * n);
+//			return INCONSISTENT_ECUATION_SYSTEM;
+//		}
+//	}
+//
+//	// back_substitute
+//	for (i = n - 1; i >= 0; i--) {
+//		sum = 0;
+//		for (j = i + 1; j < n; j++) {
+//			sum += A[i][j] * x[j];
+//		}
+//		x[i] = (A[i][n] - sum) / A[i][i];
+//	}
+//	return CONSISTENT_ECUATION_SYSTEM;
+//}
+
 int gaussianElimination3(float A[3][3 + 1], float x[3], int n) {
 	int j, i, k;
 	int pivot_row;
@@ -143,6 +206,14 @@ int gaussianElimination3(float A[3][3 + 1], float x[3], int n) {
 	}
 	return CONSISTENT_ECUATION_SYSTEM;
 }
+
+
+//int gaussianElimination8(float A[8][8 + 1], float x[8]) {
+//	return gaussianElimination_general(A, x, 8);
+//}
+
+
+
 int gaussianElimination2(float A[2][2 + 1], float x[2], int n) {
 	int j, i, k;
 	int pivot_row;
@@ -197,6 +268,63 @@ int gaussianElimination2(float A[2][2 + 1], float x[2], int n) {
 	}
 	return CONSISTENT_ECUATION_SYSTEM;
 }
+
+int gaussianElimination8(float A[8][8 + 1], float x[8]) {
+	int n = 8;
+	int j, i, k;
+	int pivot_row;
+	float factor;
+	float temp;
+	float sum;
+
+	// partial_pivot
+	for (i = 0; i < n; i++) {
+		pivot_row = i;
+		for (j = i + 1; j < n; j++) {
+			if (fabsf(A[j][i]) > fabsf(A[pivot_row][i])) {
+				pivot_row = j;
+			}
+		}
+		if (pivot_row != i) {
+			for (j = i; j <= n; j++) {
+				temp = A[i][j];
+				A[i][j] = A[pivot_row][j];
+				A[pivot_row][j] = temp;
+			}
+		}
+		for (j = i + 1; j < n; j++) {
+			factor = A[j][i] / A[i][i];
+			for (k = i; k <= n; k++) {
+				A[j][k] -= factor * A[i][k];
+			}
+		}
+	}
+
+
+	for (i = 0; i < n; i++)
+	{
+		sum = 0;
+		for (j = 0; j < n; j++)
+		{
+			sum += A[i][j];
+		}
+		if ((sum == 0.0f) && (A[i][n] != 0.0f)) {
+			memset(x, 0, sizeof(float) * n);
+			return INCONSISTENT_ECUATION_SYSTEM;
+		}
+	}
+
+	// back_substitute
+	for (i = n - 1; i >= 0; i--) {
+		sum = 0;
+		for (j = i + 1; j < n; j++) {
+			sum += A[i][j] * x[j];
+		}
+		x[i] = (A[i][n] - sum) / A[i][i];
+	}
+	return CONSISTENT_ECUATION_SYSTEM;
+}
+
 
 ParabolaABC points2parabola_3(Point2D point1, Point2D point2, Point2D point3) {
 	ParabolaABC resultParabola;
@@ -1331,10 +1459,7 @@ int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P
 }
 
 int isValidLineSegment(LineSegment seg) {
-	if ((seg.A.x == seg.B.x) && (seg.A.y == seg.B.y)) {
-		return 0;
-	}
-	return 1;
+	return !arePoints2DEqual(seg.A, seg.B);
 }
 
 
@@ -1441,7 +1566,12 @@ IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2) {
 	float u = ((xC - xA) * (yB - yA) - (yC - yA) * (xB - xA)) / denom;
 
 	// Check if the intersection is within both segments
-	if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+	//if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
+	//	result.point.x = xA + t * (xB - xA);
+	//	result.point.y = yA + t * (yB - yA);
+	//	result.info = INTERSECTION_INFO_ONE_INTERSECTION;
+	//}
+	if ((floatCmp(t, 0.0f) >= 0) && (floatCmp(t, 1.0f) <= 0) && (floatCmp(u, 0.0f) >= 0) && (floatCmp(u, 1.0f) <= 0)) {
 		result.point.x = xA + t * (xB - xA);
 		result.point.y = yA + t * (yB - yA);
 		result.info = INTERSECTION_INFO_ONE_INTERSECTION;
@@ -1504,9 +1634,10 @@ seg2 = end
 int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2) {
 	LineSegment result_seg;
 	int is_seg2_reachable, is_seg1_reachable;
-	is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
+	//is_seg1_reachable = reachableWithouthPassingThroughSegment(start_point, seg2, midPointLineSegment(seg1));
 	is_seg2_reachable = reachableWithouthPassingThroughSegment(start_point, seg1, midPointLineSegment(seg2));
 
+	//return (is_seg1_reachable == 1) && (is_seg2_reachable == 1);
 	return is_seg2_reachable;
 }
 

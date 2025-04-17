@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{5D5C04A0-F3C0-4A44-9186-68E99771C45D}|PurePursuit.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\PurePursuitGeometry.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{5D5C04A0-F3C0-4A44-9186-68E99771C45D}|PurePursuit.vcxproj|solutionrelative:PurePursuitGeometry.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5D5C04A0-F3C0-4A44-9186-68E99771C45D}|PurePursuit.vcxproj|C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{5D5C04A0-F3C0-4A44-9186-68E99771C45D}|PurePursuit.vcxproj|solutionrelative:main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -35,12 +39,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "PurePursuitGeometry.h",
+              "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\PurePursuitGeometry.h",
+              "RelativeDocumentMoniker": "PurePursuitGeometry.h",
+              "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\PurePursuitGeometry.h",
+              "RelativeToolTip": "PurePursuitGeometry.h",
+              "ViewState": "AgIAAFwBAAAAAAAAAAAUwGIBAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-16T18:26:46.474Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "main.cpp",
               "DocumentMoniker": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\main.cpp",
               "RelativeDocumentMoniker": "main.cpp",
               "ToolTip": "C:\\Programming\\NXP-CUP\\NXP-Cup\\Unitest\\PurePursuit\\main.cpp",
               "RelativeToolTip": "main.cpp",
-              "ViewState": "AgIAACcAAAAAAAAAAAAYwDEAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAADAAAAAAAAAAAAAYwD0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-02-20T21:04:50.233Z",
               "EditorCaption": ""

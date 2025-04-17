@@ -14,6 +14,10 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\PurePursuitGeometry.h(204,8):
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\PurePursuitGeometry.h(254,25): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
   (compiling source file 'main.cpp')
   
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\PurePursuitGeometry.h(370,16): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  (compiling source file 'main.cpp')
+  
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(24,66): warning C4305: 'initializing': truncation from 'double' to 'float'
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(24,91): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\main.cpp(64,42): warning C4305: 'argument': truncation from 'double' to 'float'
   PurePursuit.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\PurePursuit\x64\Debug\PurePursuit.exe

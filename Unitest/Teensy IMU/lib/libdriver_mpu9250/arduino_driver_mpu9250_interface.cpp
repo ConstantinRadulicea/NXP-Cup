@@ -37,6 +37,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "driver_mpu9250_interface.h"
+#include <util/atomic.h>
 
 
 /**
@@ -48,7 +49,7 @@
  */
 uint8_t mpu9250_interface_iic_init(void)
 {
-    Wire.begin();
+    //Wire.begin();
     return 0;
 }
 
@@ -77,20 +78,22 @@ uint8_t mpu9250_interface_iic_deinit(void)
  */
 uint8_t mpu9250_interface_iic_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint16_t len)
 {
-    noInterrupts();
+    uint8_t flag;
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     Wire.beginTransmission(addr);
     Wire.write(reg);
-    if (Wire.endTransmission(false) != 0){
-        interrupts();
+    flag = Wire.endTransmission(false);
+    }
+    if (flag != 0){
         return 1;
     }
-
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     Wire.requestFrom(addr, (uint8_t)len);
     for (uint16_t i = 0; i < len && Wire.available(); i++)
     {
         buf[i] = Wire.read();
     }
-    interrupts();
+}
     return 0;
 }
 
@@ -108,7 +111,7 @@ uint8_t mpu9250_interface_iic_read(uint8_t addr, uint8_t reg, uint8_t *buf, uint
 uint8_t mpu9250_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uint16_t len)
 {
     uint8_t flag;
-    noInterrupts();
+    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
     Wire.beginTransmission(addr);
     Wire.write(reg);
     for (uint16_t i = 0; i < len; i++)
@@ -116,7 +119,7 @@ uint8_t mpu9250_interface_iic_write(uint8_t addr, uint8_t reg, uint8_t *buf, uin
         Wire.write(buf[i]);
     }
     flag = Wire.endTransmission() == 0 ? 0 : 1;
-    interrupts();
+}
     return flag;
 }
 

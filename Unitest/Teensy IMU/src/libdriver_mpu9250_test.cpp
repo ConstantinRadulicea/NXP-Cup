@@ -7,6 +7,9 @@ int decimals = 6;
     mpu9250_basic_irq_handler();
     float accel[3], gyro[3], mag[3], temp;
     if (mpu9250_basic_read(accel, gyro, mag) == 0) {
+      gyro[0] = radians(gyro[0]);
+      gyro[1] = radians(gyro[1]);
+      gyro[2] = radians(gyro[2]);
   
       Serial.print(accel[0], decimals); Serial.print(";");
       Serial.print(accel[1], decimals); Serial.print(";");
@@ -31,7 +34,10 @@ int decimals = 6;
 void setup() {
     int16_t temp;
     Serial.begin(115200);
-    while (!Serial) {}  // Wait for Serial on Leonardo/Micro
+    Wire.begin();
+    while (!Serial) {
+      delay(100);
+    }  // Wait for Serial on Leonardo/Micro
   
     if (mpu9250_basic_init(MPU9250_INTERFACE_IIC, MPU9250_ADDRESS_0x68) != 0) {
       Serial.println("MPU9250 init failed!");
@@ -46,8 +52,8 @@ void setup() {
     mpu9250_gyro_offset_convert_to_register(&gs_handle, 0.4f, &temp);
     mpu9250_set_gyro_z_offset(&gs_handle, temp);
 
-    pinMode(2, INPUT);
-    attachInterrupt(digitalPinToInterrupt(2), mpu9250_data_ready_isr, FALLING);
+    pinMode(10, INPUT);
+    attachInterrupt(digitalPinToInterrupt(10), mpu9250_data_ready_isr, FALLING);
     Serial.println("MPU9250 initialized.");
   }
 

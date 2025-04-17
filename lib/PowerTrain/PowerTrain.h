@@ -392,7 +392,9 @@ public:
 private:
 };
 
-void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin);
+typedef void (*sampling_routine_callback)(void);
+
+void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin, sampling_routine_callback sampl_routine_callback_);
 extern volatile PowerTrain g_powertrain;
 
 

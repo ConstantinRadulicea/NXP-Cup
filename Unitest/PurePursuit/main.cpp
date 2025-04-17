@@ -61,8 +61,8 @@ int main() {
 
 
 
-
-
+	float yaw_rate = calculateYawRate(2.0f, WHEEL_BASE_M, radians(5));
+	yaw_rate = degrees(yaw_rate);
 
 	return 0;
 }

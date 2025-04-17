@@ -200,7 +200,7 @@ static PurePursuitInfo purePursuitComputeMQ(Point2D rearAxePosition, LineMQ wayP
 	return info;
 }
 
-static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wayPoints, float wheelBase, float _lookAheadDistance) {
+static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wayPoints, float wheelBase, float lookAheadDistance) {
 	float temp;
 	PurePursuitInfo info;
 	IntersectionPoints2D_2 intersectionPoints;
@@ -216,7 +216,7 @@ static PurePursuitInfo purePursuitComputeABC(Point2D rearAxePosition, LineABC wa
 	distance_to_line = distance2lineABC(frontAxePosition, wayPoints);
 	min_lookahead_distance = (sqrtf((distance_to_line * distance_to_line) / 2.0f) * 2.0f);
 
-	float lookAheadDistance = MAX(min_lookahead_distance, _lookAheadDistance);
+	lookAheadDistance = MAX(min_lookahead_distance, lookAheadDistance);
 
 	intersectionPoints = intersectionLineCircleABC(frontAxePosition, lookAheadDistance, wayPoints);
 	if (floatCmp(intersectionPoints.point1.y, intersectionPoints.point2.y) > 0) {
@@ -358,5 +358,17 @@ static float RightWheelAngleToVehicleSteeringAngle(float right_wheel_angle, floa
 }
 
 
+static float calculateYawRate(float speed, float wheelBase, float steering_angle) {
+	float yawRate;
+	float turnRadius = FrontWheelTurnRadius(wheelBase, steering_angle);
+
+	if (floatCmp(turnRadius, 0.0f) <= 0) {
+		return 0.0f;
+	}
+
+	yawRate = speed / turnRadius;
+	yawRate = fabs(yawRate);
+	return yawRate;
+}
 
 #endif // !__PUREPURSUITGEOMETRY_H__

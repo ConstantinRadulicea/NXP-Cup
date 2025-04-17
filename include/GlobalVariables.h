@@ -45,6 +45,7 @@ extern int8_t g_enable_distance_sensor2;
 extern int8_t g_enable_distance_sensor3;
 extern int8_t g_enable_remote_start_stop;
 extern int8_t g_enable_finish_line_detection;
+extern int8_t g_enable_oversteer_mitigation;
 
 extern float g_lane_width_vector_unit;
 extern float g_black_color_treshold; // 0=black, 1=white

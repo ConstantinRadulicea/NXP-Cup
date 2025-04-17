@@ -1,4 +1,6 @@
 #include "setup.h"
+#include "features/imu_data.h"
+#include "features/oversteer_mitigation.h"
 
 
 
@@ -78,7 +80,7 @@ void setup() {
       OneMotorPowerTrainSetup(WHEEL_DIAMETER_M, LEFT_WHEEL_MOTOR_PIN);
     #else
       ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-        PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_REAR_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN);
+        PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_REAR_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN, OSM_routine);
         g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
         g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
       }
@@ -150,5 +152,12 @@ void setup() {
   #endif
   #if ENABLE_BIRDEYEVIEW != 0
     initialize_g_birdeye_calibrationdata();
+  #endif
+
+  #if ENABLE_IMU != 0
+    #if ENABLE_SETTINGS_MENU == 0
+      wire.begin();
+    #endif
+    imu_data_setup();
   #endif
 }

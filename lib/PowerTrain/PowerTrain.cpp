@@ -17,12 +17,15 @@
 #include "PowerTrain.h"
 
 
+
 static IntervalTimer myTimer;
 
 
 volatile static PWMServo RightMotor;
 volatile static PWMServo LeftMotor;
 volatile static float pid_frequency_hz;
+
+sampling_routine_callback sampl_routine_callback = NULL;
 
 
 static void empty_function(){
@@ -72,6 +75,7 @@ static void on_pulse_left_motor(volatile struct RpmSensorData *data){
 }
 
 
+
 static void power_train_sampling(){
     float rpm, timePassed;
     RpmSensorData temp_WheelRpmData;
@@ -111,7 +115,13 @@ static void power_train_sampling(){
     //Serial.print(';');
     //Serial.print(temp_WheelRpmData.Rpm);
     //Serial.println();
+
     g_powertrain.SetSpeedRequest_slow_routine(HzToSec(pid_frequency_hz));
+
+    if (sampl_routine_callback != NULL)
+    {
+        sampl_routine_callback();
+    }
 }
 
 //int PowerTrainfloatCmp(float num1, float num2) {
@@ -134,12 +144,14 @@ static void MotorPinSetup(volatile PWMServo *servo_, int motor_pin){
 }
 
 
-void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float _pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin)
+void PowerTrainSetup(float wheel_diameter_m, float distance_between_wheels_m, float _pid_frequency_hz, int left_motor_pin, int right_motor_pin, int left_rpm_sensor_pin, int right_rpm_sensor_pin, sampling_routine_callback sampl_routine_callback_)
 {
     float kp = 0.0;
     float ki = 0.0;
     float kd = 0.0;
     float ki_sum = 0.0;
+
+    sampl_routine_callback = sampl_routine_callback_;
 
     g_powertrain.SetRightWheelPID(kp, ki, kd, ki_sum);
     g_powertrain.SetRightWheelDiameter(wheel_diameter_m);

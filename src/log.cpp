@@ -19,6 +19,7 @@
 #include "GlobalVariables.h"
 #include "WheelRpm.h"
 #include "FloatToString.h"
+#include "features/imu_data.h"
 
 #if ENABLE_SINGLE_AXE_STEERING_NO_RPM == 0
   #include "PowerTrain.h"
@@ -165,6 +166,14 @@ serialPort.print("0.0");
   serialPort.print(FloatToString(g_line_calibration_data.x_axis_offset, n_decimals));
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_line_calibration_data.y_axis_offset, n_decimals));
+
+  #ifdef ENABLE_IMU != 0
+  serialPort.print(semicolonChar);
+  serialPort.print(FloatToString(imu_get_yaw_rate_rad_s(), n_decimals));
+  #else
+  serialPort.print(semicolonChar);
+  serialPort.print("0.0");
+  #endif
 
   serialPort.println();
 }
