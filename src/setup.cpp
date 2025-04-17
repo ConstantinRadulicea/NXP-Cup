@@ -27,9 +27,9 @@ void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
         #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
           g_onemotorpowertrain.SetSpeedRequest_slow(STANDSTILL_SPEED);
         #else
-          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        noInterrupts();
             g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
-          }
+        interrupts();
         #endif
       #endif
       g_steering_angle_rad = 0.0f;
@@ -79,11 +79,11 @@ void setup() {
     #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0  
       OneMotorPowerTrainSetup(WHEEL_DIAMETER_M, LEFT_WHEEL_MOTOR_PIN);
     #else
-      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    noInterrupts();
         PowerTrainSetup(WHEEL_DIAMETER_M, TRACK_WIDTH_REAR_WHEELS_M, POWERTRAIN_PID_FREQUENCY_HZ, LEFT_WHEEL_MOTOR_PIN, RIGHT_WHEEL_MOTOR_PIN, RPM_SENSOR_LEFT_WHEEL_PIN, RPM_SENSOR_RIGHT_WHEEL_PIN, OSM_routine);
         g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
         g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
-      }
+    interrupts();
     #endif
   #endif
 

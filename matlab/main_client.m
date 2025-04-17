@@ -13,6 +13,7 @@ server.UserData.cameraView_figure = figure('Name','cameraView');
 server.UserData.wheelRpm_figure = figure('Name','Wheels Rpm');
 % server.UserData.wheelSpeedRequestRaw_figure = figure('Name','Wheels speed request Raw');
 server.UserData.wheelSpeedRequest_figure = figure('Name','Wheels speed request');
+server.UserData.gyro_figure = figure('Name','Gyro');
 
 
 

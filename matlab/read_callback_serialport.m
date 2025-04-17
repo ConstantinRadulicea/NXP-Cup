@@ -56,6 +56,8 @@ function read_callback_serialport(src, ~)
     right_wheel_speed_request = str2double(raw_data(27,1));
     left_wheel_speed = str2double(raw_data(28,1));
     right_wheel_speed = str2double(raw_data(29,1));
+    imu_yaw_rate = str2double(raw_data(35,1));
+    g_oversteer_mitigation_active = str2double(raw_data(36,1));
     
     sample_batch_size = length(src.UserData.wheels_rpm.left.raw_rpm) + 1;
     sample_batch_max_size = 1500;
@@ -73,7 +75,9 @@ function read_callback_serialport(src, ~)
     src.UserData.left_wheel_speed_request_raw = src.UserData.left_wheel_speed_request_raw(end - sample_batch_size + 1:end);
     src.UserData.right_wheel_speed_request_raw(end+1) = right_wheel_speed_request_raw;
     src.UserData.right_wheel_speed_request_raw = src.UserData.right_wheel_speed_request_raw(end - sample_batch_size + 1:end);
-    
+    if g_oversteer_mitigation_active > 0.5
+        plot_gyro(src.UserData.gyro_figure, toc(start_sampling_time), imu_yaw_rate, g_oversteer_mitigation_active);
+    end
     if(toc(startTime) < (1/2))
         return;
     end
@@ -82,7 +86,7 @@ function read_callback_serialport(src, ~)
 
     plot_wheel_speed(src.UserData.wheelRpm_figure, toc(start_sampling_time), left_wheel_speed, right_wheel_speed);
     plot_wheel_speed_request(src.UserData.wheelSpeedRequest_figure, toc(start_sampling_time), left_wheel_speed_request, right_wheel_speed_request);
-
+    plot_gyro(src.UserData.gyro_figure, toc(start_sampling_time), imu_yaw_rate, g_oversteer_mitigation_active);
 
     y_array = 1:1:length(src.UserData.wheels_rpm.left.raw_rpm);
     % set(0, 'CurrentFigure', src.UserData.wheelRpm_figure)

@@ -52,6 +52,7 @@ float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
 float g_finish_line_angle_tolerance = 35.0f;
+float g_oversteer_mitigation_rad_s = radians(50.0f);
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -80,7 +81,7 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
 #elif DEBUG_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
-  float g_enable_finish_line_detection_after_delay_s = 5.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #else
   float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
@@ -117,6 +118,7 @@ int8_t g_enable_distance_sensor2 = 1;
 int8_t g_enable_distance_sensor3 = 1;
 int8_t g_enable_remote_start_stop = 0;
 int8_t g_enable_finish_line_detection = 0;
+int8_t g_enable_oversteer_mitigation = 0;
 
 float g_lane_width_vector_unit = 56.61f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white
@@ -136,6 +138,7 @@ float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
 float g_finish_line_angle_tolerance = 35.0f;
+float g_oversteer_mitigation_rad_s = radians(50.0f);
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -164,7 +167,7 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
 #elif DEBUG_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
-  float g_enable_finish_line_detection_after_delay_s = 5.0f;
+  float g_enable_finish_line_detection_after_delay_s = 0.0f;
 #else
   float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
@@ -219,6 +222,7 @@ LineCalibrationData g_line_calibration_data = {};
 float g_rear_axe_turn_radius_m = 0.0f;
 int8_t g_max_speed_delay_passed = 0;
 int8_t g_enable_change_aeb_max_distance_after_delay_passed = 0;
+volatile int8_t g_oversteer_mitigation_active = 0;
 
 struct BirdEyeCalibrationData g_birdeye_calibrationdata = {};
 
@@ -234,7 +238,7 @@ Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
-#define TOTAL_GLOBAL_PARAMETERS 57
+#define TOTAL_GLOBAL_PARAMETERS 59
 
 
 /*
@@ -627,13 +631,24 @@ void setGlobalVariables(std::vector<float> &fields){
 
   g_enable_change_aeb_max_distance_after_delay_s = fields[56];
 
+  temp_float = fields[57];
+  if (temp_float >= 0.5f) {
+    g_enable_oversteer_mitigation = 1;
+  }
+  else{
+    g_enable_oversteer_mitigation = 0;
+  }
+
+  g_oversteer_mitigation_rad_s = fields[58];
+
+
 #if ENABLE_DRIVERMOTOR == 1
   #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
   #else
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+  noInterrupts();
     g_powertrain.SetLeftWheelPID(g_powertrain_left_wheel_kp, g_powertrain_left_wheel_ki, g_powertrain_left_wheel_kd, g_powertrain_left_wheel_ki_max_sum);
     g_powertrain.SetRightWheelPID(g_powertrain_right_wheel_kp, g_powertrain_right_wheel_ki, g_powertrain_right_wheel_kd, g_powertrain_right_wheel_ki_max_sum);
-  }
+  interrupts();
   #endif
 #endif
 #endif

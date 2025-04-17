@@ -175,7 +175,7 @@ void LcdDisplaySetup_adafruit(){
 #if LCD_LIBRARY_SSD1306Ascii != 0
 void LcdDisplaySetup_SSD1306Ascii(){
   Wire.begin();
-  Wire.setClock(400000L);
+  //Wire.setClock(400000L);
 
 #if RST_PIN >= 0
   display.begin(&Adafruit128x32, I2C_ADDRESS, RST_PIN);

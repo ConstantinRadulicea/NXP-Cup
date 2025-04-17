@@ -21,14 +21,14 @@ volatile static float local_imu_data_yaw_rate_rad_s = 0.0f;
 
 void imu_data_setup() {
     int16_t temp;
-  
+    pinMode(IMU_DATA_INTERRUPT_PIN, INPUT);
     if (mpu9250_basic_init(MPU9250_INTERFACE_IIC, MPU9250_ADDRESS_0x68) != 0) {
       #if ENABLE_SERIAL_PRINT != 0
         SERIAL_PORT.println("% MPU9250 init failed!");
       #endif
-      ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+      //noInterrupts();
         local_valid_imu_data = 0;
-      }
+      //interrupts();
         return;
     }
     mpu9250_gyro_offset_convert_to_register(&gs_handle, 2.27f, &temp);
@@ -40,12 +40,10 @@ void imu_data_setup() {
     mpu9250_gyro_offset_convert_to_register(&gs_handle, 0.4f, &temp);
     mpu9250_set_gyro_z_offset(&gs_handle, temp);
 
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    //noInterrupts();
     local_valid_imu_data = 1;
-    }
-
-    //pinMode(IMU_DATA_INTERRUPT_PIN, INPUT);
-    //attachInterrupt(digitalPinToInterrupt(IMU_DATA_INTERRUPT_PIN), mpu9250_data_ready_isr, FALLING);
+    //interrupts();
+    attachInterrupt(digitalPinToInterrupt(IMU_DATA_INTERRUPT_PIN), mpu9250_data_ready_isr, FALLING);
     #if ENABLE_SERIAL_PRINT != 0
       SERIAL_PORT.println("% MPU9250 initialized.");
     #endif
@@ -53,19 +51,19 @@ void imu_data_setup() {
 
 int8_t imu_data_is_valid(){
   int8_t local_value;
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+  //noInterrupts();
   local_value = local_valid_imu_data;
-  }
+  //interrupts();
   return local_value;
 }
 
   float imu_get_yaw_rate_rad_s(){
     
     float local_value;
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-      mpu9250_data_ready_isr();
+    //noInterrupts();
+      //mpu9250_data_ready_isr();
     local_value = local_imu_data_yaw_rate_rad_s;
-    }
+    //interrupts();
     return local_value;
   }
 

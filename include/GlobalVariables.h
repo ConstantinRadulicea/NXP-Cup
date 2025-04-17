@@ -64,6 +64,7 @@ extern float g_car_speed_mps_ki;
 extern float g_car_speed_mps_kd;
 extern float g_car_speed_mps_ki_min_max_impact;
 extern float g_finish_line_angle_tolerance;
+extern float g_oversteer_mitigation_rad_s;
 
 extern float g_emergency_brake_enable_delay_s;
 extern int8_t g_max_speed_delay_passed;
@@ -191,6 +192,7 @@ extern float g_steering_angle_rad;
 extern FinishLine g_finish_line;
 extern int8_t g_start_line_calibration_acquisition;
 extern int8_t g_start_line_calibration_acquisition_birdeye;
+extern volatile int8_t g_oversteer_mitigation_active;
 
 extern LineCalibrationData g_line_calibration_data;
 extern float g_rear_axe_turn_radius_m;

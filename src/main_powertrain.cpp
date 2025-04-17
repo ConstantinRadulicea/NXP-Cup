@@ -100,9 +100,9 @@ void loop() {
         #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
           g_onemotorpowertrain.SetSpeedRequest_slow(STANDSTILL_SPEED);
         #else
-          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        noInterrupts();
             g_powertrain.SetSpeedRequest_slow(STANDSTILL_SPEED, 0.0, 0, g_max_acceleration, g_max_deceleration);
-          }
+        interrupts();
         #endif
       #endif
     }
@@ -281,9 +281,9 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
         #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
           g_onemotorpowertrain.SetSpeedRequest_slow(g_car_speed_mps);
         #else
-          ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        noInterrupts();
             g_powertrain.SetSpeedRequest_slow(g_car_speed_mps, g_rear_axe_turn_radius_m, SteeringWheel::AngleToDirectionDeg(degrees(g_steering_angle_rad)), g_max_acceleration, g_max_deceleration);
-          }
+        interrupts();
         #endif
       }
     #endif

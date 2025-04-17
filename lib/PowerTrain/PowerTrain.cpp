@@ -33,9 +33,9 @@ static void empty_function(){
 }
 
 static void WriteToMotor(volatile PWMServo* motor_, float angle_arg) {
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+    //ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         motor_->write((int)angle_arg);
-    }
+    //}
 }
 
 static void WriteToRightMotor(float angle_arg){

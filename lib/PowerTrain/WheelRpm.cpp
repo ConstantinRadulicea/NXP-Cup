@@ -96,7 +96,7 @@ volatile RpmSensorData LeftWheelRpmData = {
 
  RpmSensorData getRpmSensorData(volatile RpmSensorData* data){
     RpmSensorData temp_data;
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        //ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         temp_data.LastSampleTimestamp_us = data->LastSampleTimestamp_us;
         temp_data.Rpm = data->Rpm;
         temp_data.TotalRotations = data->TotalRotations;
@@ -107,7 +107,7 @@ volatile RpmSensorData LeftWheelRpmData = {
         temp_data.PulsePin = data->PulsePin;
         temp_data.LastState = data->LastState;
         temp_data.RpmFiltered = data->RpmFiltered;
-    }
+    //}
     return temp_data;
 }
 
@@ -237,7 +237,7 @@ float getCurrentRpm_adjusted(volatile RpmSensorData* data){
 }
 
  void setRpmSensorData(volatile RpmSensorData* dst, const RpmSensorData src){
-        ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+        //ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
         dst->LastSampleTimestamp_us = src.LastSampleTimestamp_us;
         dst->Rpm = src.Rpm;
         dst->TotalRotations = src.TotalRotations;
@@ -247,7 +247,7 @@ float getCurrentRpm_adjusted(volatile RpmSensorData* data){
         dst->PulsePin = src.PulsePin;
         dst->RpmFiltered = src.RpmFiltered;
         dst->LastState = src.LastState;
-    }
+    //}
 }
 
 /*===================================================================================================*/

@@ -114,7 +114,7 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, LineSegment leftVectorOld, 
   serialPort.print(FloatToString(adjusted_rpm, n_decimals));
 
 
-ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
+  noInterrupts();
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_powertrain.GetLeftWheelSpeedRequest_raw(), n_decimals));
   serialPort.print(semicolonChar);
@@ -128,7 +128,7 @@ ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
   serialPort.print(FloatToString(g_powertrain.GetLeftWheelSpeed(), n_decimals));
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_powertrain.GetRightWheelSpeed(), n_decimals));
-}
+  interrupts();
 #else
 serialPort.print(semicolonChar);
 serialPort.print("0.0");
@@ -167,12 +167,24 @@ serialPort.print("0.0");
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_line_calibration_data.y_axis_offset, n_decimals));
 
-  #ifdef ENABLE_IMU != 0
+  float temp_flt;
+  int8_t temp_int8t;
+
+  #if ENABLE_IMU != 0
+  
+  noInterrupts();
+  temp_flt = imu_get_yaw_rate_rad_s();
+  temp_int8t = g_oversteer_mitigation_active;
+  interrupts();
   serialPort.print(semicolonChar);
-  serialPort.print(FloatToString(imu_get_yaw_rate_rad_s(), n_decimals));
+  serialPort.print(FloatToString(temp_flt, n_decimals));
+  serialPort.print(semicolonChar);
+  serialPort.print(FloatToString(temp_int8t, 0));
   #else
   serialPort.print(semicolonChar);
   serialPort.print("0.0");
+  serialPort.print(semicolonChar);
+  serialPort.print("0");
   #endif
 
   serialPort.println();

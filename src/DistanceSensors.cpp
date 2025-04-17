@@ -319,7 +319,10 @@ float readFrontObstacleDistanceAnalog_m(){
 }
 
 float getFrontObstacleDistanceAnalog_m(){
-  ATOMIC_BLOCK(ATOMIC_RESTORESTATE) {
-    return private_obstacle_distance_m;
-    }
+  float temp_flt;
+    noInterrupts();
+    temp_flt = private_obstacle_distance_m;
+    interrupts();
+    return temp_flt;
+    
 }
