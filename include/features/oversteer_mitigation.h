@@ -15,6 +15,7 @@ typedef struct OSM_out_s{
     int8_t enabled;
     int8_t active;
     enum WheelToBrake wheel_to_brake;
+    float wheel_speed_request_m_s;
 }OSM_out_t;
 
 enum WheelToBrake detectAndMitigateOversteer(

@@ -3,7 +3,7 @@ fieldTerminator = ';';
 % good bad
 % 17 - 3
 % 22 - 0
-g_enable_car_engine = 0.0;
+g_enable_car_engine = 01.0;
 g_enable_car_steering_wheel = 0.0;
 g_enable_emergency_brake = 0.0;
 g_enable_pixy_vector_approximation = 0.0;
@@ -45,7 +45,7 @@ g_powertrain_right_wheel_ki_max_sum = 0.4;
 g_powertrain_left_wheel_ki = 0.0;
 g_powertrain_right_wheel_ki = 0.0;
 
-g_friction_coefficient = 0.6;
+g_friction_coefficient = 0.5;
 g_downward_acceleration = 9.80665;
 
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration)/2;

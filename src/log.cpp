@@ -83,7 +83,7 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, LineSegment leftVectorOld, 
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(carSpeed_, n_decimals));
   serialPort.print(semicolonChar);
-  serialPort.print(String(g_finish_line_detected));
+  serialPort.print(FloatToString((float)g_finish_line_detected, 0));
   serialPort.print(semicolonChar);
 
 
@@ -92,7 +92,7 @@ void printDataToSerial(SERIAL_PORT_TYPE &serialPort, LineSegment leftVectorOld, 
   serialPort.print(semicolonChar);
   serialprint_linesegment(serialPort, g_finish_line.rightSegment, commaCharStr);
   serialPort.print(semicolonChar);
-  serialPort.print(String(g_finish_line_detected_now));
+  serialPort.print(FloatToString((float)g_finish_line_detected_now, 0));
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(g_loop_time_ms, n_decimals));
 
@@ -179,7 +179,7 @@ serialPort.print("0.0");
   serialPort.print(semicolonChar);
   serialPort.print(FloatToString(temp_flt, n_decimals));
   serialPort.print(semicolonChar);
-  serialPort.print(FloatToString(temp_int8t, 0));
+  serialPort.print(FloatToString((float)temp_int8t, 0));
   #else
   serialPort.print(semicolonChar);
   serialPort.print("0.0");

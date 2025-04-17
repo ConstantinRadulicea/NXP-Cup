@@ -52,7 +52,7 @@ float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
 float g_finish_line_angle_tolerance = 35.0f;
-float g_oversteer_mitigation_rad_s = radians(50.0f);
+float g_oversteer_mitigation_yaw_tolerance_rad_s = radians(50.0f);
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -138,7 +138,7 @@ float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
 float g_finish_line_angle_tolerance = 35.0f;
-float g_oversteer_mitigation_rad_s = radians(50.0f);
+float g_oversteer_mitigation_yaw_tolerance_rad_s = radians(50.0f);
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -639,7 +639,7 @@ void setGlobalVariables(std::vector<float> &fields){
     g_enable_oversteer_mitigation = 0;
   }
 
-  g_oversteer_mitigation_rad_s = fields[58];
+  g_oversteer_mitigation_yaw_tolerance_rad_s = fields[58];
 
 
 #if ENABLE_DRIVERMOTOR == 1

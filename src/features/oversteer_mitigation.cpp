@@ -31,6 +31,27 @@ enum direction getYawDirection(float value) {
 }
 
 
+static volatile float new_wheel_speed_request = 0.0f;
+
+
+float estimateMomentOfInertia(float mass, float wheelbase, float trackWidth) {
+    return (1.0f / 12.0f) * mass * (wheelbase * wheelbase + trackWidth * trackWidth);
+}
+
+
+float computeWheelDeceleration(
+    float speed, float yaw_calc, float yaw_meas,
+    float wheelbase, float trackWidth, float mass)
+{
+    float yaw_error = yaw_meas - yaw_calc;
+    yaw_error = fabsf(yaw_error);
+    float Iz = estimateMomentOfInertia(mass, wheelbase, trackWidth);
+    float dv = (Iz * yaw_error) / (mass * trackWidth);
+
+    return dv;
+}
+
+
 /*
 yawRateTolerance    -> positive turning left
                     -> negative turning right
@@ -57,6 +78,10 @@ enum WheelToBrake detectAndMitigateOversteer(
         expectedYawRate = expectedYawRate;
     }
 
+    //new_wheel_speed_request = computeWheelDeceleration(g_car_speed_mps, expectedYawRate, measuredYawRate, WHEEL_BASE_M, TRACK_WIDTH_M, 1.1f);
+    //new_wheel_speed_request = speed - new_wheel_speed_request;
+    //new_wheel_speed_request = MAX(new_wheel_speed_request, 0.0f);
+    new_wheel_speed_request = 0.0f;
     float yaw_error = 0.0f;
 
     if (steering_direction == yaw_steering_direction)
@@ -91,6 +116,9 @@ enum WheelToBrake detectAndMitigateOversteer(
 }
 
 
+
+
+
 OSM_out_t oversteer_mitigation(){
     OSM_out_t result;
 
@@ -103,10 +131,17 @@ OSM_out_t oversteer_mitigation(){
     enum WheelToBrake action;
     if (imu_data_is_valid() == 0)
     {
+        g_oversteer_mitigation_active = 0;
         return result;/* code */
     }
+
+    float temp_yaw_tolerance = MAX(g_oversteer_mitigation_yaw_tolerance_rad_s, 0.0f);
     float measured_yaw_rate_rad_s = imu_get_yaw_rate_rad_s();
-    action = detectAndMitigateOversteer(g_car_speed_mps, g_steering_angle_rad, WHEEL_BASE_M, measured_yaw_rate_rad_s, g_oversteer_mitigation_rad_s);
+
+    //if(g_oversteer_mitigation_active != 0){
+    //    temp_yaw_tolerance = temp_yaw_tolerance * 0.5f;
+    //}
+    action = detectAndMitigateOversteer(g_car_speed_mps, g_steering_angle_rad, WHEEL_BASE_M, measured_yaw_rate_rad_s, temp_yaw_tolerance);
     if (action == NONE) {
         result.active = 0;
         g_oversteer_mitigation_active = 0;
@@ -114,6 +149,7 @@ OSM_out_t oversteer_mitigation(){
     else{
         result.active = 1;
         g_oversteer_mitigation_active = 1;
+        result.wheel_speed_request_m_s = new_wheel_speed_request;
     }
     
     result.wheel_to_brake = action;
@@ -127,10 +163,10 @@ void OSM_routine(){
     if (osm_result.active != 0)
     {
         if (osm_result.wheel_to_brake == REAR_LEFT) {
-            g_powertrain.SetLeftWheelSpeedRequest(0.0f);
+            g_powertrain.SetLeftWheelSpeedRequest(osm_result.wheel_speed_request_m_s);
         }
         else if(osm_result.wheel_to_brake == REAR_RIGHT){
-            g_powertrain.SetRightWheelSpeedRequest(0.0f);
+            g_powertrain.SetRightWheelSpeedRequest(osm_result.wheel_speed_request_m_s);
         }
     }
     #endif
