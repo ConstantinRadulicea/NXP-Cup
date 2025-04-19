@@ -16,7 +16,6 @@ void AEB_setup(){
 
 AEB_out_t automatic_emergency_braking(){
     static MedianFilter AEB_distance_filter(AEB_DISTANCE_FILTER_SIZE);
-    float AEB_distance_filtered_m = 0.0f;
     float local_emergency_brake_activation_max_distance_m;
     AEB_out_t out;
 

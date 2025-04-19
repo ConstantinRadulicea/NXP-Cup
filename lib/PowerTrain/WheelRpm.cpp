@@ -57,7 +57,6 @@ volatile RpmSensorData LeftWheelRpmData = {
 
  void ISR_RpmSensor(volatile RpmSensorData* data){
     unsigned long elapsed_time_us, time_now_us;
-    uint8_t curValue;
     float local_rpm;
     time_now_us = micros();
 

@@ -470,7 +470,7 @@ void printGlobalVariables(SERIAL_PORT_TYPE &serialPort){
 
 
 void setGlobalVariables(std::vector<float> &fields){
-  int total_fields = TOTAL_GLOBAL_PARAMETERS;
+  size_t total_fields = TOTAL_GLOBAL_PARAMETERS;
   float temp_float;
 
   if (fields.size() < total_fields) {

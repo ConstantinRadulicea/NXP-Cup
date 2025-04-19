@@ -37,6 +37,7 @@
  #include <Arduino.h>
  #include <Wire.h>
  #include "driver_mpu9250_interface.h"
+ #include "../../include/features/imu_data.h"
  
  
  /**
@@ -206,7 +207,6 @@
   */
  void mpu9250_interface_receive_callback(uint8_t type)
  {
-     /*
      switch (type)
      {
          case MPU9250_INTERRUPT_MOTION :
@@ -236,17 +236,15 @@
          case MPU9250_INTERRUPT_DATA_READY :
          {
              mpu9250_interface_debug_print("mpu9250: irq data ready\n");
-             
+             mpu9250_data_ready_isr();
              break;
          }
          default :
          {
              mpu9250_interface_debug_print("mpu9250: irq unknown code.\n");
-             
              break;
          }
      }
-         */
  }
  
  /**

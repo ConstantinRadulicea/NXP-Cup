@@ -18,7 +18,7 @@
 #define __MEDIANFILTER_H__
 
 #include <stddef.h>
-//#include <new>
+#include <new>
 
 
 #define MIN(a,b) (((a)<(b))?(a):(b))

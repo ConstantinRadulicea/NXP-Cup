@@ -1,16 +1,15 @@
 #include <Arduino.h>
+#include "Config.h"
 #include <Wire.h>
 #include "driver_mpu9250_basic.h"
 #include <stdint.h>
 #include "features/imu_data.h"
-#include <util/atomic.h>
 
 volatile static int8_t local_valid_imu_data = 0;
 volatile static float local_imu_data_yaw_rate_rad_s = 0.0f;
 
-  void mpu9250_data_ready_isr() {
-    mpu9250_basic_irq_handler();
-    float accel[3], gyro[3], mag[3], temp;
+void mpu9250_data_ready_isr() {
+    float accel[3], gyro[3], mag[3];
     if (mpu9250_basic_read(accel, gyro, mag) == 0) {
         local_valid_imu_data = 1;
         local_imu_data_yaw_rate_rad_s = radians(gyro[2]);
@@ -18,6 +17,10 @@ volatile static float local_imu_data_yaw_rate_rad_s = 0.0f;
         local_valid_imu_data = 0;
         local_imu_data_yaw_rate_rad_s = 0.0f;
     }
+  }
+
+  void dumb_isr(){
+    mpu9250_basic_irq_handler();
   }
 
 void imu_data_setup() {
@@ -45,7 +48,7 @@ void imu_data_setup() {
     //noInterrupts();
     local_valid_imu_data = 0;
     //interrupts();
-    attachInterrupt(digitalPinToInterrupt(IMU_DATA_INTERRUPT_PIN), mpu9250_data_ready_isr, FALLING);
+    attachInterrupt(digitalPinToInterrupt(IMU_DATA_INTERRUPT_PIN), dumb_isr, FALLING);
     #if ENABLE_SERIAL_PRINT != 0
       SERIAL_PORT.println("% MPU9250 initialized.");
     #endif
