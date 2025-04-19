@@ -14,7 +14,12 @@
 * limitations under the License.
 */
 
+#include <math.h>
+#include <float.h>
+#include <string.h>
+
 #include "geometry2D.h"
+
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -755,7 +760,7 @@ LineABC points2lineABC(Point2D point1, Point2D point2) {
 	LineABC lineAbc;
 
 	if (arePoints2DEqual(point1, point2)) {
-		return LineABC{ 0.0f, 0.0f, 0.0f };
+		return (LineABC){ 0.0f, 0.0f, 0.0f };
 	}
 
 
@@ -1291,7 +1296,7 @@ float circlePoint2DToAngle(Point2D circleCenter, Point2D point) {
 
 // https://mathworld.wolfram.com/Circle-CircleIntersection.html
 IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circleRadius_1, Point2D circleCenter_2, float circleRadius_2) {
-	IntersectionPoints2D_2 intersections_result = IntersectionPoints2D_2{};
+	IntersectionPoints2D_2 intersections_result = (IntersectionPoints2D_2){};
 	LineABC line_passing_through_intersections;
 	int cmp_result_1, cmp_result_2;
 	float distance_between_centers;
@@ -1305,12 +1310,12 @@ IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circl
 	cmp_result_2 = floatCmp(circleRadius_1, circleRadius_2);
 	if (cmp_result_1 == 0 && cmp_result_2 != 0) {
 		// the 2 circles does not intersect, one circle is inside another
-		intersections_result = IntersectionPoints2D_2{};
+		intersections_result = (IntersectionPoints2D_2){};
 		return intersections_result;
 	}
 	else if (cmp_result_1 == 0 && cmp_result_2 == 0) {
 		// the 2 circles are the same
-		intersections_result = IntersectionPoints2D_2{};
+		intersections_result = (IntersectionPoints2D_2){};
 		intersections_result.sameEquation = 1;
 		intersections_result.numPoints = 3;
 		return intersections_result;
@@ -1319,7 +1324,7 @@ IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circl
 	cmp_result_1 = floatCmp(distance_between_centers, circleRadius_1 + circleRadius_2);
 	if (cmp_result_1 > 0) {
 		// circles does not intersect, they are too far apart
-		intersections_result = IntersectionPoints2D_2{};
+		intersections_result = (IntersectionPoints2D_2){};
 		return intersections_result;
 	}
 
@@ -1649,9 +1654,9 @@ int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2) 
 	theta4 : The angle of the follower and x-axis [radians]
 */
 struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2) {
-	FourBarLinkage_Theta result;
+	struct FourBarLinkage_Theta result;
 	//result.valid = 0;
-	memset(&result, 0, sizeof(FourBarLinkage_Theta));
+	memset(&result, 0, sizeof(struct FourBarLinkage_Theta));
 	//Calculate the intermediate terms
 	theta2 = theta2 - theta1;
 	theta2 = fmodf((theta2 + M_PI), (2.0f * M_PI)) - M_PI;
@@ -1693,7 +1698,7 @@ struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driv
 	theta4 : The angle of the follower and x-axis [radians]
 */
 struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4) {
-	FourBarLinkage_Theta result;
+	struct FourBarLinkage_Theta result;
 
 	float theta4_local = M_PI - theta4 + (theta1);
 	theta4_local = fmodf(theta4_local + M_PI, 2.0f * M_PI) - M_PI;

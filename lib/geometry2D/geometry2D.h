@@ -17,9 +17,11 @@
 #ifndef __GEOMETRY2D_H__
 #define __GEOMETRY2D_H__
 
-#include <math.h>
-#include <float.h>
-#include <string.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
@@ -282,5 +284,9 @@ struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driv
 struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4);
 
 int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // !__GEOMETRY2D_H__

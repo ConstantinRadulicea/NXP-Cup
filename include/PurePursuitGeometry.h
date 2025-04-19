@@ -21,7 +21,10 @@
 #ifndef __PUREPURSUITGEOMETRY_H__
 #define __PUREPURSUITGEOMETRY_H__
 
+
+#include <math.h>
 #include "geometry2D.h"
+
 
 typedef struct PurePursuitInfo {
 	Point2D frontAxePosition;

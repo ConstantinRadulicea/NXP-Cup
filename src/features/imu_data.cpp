@@ -16,6 +16,7 @@ volatile static float local_imu_data_yaw_rate_rad_s = 0.0f;
         local_imu_data_yaw_rate_rad_s = radians(gyro[2]);
     } else {
         local_valid_imu_data = 0;
+        local_imu_data_yaw_rate_rad_s = 0.0f;
     }
   }
 
@@ -28,6 +29,7 @@ void imu_data_setup() {
       #endif
       //noInterrupts();
         local_valid_imu_data = 0;
+        local_imu_data_yaw_rate_rad_s = 0.0f;
       //interrupts();
         return;
     }
@@ -41,7 +43,7 @@ void imu_data_setup() {
     mpu9250_set_gyro_z_offset(&gs_handle, temp);
 
     //noInterrupts();
-    local_valid_imu_data = 1;
+    local_valid_imu_data = 0;
     //interrupts();
     attachInterrupt(digitalPinToInterrupt(IMU_DATA_INTERRUPT_PIN), mpu9250_data_ready_isr, FALLING);
     #if ENABLE_SERIAL_PRINT != 0

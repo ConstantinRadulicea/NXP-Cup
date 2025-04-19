@@ -1,6 +1,8 @@
-#include "BirdEyeView.h"
-#include "math.h"
+#include <math.h>
 #include <stdint.h>
+#include <memory.h>
+
+#include "BirdEyeView.h"
 
 
 // Solve 8x8 linear system using Gaussian Elimination
