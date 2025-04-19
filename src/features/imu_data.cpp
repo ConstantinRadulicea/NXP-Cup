@@ -20,7 +20,11 @@ void mpu9250_data_ready_isr() {
   }
 
   void dumb_isr(){
-    mpu9250_basic_irq_handler();
+    if(mpu9250_basic_irq_handler() != 0){
+      // failed
+      local_valid_imu_data = 0;
+      local_imu_data_yaw_rate_rad_s = 0.0f;
+    }
   }
 
 void imu_data_setup() {
