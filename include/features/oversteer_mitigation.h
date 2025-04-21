@@ -23,11 +23,13 @@ enum WheelToBrake detectAndMitigateOversteer(
     float steeringAngle,       // in radians
     float wheelbase,           // in meters
     float measuredYawRate,     // in rad/s
-    float yawRateTolerance     // in rad/s
+    float yawRateTolerance,     // in rad/s
+    float time_s,                // time passed from last sample
+    int8_t osm_active           // state of the current osm if active or not
 );
 
-OSM_out_t oversteer_mitigation();
+OSM_out_t oversteer_mitigation(float time_s);
 
-void OSM_routine();
+void OSM_routine(float time_s);
 
 #endif

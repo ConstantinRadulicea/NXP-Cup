@@ -191,13 +191,13 @@
   */
  void mpu9250_interface_debug_print(const char *const fmt, ...)
  {
-     char buffer[256];
-     va_list args;
-     va_start(args, fmt);
-     vsnprintf(buffer, sizeof(buffer), fmt, args);
-     va_end(args);
-     Serial1.print('%');
-     Serial1.print(buffer);
+     //char buffer[256];
+     //va_list args;
+     //va_start(args, fmt);
+     //vsnprintf(buffer, sizeof(buffer), fmt, args);
+     //va_end(args);
+     //Serial1.print('%');
+     //Serial1.print(buffer);
  }
  
  /**

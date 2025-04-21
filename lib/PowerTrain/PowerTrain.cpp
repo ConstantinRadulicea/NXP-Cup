@@ -120,7 +120,7 @@ static void power_train_sampling(){
 
     if (sampl_routine_callback != NULL)
     {
-        sampl_routine_callback();
+        sampl_routine_callback(HzToSec(pid_frequency_hz));
     }
 }
 

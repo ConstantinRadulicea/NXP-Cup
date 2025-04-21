@@ -4,6 +4,10 @@
 #include "string.h"
 #include "features/imu_data.h"
 #include "PowerTrain.h"
+#include <math.h>
+
+static volatile float prev_yaw_rate = 0.0f;
+static volatile float yaw_rate_delta = 0.0f;
 
 
 enum direction {
@@ -62,12 +66,18 @@ enum WheelToBrake detectAndMitigateOversteer(
     float steeringAngle,       // in radians
     float wheelbase,           // in meters
     float measuredYawRate,     // in rad/s
-    float yawRateTolerance     // in rad/s
+    float yawRateTolerance,     // in rad/s
+    float time_s,                // time passed from last sample
+    int8_t osm_active           // state of the current osm if active or not
 ) {
+
     if (wheelbase == 0.0f) return NONE;
     enum situation_type situation = NONE_TYPE;
     enum direction steering_direction = getSteeringDirection(steeringAngle);
     enum direction yaw_steering_direction = getYawDirection(measuredYawRate);
+
+    yaw_rate_delta = ((measuredYawRate - prev_yaw_rate) / time_s);
+    prev_yaw_rate = measuredYawRate;
 
     float expectedYawRate = calculateYawRate(speed, wheelbase, steeringAngle);
 
@@ -100,6 +110,16 @@ enum WheelToBrake detectAndMitigateOversteer(
                 situation = OVERSTEER_TYPE;
             }
         }
+
+        if (osm_active == 0 && situation == OVERSTEER_TYPE) {
+            float temp_delta = fabs(yaw_rate_delta);
+            if (floatCmp(temp_delta, g_oversteer_mitigation_yaw_delta_tolerance_rad_s) >= 0 && (signbit(yaw_rate_delta) == signbit(measuredYawRate))) {
+                situation = OVERSTEER_TYPE;
+            }
+            else{
+                situation = NONE_TYPE;
+            }
+        }
     }
 
     if (situation == OVERSTEER_TYPE)
@@ -119,7 +139,7 @@ enum WheelToBrake detectAndMitigateOversteer(
 
 
 
-OSM_out_t oversteer_mitigation(){
+OSM_out_t oversteer_mitigation(float time_s){
     OSM_out_t result;
 
     memset(&result, 0, sizeof(result));
@@ -138,10 +158,11 @@ OSM_out_t oversteer_mitigation(){
     float temp_yaw_tolerance = MAX(g_oversteer_mitigation_yaw_tolerance_rad_s, 0.0f);
     float measured_yaw_rate_rad_s = imu_get_yaw_rate_rad_s();
 
+
     //if(g_oversteer_mitigation_active != 0){
     //    temp_yaw_tolerance = temp_yaw_tolerance * 0.5f;
     //}
-    action = detectAndMitigateOversteer(g_car_speed_mps, g_steering_angle_rad, WHEEL_BASE_M, measured_yaw_rate_rad_s, temp_yaw_tolerance);
+    action = detectAndMitigateOversteer(g_car_speed_mps, g_steering_angle_rad, WHEEL_BASE_M, measured_yaw_rate_rad_s, temp_yaw_tolerance, time_s, g_oversteer_mitigation_active);
     if (action == NONE) {
         result.active = 0;
         g_oversteer_mitigation_active = 0;
@@ -157,9 +178,9 @@ OSM_out_t oversteer_mitigation(){
 }
 
 
-void OSM_routine(){
+void OSM_routine(float time_s){
     #if ENABLE_OVERSTEER_MITIGATION != 0
-    OSM_out_t osm_result = oversteer_mitigation();
+    OSM_out_t osm_result = oversteer_mitigation(time_s);
     if (osm_result.active != 0)
     {
         if (osm_result.wheel_to_brake == REAR_LEFT) {
