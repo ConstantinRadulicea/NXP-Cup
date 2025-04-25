@@ -106,7 +106,7 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
     if (g_birdeye_calibrationdata.valid != 0) {
       g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
     }
-    g_birdeye_calibrationdata.valid = 0;
+    //g_birdeye_calibrationdata.valid = 0;
 }
 
 #elif CAR_ID == 2
@@ -190,7 +190,7 @@ void initialize_g_birdeye_calibrationdata() {
     if (g_birdeye_calibrationdata.valid != 0) {
       g_lane_width_vector_unit = g_birdeye_calibrationdata.src_track_width;
     }
-    g_birdeye_calibrationdata.valid = 0;
+    //g_birdeye_calibrationdata.valid = 0;
     
 }
 
