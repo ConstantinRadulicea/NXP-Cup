@@ -1,6 +1,7 @@
 #include "setup.h"
 #include "features/imu_data.h"
 #include "features/oversteer_mitigation.h"
+#include "features/EDF.h"
 
 
 
@@ -159,5 +160,8 @@ void setup() {
       wire.begin();
     #endif
     imu_data_setup();
+  #endif
+  #if ENABLE_EDF != 0
+    EDF_setup(EDF_MOTOR_PIN);
   #endif
 }

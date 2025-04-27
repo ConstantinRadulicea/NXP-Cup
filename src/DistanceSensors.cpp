@@ -85,9 +85,9 @@ inline void continous_loop_signal_generation(int signal_pin, int8_t _count) {
 
 void continous_loop_signal_generation_routine(){
   static int8_t _count = 0;
-  //continous_loop_signal_generation(EDF_MOTOR_PIN, _count);
-  continous_loop_signal_generation(EDF_MOTOR_PIN, _count);
-  //continous_loop_signal_generation(EDF_MOTOR_PIN, _count);
+  //continous_loop_signal_generation(DISTANCE_SENSOR_PWM_PIN, _count);
+  continous_loop_signal_generation(DISTANCE_SENSOR_PWM_PIN, _count);
+  //continous_loop_signal_generation(DISTANCE_SENSOR_PWM_PIN, _count);
   _count++;
   _count = _count % (int8_t)3;
 }
@@ -114,8 +114,8 @@ distance_sensor3_analog_pin = _distance_sensor3_analog_pin;
     pinMode(distance_sensor3_analog_pin, INPUT); 
   #endif
 
-  pinMode(EDF_MOTOR_PIN, OUTPUT);
-  digitalWrite(EDF_MOTOR_PIN, LOW);
+  pinMode(DISTANCE_SENSOR_PWM_PIN, OUTPUT);
+  digitalWrite(DISTANCE_SENSOR_PWM_PIN, LOW);
 
   myTimer_2.begin(continous_loop_signal_generation_routine, SecToMicros(HzToSec(30.0)));
 

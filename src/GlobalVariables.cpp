@@ -197,6 +197,8 @@ void initialize_g_birdeye_calibrationdata() {
 
 #endif
 
+float g_edf_raw_speed = 90.0f;
+
 
 float g_line_image_frame_width = 79.0f;
 float g_line_image_frame_height = 52.0f;

@@ -96,6 +96,7 @@
 #define ENABLE_BIRDEYEVIEW 1
 #define ENABLE_IMU 1
 #define ENABLE_OVERSTEER_MITIGATION 1
+#define ENABLE_EDF 0
 
 
 
@@ -119,6 +120,7 @@
   #define ENABLE_BIRDEYEVIEW 1
   #define ENABLE_IMU 1
   #define ENABLE_OVERSTEER_MITIGATION 1
+  #define ENABLE_EDF 1
 #endif
 
 #if RACE_MODE == 1
@@ -141,6 +143,7 @@
 #define ENABLE_BIRDEYEVIEW 1
 #define ENABLE_IMU 1
 #define ENABLE_OVERSTEER_MITIGATION 1
+#define ENABLE_EDF 0
 #endif
 
 #if TEMP_MODE == 1
@@ -242,10 +245,11 @@
 #define RIGHT_WHEEL_MOTOR_PIN 5
 #define LEFT_WHEEL_MOTOR_PIN 4
 #define EDF_MOTOR_PIN 6
+#define DISTANCE_SENSOR_PWM_PIN 14
 #define REMOTE_START_PIN -1
 #define REMOTE_STOP_PIN -1
 
-#define DISTANCE_SENSOR1_ANALOG_PIN 14
+#define DISTANCE_SENSOR1_ANALOG_PIN -1
 #define DISTANCE_SENSOR2_ANALOG_PIN 15
 #define DISTANCE_SENSOR3_ANALOG_PIN 16
 
@@ -266,7 +270,8 @@
   #define STEERING_SERVO_PIN                22
   #define RIGHT_WHEEL_MOTOR_PIN             -1
   #define LEFT_WHEEL_MOTOR_PIN              23
-  #define EDF_MOTOR_PIN                     3
+  #define EDF_MOTOR_PIN                     -1
+  #define DISTANCE_SENSOR_PWM_PIN           3
   #define REMOTE_START_PIN                  -1
   #define REMOTE_STOP_PIN                   -1
 

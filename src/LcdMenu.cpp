@@ -106,6 +106,12 @@ SSD1306AsciiWire display;
 #define ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW                  0
 #endif
 
+#if ENABLE_EDF != 0
+  #define ENABLE_LCDMENU_ENABLE_EDF_SPEED                         1
+#else
+  #define ENABLE_LCDMENU_ENABLE_EDF_SPEED                         0
+#endif
+
 
 void displayParameterValue(String parameter, String value){
   #if LCD_LIBRARY_ADAFRUIT != 0
@@ -288,6 +294,11 @@ void settingsMenuRoutine() {
 
               #if ENABLE_LCDMENU_CAMERA_OFFSET_Y != 0
                 LCDMENU_CAMERA_OFFSET,
+              #endif
+
+              
+              #if ENABLE_LCDMENU_ENABLE_EDF_SPEED != 0
+                LCDMENU_ENABLE_EDF_SPEED,
               #endif
               
               #if ENABLE_LCDMENU_BIRD_EYE_CALIBRATION_VIEW != 0
@@ -1128,6 +1139,22 @@ void settingsMenuRoutine() {
 
         break;
       }
+    #endif
+
+
+    #if ENABLE_LCDMENU_ENABLE_EDF_SPEED != 0
+    case LCDMENU_ENABLE_EDF_SPEED:{
+      if (incrementButton == HIGH) {
+        g_edf_raw_speed += 5.0f;
+      } else if (decrementButton == HIGH) {
+        g_edf_raw_speed -= 5.0f;
+      }
+      g_edf_raw_speed = MAX(g_edf_raw_speed, 0.0f);
+      g_edf_raw_speed = MIN(g_edf_raw_speed, 180.0f);
+
+      displayParameterValue(String("EDF_RAW_SPEED"), FloatToString(g_edf_raw_speed, 1));
+    }
+    break;
     #endif
 
       default:

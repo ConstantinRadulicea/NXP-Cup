@@ -18,6 +18,7 @@
 #include "features/automatic_emergency_braking.h"
 #include "features/finish_line_detection.h"
 #include "WheelRpm.h"
+#include "features/EDF.h"
 
 /*====================================================================================================================================*/
 
@@ -75,6 +76,9 @@ void loop() {
   for (;;)
   {
     timeStart = (float)millis();
+
+    EDF_motor.write((int)g_edf_raw_speed);
+
     EnableSlowSpeedAfterDelay(&g_max_speed_delay_passed, g_max_speed_after_delay_s);
     #if ENABLE_STEERING_SERVO == 1
       g_steering_wheel.SetRawAngleOffset(g_steering_wheel_angle_offset_deg);
