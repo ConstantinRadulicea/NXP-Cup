@@ -77,7 +77,7 @@ void loop() {
   {
     timeStart = (float)millis();
 
-    EDF_motor.write((int)g_edf_raw_speed);
+    //EDF_motor.write((int)g_edf_raw_speed);
 
     EnableSlowSpeedAfterDelay(&g_max_speed_delay_passed, g_max_speed_after_delay_s);
     #if ENABLE_STEERING_SERVO == 1
@@ -269,6 +269,10 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
     
     g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, local_unvalidated_steering_angle_rad);
     
+    #if ENABLE_EDF != 0
+      EDF_activation_loop(g_steering_angle_rad);
+    #endif
+
     if (!isValidFloatNumber(&(g_car_speed_mps), __LINE__)) {
       continue;
     }

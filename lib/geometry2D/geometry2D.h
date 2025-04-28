@@ -53,6 +53,12 @@ extern "C"{
 #define MicroToUnit(val) ((val)/1000000.0)
 #define UnitToMicro(val) ((val)*1000000.0)
 
+#define MillisToMicros(val) ((val)*1000.0f)
+#define MicrosToMillis(val) ((val)/1000.0f)
+#define MicrosToSec(val) ((val)/1000000.0f)
+#define SecToMicros(val) ((val)*1000000.0f)
+#define MillisToSec(val) ((val) / 1000.0f)
+
 
 #define INCONSISTENT_ECUATION_SYSTEM 1
 #define CONSISTENT_ECUATION_SYSTEM 2

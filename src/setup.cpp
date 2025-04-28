@@ -88,6 +88,10 @@ void setup() {
     #endif
   #endif
 
+  #if ENABLE_EDF != 0
+    EDF_setup(EDF_MOTOR_PIN);
+  #endif
+
   #if ENABLE_EMERGENCY_BREAKING == 1
     AEB_setup();
   #endif
@@ -160,8 +164,5 @@ void setup() {
       wire.begin();
     #endif
     imu_data_setup();
-  #endif
-  #if ENABLE_EDF != 0
-    EDF_setup(EDF_MOTOR_PIN);
   #endif
 }
