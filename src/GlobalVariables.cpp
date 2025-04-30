@@ -54,6 +54,7 @@ float g_car_speed_mps_ki_min_max_impact = 0.3f;
 float g_finish_line_angle_tolerance = 35.0f;
 float g_oversteer_mitigation_yaw_tolerance_rad_s = radians(50.0f);
 float g_oversteer_mitigation_yaw_delta_tolerance_rad_s = radians(360.0f);
+float g_edf_raw_speed = 90.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -141,6 +142,7 @@ float g_car_speed_mps_ki_min_max_impact = 0.3f;
 float g_finish_line_angle_tolerance = 35.0f;
 float g_oversteer_mitigation_yaw_tolerance_rad_s = radians(50.0f);
 float g_oversteer_mitigation_yaw_delta_tolerance_rad_s = radians(360.0f);
+float g_edf_raw_speed = 90.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
@@ -197,7 +199,7 @@ void initialize_g_birdeye_calibrationdata() {
 
 #endif
 
-float g_edf_raw_speed = 90.0f;
+
 
 
 float g_line_image_frame_width = 79.0f;
@@ -242,7 +244,7 @@ Pixy2 g_pixy_1;
 //Pixy2SPI_SS pixy_2;
 
 
-#define TOTAL_GLOBAL_PARAMETERS 60
+#define TOTAL_GLOBAL_PARAMETERS 61
 
 
 /*
@@ -645,6 +647,8 @@ void setGlobalVariables(std::vector<float> &fields){
 
   g_oversteer_mitigation_yaw_tolerance_rad_s = fields[58];
   g_oversteer_mitigation_yaw_delta_tolerance_rad_s = fields[59];
+
+  g_edf_raw_speed = fields[60];
 
 
 #if ENABLE_DRIVERMOTOR == 1
