@@ -18,7 +18,7 @@ g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 50.0;                       % 40
 g_vehicle_min_speed_mps = 0.5;
-g_vehicle_max_speed_mps = 3.5;                                      % 
+g_vehicle_max_speed_mps = 2.6;                                      % 
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
@@ -33,7 +33,7 @@ g_max_speed_after_delay_mps = 0.3;
 g_finish_line_angle_tolerance = 30.0;
 g_oversteer_mitigation_yaw_tolerance_rad_s = deg2rad(150);
 g_oversteer_mitigation_yaw_delta_tolerance_rad_s = deg2rad(360);
-g_edf_raw_speed = 180;
+g_edf_raw_speed = 150;
 
 g_powertrain_left_wheel_kp = 0.0;
 g_powertrain_left_wheel_ki = 0.1;
