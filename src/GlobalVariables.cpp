@@ -229,6 +229,8 @@ float g_rear_axe_turn_radius_m = 0.0f;
 int8_t g_max_speed_delay_passed = 0;
 int8_t g_enable_change_aeb_max_distance_after_delay_passed = 0;
 volatile int8_t g_oversteer_mitigation_active = 0;
+int8_t g_valid_vectors_detected_flag = 0;
+int8_t g_valid_track_lines_flag = 0;
 
 struct BirdEyeCalibrationData g_birdeye_calibrationdata = {};
 

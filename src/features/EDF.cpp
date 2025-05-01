@@ -4,12 +4,15 @@
 #include "Arduino.h"
 #include <PWMServo.h>
 #include "GlobalVariables.h"
+#include "features/automatic_emergency_braking.h"
 
 #define EDF_MIN_ACTIVE_TIME_S 1.0f
 #define EDF_STEERING_ANGLE_ACTIVATION_RAD radians(0.0f)
-#define EDF_MIN_VEHICLE_SPEED_MPS 0.1f
+#define EDF_MIN_VEHICLE_SPEED_MPS 0.7f
 #define EDF_IDLE_RAW_SPEED g_edf_raw_speed
 #define EDF_STANDSTILL_RAW_SPEED 90
+
+#define EDF_STOP_MIN_OBSTACLE_DISTANCE_M 0.2f
 
 volatile PWMServo EDF_motor;
 static int8_t local_EDF_active = (int8_t)0;
@@ -24,7 +27,23 @@ void EDF_setup(int edf_pin){
 
 void EDF_activation_loop(float steering_angle_rad){
     int8_t edf_vehicle_min_speed_achived = (int8_t)0;
-    g_enable_edf = (int8_t)1;
+    float temp_obstacle_distance = 0.0f;
+    
+
+    if (g_enable_car_engine == (int8_t)0) {
+        g_enable_edf = (int8_t)1;
+    }
+    
+    if (g_valid_track_lines_flag == (int8_t)0 || g_valid_vectors_detected_flag == (int8_t)0) {
+        g_enable_edf = (int8_t)0;
+    }
+    temp_obstacle_distance = getFrontObstacleDistanceAnalog_m();
+    if (floatCmp(temp_obstacle_distance, EDF_STOP_MIN_OBSTACLE_DISTANCE_M) <= 0) {
+        g_enable_edf = (int8_t)0;
+    }
+
+
+
     //if ((int)g_edf_raw_speed <= EDF_IDLE_RAW_SPEED) {
     //    g_enable_edf = (int8_t)0;
     //}

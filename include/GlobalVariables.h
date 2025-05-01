@@ -68,6 +68,9 @@ extern float g_oversteer_mitigation_yaw_tolerance_rad_s;
 extern float g_oversteer_mitigation_yaw_delta_tolerance_rad_s;
 extern float g_edf_raw_speed;
 
+extern int8_t g_valid_vectors_detected_flag;
+extern int8_t g_valid_track_lines_flag;
+
 extern float g_emergency_brake_enable_delay_s;
 extern int8_t g_max_speed_delay_passed;
 

@@ -40,6 +40,7 @@ void loop() {
   float timeStart;
   float speed_request_mps;
   float p_camera_no_vector_detected_stopwatch_s = 0.0f;
+  float p_no_lines_detected_stopwatch_s = 0.0f;
   float p_camera_error_stopwatch_s = 0.0f;
   float local_unvalidated_steering_angle_rad;
   g_loop_time_ms = 0.0f;
@@ -177,6 +178,28 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
 
 
 
+
+if (isValidLineSegment(pixy_1_leftVector) == 0 && isValidLineSegment(pixy_1_rightVector) == 0) {
+  p_no_lines_detected_stopwatch_s += MillisToSec(g_loop_time_ms);
+}
+else{
+  p_no_lines_detected_stopwatch_s = 0.0f;
+}
+
+
+g_valid_track_lines_flag = 1;
+if (p_no_lines_detected_stopwatch_s >= CAMERA_NO_LINES_DETECTED_TIMEOUT_S)
+{
+  #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
+    SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No lines detected: ") + FloatToString(p_no_lines_detected_stopwatch_s, 2) + String(" s"));
+  #endif
+  g_vehicle_max_speed_mps = MIN(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps);
+  g_valid_track_lines_flag = 0;
+}
+
+
+
+
     //if (g_birdeye_calibrationdata.valid && g_start_line_calibration_acquisition_birdeye == 0){
     //  pixy_1_leftVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_leftVectorOld);
     //  pixy_1_rightVectorOld = BirdEye_CalibrateVector(g_birdeye_calibrationdata, pixy_1_rightVectorOld);
@@ -259,13 +282,16 @@ pixy_1_rightVector = g_pixy_1_vectors_processing.getRightVector();
     g_vehicle_max_speed_mps = speed_request_mps;
 
 
+    g_valid_vectors_detected_flag = 1;
     if (p_camera_no_vector_detected_stopwatch_s >= CAMERA_NO_VECTOR_DETECTED_TIMEOUT_S)
     {
       #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
         SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("No vector detected: ") + FloatToString(p_camera_no_vector_detected_stopwatch_s, 2) + String(" s"));
       #endif
       g_vehicle_max_speed_mps = MIN(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps);
+      g_valid_vectors_detected_flag = 0;
     }
+
     
     g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, local_unvalidated_steering_angle_rad);
     
