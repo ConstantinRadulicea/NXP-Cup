@@ -1149,7 +1149,7 @@ void settingsMenuRoutine() {
       } else if (decrementButton == HIGH) {
         g_edf_raw_speed -= 5.0f;
       }
-      g_edf_raw_speed = MAX(g_edf_raw_speed, 0.0f);
+      g_edf_raw_speed = MAX(g_edf_raw_speed, -1.0f);
       g_edf_raw_speed = MIN(g_edf_raw_speed, 180.0f);
 
       displayParameterValue(String("EDF_RAW_SPEED"), FloatToString(g_edf_raw_speed, 1));
