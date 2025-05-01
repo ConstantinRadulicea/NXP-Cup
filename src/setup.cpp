@@ -17,13 +17,19 @@
 
 
 void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
+  static int8_t engine_was_enable_flag = 0;
   #if ENABLE_SERIAL_PRINT != 0 || ENABLE_SERIAL_PRINT_LIMITED != 0
     SERIAL_PORT.println(String(ESCAPED_CHARACTER_AT_BEGINNING_OF_STRING) + String("seconds [") + FloatToString(time_passed, 2) + String("] ERROR: " + errorText));
   #endif
   if (time_passed >= CAMERA_ERROR_TIMEOUT_S){
     //g_car_speed_mps = (float)STANDSTILL_SPEED;
-    while (pixy->init() < ((int8_t)0))
+    if (pixy->init() < ((int8_t)0))
     {
+      if (g_enable_car_engine != 0) {
+        engine_was_enable_flag = 1;
+      }
+      
+      g_enable_car_engine = 0;
       #if ENABLE_DRIVERMOTOR == 1
         #if ENABLE_SINGLE_AXE_STEERING_NO_RPM != 0
           g_onemotorpowertrain.SetSpeedRequest_slow(STANDSTILL_SPEED);
@@ -37,8 +43,13 @@ void FailureModeMessage(Pixy2 *pixy, float time_passed, String errorText){
       #if ENABLE_STEERING_SERVO == 1
         g_steering_wheel.setSteeringWheelAngleDeg(0.0f);
       #endif
-      delay(10);
-    }    
+    }
+    else{
+      if (engine_was_enable_flag != 0) {
+        engine_was_enable_flag = 0;
+        g_enable_car_engine = 1;
+      }
+    }
   }
 }
 
