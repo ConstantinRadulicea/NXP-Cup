@@ -20,7 +20,7 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
@@ -63,61 +63,61 @@ extern "C"{
 #define INCONSISTENT_ECUATION_SYSTEM 1
 #define CONSISTENT_ECUATION_SYSTEM 2
 
-typedef struct LineMQ {
-	float m;
-	float q;
-}LineMQ;
+	typedef struct LineMQ {
+		float m;
+		float q;
+	}LineMQ;
 
-typedef struct ParabolaABC {
-	float A;
-	float B;
-	float C;
-}ParabolaABC;
+	typedef struct ParabolaABC {
+		float A;
+		float B;
+		float C;
+	}ParabolaABC;
 
-typedef struct LineABC {
-	float Ax;
-	float By;
-	float C;
-}LineABC;
+	typedef struct LineABC {
+		float Ax;
+		float By;
+		float C;
+	}LineABC;
 
-typedef struct Point2D {
-	float x;
-	float y;
-}Point2D;
+	typedef struct Point2D {
+		float x;
+		float y;
+	}Point2D;
 
-typedef struct Point2D_int {
-	int x;
-	int y;
-}Point2D_int;
+	typedef struct Point2D_int {
+		int x;
+		int y;
+	}Point2D_int;
 
-typedef struct LineSegment {
-	Point2D A;
-	Point2D B;
-}LineSegment;
+	typedef struct LineSegment {
+		Point2D A;
+		Point2D B;
+	}LineSegment;
 
-typedef struct Vector2D {
-	Point2D tail;
-	Point2D head;
-}Vector2D;
+	typedef struct Vector2D {
+		Point2D tail;
+		Point2D head;
+	}Vector2D;
 
-typedef struct Vector2D_components {
-	float i; // x axis
-	float j; // y axis
-}Vector2D_components;
+	typedef struct Vector2D_components {
+		float i; // x axis
+		float j; // y axis
+	}Vector2D_components;
 
 
-typedef struct LineSegmentsDistancePoints {
-	LineSegment min;
-	LineSegment max;
-}LineSegmentsDistancePoints;
+	typedef struct LineSegmentsDistancePoints {
+		LineSegment min;
+		LineSegment max;
+	}LineSegmentsDistancePoints;
 
-typedef struct IntersectionPoints2D_2
-{
-	Point2D point1;
-	Point2D point2;
-	int numPoints;
-	int sameEquation;
-}IntersectionPoints2D_2;
+	typedef struct IntersectionPoints2D_2
+	{
+		Point2D point1;
+		Point2D point2;
+		int numPoints;
+		int sameEquation;
+	}IntersectionPoints2D_2;
 
 
 #define INTERSECTION_INFO_ONE_INTERSECTION 0
@@ -125,171 +125,173 @@ typedef struct IntersectionPoints2D_2
 #define INTERSECTION_INFO_LINES_ARE_EQUAL 2
 #define INTERSECTION_INFO_LINES_ERROR 3
 #define INTERSECTION_INFO_NO_INTERSECTION 4
-typedef struct IntersectionLines {
-	Point2D point;
-	int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal, 3 error
-}IntersectionLines;
+	typedef struct IntersectionLines {
+		Point2D point;
+		int info; // 0: one intersection, 1: lines are parallel, 2: the lines are equal, 3 error
+	}IntersectionLines;
 
-float NormalizePiToNegPi(float angle);
+	float NormalizePiToNegPi(float angle);
 
-LineABC xAxisABC();
+	LineABC xAxisABC();
 
-LineABC yAxisABC();
+	LineABC yAxisABC();
 
-int isValidLineABC(LineABC line);
+	int isValidLineABC(LineABC line);
 
-// result = A - B;
-LineABC LineAbcSubtraction(LineABC A, LineABC B);
+	// result = A - B;
+	LineABC LineAbcSubtraction(LineABC A, LineABC B);
 
-// polynomial_coefficients[0] = x^2
-// polynomial_coefficients[1] = x
-// polynomial_coefficients[3] = 1
-// polynomial_degree = 2
-Point2D polyval(float* polynomial_coefficients, int polynomial_degree, float x);
+	// polynomial_coefficients[0] = x^2
+	// polynomial_coefficients[1] = x
+	// polynomial_coefficients[3] = 1
+	// polynomial_degree = 2
+	Point2D polyval(float* polynomial_coefficients, int polynomial_degree, float x);
 
-int floatCmp(float num1, float num2);
+	int floatCmp(float num1, float num2);
 
-int gaussianElimination3(float A[3][3 + 1], float x[3], int n);
-int gaussianElimination2(float A[2][2 + 1], float x[2], int n);
-int gaussianElimination8(float A[8][8 + 1], float x[8]);
+	int gaussianElimination3(float A[3][3 + 1], float x[3], int n);
+	int gaussianElimination2(float A[2][2 + 1], float x[2], int n);
+	int gaussianElimination8(float A[8][8 + 1], float x[8]);
 
-ParabolaABC points2parabola_3(Point2D point1, Point2D point2, Point2D point3);
+	ParabolaABC points2parabola_3(Point2D point1, Point2D point2, Point2D point3);
 
-int isValidParabola(ParabolaABC parabola);
+	int isValidParabola(ParabolaABC parabola);
 
-Point2D parabolaVertex(ParabolaABC parabola);
+	Point2D parabolaVertex(ParabolaABC parabola);
 
-Point2D midPoint(Point2D point1, Point2D point2);
+	Point2D midPoint(Point2D point1, Point2D point2);
 
-LineMQ perpendicularToLinePassingThroughPointMQ(LineMQ line, Point2D point);
+	LineMQ perpendicularToLinePassingThroughPointMQ(LineMQ line, Point2D point);
 
 
-Point2D mirrorImageABC(LineABC line, Point2D point);
+	Point2D mirrorImageABC(LineABC line, Point2D point);
 
-LineABC normalizeLineABC2MQ(LineABC line);
+	LineABC normalizeLineABC2MQ(LineABC line);
 
-float distanceBwParallelLinesABC(LineABC line1, LineABC line2);
+	float distanceBwParallelLinesABC(LineABC line1, LineABC line2);
 
-int arePerpenticularABC(LineABC line1, LineABC line2);
+	int arePerpenticularABC(LineABC line1, LineABC line2);
 
-int areParallelABC(LineABC line1, LineABC line2);
-/*
- * side:
- *		1: new line on right or bottom side
- *	   0: new line on left or upper side
-*/
-LineABC parallelLineAtDistanceABC(LineABC line, float distance, int side);
-int isLineParallelToXaxisABC(LineABC line);
+	int areParallelABC(LineABC line1, LineABC line2);
+	/*
+	 * side:
+	 *		1: new line on right or bottom side
+	 *	   0: new line on left or upper side
+	*/
+	LineABC parallelLineAtDistanceABC(LineABC line, float distance, int side);
+	int isLineParallelToXaxisABC(LineABC line);
 
-int isLineParallelToYaxisABC(LineABC line);
+	int isLineParallelToYaxisABC(LineABC line);
 
-float angleBetweenLinesMQ(LineMQ line1, LineMQ line2);
+	float angleBetweenLinesMQ(LineMQ line1, LineMQ line2);
 
-// https://www.math-only-math.com/equations-of-the-bisectors-of-the-angles-between-two-straight-lines.html
-//acutangle is the bisector when the lines are parallel
-void bisectorsOfTwoLinesABC(LineABC line1, LineABC line2, LineABC* acuteAngle, LineABC* ottuseAngle);
-LineMQ points2lineMQ(Point2D point1, Point2D point2);
+	// https://www.math-only-math.com/equations-of-the-bisectors-of-the-angles-between-two-straight-lines.html
+	//acutangle is the bisector when the lines are parallel
+	void bisectorsOfTwoLinesABC(LineABC line1, LineABC line2, LineABC* acuteAngle, LineABC* ottuseAngle);
+	LineMQ points2lineMQ(Point2D point1, Point2D point2);
 
-LineABC lineMQ2ABC(LineMQ line);
+	LineABC lineMQ2ABC(LineMQ line);
 
-LineMQ lineABC2MQ(LineABC line);
+	LineMQ lineABC2MQ(LineABC line);
 
-LineABC perpendicularToLinePassingThroughPointABC(LineABC line, Point2D point);
+	LineABC perpendicularToLinePassingThroughPointABC(LineABC line, Point2D point);
 
-LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle);
+	LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle);
 
-Point2D rotatePointAroundPoint(Point2D point, Point2D center, float angle);
+	Point2D rotatePointAroundPoint(Point2D point, Point2D center, float angle);
 
-LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center, float angle);
+	LineSegment rotateLineSegmentAroundPoint(LineSegment lineSegment, Point2D center, float angle);
 
-float angleBetweenLinesABC(LineABC line1, LineABC line2);
+	float angleBetweenLinesABC(LineABC line1, LineABC line2);
 
-LineABC points2lineABC(Point2D point1, Point2D point2);
+	LineABC points2lineABC(Point2D point1, Point2D point2);
 
-float euclidianDistance(Point2D point1, Point2D point2);
-float distance2lineMQ(Point2D point, LineMQ line);
+	float euclidianDistance(Point2D point1, Point2D point2);
+	float distance2lineMQ(Point2D point, LineMQ line);
 
-float distance2lineABC(Point2D point, LineABC lineAbc);
-int isPointOnLineABC(Point2D point, LineABC lineAbc);
+	float distance2lineABC(Point2D point, LineABC lineAbc);
+	int isPointOnLineABC(Point2D point, LineABC lineAbc);
 
-IntersectionPoints2D_2 intersectionLineCircleMQ(Point2D circleCenter, float circleRadius, LineMQ line);
+	IntersectionPoints2D_2 intersectionLineCircleMQ(Point2D circleCenter, float circleRadius, LineMQ line);
 
-IntersectionPoints2D_2 intersectionLineCircleABC(Point2D circleCenter, float circleRadius, LineABC lineAbc);
-IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2);
+	IntersectionPoints2D_2 intersectionLineCircleABC(Point2D circleCenter, float circleRadius, LineABC lineAbc);
+	IntersectionLines intersectionLinesABC(LineABC line1, LineABC line2);
 
-Point2D circleAngleToPoint2D(Point2D circleCenter, float circleRadius, float angleRad);
+	Point2D circleAngleToPoint2D(Point2D circleCenter, float circleRadius, float angleRad);
 
 
 
-float triangleAngleA(float AC, float CB, float BA);
+	float triangleAngleA(float AC, float CB, float BA);
 
-float distanceBwLinesABC(LineABC line1, LineABC line2, Point2D pointOnLine);
-Point2D projectPointOnLineABC(Point2D point, LineABC line);
+	float distanceBwLinesABC(LineABC line1, LineABC line2, Point2D pointOnLine);
+	Point2D projectPointOnLineABC(Point2D point, LineABC line);
 
-int isPointOnSegment(LineSegment segment, Point2D point);
+	int isPointOnSegment(LineSegment segment, Point2D point);
 
-LineSegmentsDistancePoints distancePointsBwSegments(LineSegment segment1, LineSegment segment2);
+	LineSegmentsDistancePoints distancePointsBwSegments(LineSegment segment1, LineSegment segment2);
 
-LineABC lineSegmentToLineABC(LineSegment segment);
+	LineABC lineSegmentToLineABC(LineSegment segment);
 
 
-float minDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line);
+	float minDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line);
 
-float maxDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line);
+	float maxDistanceLineSegmentToLine(LineSegment vectorSegment, LineABC line);
 
-IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circleRadius_1, Point2D circleCenter_2, float circleRadius_2);
+	IntersectionPoints2D_2 intersectionBwCircles(Point2D circleCenter_1, float circleRadius_1, Point2D circleCenter_2, float circleRadius_2);
 
-float circlePoint2DToAngle(Point2D circleCenter, Point2D point);
+	float circlePoint2DToAngle(Point2D circleCenter, Point2D point);
 
-float angleBw3Points2D(Point2D origin, Point2D point_b, Point2D point_c);
+	float angleBw3Points2D(Point2D origin, Point2D point_b, Point2D point_c);
 
-float NormalizeZeroToPi(float angle);
+	float NormalizeZeroToPi(float angle);
 
-int isNumber(const char* str, size_t str_length);
+	int isNumber(const char* str, size_t str_length);
 
-float crossProduct2D(Vector2D_components A, Vector2D_components B);
+	float crossProduct2D(Vector2D_components A, Vector2D_components B);
 
-Vector2D pointsToVector2D(Point2D tail, Point2D head);
+	Vector2D pointsToVector2D(Point2D tail, Point2D head);
 
-Vector2D_components getVector2D_components(Vector2D vec);
+	Vector2D_components getVector2D_components(Vector2D vec);
 
-Vector2D_components getVector2D_componentsFromPoints(Point2D tail, Point2D head);
+	Vector2D_components getVector2D_componentsFromPoints(Point2D tail, Point2D head);
 
-int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P);
+	int isPointInTriangle(Point2D A, Point2D B, Point2D C, Point2D P);
 
-int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P);
+	int isPointInQuadrilateral(Point2D A, Point2D B, Point2D C, Point2D D, Point2D P);
 
-int isValidLineSegment(LineSegment seg);
+	int isValidLineSegment(LineSegment seg);
 
-int areLinesEqual(LineABC line1, LineABC line2);
+	int areLinesEqual(LineABC line1, LineABC line2);
 
-int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2);
+	int areLineSegmentsEqual(LineSegment seg1, LineSegment seg2);
 
-Point2D midPointLineSegment(LineSegment seg);
+	Point2D midPointLineSegment(LineSegment seg);
 
-float lengthLineSegment(LineSegment seg);
+	float lengthLineSegment(LineSegment seg);
 
-LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point);
+	LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, Point2D view_point);
 
-IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2);
+	IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2);
 
 
-int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point);
+	int reachableWithouthPassingThroughSegment(Point2D start_point, LineSegment segment, Point2D finish_point);
 
-LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
+	LineSegment getLongestReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
 
 
-struct FourBarLinkage_Theta {
-	float theta_open;
-	float theta_crossed;
-	int valid;
-};
+	struct FourBarLinkage_Theta {
+		float theta_open;
+		float theta_crossed;
+		int valid;
+	};
 
-struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2);
+	struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driver, float coupler, float follower, float theta1, float theta2);
 
-struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4);
+	struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driver, float coupler, float follower, float theta1, float theta4);
 
-int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
+	int isReachableSegment(Point2D start_point, LineSegment seg1, LineSegment seg2);
+
+	LineSegment getLineSegmentFromStartPointAToLine(LineSegment segment, LineABC line);
 
 #ifdef __cplusplus
 }

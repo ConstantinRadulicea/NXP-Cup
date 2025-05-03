@@ -131,9 +131,9 @@ void loop() {
       uncalibrated_vectors.resize(g_pixy_1.line.numVectors);
       memcpy(uncalibrated_vectors.data(), g_pixy_1.line.vectors, (g_pixy_1.line.numVectors * sizeof(Vector)));
 
-      intersections.clear();
-      VectorsProcessing::findIntersections(uncalibrated_vectors, intersections);
-      VectorsProcessing::filterVectorIntersections(uncalibrated_vectors, intersections);
+      //intersections.clear();
+      //VectorsProcessing::findIntersections(uncalibrated_vectors, intersections);
+      //VectorsProcessing::filterVectorIntersections(uncalibrated_vectors, intersections);
 
       if (uncalibrated_vectors.size() > 0){
         p_camera_no_vector_detected_stopwatch_s = 0.0f;

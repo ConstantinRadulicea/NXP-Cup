@@ -147,7 +147,7 @@ LineABC getMiddleLine(LineSegment segment_1, LineSegment segment_2) {
 
     bisectorsOfTwoLinesABC(leftLine, rightLine, &acuteAngleBisector, &ottuseAngleBisector);
 
-    if ((floatCmp(ottuseAngleBisector.Ax, 0.0f) == 1) && (floatCmp(ottuseAngleBisector.By, 0.0f) == 1))
+    if ((floatCmp(ottuseAngleBisector.Ax, 0.0f) == 0) && (floatCmp(ottuseAngleBisector.By, 0.0f) == 0))
     {
         middleLine_ = acuteAngleBisector;
     }

@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="geometry2D\geometry2D.cpp">
+    <ClCompile Include="geometry2D\geometry2D.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">

@@ -760,7 +760,7 @@ LineABC points2lineABC(Point2D point1, Point2D point2) {
 	LineABC lineAbc;
 
 	if (arePoints2DEqual(point1, point2)) {
-		return (LineABC){ 0.0f, 0.0f, 0.0f };
+		return (LineABC) { 0.0f, 0.0f, 0.0f };
 	}
 
 
@@ -1715,3 +1715,38 @@ struct FourBarLinkage_Theta FourBarLinkage_Theta4ToTheta2(float base, float driv
 
 	return result;
 }
+
+
+LineSegment getLineSegmentFromStartPointAToLine(LineSegment segment, LineABC line) {
+	LineSegment result;
+	float dist_a_to_line;
+	float dist_b_to_line;
+
+	memset(&result, 0, sizeof(result));
+
+	LineABC segment_line = lineSegmentToLineABC(segment);
+
+	if (areParallelABC(segment_line, line)) {
+		return result;
+	}
+
+	IntersectionLines inters = intersectionLinesABC(line, segment_line);
+	if (inters.info != INTERSECTION_INFO_ONE_INTERSECTION) {
+		return result;
+	}
+
+	dist_a_to_line = distance2lineABC(segment.A, line);
+	dist_b_to_line = distance2lineABC(segment.B, line);
+
+	if (floatCmp(dist_a_to_line, dist_b_to_line) < 0) {
+		result.B = segment.A;
+	}
+	else {
+		result.B = segment.B;
+	}
+
+	result.A = inters.point;
+
+	return result;
+}
+

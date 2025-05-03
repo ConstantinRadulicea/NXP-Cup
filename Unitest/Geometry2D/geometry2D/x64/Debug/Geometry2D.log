@@ -1,5 +1,38 @@
-﻿  geometry2D.cpp
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.cpp(536,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.cpp(537,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.cpp(859,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+﻿  geometry2D.c
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(535,10): warning C4305: 'return': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(671,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(672,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(733,10): warning C4305: 'return': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(741,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(747,18): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(994,16): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1346,46): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1347,44): warning C4305: '-=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1353,29): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1355,18): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1641,25): warning C4101: 'is_seg1_reachable': unreferenced local variable
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1640,14): warning C4101: 'result_seg': unreferenced local variable
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1662,17): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1662,40): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1662,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1683,34): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1683,44): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1683,52): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1684,40): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1684,50): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1684,58): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1704,36): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1704,49): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1704,57): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1709,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1710,47): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1710,60): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1710,68): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1712,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1713,53): warning C4244: 'function': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1713,66): warning C4305: 'function': truncation from 'double' to 'float'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1713,74): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1703,37): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\main.cpp(82,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Geometry2D.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\x64\Debug\Geometry2D.exe
