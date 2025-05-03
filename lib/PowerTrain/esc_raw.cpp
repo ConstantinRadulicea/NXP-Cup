@@ -15,6 +15,15 @@
 */
 
 #include "esc_raw.h"
+
+#define BIG_PINION 87
+
+#ifdef TEENSY40
+    #define SMALL_PINION 12
+#else
+    #define SMALL_PINION 12
+#endif
+
 /*
 
 float _raw_to_rpm_correlation[] = {
@@ -78,12 +87,12 @@ float RawToThrottle(float raw_value){
 }
 
 float RawToRpm(float raw_value) {
-    if(raw_value < 0.0f) return 0.0;
-    return ((RawToThrottle(raw_value) * BATTERY_VOLTAGE_V * MOTOR_RPM_PER_VOLT) * 12.0) / 87.0;
+    if(raw_value < 0.0f) return 0.0;  
+    return ((RawToThrottle(raw_value) * BATTERY_VOLTAGE_V * MOTOR_RPM_PER_VOLT) * ((float)SMALL_PINION)) / ((float)BIG_PINION); 
 }
 
 float RpmToRaw(float rpm){
-    return 90.0 + (((rpm * (87.0 / 12.0)) / (BATTERY_VOLTAGE_V * MOTOR_RPM_PER_VOLT)) * 90.0);
+    return 90.0 + (((rpm * (((float)BIG_PINION) / ((float)SMALL_PINION))) / (BATTERY_VOLTAGE_V * MOTOR_RPM_PER_VOLT)) * 90.0);
 }
 
 float RpmToThrottle(float rpm) {
