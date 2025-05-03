@@ -7,8 +7,8 @@
 #include "features/automatic_emergency_braking.h"
 
 #define EDF_MIN_ACTIVE_TIME_S 1.0f
-#define EDF_STEERING_ANGLE_ACTIVATION_RAD radians(10.0f)
-#define EDF_MIN_VEHICLE_SPEED_MPS -0.5f
+#define EDF_STEERING_ANGLE_ACTIVATION_RAD radians(12.0f)
+#define EDF_MIN_VEHICLE_SPEED_MPS 0.5f
 #define EDF_IDLE_RAW_SPEED 105
 #define EDF_STANDSTILL_RAW_SPEED 90
 
@@ -47,7 +47,6 @@ void EDF_activation_loop(float steering_angle_rad){
         locl_EDF_activation_started = 0;
         locl_EDF_activation_completed = 0;
     }
-
 
     if (g_enable_car_engine != (int8_t)0 && locl_EDF_activation_started == (int8_t)0) {
 
@@ -100,13 +99,19 @@ void EDF_activation_loop(float steering_angle_rad){
     if ((int)g_edf_raw_speed <= EDF_IDLE_RAW_SPEED) {
         g_enable_edf = (int8_t)0;
     }
+
+    if (g_finish_line_detected_slowdown != 0) {
+        g_enable_edf = (int8_t)0;
+    }
     
     //if (g_enable_car_engine == 0) {
     //    g_enable_edf = (int8_t)0;
     //}
-    
 
-    if (locl_EDF_activation_started != 0 && (floatCmp(g_car_speed_mps, EDF_MIN_VEHICLE_SPEED_MPS) >= 0) && (g_enable_edf != 0)) {
+    int always_on = 0;
+
+
+    if ((locl_EDF_activation_started != 0 && (floatCmp(g_car_speed_mps, EDF_MIN_VEHICLE_SPEED_MPS) >= 0) && (g_enable_edf != 0)) || always_on != 0) {
         if (local_EDF_active != (int8_t)0) {
             local_EDF_active_remaining_time_s -= MillisToSec(g_loop_time_ms);
             local_EDF_active_remaining_time_s = MAX(local_EDF_active_remaining_time_s, -1.0f);
