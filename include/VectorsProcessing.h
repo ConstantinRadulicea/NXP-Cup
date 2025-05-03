@@ -32,8 +32,6 @@ class VectorsProcessing
 private:
 LineSegment leftVector;
 LineSegment rightVector;
-LineSegment left_calibrated;
-LineSegment right_calibrated;
     Point2D carPosition;
     float minXaxeAngle;
     float laneWidth;
