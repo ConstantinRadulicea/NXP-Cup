@@ -1739,13 +1739,13 @@ LineSegment getLineSegmentFromStartPointAToLine(LineSegment segment, LineABC lin
 	dist_b_to_line = distance2lineABC(segment.B, line);
 
 	if (floatCmp(dist_a_to_line, dist_b_to_line) < 0) {
-		result.B = segment.A;
+		result.A = segment.A;
 	}
 	else {
-		result.B = segment.B;
+		result.A = segment.B;
 	}
 
-	result.A = inters.point;
+	result.B = inters.point;
 
 	return result;
 }

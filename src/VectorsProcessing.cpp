@@ -60,7 +60,13 @@ struct TrackLines intersectingCornerLinesFiltering (LineSegment _left_line, Line
 		return result;
 	}
 
-	line_segments_intersection = lineSegmentIntersection(seg1_to_horizontal_line, seg2_to_horizontal_line);
+	LineSegment seg1_B_to_horizontal_line = seg1_to_horizontal_line;
+	seg1_B_to_horizontal_line.A = _left_line.B;
+
+	LineSegment seg2_B_to_horizontal_line = seg2_to_horizontal_line;
+	seg2_B_to_horizontal_line.A = _right_line.B;
+
+	line_segments_intersection = lineSegmentIntersection(seg1_B_to_horizontal_line, seg2_B_to_horizontal_line);
 
 
 	if (line_segments_intersection.info != INTERSECTION_INFO_ONE_INTERSECTION) {
@@ -92,6 +98,7 @@ struct TrackLines intersectingCornerLinesFiltering (LineSegment _left_line, Line
 
 	return result;
 }
+
 
 
 

@@ -34,5 +34,5 @@ C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1713,6
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1713,74): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\geometry2D\geometry2D.c(1703,37): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   main.cpp
-C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\main.cpp(82,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
+C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\main.cpp(88,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
   Geometry2D.vcxproj -> C:\Programming\NXP-CUP\NXP-Cup\Unitest\Geometry2D\x64\Debug\Geometry2D.exe

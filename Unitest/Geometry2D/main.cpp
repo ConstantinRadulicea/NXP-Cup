@@ -44,7 +44,13 @@ struct TrackLines intersectingCornerLinesFiltering (LineSegment _left_line, Line
 		return result;
 	}
 
-	line_segments_intersection = lineSegmentIntersection(seg1_to_horizontal_line, seg2_to_horizontal_line);
+	LineSegment seg1_B_to_horizontal_line = seg1_to_horizontal_line;
+	seg1_B_to_horizontal_line.A = _left_line.B;
+
+	LineSegment seg2_B_to_horizontal_line = seg2_to_horizontal_line;
+	seg2_B_to_horizontal_line.A = _right_line.B;
+
+	line_segments_intersection = lineSegmentIntersection(seg1_B_to_horizontal_line, seg2_B_to_horizontal_line);
 
 
 	if (line_segments_intersection.info != INTERSECTION_INFO_ONE_INTERSECTION) {
@@ -123,7 +129,9 @@ void main() {
 
 
 	LineSegment left_line = { { 30.0f, 20.0f }, { 35.0f, 73.0f } };
-	LineSegment right_line = { { 21.0f, 21.0f }, { -17.0f, 38.0f } };
+	//LineSegment left_line = { { 30.0f, 10.0f }, { 35.0f, 73.0f } };
+	//LineSegment right_line = { { 21.0f, 21.0f }, { -17.0f, 38.0f } };
+	LineSegment right_line = { { -10.0f, 21.0f }, { -17.0f, 38.0f } };
 
 
 	double_checked_lines = intersectingCornerLinesFiltering(left_line, right_line, Horizontal_car_line, Vertical_car_line);
