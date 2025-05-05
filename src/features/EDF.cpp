@@ -6,9 +6,10 @@
 #include "GlobalVariables.h"
 #include "features/automatic_emergency_braking.h"
 
-#define EDF_MIN_ACTIVE_TIME_S 1.0f
+#define EDF_MIN_ACTIVE_TIME_S 10.0f
+#define EDF_CAR_IN_MOTION_DELAY_S 0.5f
 #define EDF_STEERING_ANGLE_ACTIVATION_RAD radians(12.0f)
-#define EDF_MIN_VEHICLE_SPEED_MPS 0.5f
+#define EDF_MIN_VEHICLE_SPEED_MPS 0.1f
 #define EDF_IDLE_RAW_SPEED 105
 #define EDF_STANDSTILL_RAW_SPEED 90
 
@@ -23,6 +24,9 @@ static int8_t g_enable_edf = (int8_t)1;
 static float local_EDF_activation_complete_remaining_time_s = 0.0f;
 static int8_t locl_EDF_activation_started = (int8_t)0;
 static int8_t locl_EDF_activation_completed = (int8_t)0;
+
+static float local_EDF_car_in_motion_remaining_time_s = 0.0f;
+static int8_t local_EDF_car_in_motion_complete_flag = 0;
 
 void EDF_setup(int edf_pin){
     pinMode(edf_pin, OUTPUT);
@@ -39,8 +43,6 @@ void EDF_activation_loop(float steering_angle_rad){
     
     float temp_obstacle_distance = 0.0f;
 
-    
-    
 
     if (g_enable_car_engine == (int8_t)0 && locl_EDF_activation_completed != (int8_t)0) {
         g_enable_edf = (int8_t)1;
@@ -76,6 +78,19 @@ void EDF_activation_loop(float steering_angle_rad){
         g_enable_car_engine = (int8_t)1;
     }
     
+    local_EDF_car_in_motion_complete_flag = 0;
+    if (g_enable_car_engine == (int8_t)0)
+    {
+        local_EDF_car_in_motion_remaining_time_s = EDF_CAR_IN_MOTION_DELAY_S;
+        local_EDF_car_in_motion_complete_flag = 0;
+    }
+    else{
+        local_EDF_car_in_motion_remaining_time_s -= MillisToSec(g_loop_time_ms);
+        local_EDF_car_in_motion_remaining_time_s = MAX(local_EDF_car_in_motion_remaining_time_s, -1.0f);
+        if (local_EDF_car_in_motion_remaining_time_s <= 0.0f) {
+            local_EDF_car_in_motion_complete_flag = 1;
+        }
+    }
     
 
 /*
@@ -120,7 +135,7 @@ void EDF_activation_loop(float steering_angle_rad){
             }
         }
         
-        if (fabsf(steering_angle_rad) >= fabsf(EDF_STEERING_ANGLE_ACTIVATION_RAD)) {
+        if ((fabsf(steering_angle_rad) >= fabsf(EDF_STEERING_ANGLE_ACTIVATION_RAD)) || (local_EDF_car_in_motion_complete_flag != 0)) {
             local_EDF_active = (int8_t)1;
             local_EDF_active_remaining_time_s = EDF_MIN_ACTIVE_TIME_S;
         }
