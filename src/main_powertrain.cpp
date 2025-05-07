@@ -20,6 +20,8 @@
 #include "WheelRpm.h"
 #include "features/EDF.h"
 
+#define EMERGENCY_STOP_NO_LINES_DETECTED_TIMEOUT_S 1.0f
+
 /*====================================================================================================================================*/
 
 void loop() {
@@ -292,7 +294,11 @@ if (p_no_lines_detected_stopwatch_s >= CAMERA_NO_LINES_DETECTED_TIMEOUT_S)
       g_valid_vectors_detected_flag = 0;
     }
 
+    if (p_camera_no_vector_detected_stopwatch_s >= EMERGENCY_STOP_NO_LINES_DETECTED_TIMEOUT_S) {
+      g_enable_car_engine = 0;
+    }
     
+
     g_car_speed_mps = CalculateCarSpeed(g_vehicle_min_speed_mps, g_vehicle_max_speed_mps, WHEEL_BASE_M, g_friction_coefficient, g_downward_acceleration, local_unvalidated_steering_angle_rad);
     
     #if ENABLE_EDF != 0
