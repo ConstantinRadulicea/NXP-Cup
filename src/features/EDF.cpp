@@ -7,14 +7,14 @@
 #include "features/automatic_emergency_braking.h"
 
 #define EDF_MIN_ACTIVE_TIME_S 10.0f
-#define EDF_CAR_IN_MOTION_DELAY_S 0.5f
+#define EDF_CAR_IN_MOTION_DELAY_S 1.0f
 #define EDF_STEERING_ANGLE_ACTIVATION_RAD radians(12.0f)
 #define EDF_MIN_VEHICLE_SPEED_MPS 0.1f
 #define EDF_IDLE_RAW_SPEED 105
 #define EDF_STANDSTILL_RAW_SPEED 90
 
 #define EDF_STOP_MIN_OBSTACLE_DISTANCE_M 0.2f
-#define EDF_ACTIVATION_COMPLETE_COUNTDOWN_S 2.0f
+#define EDF_ACTIVATION_COMPLETE_COUNTDOWN_S 1.0f
 
 volatile PWMServo EDF_motor;
 static int8_t local_EDF_active = (int8_t)0;

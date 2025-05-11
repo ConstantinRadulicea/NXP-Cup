@@ -183,7 +183,7 @@
   #define ENABLE_BIRDEYEVIEW 1
   #define ENABLE_IMU 0
   #define ENABLE_OVERSTEER_MITIGATION 0
-  #define ENABLE_EDF 0
+  #define ENABLE_EDF 1
 #endif
 
 
@@ -245,8 +245,8 @@
 #define STEERING_SERVO_PIN  7
 #define RIGHT_WHEEL_MOTOR_PIN 5
 #define LEFT_WHEEL_MOTOR_PIN 4
-#define EDF_MOTOR_PIN 6
-#define DISTANCE_SENSOR_PWM_PIN 3  // 14
+#define EDF_MOTOR_PIN 14 // 6
+#define DISTANCE_SENSOR_PWM_PIN 6  // 14
 #define REMOTE_START_PIN -1
 #define REMOTE_STOP_PIN -1
 
@@ -262,7 +262,7 @@
 #define EMERGENCY_BREAK_LIGHT_PIN -1
 
 #define RPM_SENSOR_LEFT_WHEEL_PIN 2
-#define RPM_SENSOR_RIGHT_WHEEL_PIN -1    // 3
+#define RPM_SENSOR_RIGHT_WHEEL_PIN 3    // 3
 
 #define IMU_DATA_INTERRUPT_PIN 23
 
@@ -271,7 +271,7 @@
   #define STEERING_SERVO_PIN                22
   #define RIGHT_WHEEL_MOTOR_PIN             -1
   #define LEFT_WHEEL_MOTOR_PIN              23
-  #define EDF_MOTOR_PIN                     -1
+  #define EDF_MOTOR_PIN                     6
   #define DISTANCE_SENSOR_PWM_PIN           3
   #define REMOTE_START_PIN                  -1
   #define REMOTE_STOP_PIN                   -1
