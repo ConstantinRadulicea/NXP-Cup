@@ -18,7 +18,7 @@ g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 50.0;                       % 40
 g_vehicle_min_speed_mps = 0.7;
-g_vehicle_max_speed_mps = 3.0;                                      % 
+g_vehicle_max_speed_mps = 4.0;                                      % 
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
@@ -50,7 +50,7 @@ g_powertrain_right_wheel_ki = 0.0;
 g_powertrain_left_wheel_ki_max_sum = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.0;
 
-g_friction_coefficient = 1;
+g_friction_coefficient = 1.4;
 g_downward_acceleration = 9.80665;
 
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration)/2.5;
@@ -60,7 +60,7 @@ g_max_deceleration = (g_friction_coefficient * g_downward_acceleration) - 100;
 g_camera_offset_y_m = 0.0; %real_value = measured_value - offset    // offset = measured_value - 0
 
 g_max_speed_after_delay_s = 0.0;
-g_enable_finish_line_detection_after_delay_s = 0.0;
+g_enable_finish_line_detection_after_delay_s = 5.0;
 g_max_speed_after_finish_line_detected_mps = 0.7;
 
 

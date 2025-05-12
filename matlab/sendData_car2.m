@@ -33,7 +33,7 @@ g_max_speed_after_delay_mps = 0.3;
 g_finish_line_angle_tolerance = 30.0;
 g_oversteer_mitigation_yaw_tolerance_rad_s = deg2rad(150);
 g_oversteer_mitigation_yaw_delta_tolerance_rad_s = deg2rad(360);
-g_edf_raw_speed = 180;
+g_edf_raw_speed = 90;
 
 g_powertrain_left_wheel_kp = 0.0;
 g_powertrain_left_wheel_ki = 0.1;
@@ -44,7 +44,7 @@ g_powertrain_right_wheel_ki = 0.1;
 g_powertrain_right_wheel_kd = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.4;
 
-g_friction_coefficient = 0.5;
+g_friction_coefficient = 0.8;
 g_downward_acceleration = 9.80665;
 
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);

@@ -84,7 +84,7 @@ function read_callback_serialport(src, ~)
     startTime = tic;
     
 
-    plot_wheel_speed(src.UserData.wheelRpm_figure, toc(start_sampling_time), left_wheel_speed, right_wheel_speed);
+    % plot_wheel_speed(src.UserData.wheelRpm_figure, toc(start_sampling_time), left_wheel_speed, right_wheel_speed);
     plot_wheel_speed_request(src.UserData.wheelSpeedRequest_figure, toc(start_sampling_time), left_wheel_speed_request, right_wheel_speed_request);
     plot_gyro(src.UserData.gyro_figure, toc(start_sampling_time), imu_yaw_rate, g_oversteer_mitigation_active);
 
