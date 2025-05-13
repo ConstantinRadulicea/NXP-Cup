@@ -78,7 +78,7 @@ function read_callback_serialport(src, ~)
     if g_oversteer_mitigation_active > 0.5
         plot_gyro(src.UserData.gyro_figure, toc(start_sampling_time), imu_yaw_rate, g_oversteer_mitigation_active);
     end
-    if(toc(startTime) < (1/2))
+    if(toc(startTime) < (1/1))
         return;
     end
     startTime = tic;

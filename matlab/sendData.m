@@ -1,6 +1,6 @@
 recordTerminator = sprintf('\r\n');
 fieldTerminator = ';';
-% camera angle 120 degrees
+% camera angle 115 degrees
 
 
 g_enable_car_engine = 0.0;
@@ -18,7 +18,7 @@ g_black_color_treshold = 0.2;
 g_lookahead_min_distance_cm = 20.0;                       % 22
 g_lookahead_max_distance_cm = 50.0;                       % 40
 g_vehicle_min_speed_mps = 0.7;
-g_vehicle_max_speed_mps = 4.0;                                      % 
+g_vehicle_max_speed_mps = 4;                                      % 
 g_car_speed_mps_ki = -0.001;                                      %-0.02;
 g_car_speed_mps_kd = 0.0;                                      %-0.2;
 g_car_speed_mps_ki_min_max_impact = 5.0;
@@ -85,7 +85,7 @@ BirdEye_calibration_TrackWidths_lower_segment_A_x = 11.38;    % RL x
 BirdEye_calibration_TrackWidths_lower_segment_A_y = -2.4;  % RL y
 BirdEye_calibration_TrackWidths_lower_segment_B_x = 71.47;  % RR x
 BirdEye_calibration_TrackWidths_lower_segment_B_y = 2.47;   % RR y
-BirdEye_calibration_valid = 1;
+BirdEye_calibration_valid = 0;
 
 values = [g_lane_width_vector_unit...
     g_lookahead_min_distance_cm...
