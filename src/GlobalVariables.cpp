@@ -34,13 +34,13 @@ int8_t g_enable_remote_start_stop = 0;
 int8_t g_enable_finish_line_detection = 0;
 int8_t g_enable_oversteer_mitigation = 1;
 
-float g_lane_width_vector_unit = 59.66f;
+float g_lane_width_vector_unit = 63.04f;
 float g_black_color_treshold = 0.2f; // 0=black, 1=white
 float g_lookahead_min_distance_cm = 20.0f;
 float g_lookahead_max_distance_cm = 50.0f;
-float g_vehicle_min_speed_mps = 0.5f;   // m/s
-float g_vehicle_max_speed_mps = 2.0f;  // m/s
-float g_vehicle_max_speed_original_mps = 2.0f; // m/s
+float g_vehicle_min_speed_mps = 0.7f;   // m/s
+float g_vehicle_max_speed_mps = 4.0f;  // m/s
+float g_vehicle_max_speed_original_mps = 4.0f; // m/s
 float g_emergency_brake_activation_max_distance_m = 1.5f;
 float g_emergency_brake_speed_mps = 0.3f; // m/s
 float g_emergency_brake_distance_from_obstacle_m = 0.1f;   // 13.5f
@@ -51,24 +51,24 @@ float g_max_speed_after_finish_line_detected_mps = 0.7f; // m/s
 float g_car_speed_mps_ki = -0.02f;
 float g_car_speed_mps_kd = -0.2f;
 float g_car_speed_mps_ki_min_max_impact = 0.3f;
-float g_finish_line_angle_tolerance = 35.0f;
-float g_oversteer_mitigation_yaw_tolerance_rad_s = radians(50.0f);
+float g_finish_line_angle_tolerance = 30.0f;
+float g_oversteer_mitigation_yaw_tolerance_rad_s = radians(150.0f);
 float g_oversteer_mitigation_yaw_delta_tolerance_rad_s = radians(360.0f);
-float g_edf_raw_speed = 90.0f;
+float g_edf_raw_speed = 180.0f;
 
 float g_powertrain_left_wheel_kp = 0.0;
 float g_powertrain_left_wheel_ki = 0.1;
 float g_powertrain_left_wheel_kd = 0.0;
-float g_powertrain_left_wheel_ki_max_sum = 0.4;
+float g_powertrain_left_wheel_ki_max_sum = 0.0;   //0.4
 float g_powertrain_right_wheel_kp = 0.0;
 float g_powertrain_right_wheel_ki = 0.1;
 float g_powertrain_right_wheel_kd = 0.0;
-float g_powertrain_right_wheel_ki_max_sum = 0.4;
+float g_powertrain_right_wheel_ki_max_sum = 0.0;  // 0.4
 
-float g_friction_coefficient = 0.5f;
+float g_friction_coefficient = 0.8f;
 float g_downward_acceleration = G_CONSTANT;
 
-float g_max_acceleration = (g_friction_coefficient * g_downward_acceleration);
+float g_max_acceleration = (g_friction_coefficient * g_downward_acceleration)/2.5f;
 float g_max_deceleration = -1.0f;
 
 float g_camera_offset_y_m = 0.0f;
@@ -83,7 +83,7 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
 #elif DEBUG_MODE == 1
   float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
-  float g_enable_finish_line_detection_after_delay_s = 0.0f;
+  float g_enable_finish_line_detection_after_delay_s = 5.0f;
 #else
   float g_emergency_brake_enable_delay_s = 0.0f;
   float g_max_speed_after_delay_s = 0.0f;
@@ -93,14 +93,14 @@ float g_enable_change_aeb_max_distance_after_delay_s = -1.0f;
   void initialize_g_birdeye_calibrationdata() {
     struct track_widths temp_track_widths = {};
 
-    temp_track_widths.upper_segment.A.x = 25.07;   // FL x
-    temp_track_widths.upper_segment.A.y = 51.60;  // FL y
-    temp_track_widths.upper_segment.B.x = 48.85;  // FR x
-    temp_track_widths.upper_segment.B.y = 52.39;  // FR y
-    temp_track_widths.lower_segment.A.x = 9.4;   // RL x
-    temp_track_widths.lower_segment.A.y = -0.98;  // RL y
-    temp_track_widths.lower_segment.B.x = 68.00;  // RR x
-    temp_track_widths.lower_segment.B.y = 0.98;    // RR y
+    temp_track_widths.upper_segment.A.x = 16.79;  //% FL x
+    temp_track_widths.upper_segment.A.y = 50.82;  //FL y
+    temp_track_widths.upper_segment.B.x = 54.63;  //FR x
+    temp_track_widths.upper_segment.B.y = 53.17;  //FR y
+    temp_track_widths.lower_segment.A.x = 7.47;   // RL x
+    temp_track_widths.lower_segment.A.y = -1.95;  //RL y
+    temp_track_widths.lower_segment.B.x = 70.39;  //RR x
+    temp_track_widths.lower_segment.B.y = 1.95;   //RR y
 
 
     g_birdeye_calibrationdata = CalculateBirdEyeCalibration_TrackWidths(temp_track_widths, g_line_image_frame_width, g_line_image_frame_height, LANE_WIDTH_M);

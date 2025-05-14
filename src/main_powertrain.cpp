@@ -20,7 +20,7 @@
 #include "WheelRpm.h"
 #include "features/EDF.h"
 
-#define EMERGENCY_STOP_NO_LINES_DETECTED_TIMEOUT_S 1.0f
+#define EMERGENCY_STOP_NO_LINES_DETECTED_TIMEOUT_S 0.5f
 
 /*====================================================================================================================================*/
 

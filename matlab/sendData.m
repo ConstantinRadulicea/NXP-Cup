@@ -50,7 +50,7 @@ g_powertrain_right_wheel_ki = 0.0;
 g_powertrain_left_wheel_ki_max_sum = 0.0;
 g_powertrain_right_wheel_ki_max_sum = 0.0;
 
-g_friction_coefficient = 1.4;
+g_friction_coefficient = 0.8;
 g_downward_acceleration = 9.80665;
 
 g_max_acceleration = (g_friction_coefficient * g_downward_acceleration)/2.5;
@@ -76,15 +76,15 @@ g_line_calibration_data_y_axis_offset = 0;
 % g_line_calibration_data_x_axis_offset = -9.2;
 % g_line_calibration_data_y_axis_offset = 0;
 
-g_lane_width_vector_unit = 60.29;    % 51.4
-BirdEye_calibration_TrackWidths_upper_segment_A_x = 20.76;  % FL x
-BirdEye_calibration_TrackWidths_upper_segment_A_y = 50.64;  % FL y
-BirdEye_calibration_TrackWidths_upper_segment_B_x = 53.52;  % FR x
-BirdEye_calibration_TrackWidths_upper_segment_B_y = 53.35;  % FR y
-BirdEye_calibration_TrackWidths_lower_segment_A_x = 11.38;    % RL x
-BirdEye_calibration_TrackWidths_lower_segment_A_y = -2.4;  % RL y
-BirdEye_calibration_TrackWidths_lower_segment_B_x = 71.47;  % RR x
-BirdEye_calibration_TrackWidths_lower_segment_B_y = 2.47;   % RR y
+g_lane_width_vector_unit = 63.04;    % 51.4
+BirdEye_calibration_TrackWidths_upper_segment_A_x = 16.79;  % FL x
+BirdEye_calibration_TrackWidths_upper_segment_A_y = 50.82;  % FL y
+BirdEye_calibration_TrackWidths_upper_segment_B_x = 54.63;  % FR x
+BirdEye_calibration_TrackWidths_upper_segment_B_y = 53.17;  % FR y
+BirdEye_calibration_TrackWidths_lower_segment_A_x = 7.47;    % RL x
+BirdEye_calibration_TrackWidths_lower_segment_A_y = -1.95;  % RL y
+BirdEye_calibration_TrackWidths_lower_segment_B_x = 70.39;  % RR x
+BirdEye_calibration_TrackWidths_lower_segment_B_y = 1.95;   % RR y
 BirdEye_calibration_valid = 0;
 
 values = [g_lane_width_vector_unit...
