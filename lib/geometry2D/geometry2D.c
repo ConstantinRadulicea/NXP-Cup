@@ -78,7 +78,7 @@ Point2D polyval(float* polynomial_coefficients, int polynomial_degree, float x) 
 }
 
 int floatCmp(float num1, float num2) {
-	if (fabsf(num1 - num2) < LOCAL_FLT_EPSILON) {
+	if ((fabsf(num1) - fabsf(num2)) < LOCAL_FLT_EPSILON) {
 		return 0;
 	}
 	else if (num1 > num2) {
@@ -668,8 +668,8 @@ LineABC perpendicularToLinePassingThroughPointABC(LineABC line, Point2D point) {
 
 LineABC rotateLineAroundPoint(LineABC line, Point2D point, float angle) {
 	// Calculate the cosine and sine of the angle
-	float cosTheta = cos(angle);
-	float sinTheta = sin(angle);
+	float cosTheta = cosf(angle);
+	float sinTheta = sinf(angle);
 
 	// Rotate the A and B components
 	float newA = line.Ax * cosTheta - line.By * sinTheta;
@@ -1532,7 +1532,7 @@ LineSegment projectSegmentOntoLineFromViewpoint(LineSegment seg, LineABC line, P
  * Checks if two floating-point numbers are approximately equal
  */
 int areEqual(float a, float b) {
-	return fabs(a - b) < 1e-6;
+	return floatCmp(a, b) == 0;
 }
 
 /**
@@ -1555,7 +1555,7 @@ IntersectionLines lineSegmentIntersection(LineSegment seg1, LineSegment seg2) {
 	float denom = (xB - xA) * (yD - yC) - (yB - yA) * (xD - xC);
 
 	// Check if lines are parallel
-	if (floatCmp(denom, 0) == 0) {
+	if (floatCmp(denom, 0.0f) == 0) {
 		// Check if the two lines are actually the same
 		if (floatCmp((yB - yA) * (xC - xA), (xB - xA) * (yC - yA))) {
 			result.info = INTERSECTION_INFO_LINES_ARE_EQUAL;
@@ -1680,8 +1680,8 @@ struct FourBarLinkage_Theta FourBarLinkage_Theta2ToTheta4(float base, float driv
 	theta4_crossed = theta4_crossed + theta1;
 	theta4_open = theta4_open + theta1;
 
-	theta4_open = fmodf(theta4_open + M_PI, 2 * M_PI) - M_PI;
-	theta4_crossed = fmodf(theta4_crossed + M_PI, 2 * M_PI) - M_PI;
+	theta4_open = fmodf(theta4_open + M_PI, 2.0f * M_PI) - M_PI;
+	theta4_crossed = fmodf(theta4_crossed + M_PI, 2.0f * M_PI) - M_PI;
 
 	result.theta_open = theta4_open;
 	result.theta_crossed = theta4_crossed;
